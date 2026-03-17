@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PES Environmental — Phase I & II ESA | Environmental Due Diligence Nationwide</title>
+<meta name="description" content="Property Environmental Services (PES, Inc.) — 27+ years of Phase I & Phase II Environmental Site Assessments for commercial real estate. Serving lenders, developers & investors nationwide. Reports in 10 business days.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --stone-50: #fafaf9;
+  --stone-100: #f5f5f4;
+  --stone-200: #e7e5e4;
+  --stone-300: #d6d3d1;
+  --stone-400: #a8a29e;
+  --stone-500: #78716c;
+  --stone-600: #57534e;
+  --stone-700: #44403c;
+  --stone-800: #292524;
+  --stone-900: #1c1917;
+  --stone-950: #0c0a09;
+  --forest-50: #f0fdf4;
+  --forest-100: #dcfce7;
+  --forest-200: #bbf7d0;
+  --forest-300: #86efac;
+  --forest-400: #4ade80;
+  --forest-500: #16a34a;
+  --forest-600: #15803d;
+  --forest-700: #166534;
+  --forest-800: #14532d;
+  --forest-900: #052e16;
+  --copper: #c27830;
+  --copper-light: #d4944f;
+  --copper-dark: #a06020;
+  --bg: #fdfcfb;
+  --text: var(--stone-800);
+  --text-muted: var(--stone-500);
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Satoshi', -apple-system, sans-serif;
+  --nav-h: 72px;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body { 
+  font-family: var(--sans); 
+  color: var(--text); 
+  background: var(--bg); 
+  line-height: 1.65; 
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── UTILITY ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--nav-h);
+  background: rgba(253,252,251,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--stone-200);
+  transition: box-shadow 0.3s;
+}
+.nav.scrolled { box-shadow: 0 1px 24px rgba(0,0,0,0.06); }
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 100%;
+}
+.nav-logo {
+  font-family: var(--serif); font-size: 1.35rem; color: var(--stone-900);
+  text-decoration: none; display: flex; align-items: center; gap: 8px;
+  letter-spacing: -0.02em;
+}
+.nav-logo .logo-icon {
+  width: 36px; height: 36px; background: var(--forest-700); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  font-family: var(--sans); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.05em;
+}
+.nav-links { display: flex; gap: 32px; align-items: center; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--stone-600); font-size: 0.9rem;
+  font-weight: 500; transition: color 0.2s; position: relative;
+}
+.nav-links a:hover { color: var(--stone-900); }
+.nav-links .has-dropdown { position: relative; cursor: pointer; }
+.nav-links .has-dropdown .dropdown {
+  position: absolute; top: calc(100% + 12px); left: -16px; background: #fff;
+  border: 1px solid var(--stone-200); border-radius: 12px; padding: 8px;
+  min-width: 240px; opacity: 0; pointer-events: none; 
+  transform: translateY(-4px); transition: all 0.2s;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+.nav-links .has-dropdown:hover .dropdown { opacity: 1; pointer-events: all; transform: translateY(0); }
+.dropdown a {
+  display: block; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem;
+}
+.dropdown a:hover { background: var(--stone-50); }
+.nav-cta {
+  background: var(--forest-700); color: #fff !important; padding: 10px 22px;
+  border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+  transition: background 0.2s;
+}
+.nav-cta:hover { background: var(--forest-800); }
+
+/* Mobile nav */
+.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+.nav-toggle span { display: block; width: 22px; height: 2px; background: var(--stone-700); margin: 5px 0; transition: 0.3s; border-radius: 2px; }
+
+@media(max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+    background: rgba(253,252,251,0.98); backdrop-filter: blur(20px);
+    flex-direction: column; padding: 40px 24px; gap: 24px;
+    transform: translateX(100%); transition: transform 0.35s ease;
+  }
+  .nav-links.open { transform: translateX(0); }
+  .nav-links .has-dropdown .dropdown {
+    position: static; opacity: 1; pointer-events: all; transform: none;
+    box-shadow: none; border: none; padding: 0 0 0 16px;
+  }
+}
+
+/* ── HERO ── */
+.hero {
+  padding: calc(var(--nav-h) + 80px) 0 100px;
+  position: relative; overflow: hidden;
+  background: linear-gradient(170deg, var(--bg) 0%, var(--forest-50) 50%, var(--bg) 100%);
+}
+.hero::before {
+  content: ''; position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(22,101,52,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--forest-50); border: 1px solid var(--forest-200);
+  padding: 6px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600;
+  color: var(--forest-700); margin-bottom: 24px;
+}
+.hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--forest-500); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.hero h1 {
+  font-family: var(--serif); font-size: clamp(2.6rem, 5vw, 3.8rem);
+  line-height: 1.1; color: var(--stone-900); margin-bottom: 20px;
+  letter-spacing: -0.03em; font-weight: 400;
+}
+.hero h1 em { font-style: italic; color: var(--forest-700); }
+.hero-sub {
+  font-size: 1.1rem; color: var(--stone-600); max-width: 500px; margin-bottom: 36px; line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 48px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; border-radius: 10px; font-size: 0.95rem;
+  font-weight: 600; text-decoration: none; transition: all 0.25s;
+  border: none; cursor: pointer; font-family: var(--sans);
+}
+.btn-primary {
+  background: var(--forest-700); color: #fff;
+  box-shadow: 0 2px 12px rgba(22,101,52,0.25);
+}
+.btn-primary:hover { background: var(--forest-800); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(22,101,52,0.3); }
+.btn-secondary {
+  background: #fff; color: var(--stone-800); border: 1.5px solid var(--stone-300);
+}
+.btn-secondary:hover { border-color: var(--stone-500); background: var(--stone-50); }
+.btn-ghost {
+  background: transparent; color: var(--forest-700); padding: 14px 0; font-weight: 600;
+}
+.btn-ghost:hover { color: var(--forest-800); }
+.btn-copper { background: var(--copper); color: #fff; box-shadow: 0 2px 12px rgba(194,120,48,0.25); }
+.btn-copper:hover { background: var(--copper-dark); transform: translateY(-1px); }
+
+.hero-proof {
+  display: flex; gap: 40px;
+}
+.hero-proof-item { text-align: left; }
+.hero-proof-item .num {
+  font-family: var(--serif); font-size: 2rem; color: var(--stone-900);
+  line-height: 1; margin-bottom: 2px;
+}
+.hero-proof-item .label { font-size: 0.8rem; color: var(--stone-500); font-weight: 500; }
+
+.hero-visual {
+  position: relative;
+}
+.hero-card {
+  background: #fff; border-radius: 20px; padding: 40px;
+  border: 1px solid var(--stone-200);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+  position: relative; overflow: hidden;
+}
+.hero-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--forest-600), var(--forest-400), var(--copper));
+}
+.hero-card-header { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--stone-400); margin-bottom: 16px; font-weight: 600; }
+.hero-card h3 { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 20px; color: var(--stone-900); }
+.hero-card-steps { display: flex; flex-direction: column; gap: 16px; }
+.step-item {
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.step-num {
+  width: 32px; height: 32px; min-width: 32px; border-radius: 8px;
+  background: var(--forest-50); color: var(--forest-700);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem;
+}
+.step-item .step-text { font-size: 0.9rem; color: var(--stone-600); line-height: 1.5; }
+.step-item .step-text strong { color: var(--stone-800); }
+
+.floating-badge {
+  position: absolute; background: #fff; border-radius: 12px; padding: 12px 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1); border: 1px solid var(--stone-100);
+  font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px;
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.badge-top { top: -20px; right: -20px; color: var(--forest-700); }
+.badge-bottom { bottom: -16px; left: -16px; color: var(--copper); animation-delay: 2s; }
+
+@media(max-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .hero-proof { gap: 24px; }
+  .floating-badge { display: none; }
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  padding: 48px 0;
+  border-top: 1px solid var(--stone-200);
+  border-bottom: 1px solid var(--stone-200);
+  background: #fff;
+}
+.trust-bar-inner {
+  display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.85rem; color: var(--stone-500); font-weight: 500;
+}
+.trust-icon {
+  width: 40px; height: 40px; border-radius: 10px; background: var(--stone-100);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+
+/* ── SECTIONS COMMON ── */
+section { padding: 100px 0; }
+.section-label {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--forest-600); font-weight: 700; margin-bottom: 12px;
+}
+.section-heading {
+  font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.8rem);
+  color: var(--stone-900); line-height: 1.15; margin-bottom: 16px;
+  letter-spacing: -0.02em; font-weight: 400;
+}
+.section-sub {
+  font-size: 1.05rem; color: var(--stone-500); max-width: 600px; line-height: 1.7;
+}
+
+/* ── SERVICE SELECTOR ── */
+.selector {
+  background: linear-gradient(180deg, #fff 0%, var(--stone-50) 100%);
+}
+.selector-intro { text-align: center; margin-bottom: 60px; }
+.selector-intro .section-sub { margin: 0 auto; }
+
+.selector-tool {
+  background: #fff; border-radius: 20px; border: 1px solid var(--stone-200);
+  overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+}
+.selector-q {
+  padding: 40px; border-bottom: 1px solid var(--stone-200);
+  text-align: center;
+}
+.selector-q h3 { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 8px; color: var(--stone-900); }
+.selector-q p { color: var(--stone-500); font-size: 0.95rem; }
+.selector-options {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0;
+}
+.selector-opt {
+  padding: 32px; border-right: 1px solid var(--stone-200);
+  cursor: pointer; transition: all 0.25s; position: relative;
+}
+.selector-opt:last-child { border-right: none; }
+.selector-opt:hover { background: var(--forest-50); }
+.selector-opt.active { background: var(--forest-50); }
+.selector-opt.active::after {
+  content: '✓'; position: absolute; top: 16px; right: 16px;
+  width: 24px; height: 24px; border-radius: 50%; background: var(--forest-600);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700;
+}
+.selector-opt h4 { font-weight: 600; margin-bottom: 8px; color: var(--stone-800); }
+.selector-opt p { font-size: 0.85rem; color: var(--stone-500); line-height: 1.6; }
+.selector-result {
+  padding: 32px 40px; background: var(--forest-50);
+  border-top: 1px solid var(--forest-200);
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  flex-wrap: wrap;
+}
+.selector-result p { color: var(--forest-800); font-weight: 500; font-size: 0.95rem; }
+.selector-result p strong { font-weight: 700; }
+
+/* ── SERVICES ── */
+.services-section { background: var(--stone-950); color: #fff; position: relative; overflow: hidden; }
+.services-section::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(22,101,52,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.services-section .section-label { color: var(--forest-400); }
+.services-section .section-heading { color: #fff; }
+.services-section .section-sub { color: var(--stone-400); }
+
+.services-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-top: 60px;
+}
+.service-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 36px; transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.service-card:hover { 
+  background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15);
+  transform: translateY(-4px);
+}
+.service-card .card-tag {
+  display: inline-block; padding: 4px 12px; border-radius: 6px;
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+  font-weight: 700; margin-bottom: 20px;
+}
+.tag-primary { background: var(--forest-700); color: #fff; }
+.tag-secondary { background: rgba(194,120,48,0.2); color: var(--copper-light); }
+.tag-tertiary { background: rgba(255,255,255,0.1); color: var(--stone-300); }
+.service-card h3 {
+  font-family: var(--serif); font-size: 1.4rem; margin-bottom: 12px;
+  color: #fff; line-height: 1.25;
+}
+.service-card .card-desc { color: var(--stone-400); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.7; }
+.service-card .card-features { list-style: none; margin-bottom: 24px; }
+.service-card .card-features li {
+  padding: 6px 0; font-size: 0.85rem; color: var(--stone-300);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.service-card .card-features li::before {
+  content: '→'; color: var(--forest-400); font-weight: 700; min-width: 16px;
+}
+.service-card .card-link {
+  color: var(--forest-400); text-decoration: none; font-weight: 600;
+  font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;
+  transition: gap 0.2s;
+}
+.service-card .card-link:hover { gap: 10px; }
+.service-card .turnaround {
+  margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.8rem; color: var(--stone-400); display: flex; align-items: center; gap: 6px;
+}
+.service-card .turnaround .clock { color: var(--forest-400); }
+
+@media(max-width: 768px) {
+  .services-grid { grid-template-columns: 1fr; }
+}
+
+/* ── ADDITIONAL SERVICES ── */
+.additional-services { background: var(--stone-950); padding-top: 0; padding-bottom: 100px; position: relative; }
+.additional-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+}
+.add-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 24px; transition: all 0.25s;
+}
+.add-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+.add-card h4 { font-size: 0.95rem; color: #fff; margin-bottom: 8px; font-weight: 600; }
+.add-card p { font-size: 0.8rem; color: var(--stone-400); line-height: 1.6; }
+.additional-label { color: var(--stone-400); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 24px; }
+
+@media(max-width: 768px) {
+  .additional-grid { grid-template-columns: 1fr 1fr; }
+}
+@media(max-width: 480px) {
+  .additional-grid { grid-template-columns: 1fr; }
+}
+
+/* ── PROCESS ── */
+.process-section { background: #fff; }
+.process-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+  margin-top: 60px; position: relative;
+}
+.process-grid::before {
+  content: ''; position: absolute; top: 28px; left: 10%; right: 10%;
+  height: 2px; background: var(--stone-200);
+}
+.process-step { text-align: center; position: relative; padding: 0 16px; }
+.process-num {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--stone-200);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 1.2rem; color: var(--stone-900);
+  margin: 0 auto 20px; position: relative; z-index: 1;
+  transition: all 0.3s;
+}
+.process-step:hover .process-num { border-color: var(--forest-600); color: var(--forest-700); background: var(--forest-50); }
+.process-step h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--stone-800); }
+.process-step p { font-size: 0.8rem; color: var(--stone-500); line-height: 1.6; }
+
+@media(max-width: 768px) {
+  .process-grid { grid-template-columns: 1fr; gap: 32px; }
+  .process-grid::before { display: none; }
+  .process-step { text-align: left; display: flex; gap: 16px; padding: 0; }
+  .process-num { margin: 0; min-width: 56px; }
+}
+
+/* ── TESTIMONIALS ── */
+.testimonials { background: var(--stone-50); }
+.test-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 48px; }
+.test-card {
+  background: #fff; border: 1px solid var(--stone-200); border-radius: 16px;
+  padding: 36px; position: relative;
+}
+.test-card::before {
+  content: '"'; font-family: var(--serif); font-size: 4rem; color: var(--forest-200);
+  position: absolute; top: 16px; left: 28px; line-height: 1;
+}
+.test-stars { color: var(--copper); font-size: 0.85rem; margin-bottom: 16px; letter-spacing: 2px; }
+.test-text { font-size: 0.92rem; color: var(--stone-600); line-height: 1.75; margin-bottom: 20px; font-style: italic; }
+.test-author { font-weight: 600; color: var(--stone-800); font-size: 0.9rem; }
+.test-role { color: var(--stone-400); font-size: 0.8rem; }
+
+@media(max-width: 768px) {
+  .test-grid { grid-template-columns: 1fr; }
+}
+
+/* ── WHO WE SERVE ── */
+.audience-section { background: #fff; }
+.audience-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  margin-top: 48px;
+}
+.audience-card {
+  padding: 32px; border-radius: 14px; border: 1px solid var(--stone-200);
+  transition: all 0.25s; text-align: center;
+}
+.audience-card:hover { border-color: var(--forest-300); background: var(--forest-50); }
+.audience-icon { font-size: 2rem; margin-bottom: 16px; }
+.audience-card h4 { font-size: 0.95rem; font-weight: 600; color: var(--stone-800); margin-bottom: 6px; }
+.audience-card p { font-size: 0.82rem; color: var(--stone-500); }
+
+@media(max-width: 768px) {
+  .audience-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── FOUNDER ── */
+.founder-section { background: var(--stone-50); }
+.founder-grid {
+  display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: start;
+  margin-top: 48px;
+}
+.founder-photo-wrap {
+  position: relative;
+}
+.founder-photo {
+  width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 16px;
+  background: var(--stone-200);
+}
+.founder-photo-placeholder {
+  width: 100%; aspect-ratio: 4/5; border-radius: 16px;
+  background: linear-gradient(135deg, var(--stone-200) 0%, var(--stone-300) 100%);
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  gap: 8px; color: var(--stone-500); font-size: 0.85rem;
+}
+.founder-photo-placeholder .initials {
+  font-family: var(--serif); font-size: 3rem; color: var(--stone-400);
+}
+.founder-creds {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px;
+}
+.cred-badge {
+  padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.03em;
+  background: var(--forest-50); color: var(--forest-700); border: 1px solid var(--forest-200);
+}
+.founder-content h3 { font-family: var(--serif); font-size: 1.8rem; color: var(--stone-900); margin-bottom: 8px; }
+.founder-content .title { color: var(--stone-500); font-size: 0.95rem; margin-bottom: 24px; }
+.founder-content p { margin-bottom: 16px; color: var(--stone-600); font-size: 0.95rem; line-height: 1.75; }
+.founder-experience { margin-top: 24px; }
+.founder-experience h4 { font-size: 0.85rem; font-weight: 700; color: var(--stone-800); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.exp-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.exp-tag { padding: 6px 14px; border-radius: 100px; background: #fff; border: 1px solid var(--stone-200); font-size: 0.8rem; color: var(--stone-600); }
+
+@media(max-width: 768px) {
+  .founder-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+
+/* ── RESOURCES / BLOG PREVIEW ── */
+.resources-section { background: #fff; }
+.resources-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-top: 48px;
+}
+.resource-card {
+  border: 1px solid var(--stone-200); border-radius: 14px; overflow: hidden;
+  transition: all 0.25s;
+}
+.resource-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.06); transform: translateY(-2px); }
+.resource-img {
+  height: 180px; background: var(--forest-50);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; border-bottom: 1px solid var(--stone-200);
+}
+.resource-body { padding: 24px; }
+.resource-type {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--forest-600); font-weight: 700; margin-bottom: 8px;
+}
+.resource-card h4 { font-size: 1rem; font-weight: 600; color: var(--stone-800); margin-bottom: 8px; line-height: 1.4; }
+.resource-card p { font-size: 0.85rem; color: var(--stone-500); line-height: 1.6; }
+
+@media(max-width: 768px) {
+  .resources-grid { grid-template-columns: 1fr; }
+}
+
+/* ── CTA BAND ── */
+.cta-band {
+  padding: 80px 0;
+  background: linear-gradient(135deg, var(--forest-800) 0%, var(--forest-900) 50%, var(--stone-900) 100%);
+  color: #fff; text-align: center; position: relative; overflow: hidden;
+}
+.cta-band::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 60% 40%, rgba(194,120,48,0.1) 0%, transparent 60%);
+}
+.cta-band .section-heading { color: #fff; max-width: 700px; margin: 0 auto 12px; }
+.cta-band .section-sub { color: rgba(255,255,255,0.6); margin: 0 auto 36px; }
+.cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+.cta-band .btn-primary { background: #fff; color: var(--forest-800); box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+.cta-band .btn-primary:hover { background: var(--stone-100); }
+.cta-band .btn-secondary { border-color: rgba(255,255,255,0.3); color: #fff; background: transparent; }
+.cta-band .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+.cta-timeline {
+  margin-top: 24px; font-size: 0.85rem; color: rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+
+/* ── CONTACT ── */
+.contact-section { background: var(--stone-50); }
+.contact-grid {
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px;
+  margin-top: 48px;
+}
+.contact-info h3 { font-family: var(--serif); font-size: 1.5rem; color: var(--stone-900); margin-bottom: 20px; }
+.contact-detail {
+  display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px;
+}
+.contact-detail .c-icon {
+  width: 40px; height: 40px; min-width: 40px; border-radius: 10px;
+  background: var(--forest-50); display: flex; align-items: center; justify-content: center;
+  color: var(--forest-600); font-size: 1rem;
+}
+.contact-detail .c-text .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--stone-400); font-weight: 600; margin-bottom: 2px; }
+.contact-detail .c-text a { color: var(--stone-800); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+.contact-detail .c-text a:hover { color: var(--forest-700); }
+
+.contact-form {
+  background: #fff; border: 1px solid var(--stone-200); border-radius: 16px;
+  padding: 36px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 0.8rem; font-weight: 600; color: var(--stone-700);
+  margin-bottom: 6px;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 12px 16px; border-radius: 10px;
+  border: 1.5px solid var(--stone-200); font-family: var(--sans);
+  font-size: 0.9rem; color: var(--stone-800); transition: border-color 0.2s;
+  background: #fff;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--forest-500);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-submit { width: 100%; margin-top: 8px; justify-content: center; }
+
+@media(max-width: 768px) {
+  .contact-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--stone-950); color: var(--stone-400); padding: 64px 0 32px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px;
+  margin-bottom: 48px;
+}
+.footer-brand .footer-logo {
+  font-family: var(--serif); font-size: 1.2rem; color: #fff; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.footer-brand .footer-logo .logo-icon { background: var(--forest-600); }
+.footer-brand p { font-size: 0.85rem; line-height: 1.7; max-width: 300px; }
+.footer h5 { color: #fff; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; font-weight: 600; }
+.footer ul { list-style: none; }
+.footer ul li { margin-bottom: 10px; }
+.footer ul a { color: var(--stone-400); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+.footer ul a:hover { color: var(--forest-400); }
+.footer-bottom {
+  padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; justify-content: space-between; font-size: 0.8rem;
+  color: var(--stone-600); flex-wrap: wrap; gap: 12px;
+}
+
+@media(max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── ANIMATIONS ── */
+.fade-up {
+  opacity: 0; transform: translateY(24px); transition: all 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ NAVIGATION ═══════ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="logo-icon">PES</div>
+      PES Environmental
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li class="has-dropdown">
+        <a href="#services">All Services ▾</a>
+        <div class="dropdown">
+          <a href="#services">Phase I ESA</a>
+          <a href="#services">Phase II ESA</a>
+          <a href="#services">Lender Risk Screening</a>
+          <a href="#services">NEPA Studies</a>
+          <a href="#services">Asbestos Surveys</a>
+          <a href="#services">Property Condition Assessments</a>
+        </div>
+      </li>
+      <li><a href="#process">How It Works</a></li>
+      <li><a href="#founder">About</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Serving Clients Nationwide Since 1996
+        </div>
+        <h1>Environmental due diligence for <em>confident</em> property decisions</h1>
+        <p class="hero-sub">Phase I &amp; II Environmental Site Assessments trusted by lenders, developers, and investors for 27+ years. Reports delivered within 10 business days.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Get a Custom Quote →</a>
+          <a href="#selector" class="btn btn-secondary">Which Service Do I Need?</a>
+        </div>
+        <div class="hero-proof">
+          <div class="hero-proof-item">
+            <div class="num">2,000+</div>
+            <div class="label">Assessments Completed</div>
+          </div>
+          <div class="hero-proof-item">
+            <div class="num">150+</div>
+            <div class="label">Organizations Served</div>
+          </div>
+          <div class="hero-proof-item">
+            <div class="num">27+</div>
+            <div class="label">Years in Business</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="floating-badge badge-top">⏱ Reports in 10 Business Days</div>
+          <div class="floating-badge badge-bottom">🏛 ASTM Standards Contributor</div>
+          <div class="hero-card-header">How We Work</div>
+          <h3>From consultation to clear answers — fast.</h3>
+          <div class="hero-card-steps">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-text"><strong>Initial Consultation</strong> — Tell us about your property, timeline, and goals</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-text"><strong>Site Assessment</strong> — Physical inspection, records research, interviews</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-text"><strong>Analysis &amp; Report</strong> — Detailed findings delivered to your inbox</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-text"><strong>Clear Next Steps</strong> — Guidance on remediation, compliance, or closing</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TRUST BAR ═══════ -->
+<div class="trust-bar">
+  <div class="container">
+    <div class="trust-bar-inner">
+      <div class="trust-item">
+        <div class="trust-icon">🛡</div>
+        Registered Professional Geologist (PG)
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">⚗</div>
+        Certified Hazardous Materials Manager (CHMM)
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">📋</div>
+        Registered Environmental Property Assessor (REPA)
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">🏗</div>
+        ASTM Standards Contributor
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ GUIDED SELECTOR ═══════ -->
+<section class="selector" id="selector">
+  <div class="container">
+    <div class="selector-intro">
+      <div class="section-label">Not Sure Where to Start?</div>
+      <h2 class="section-heading">Find the right assessment for your situation</h2>
+      <p class="section-sub">Select the option that best describes you, and we'll point you to the right service.</p>
+    </div>
+    <div class="selector-tool">
+      <div class="selector-q">
+        <h3>What describes your situation?</h3>
+        <p>Click the option that fits best</p>
+      </div>
+      <div class="selector-options" id="selectorOptions">
+        <div class="selector-opt" data-rec="phase1" onclick="selectOption(this)">
+          <h4>🏢 Buying or financing commercial property</h4>
+          <p>I need to identify any environmental risks before closing a transaction or securing a loan.</p>
+        </div>
+        <div class="selector-opt" data-rec="phase2" onclick="selectOption(this)">
+          <h4>⚠️ Environmental concerns were flagged</h4>
+          <p>A previous assessment identified potential contamination and I need soil or groundwater testing to confirm.</p>
+        </div>
+        <div class="selector-opt" data-rec="lender" onclick="selectOption(this)">
+          <h4>🏦 I'm a lender evaluating risk</h4>
+          <p>I need a fast environmental screen or SBA RSRA-equivalent to evaluate loan risk on a property.</p>
+        </div>
+        <div class="selector-opt" data-rec="other" onclick="selectOption(this)">
+          <h4>📑 Federal project or asbestos concern</h4>
+          <p>I need NEPA compliance, an asbestos survey, or a property condition assessment.</p>
+        </div>
+      </div>
+      <div class="selector-result" id="selectorResult" style="display:none;">
+        <p id="recText"></p>
+        <a href="#contact" class="btn btn-primary" id="recBtn">Get a Quote →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CORE SERVICES ═══════ -->
+<section class="services-section" id="services">
+  <div class="container">
+    <div class="section-label">Our Services</div>
+    <h2 class="section-heading">Comprehensive environmental due diligence</h2>
+    <p class="section-sub">Every service delivered with the rigor of 2,000+ completed assessments and deep regulatory expertise.</p>
+    
+    <div class="services-grid">
+      <!-- Phase I -->
+      <div class="service-card fade-up">
+        <span class="card-tag tag-primary">Most Requested</span>
+        <h3>Phase I Environmental Site Assessment</h3>
+        <p class="card-desc">Identify potential environmental concerns or red flags before you purchase or finance a commercial property. Compliant with ASTM E1527-21 standards.</p>
+        <ul class="card-features">
+          <li>Historical records research &amp; regulatory database review</li>
+          <li>Physical site reconnaissance &amp; adjacent property survey</li>
+          <li>Interviews with owners, occupants, and local officials</li>
+          <li>Recognized Environmental Conditions (RECs) analysis</li>
+          <li>Clear, actionable report with recommendations</li>
+        </ul>
+        <a href="#contact" class="card-link">Request Phase I Quote →</a>
+        <div class="turnaround"><span class="clock">⏱</span> Typical delivery: 10 business days</div>
+      </div>
+      
+      <!-- Phase II -->
+      <div class="service-card fade-up delay-1">
+        <span class="card-tag tag-secondary">Investigation</span>
+        <h3>Phase II Environmental Site Investigation</h3>
+        <p class="card-desc">When a Phase I identifies potential contamination, Phase II confirms or rules it out through sampling and laboratory analysis.</p>
+        <ul class="card-features">
+          <li>Targeted soil and groundwater sampling</li>
+          <li>Certified laboratory analysis of collected samples</li>
+          <li>Comparison against federal &amp; state cleanup standards</li>
+          <li>Risk assessment and contamination delineation</li>
+          <li>Remediation recommendations if contamination confirmed</li>
+        </ul>
+        <a href="#contact" class="card-link">Request Phase II Quote →</a>
+        <div class="turnaround"><span class="clock">⏱</span> Typical delivery: 15–20 business days</div>
+      </div>
+      
+      <!-- Lender Risk -->
+      <div class="service-card fade-up delay-2">
+        <span class="card-tag tag-tertiary">Lender Solutions</span>
+        <h3>Transaction Screen &amp; Lender Risk Screening</h3>
+        <p class="card-desc">A streamlined environmental evaluation designed for lenders who need fast risk assessment for commercial loan portfolios.</p>
+        <ul class="card-features">
+          <li>SBA RSRA-equivalent screening</li>
+          <li>Database review and limited site reconnaissance</li>
+          <li>Risk-level categorization (low/moderate/high)</li>
+          <li>Recommendations for further assessment if needed</li>
+        </ul>
+        <a href="#contact" class="card-link">Request Screening Quote →</a>
+        <div class="turnaround"><span class="clock">⏱</span> Typical delivery: 5–7 business days</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ADDITIONAL SERVICES ═══════ -->
+<section class="additional-services">
+  <div class="container">
+    <div class="additional-label">Additional Specialized Services</div>
+    <div class="additional-grid">
+      <div class="add-card fade-up">
+        <h4>NEPA Studies</h4>
+        <p>Environmental Impact Statements and Environmental Assessments for federal projects. Full NEPA compliance with public involvement coordination.</p>
+      </div>
+      <div class="add-card fade-up delay-1">
+        <h4>Asbestos Surveys</h4>
+        <p>Building Material Surveys identifying asbestos-containing materials. Sampling, lab analysis, risk assessment, and OSHA/EPA-compliant reporting.</p>
+      </div>
+      <div class="add-card fade-up delay-2">
+        <h4>Property Condition Assessments</h4>
+        <p>Comprehensive evaluation of building structure, systems, and components. Deferred maintenance analysis and capital improvement planning.</p>
+      </div>
+      <div class="add-card fade-up delay-3">
+        <h4>Compliance Audits</h4>
+        <p>Environmental compliance reviews, regulatory document audits, and ongoing consulting for property owners and institutional portfolios.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PROCESS ═══════ -->
+<section class="process-section" id="process">
+  <div class="container">
+    <div style="text-align:center; max-width:600px; margin:0 auto;">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-heading">Five steps to a clear environmental picture</h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-step fade-up">
+        <div class="process-num">1</div>
+        <div>
+          <h4>Initial Consultation</h4>
+          <p>Discuss your goals, timeline, and property details. We define the scope and tailor our approach.</p>
+        </div>
+      </div>
+      <div class="process-step fade-up delay-1">
+        <div class="process-num">2</div>
+        <div>
+          <h4>Site Visit &amp; Data Collection</h4>
+          <p>On-site walk-through documenting conditions and identifying potential contamination indicators.</p>
+        </div>
+      </div>
+      <div class="process-step fade-up delay-2">
+        <div class="process-num">3</div>
+        <div>
+          <h4>Research &amp; Documentation</h4>
+          <p>Comprehensive records review, regulatory database search, and interviews with relevant parties.</p>
+        </div>
+      </div>
+      <div class="process-step fade-up delay-3">
+        <div class="process-num">4</div>
+        <div>
+          <h4>Analysis &amp; Reporting</h4>
+          <p>Detailed report with findings, analysis, and clear categorization of any environmental conditions.</p>
+        </div>
+      </div>
+      <div class="process-step fade-up delay-4">
+        <div class="process-num">5</div>
+        <div>
+          <h4>Recommendations</h4>
+          <p>Actionable guidance on next steps — whether that's proceeding to close, ordering Phase II, or remediation planning.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TESTIMONIALS ═══════ -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-label">Client Testimonials</div>
+    <h2 class="section-heading">Trusted by the industry's best</h2>
+    <p class="section-sub">Hear from the lenders, developers, and investors who rely on PES.</p>
+    <div class="test-grid">
+      <div class="test-card fade-up">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">PES has served my company for over fifteen years as our environmental consultant. Their reports meet the demands of our banks and lending partners. I have been impressed with how motivated they are to meet our deadlines and how quickly they respond with reliance letters. PES operates as if they take great pride in our success.</p>
+        <div class="test-author">Jim Abdo</div>
+        <div class="test-role">CEO — Abdo Development, LLC</div>
+      </div>
+      <div class="test-card fade-up delay-1">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">I have found PES to consistently provide quality and thorough information, always on a timely basis. This is important to our lending process as all paperwork and submittals must meet tight commercial real estate loan closing deadlines. PES is very responsive in their communications.</p>
+        <div class="test-author">Timothy M. Aldinger</div>
+        <div class="test-role">Senior Vice President — United Bank</div>
+      </div>
+      <div class="test-card fade-up delay-2">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">PES communicates quickly when there is an environmental question or concern from our staff or banks. We appreciate the personal service they provide and the dedication they exhibit for our commercial development projects in the Washington, D.C. Region.</p>
+        <div class="test-author">Marjorie A. Brown</div>
+        <div class="test-role">Regional Director — Broadway, LLC</div>
+      </div>
+      <div class="test-card fade-up delay-3">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">Our commercial real estate and SBA lending staff have appreciated the diligent studies and reports PES has conducted. They are very responsive and always thinking about our best interest concerning loan closing deadlines and product costs.</p>
+        <div class="test-author">Robert Shoemaker</div>
+        <div class="test-role">EVP & Chief Commercial Lending Officer — ANB / AUB</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ WHO WE SERVE ═══════ -->
+<section class="audience-section">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label">Who We Serve</div>
+      <h2 class="section-heading">Built for commercial real estate professionals</h2>
+    </div>
+    <div class="audience-grid">
+      <div class="audience-card fade-up">
+        <div class="audience-icon">🏦</div>
+        <h4>Financial Institutions</h4>
+        <p>Banks, credit unions, and SBA lenders needing environmental risk assessments for loan portfolios.</p>
+      </div>
+      <div class="audience-card fade-up delay-1">
+        <div class="audience-icon">🏗</div>
+        <h4>Developers &amp; Builders</h4>
+        <p>Pre-acquisition due diligence for commercial development and redevelopment projects.</p>
+      </div>
+      <div class="audience-card fade-up delay-2">
+        <div class="audience-icon">💼</div>
+        <h4>Property Investors</h4>
+        <p>Environmental risk evaluation for commercial real estate acquisitions and portfolio management.</p>
+      </div>
+      <div class="audience-card fade-up delay-3">
+        <div class="audience-icon">📊</div>
+        <h4>Asset Managers</h4>
+        <p>Ongoing environmental compliance monitoring and assessment for managed property portfolios.</p>
+      </div>
+      <div class="audience-card fade-up delay-4">
+        <div class="audience-icon">🏛</div>
+        <h4>Government &amp; Public Agencies</h4>
+        <p>NEPA studies, base closure assessments, and environmental compliance for public sector projects.</p>
+      </div>
+      <div class="audience-card fade-up">
+        <div class="audience-icon">🛡</div>
+        <h4>Insurance Companies</h4>
+        <p>Environmental liability assessment for underwriting commercial property policies.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOUNDER ═══════ -->
+<section class="founder-section" id="founder">
+  <div class="container">
+    <div class="section-label">Leadership</div>
+    <h2 class="section-heading">Meet the founder</h2>
+    <div class="founder-grid">
+      <div>
+        <div class="founder-photo-placeholder">
+          <div class="initials">GSC</div>
+          Gordon S. Cruickshank
+        </div>
+        <div class="founder-creds">
+          <span class="cred-badge">PG — Professional Geologist</span>
+          <span class="cred-badge">CHMM — Master Level</span>
+          <span class="cred-badge">REPA</span>
+          <span class="cred-badge">VA Licensed</span>
+        </div>
+      </div>
+      <div class="founder-content">
+        <h3>Gordon S. Cruickshank</h3>
+        <div class="title">President &amp; Founder — PES, Inc. | Since 1996</div>
+        <p>Gordon founded Property Environmental Services in December 1996 and has since led the firm through 2,000+ environmental assessments for over 150 organizations. His work spans private and public sectors, including developing closure plans for U.S. Air Force and Army bases and crafting hazardous material management protocols for the U.S. Coast Guard.</p>
+        <p>His industry leadership includes serving as Chairman of Environmental Committees for the National Association of Industrial and Office Properties (NAIOP) and the Suburban Maryland Building Industry Association (SMBIA). He is a contributing member to nationally recognized ASTM standards that govern how environmental site assessments are conducted across the country.</p>
+        <div class="founder-experience">
+          <h4>Areas of Expertise</h4>
+          <div class="exp-tags">
+            <span class="exp-tag">Property Assessment &amp; Auditing</span>
+            <span class="exp-tag">Hazardous Material Management</span>
+            <span class="exp-tag">Site Characterization</span>
+            <span class="exp-tag">Remediation Oversight</span>
+            <span class="exp-tag">Health &amp; Safety Consultation</span>
+            <span class="exp-tag">Regulatory Review</span>
+            <span class="exp-tag">Indoor Air Quality</span>
+            <span class="exp-tag">Military Base Closure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ RESOURCES (Blog Preview / Lead Capture) ═══════ -->
+<section class="resources-section" id="resources">
+  <div class="container">
+    <div style="text-align:center; max-width:600px; margin:0 auto;">
+      <div class="section-label">Resources &amp; Guides</div>
+      <h2 class="section-heading">Environmental due diligence knowledge center</h2>
+      <p class="section-sub">Educational content for property buyers, lenders, and investors navigating environmental assessments.</p>
+    </div>
+    <div class="resources-grid">
+      <div class="resource-card fade-up">
+        <div class="resource-img">📄</div>
+        <div class="resource-body">
+          <div class="resource-type">Free Guide</div>
+          <h4>What Property Buyers Need to Know About Environmental Assessments</h4>
+          <p>A clear overview of when you need an ESA, what to expect, and how to read the findings in your report.</p>
+          <a href="#contact" class="btn btn-ghost" style="padding-left:0; font-size:0.85rem;">Download Guide →</a>
+        </div>
+      </div>
+      <div class="resource-card fade-up delay-1">
+        <div class="resource-img">📊</div>
+        <div class="resource-body">
+          <div class="resource-type">Explainer</div>
+          <h4>Understanding RECs, CRECs, and HRECs in Your Phase I Report</h4>
+          <p>What the different categories of recognized environmental conditions mean and how they affect your transaction.</p>
+          <a href="#contact" class="btn btn-ghost" style="padding-left:0; font-size:0.85rem;">Read Article →</a>
+        </div>
+      </div>
+      <div class="resource-card fade-up delay-2">
+        <div class="resource-img">🔍</div>
+        <div class="resource-body">
+          <div class="resource-type">Checklist</div>
+          <h4>Environmental Red Flags for Commercial Property Buyers</h4>
+          <p>Key warning signs to look for before purchasing commercial real estate — and when to order a Phase II investigation.</p>
+          <a href="#contact" class="btn btn-ghost" style="padding-left:0; font-size:0.85rem;">Get Checklist →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CTA BAND ═══════ -->
+<div class="cta-band">
+  <div class="container">
+    <h2 class="section-heading">Ready to move forward with confidence?</h2>
+    <p class="section-sub">Get a custom quote for your property. We respond within 12 hours.</p>
+    <div class="cta-actions">
+      <a href="#contact" class="btn btn-primary">Get Your Custom Quote →</a>
+      <a href="tel:540-680-2882" class="btn btn-secondary">📞 Call 540-680-2882</a>
+    </div>
+    <div class="cta-timeline">⏱ Phase I ESA reports typically delivered within 10 business days</div>
+  </div>
+</div>
+
+<!-- ═══════ CONTACT ═══════ -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="section-label">Get in Touch</div>
+    <h2 class="section-heading">Request a quote or ask a question</h2>
+    <p class="section-sub">Tell us about your property and timeline. We'll respond within 12 hours with a custom proposal.</p>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Contact Details</h3>
+        <div class="contact-detail">
+          <div class="c-icon">📞</div>
+          <div class="c-text">
+            <div class="label">Primary Phone</div>
+            <a href="tel:540-680-2882">540-680-2882</a>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="c-icon">📱</div>
+          <div class="c-text">
+            <div class="label">Alternate Phone</div>
+            <a href="tel:571-397-9269">571-397-9269</a>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="c-icon">✉</div>
+          <div class="c-text">
+            <div class="label">Email</div>
+            <a href="mailto:gordon@pesenvironmental.com">gordon@pesenvironmental.com</a>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="c-icon">📍</div>
+          <div class="c-text">
+            <div class="label">Service Area</div>
+            <a href="#">Nationwide — Based near Washington, D.C.</a>
+          </div>
+        </div>
+        <div style="margin-top:32px; padding:24px; background:var(--forest-50); border-radius:12px; border:1px solid var(--forest-200);">
+          <div style="font-weight:600; color:var(--forest-800); margin-bottom:6px; font-size:0.9rem;">⏱ Response Commitment</div>
+          <div style="font-size:0.85rem; color:var(--forest-700); line-height:1.6;">We respond to all inquiries within 12 hours during business days. Phase I ESA reports delivered within 10 business days of engagement.</div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" placeholder="Full name" required>
+          </div>
+          <div class="form-group">
+            <label>Organization</label>
+            <input type="text" placeholder="Company or firm name">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" placeholder="you@company.com" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" placeholder="(555) 000-0000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Service Needed *</label>
+          <select required>
+            <option value="">Select a service...</option>
+            <option>Phase I Environmental Site Assessment</option>
+            <option>Phase II Environmental Site Investigation</option>
+            <option>Transaction Screen Assessment</option>
+            <option>Lender Risk Screening</option>
+            <option>NEPA Study</option>
+            <option>Asbestos Building Material Survey</option>
+            <option>Property Condition Assessment (PCA)</option>
+            <option>Not sure — I need guidance</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Property Address *</label>
+          <input type="text" placeholder="Full property address" required>
+        </div>
+        <div class="form-group">
+          <label>Property Description &amp; Timeline</label>
+          <textarea placeholder="Describe the property type, any known history, and your desired timeline for the assessment..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit">Submit Inquiry →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="logo-icon" style="width:28px;height:28px;font-size:0.6rem;border-radius:6px;">PES</div>
+          PES Environmental
+        </div>
+        <p>Property Environmental Services (PES, Inc.) provides environmental due diligence for the commercial real estate management, lending, insurance, and investment industries. Serving clients nationwide since 1996.</p>
+      </div>
+      <div>
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#services">Phase I ESA</a></li>
+          <li><a href="#services">Phase II ESA</a></li>
+          <li><a href="#services">Lender Risk Screening</a></li>
+          <li><a href="#services">NEPA Studies</a></li>
+          <li><a href="#services">Asbestos Surveys</a></li>
+          <li><a href="#services">Property Condition Assessments</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#founder">About / Meet the Founder</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#resources">Resources &amp; Guides</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:540-680-2882">540-680-2882</a></li>
+          <li><a href="tel:571-397-9269">571-397-9269</a></li>
+          <li><a href="mailto:gordon@pesenvironmental.com">gordon@pesenvironmental.com</a></li>
+          <li><a href="#">Washington, D.C. Metro Area</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Property Environmental Services (PES, Inc.). All rights reserved.</span>
+      <span>Nationwide Environmental Due Diligence Since 1996</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Smooth close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.remove('open');
+  });
+});
+
+// Guided Selector
+function selectOption(el) {
+  document.querySelectorAll('.selector-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  
+  const rec = el.dataset.rec;
+  const result = document.getElementById('selectorResult');
+  const text = document.getElementById('recText');
+  
+  const recommendations = {
+    phase1: '<strong>Recommended: Phase I Environmental Site Assessment.</strong> This is the standard starting point for commercial property transactions. It identifies potential environmental concerns through records review and site inspection — no drilling or sampling required.',
+    phase2: '<strong>Recommended: Phase II Environmental Site Investigation.</strong> This involves soil and groundwater sampling to confirm or rule out contamination identified in a prior assessment. Lab-verified results give you the data to plan next steps.',
+    lender: '<strong>Recommended: Transaction Screen or Lender Risk Screening.</strong> A streamlined evaluation designed for lenders. Faster and more cost-effective than a full Phase I, while still meeting SBA and institutional requirements.',
+    other: '<strong>We can help.</strong> Whether you need a NEPA Environmental Assessment, an Asbestos Building Material Survey, or a Property Condition Assessment — reach out and we\'ll scope the right engagement.'
+  };
+  
+  text.innerHTML = recommendations[rec];
+  result.style.display = 'flex';
+}
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
