@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al Burraque Consultancy & Training Center | Think · Act · Grow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0A6E5C;--primary-light:#0E9B7E;--primary-dark:#064D40;--accent:#D4A853;--accent-light:#F0D48A;--bg-cream:#FAF7F2;--bg-white:#FFFFFF;--bg-dark:#0B1A17;--bg-card:#F2EFEA;--text-primary:#1A1A1A;--text-secondary:#5A5A5A;--text-light:#8A8A8A;--text-on-dark:#E8E8E8;--border:#E5E0D8;--radius-sm:12px;--radius-md:20px;--radius-lg:32px;--shadow-sm:0 2px 8px rgba(10,110,92,.06);--shadow-md:0 8px 30px rgba(10,110,92,.08);--shadow-lg:0 20px 60px rgba(10,110,92,.12);--transition:.4s cubic-bezier(.23,1,.32,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-cream);color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--primary);color:#fff}
+
+/* Icon boxes */
+.ico{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ico svg{width:26px;height:26px;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.ico-g{background:rgba(10,110,92,.08)}.ico-g svg{stroke:var(--primary)}
+.ico-w{background:rgba(255,255,255,.15)}.ico-w svg{stroke:#fff}
+.ico-a{background:rgba(212,168,83,.12)}.ico-a svg{stroke:var(--accent)}
+.ico-lg{width:64px;height:64px;border-radius:20px}
+.ico-xl{width:72px;height:72px;border-radius:22px}.ico-xl svg{width:32px;height:32px}
+
+/* Preloader */
+.preloader{position:fixed;inset:0;z-index:10000;background:var(--bg-dark);display:flex;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+.preloader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.preloader-logo{width:120px;animation:pulse-load 1.2s ease-in-out infinite}
+@keyframes pulse-load{0%,100%{opacity:.4;transform:scale(.95)}50%{opacity:1;transform:scale(1.05)}}
+
+/* Navbar */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 48px;display:flex;align-items:center;justify-content:space-between;transition:var(--transition);background:transparent}
+.navbar.scrolled{background:rgba(250,247,242,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 48px}
+.nav-logo img{height:48px;transition:var(--transition)}.navbar.scrolled .nav-logo img{height:40px}
+.nav-links{display:flex;gap:36px;align-items:center}
+.nav-links a{text-decoration:none;color:var(--text-primary);font-weight:500;font-size:.9rem;position:relative;letter-spacing:.02em;transition:var(--transition)}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--primary);transition:var(--transition)}
+.nav-links a:hover::after{width:100%}.nav-links a:hover{color:var(--primary)}
+.nav-cta{background:var(--primary)!important;color:#fff!important;padding:10px 28px!important;border-radius:100px!important;font-weight:600!important;font-size:.85rem!important;letter-spacing:.03em;transition:var(--transition)!important}
+.nav-cta::after{display:none!important}.nav-cta:hover{background:var(--primary-dark)!important;transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.nav-lang{font-family:'Noto Kufi Arabic',sans-serif;background:var(--bg-card)!important;padding:8px 16px!important;border-radius:100px!important;font-size:.8rem!important}
+.hamburger{display:none;cursor:pointer;background:none;border:none;width:32px;height:24px;position:relative;z-index:1001}
+.hamburger span{display:block;width:100%;height:2px;background:var(--text-primary);position:absolute;left:0;transition:var(--transition)}
+.hamburger span:nth-child(1){top:0}.hamburger span:nth-child(2){top:50%;transform:translateY(-50%)}.hamburger span:nth-child(3){bottom:0}
+.hamburger.active span:nth-child(1){top:50%;transform:translateY(-50%) rotate(45deg)}.hamburger.active span:nth-child(2){opacity:0}.hamburger.active span:nth-child(3){bottom:50%;transform:translateY(50%) rotate(-45deg)}
+.mobile-menu{position:fixed;inset:0;z-index:999;background:rgba(250,247,242,.98);backdrop-filter:blur(30px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;opacity:0;visibility:hidden;transition:var(--transition)}
+.mobile-menu.active{opacity:1;visibility:visible}
+.mobile-menu a{text-decoration:none;color:var(--text-primary);font-size:1.8rem;font-weight:600;transition:var(--transition)}.mobile-menu a:hover{color:var(--primary)}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding:140px 48px 80px;position:relative;overflow:hidden}
+.hero-bg-shapes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hero-shape{position:absolute;border-radius:50%;opacity:.06;background:var(--primary)}
+.hero-shape:nth-child(1){width:600px;height:600px;top:-200px;right:-100px}
+.hero-shape:nth-child(2){width:400px;height:400px;bottom:-100px;left:-100px;background:var(--accent)}
+.hero-shape:nth-child(3){width:200px;height:200px;top:30%;right:30%;background:var(--primary-light)}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;max-width:1400px;margin:0 auto;width:100%;align-items:center;position:relative;z-index:1}
+.hero-content{animation:fadeSlideUp 1s ease-out .5s both}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(10,110,92,.08);border:1px solid rgba(10,110,92,.15);padding:8px 20px;border-radius:100px;font-size:.8rem;font-weight:600;color:var(--primary);margin-bottom:24px;letter-spacing:.08em;text-transform:uppercase}
+.hero-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5vw,4.5rem);font-weight:700;line-height:1.1;margin-bottom:24px}
+.hero h1 em{font-style:normal;color:var(--primary);position:relative}
+.hero h1 em::after{content:'';position:absolute;bottom:4px;left:0;width:100%;height:8px;background:rgba(10,110,92,.12);border-radius:4px}
+.hero-desc{font-size:1.1rem;line-height:1.7;color:var(--text-secondary);max-width:520px;margin-bottom:40px}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--primary);color:#fff;padding:16px 36px;border-radius:100px;font-weight:600;font-size:.95rem;text-decoration:none;border:none;cursor:pointer;transition:var(--transition);letter-spacing:.02em}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-3px);box-shadow:0 12px 40px rgba(10,110,92,.25)}
+.btn-secondary{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--text-primary);padding:16px 36px;border-radius:100px;font-weight:600;font-size:.95rem;text-decoration:none;border:2px solid var(--border);cursor:pointer;transition:var(--transition)}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px)}
+.hero-visual{position:relative;animation:fadeSlideUp 1s ease-out .8s both}
+.hero-card-stack{position:relative;height:520px}
+.hero-card{position:absolute;background:#fff;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-lg);transition:var(--transition);overflow:hidden}
+.hero-card:hover{transform:translateY(-8px) rotate(0deg)!important}
+.hero-card-1{width:320px;top:20px;left:20px;transform:rotate(-3deg);z-index:3}
+.hero-card-2{width:280px;top:80px;right:0;transform:rotate(4deg);z-index:2;background:var(--primary);color:#fff}
+.hero-card-3{width:260px;bottom:20px;left:40px;transform:rotate(2deg);z-index:1}
+.hero-card .ico{margin-bottom:16px}
+.hero-card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.hero-card p{font-size:.85rem;line-height:1.5;opacity:.8}
+.hero-card-img{position:absolute;bottom:0;right:0;width:140px;height:90px;object-fit:cover;opacity:.1;border-radius:16px 0 0 0}
+.hero-stats{display:flex;gap:40px;margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
+.stat-item{text-align:left}
+.stat-number{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--primary)}
+.stat-label{font-size:.8rem;color:var(--text-light);margin-top:4px}
+
+/* Sections */
+section{padding:100px 48px}
+.section-header{text-align:center;max-width:700px;margin:0 auto 64px}
+.section-tag{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--primary);margin-bottom:16px}
+.section-tag::before,.section-tag::after{content:'';width:20px;height:1px;background:var(--primary)}
+.section-header h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.2;margin-bottom:16px}
+.section-header p{font-size:1.05rem;line-height:1.7;color:var(--text-secondary)}
+
+/* Services bento */
+.services-section{background:var(--bg-white)}
+.services-bento{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.service-card{background:var(--bg-cream);border-radius:var(--radius-lg);padding:40px;position:relative;overflow:hidden;transition:var(--transition);border:1px solid transparent}
+.service-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:rgba(10,110,92,.1)}
+.service-card.featured{grid-column:span 2;background:var(--primary);color:#fff}
+.service-card.featured .service-desc{color:rgba(255,255,255,.8)}
+.service-card.featured .service-tag{background:rgba(255,255,255,.15);color:#fff}
+.service-card.gold-accent{background:linear-gradient(135deg,#FAF7F2 0%,#F5ECD7 100%)}
+.service-card .ico{margin-bottom:24px}
+.service-card.featured .ico{background:rgba(255,255,255,.15)}.service-card.featured .ico svg{stroke:#fff}
+.service-tag{display:inline-block;padding:6px 14px;border-radius:100px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;background:rgba(10,110,92,.08);color:var(--primary)}
+.service-card h3{font-size:1.4rem;font-weight:700;margin-bottom:12px;line-height:1.3}
+.service-desc{font-size:.9rem;line-height:1.6;color:var(--text-secondary)}
+.service-list{list-style:none;margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.service-list li{background:rgba(10,110,92,.06);padding:6px 14px;border-radius:100px;font-size:.78rem;font-weight:500;color:var(--primary)}
+.service-card.featured .service-list li{background:rgba(255,255,255,.12);color:#fff}
+.service-card-decoration{position:absolute;bottom:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(10,110,92,.05)}
+.service-card.featured .service-card-decoration{background:rgba(255,255,255,.05)}
+.service-card-img{position:absolute;bottom:0;right:0;width:200px;opacity:.07;border-radius:var(--radius-lg) 0 0 0}
+
+/* Courses */
+.courses-section{background:var(--bg-cream)}
+.courses-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.course-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);border:1px solid var(--border);cursor:pointer}
+.course-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);border-color:var(--primary)}
+.course-card-visual{height:240px;position:relative;overflow:hidden}
+.course-card-visual img{width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .6s cubic-bezier(.23,1,.32,1)}
+.course-card:hover .course-card-visual img{transform:scale(1.08)}
+.course-card-visual-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,110,92,.02) 0%,rgba(10,110,92,.12) 100%);z-index:1}
+.course-card-body{padding:28px}
+.course-card-body h3{font-size:1.15rem;font-weight:700;margin-bottom:10px}
+.course-card-body p{font-size:.85rem;color:var(--text-secondary);line-height:1.6;margin-bottom:16px}
+.course-link{display:inline-flex;align-items:center;gap:8px;color:var(--primary);font-weight:600;font-size:.85rem;text-decoration:none;transition:var(--transition)}
+.course-link:hover{gap:12px}
+
+/* About */
+.about-section{background:var(--bg-dark);color:#fff;position:relative;overflow:hidden}
+.about-bg-img{position:absolute;top:0;right:0;width:50%;height:100%;object-fit:cover;opacity:.06;pointer-events:none}
+.about-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
+.about-section .section-tag{color:var(--accent)}.about-section .section-tag::before,.about-section .section-tag::after{background:var(--accent)}
+.about-section h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.2;margin-bottom:24px}
+.about-text{font-size:1.05rem;line-height:1.8;color:var(--text-on-dark);margin-bottom:32px}
+.about-values{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.value-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-md);padding:24px;transition:var(--transition)}
+.value-card:hover{background:rgba(255,255,255,.08);transform:translateY(-4px)}
+.value-card h4{font-size:1rem;font-weight:700;margin-bottom:8px;color:var(--accent)}
+.value-card p{font-size:.85rem;color:var(--text-on-dark);line-height:1.5}
+.about-visual{position:relative}
+.mv-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-lg);padding:40px;margin-bottom:24px;transition:var(--transition)}
+.mv-card:hover{background:rgba(255,255,255,.07);transform:translateX(8px)}
+.mv-card-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:12px}
+.mv-card h3{font-size:1.2rem;font-weight:700;margin-bottom:10px}
+.mv-card p{font-size:.9rem;line-height:1.6;color:var(--text-on-dark)}
+
+/* Why */
+.why-section{background:var(--bg-white)}
+.why-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.why-card{background:var(--bg-cream);border-radius:var(--radius-lg);padding:40px;text-align:center;transition:var(--transition);border:1px solid transparent}
+.why-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);border-color:rgba(10,110,92,.1)}
+.why-card .ico{margin:0 auto 20px}
+
+.why-card h4{font-size:1.05rem;font-weight:700;margin-bottom:10px}
+.why-card p{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+
+/* Events ticker */
+.events-strip{background:var(--primary);padding:20px 0;overflow:hidden;white-space:nowrap}
+.events-ticker{display:inline-flex;gap:48px;animation:ticker 30s linear infinite}
+.events-ticker span{color:#fff;font-weight:600;font-size:.95rem;display:inline-flex;align-items:center;gap:12px}
+.events-ticker .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* Contact */
+.contact-section{background:var(--bg-cream)}
+.contact-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.contact-info h3{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;margin-bottom:20px}
+.contact-info>p{font-size:1rem;color:var(--text-secondary);line-height:1.7;margin-bottom:40px}
+.contact-detail{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px}
+.contact-detail .ico{min-width:48px;width:48px;height:48px;border-radius:14px}
+.contact-detail h4{font-size:.85rem;font-weight:700;margin-bottom:4px}
+.contact-detail p{font-size:.9rem;color:var(--text-secondary)}
+.contact-detail a{color:var(--primary);text-decoration:none;font-weight:500}
+.contact-form-wrapper{background:#fff;border-radius:var(--radius-lg);padding:40px;box-shadow:var(--shadow-md)}
+.contact-form-wrapper h3{font-size:1.3rem;font-weight:700;margin-bottom:24px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.8rem;font-weight:600;margin-bottom:8px;color:var(--text-secondary)}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:14px 18px;border-radius:var(--radius-sm);border:1px solid var(--border);font-family:inherit;font-size:.9rem;background:var(--bg-cream);transition:var(--transition);outline:none}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(10,110,92,.1)}
+.form-group textarea{resize:vertical;min-height:120px}
+.form-submit{width:100%;padding:16px;border-radius:100px;background:var(--primary);color:#fff;font-weight:700;font-size:.95rem;border:none;cursor:pointer;transition:var(--transition)}
+.form-submit:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+
+/* Newsletter */
+.newsletter-section{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 50%,var(--primary-light) 100%);padding:80px 48px;text-align:center;color:#fff}
+.newsletter-section h2{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;margin-bottom:12px}
+.newsletter-section p{font-size:1rem;opacity:.85;margin-bottom:32px}
+.newsletter-form{display:flex;gap:12px;max-width:500px;margin:0 auto}
+.newsletter-form input{flex:1;padding:16px 24px;border-radius:100px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:.9rem;font-family:inherit;outline:none}
+.newsletter-form input::placeholder{color:rgba(255,255,255,.6)}.newsletter-form input:focus{border-color:#fff;background:rgba(255,255,255,.15)}
+.newsletter-form button{padding:16px 32px;border-radius:100px;background:#fff;color:var(--primary);font-weight:700;font-size:.9rem;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap}
+.newsletter-form button:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+
+/* Footer */
+.footer{background:var(--bg-dark);color:#fff;padding:80px 48px 32px}
+.footer-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand p{font-size:.9rem;line-height:1.7;color:var(--text-on-dark);margin:16px 0 24px;max-width:320px}
+.footer-logo{height:48px;margin-bottom:8px}
+.footer-social{display:flex;gap:12px}
+.footer-social a{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:var(--transition);text-decoration:none;color:#fff}
+.footer-social a:hover{background:var(--primary);transform:translateY(-2px)}
+.footer-social a svg{width:18px;height:18px}
+.footer-col h4{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:20px}
+.footer-col a{display:block;color:var(--text-on-dark);text-decoration:none;font-size:.9rem;margin-bottom:12px;transition:var(--transition)}
+.footer-col a:hover{color:#fff;transform:translateX(4px)}
+.footer-col p{color:var(--text-on-dark);font-size:.9rem;line-height:1.7}
+.footer-bottom{max-width:1400px;margin:0 auto;padding-top:32px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--text-light)}
+.footer-bottom a{color:var(--text-light);text-decoration:none}.footer-bottom a:hover{color:#fff}
+
+/* Chatbot */
+.chatbot-toggle{position:fixed;bottom:28px;right:28px;z-index:900;width:64px;height:64px;border-radius:50%;background:var(--primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(10,110,92,.35);transition:var(--transition);animation:float 3s ease-in-out infinite}
+.chatbot-toggle:hover{transform:scale(1.1);box-shadow:0 12px 40px rgba(10,110,92,.45)}
+.chatbot-toggle svg{width:28px;height:28px;fill:#fff}
+.chatbot-toggle .close-icon{display:none}.chatbot-toggle.active .chat-icon{display:none}.chatbot-toggle.active .close-icon{display:block}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.chatbot-toggle.active{animation:none}
+.chatbot-badge{position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--bg-dark);font-size:.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+.chatbot-window{position:fixed;bottom:108px;right:28px;z-index:901;width:400px;max-height:600px;background:#fff;border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,.15);display:flex;flex-direction:column;overflow:hidden;opacity:0;visibility:hidden;transform:translateY(20px) scale(.95);transition:var(--transition)}
+.chatbot-window.active{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+.chatbot-header{background:var(--primary);padding:20px 24px;display:flex;align-items:center;gap:12px;color:#fff}
+.chatbot-avatar{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+.chatbot-avatar svg{width:22px;height:22px;fill:#fff}
+.chatbot-header-text h4{font-size:.95rem;font-weight:700}.chatbot-header-text p{font-size:.75rem;opacity:.8}
+.chatbot-online{width:8px;height:8px;border-radius:50%;background:#4ADE80;margin-left:auto;animation:blink 2s ease-in-out infinite}
+.chatbot-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;max-height:380px;scroll-behavior:smooth}
+.chatbot-messages::-webkit-scrollbar{width:4px}.chatbot-messages::-webkit-scrollbar-track{background:transparent}.chatbot-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.chat-msg{max-width:85%;padding:14px 18px;border-radius:18px;font-size:.88rem;line-height:1.55;animation:msgIn .3s ease-out;white-space:pre-line}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.chat-msg.bot{background:var(--bg-cream);color:var(--text-primary);align-self:flex-start;border-bottom-left-radius:6px}
+.chat-msg.user{background:var(--primary);color:#fff;align-self:flex-end;border-bottom-right-radius:6px}
+.chat-msg.typing{display:flex;gap:4px;align-items:center;padding:18px 22px}
+.typing-dot{width:8px;height:8px;border-radius:50%;background:var(--text-light);animation:typingBounce 1.2s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.15s}.typing-dot:nth-child(3){animation-delay:.3s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.chat-suggestions{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 12px}
+.chat-suggestion{padding:8px 16px;border-radius:100px;background:var(--bg-cream);border:1px solid var(--border);font-size:.78rem;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:var(--transition);font-family:inherit}
+.chat-suggestion:hover{border-color:var(--primary);color:var(--primary);background:rgba(10,110,92,.04)}
+.chatbot-input{display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border);background:#fff}
+.chatbot-input input{flex:1;padding:12px 16px;border-radius:100px;border:1px solid var(--border);font-family:inherit;font-size:.88rem;outline:none;background:var(--bg-cream);transition:var(--transition)}
+.chatbot-input input:focus{border-color:var(--primary)}
+.chatbot-input button{width:44px;height:44px;border-radius:50%;background:var(--primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.chatbot-input button:hover{background:var(--primary-dark)}
+.chatbot-input button svg{width:18px;height:18px;fill:#fff}
+
+/* Animations */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}.reveal-delay-5{transition-delay:.5s}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+
+/* Responsive */
+@media(max-width:1024px){.nav-links{display:none}.hamburger{display:block}.hero-grid{grid-template-columns:1fr;gap:40px}.hero-card-stack{height:380px}.hero-card-1{width:260px}.hero-card-2{width:240px}.hero-card-3{width:220px}.services-bento{grid-template-columns:1fr}.service-card.featured{grid-column:span 1}.courses-grid{grid-template-columns:repeat(2,1fr)}.about-grid{grid-template-columns:1fr;gap:48px}.why-grid{grid-template-columns:repeat(2,1fr)}.contact-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}section{padding:80px 24px}.navbar{padding:16px 24px}.navbar.scrolled{padding:12px 24px}.hero{padding:120px 24px 60px}}
+@media(max-width:640px){.courses-grid{grid-template-columns:1fr}.why-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.hero-stats{flex-direction:column;gap:20px}.hero-actions{flex-direction:column}.hero-card-stack{height:320px}.hero-card{padding:24px}.hero-card-1{width:220px;left:0}.hero-card-2{width:200px;right:-10px}.hero-card-3{width:190px;left:10px}.newsletter-form{flex-direction:column}.chatbot-window{width:calc(100vw - 32px);right:16px;bottom:96px}.form-row{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:12px;text-align:center}.about-values{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="preloader" id="preloader"><img src="https://alburraqueconsultancy.com/storage/site-branding/01KDQ5Z59YSMW6CQTBRMBZXP0K.png" alt="" class="preloader-logo"></div>
+
+<nav class="navbar" id="navbar">
+  <a href="#" class="nav-logo"><img src="https://alburraqueconsultancy.com/storage/site-branding/01KDQ5Z59VXB8XG9DR4YZ1W1C5.png" alt="Al Burraque"></a>
+  <div class="nav-links"><a href="#home">Home</a><a href="#services">Services</a><a href="#courses">Courses</a><a href="#about">About</a><a href="#contact">Contact</a><a href="#" class="nav-lang">العربية</a><a href="#contact" class="nav-cta">Book Consultation</a></div>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu"><a href="#home" onclick="closeMobile()">Home</a><a href="#services" onclick="closeMobile()">Services</a><a href="#courses" onclick="closeMobile()">Courses</a><a href="#about" onclick="closeMobile()">About</a><a href="#contact" onclick="closeMobile()">Contact</a><a href="#contact" class="btn-primary" onclick="closeMobile()">Book Consultation</a></div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-shapes"><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div></div>
+  <div class="hero-grid">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="hero-badge-dot"></span>Doha, Qatar — Trusted Since Day One</div>
+      <h1>Think · Act · <em>Grow</em></h1>
+      <p class="hero-desc">Empowering minds. Strengthening workplaces. Transforming lives. We are a trusted center for mental wellness, corporate well-being, and professional trainings in Qatar.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Book a Consultation <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="#services" class="btn-secondary">Explore Services</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><div class="stat-number">500+</div><div class="stat-label">Clients Served</div></div>
+        <div class="stat-item"><div class="stat-number">50+</div><div class="stat-label">Expert Courses</div></div>
+        <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">Emergency Line</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="hero-card hero-card-1">
+          <div class="ico ico-g"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z"/><path d="M9 21h6M10 17v4M14 17v4"/></svg></div>
+          <h3>Mental Wellness</h3>
+          <p>Evidence-based psychological practices for individuals, families & organizations</p>
+          <img src="https://alburraqueconsultancy.com/storage/mental-health/01KDQF7QGAGF9NH0NGZYYE2XJ9.png" alt="" class="hero-card-img">
+        </div>
+        <div class="hero-card hero-card-2">
+          <div class="ico ico-w"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-8"/></svg></div>
+          <h3>Corporate Training</h3>
+          <p>Leadership, team-building & professional development programs</p>
+          <img src="https://alburraqueconsultancy.com/storage/services/01KDQN6C0EBVAJ4HGTN41Y91HM.png" alt="" class="hero-card-img" style="opacity:.15">
+        </div>
+        <div class="hero-card hero-card-3">
+          <div class="ico ico-a"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div>
+          <h3>Life Coaching</h3>
+          <p>Career guidance, goal setting & work-life balance coaching</p>
+          <img src="https://alburraqueconsultancy.com/storage/services/01KDQNC2E4056W5C9JSHWEAC7N.png" alt="" class="hero-card-img">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="events-strip"><div class="events-ticker" id="ticker"><span><span class="dot"></span>PMP Certificate Training — 19th March 2026</span><span><span class="dot"></span>AutoCAD 2D & 3D — 23rd March 2026</span><span><span class="dot"></span>Emergency Line: +974 7200 4860 (24/7)</span><span><span class="dot"></span>Working Hours: Sat-Thu 9:30 AM – 8:30 PM</span><span><span class="dot"></span>PMP Certificate Training — 19th March 2026</span><span><span class="dot"></span>AutoCAD 2D & 3D — 23rd March 2026</span><span><span class="dot"></span>Emergency Line: +974 7200 4860 (24/7)</span><span><span class="dot"></span>Working Hours: Sat-Thu 9:30 AM – 8:30 PM</span></div></div>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="section-header"><div class="section-tag">What We Offer</div><h2>Where Well-Being Meets Performance</h2><p>We bring together psychologists, counsellors, certified trainers, and industry experts to support individuals, families, and organizations.</p></div>
+  <div class="services-bento">
+    <div class="service-card featured reveal">
+      <div class="service-tag">Core Program</div>
+      <div class="ico ico-w ico-lg"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z"/><path d="M9 21h6"/></svg></div>
+      <h3>Corporate Mental Wellness</h3>
+      <p class="service-desc">Comprehensive mental health programs designed to create healthier, more productive workplaces across Qatar.</p>
+      <ul class="service-list"><li>Employee Wellness Programs</li><li>Stress Management</li><li>Leadership Resilience</li><li>Mindfulness Training</li><li>Individual & Group Counseling</li><li>Workplace Psychology</li></ul>
+      <img src="https://alburraqueconsultancy.com/storage/services/01KDQN0MCT6HDHH6WEZYHHBR3K.png" alt="" class="service-card-img">
+      <div class="service-card-decoration"></div>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-tag">Training</div>
+      <div class="ico ico-g ico-lg"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-8"/></svg></div>
+      <h3>Corporate Training & Development</h3>
+      <p class="service-desc">Build high-performing teams with our customized corporate programs.</p>
+      <ul class="service-list"><li>Leadership Workshops</li><li>Sales & Marketing</li><li>HR Training</li><li>Soft Skills</li><li>Time Management</li></ul>
+      <div class="service-card-decoration"></div>
+    </div>
+    <div class="service-card gold-accent reveal reveal-delay-2">
+      <div class="service-tag">Coaching</div>
+      <div class="ico ico-a ico-lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div>
+      <h3>Life Coaching & Career Guidance</h3>
+      <p class="service-desc">Personalized coaching to unlock your full potential and find your path.</p>
+      <ul class="service-list"><li>Personal Empowerment</li><li>Career Planning</li><li>Work-Life Balance</li><li>Goal Setting</li></ul>
+      <div class="service-card-decoration"></div>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-tag">Why Us</div>
+      <div class="ico ico-g ico-lg"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <h3>Expert-Led & Activity-Based</h3>
+      <p class="service-desc">Our workshops are customized for team size & industry with practical tools you can apply immediately.</p>
+    </div>
+    <div class="service-card reveal reveal-delay-4">
+      <div class="service-tag">Flexibility</div>
+      <div class="ico ico-g ico-lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <h3>Online & Onsite Options</h3>
+      <p class="service-desc">Flexible schedules with both online and onsite delivery. Tailored programs for individuals and corporates.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="courses-section" id="courses">
+  <div class="section-header"><div class="section-tag">Explore Our Trainings</div><h2>Professional Development Courses</h2><p>Internationally aligned courses for individuals, corporates, and students designed to enhance productivity and support sustainable growth.</p></div>
+  <div class="courses-grid">
+    <div class="course-card reveal"><div class="course-card-visual"><img src="https://alburraqueconsultancy.com/storage/category-bg/01KDV0J3MTPMHTPV4CE7XFJC14.jpg" alt="Project Management" loading="lazy"><div class="course-card-visual-overlay"></div></div><div class="course-card-body"><h3>Project Management & Technical</h3><p>PMP Certification, AutoCAD, Primavera, and more project management essentials.</p><a href="#" class="course-link">Explore Courses <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>
+    <div class="course-card reveal reveal-delay-1"><div class="course-card-visual"><img src="https://alburraqueconsultancy.com/storage/category-bg/01KDV0JH7VB3J1P723K3212Y1X.jpg" alt="Corporate & Management" loading="lazy"><div class="course-card-visual-overlay"></div></div><div class="course-card-body"><h3>Corporate & Management</h3><p>Leadership development, strategic management, and team excellence programs.</p><a href="#" class="course-link">Explore Courses <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>
+    <div class="course-card reveal reveal-delay-2"><div class="course-card-visual"><img src="https://alburraqueconsultancy.com/storage/category-bg/01KDV0K2WZCE9CGDFC7CCT2TVT.jpg" alt="Admin HR Office" loading="lazy"><div class="course-card-visual-overlay"></div></div><div class="course-card-body"><h3>Admin, HR & Office Skills</h3><p>Office administration, human resource management, and workplace efficiency training.</p><a href="#" class="course-link">Explore Courses <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>
+    <div class="course-card reveal reveal-delay-3"><div class="course-card-visual"><img src="https://alburraqueconsultancy.com/storage/category-bg/01KDV0KHGTF51DTPP9F75M1BW5.jpg" alt="IT Digital" loading="lazy"><div class="course-card-visual-overlay"></div></div><div class="course-card-body"><h3>IT & Digital Skills</h3><p>Digital literacy, software proficiency, and technology-driven workplace skills.</p><a href="#" class="course-link">Explore Courses <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>
+    <div class="course-card reveal reveal-delay-4"><div class="course-card-visual"><img src="https://alburraqueconsultancy.com/storage/category-bg/01KDV0M13JMGSWZWSD6ZKP6GAE.jpg" alt="Communication" loading="lazy"><div class="course-card-visual-overlay"></div></div><div class="course-card-body"><h3>Communication</h3><p>Business communication, public speaking, negotiation, and interpersonal skills.</p><a href="#" class="course-link">Explore Courses <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>
+    <div class="course-card reveal reveal-delay-5"><div class="course-card-visual"><img src="https://alburraqueconsultancy.com/storage/category-bg/01KFQQCG3AQE6JZGGFJTN8V7ZB.jpg" alt="Mental Wellness" loading="lazy"><div class="course-card-visual-overlay"></div></div><div class="course-card-body"><h3>Mental Wellness Programs</h3><p>Emotional resilience, stress management, mindfulness, and psychological well-being courses.</p><a href="#" class="course-link">Explore Courses <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <img src="https://alburraqueconsultancy.com/storage/mission-vision/01KFX9G19E82P4MBN5C0ESTJRE.jpg" alt="" class="about-bg-img">
+  <div class="about-grid">
+    <div class="reveal">
+      <div class="section-tag">About Us</div>
+      <h2>Combining Wellness Expertise with Skill-Based Training</h2>
+      <p class="about-text">At Al Burraque Consultancy and Training Center, our psychologists, counsellors, certified trainers, and industry experts work together to support individuals, families, and organizations in achieving sustainable growth and measurable outcomes.</p>
+      <div class="about-values">
+        <div class="value-card"><h4>Evidence-Based</h4><p>Proven psychological practices and research-backed methodologies.</p></div>
+        <div class="value-card"><h4>Culturally Sensitive</h4><p>Inclusive guidance tailored for Qatar's diverse community.</p></div>
+        <div class="value-card"><h4>Compassion</h4><p>We deeply value the well-being of every person we serve.</p></div>
+        <div class="value-card"><h4>Excellence</h4><p>Striving for the highest standards in every service we deliver.</p></div>
+      </div>
+    </div>
+    <div class="about-visual reveal reveal-delay-2">
+      <div class="mv-card"><div class="mv-card-label">Our Mission</div><h3>Strengthening Resilience & Competence</h3><p>To design and deliver structured, evidence-informed learning experiences that strengthen emotional resilience, enhance professional competence, and build essential human skills for sustainable individual and organizational growth.</p></div>
+      <div class="mv-card"><div class="mv-card-label">Our Vision</div><h3>Wellbeing & Growth, Together</h3><p>A future where mental wellbeing and professional skill development grow together, creating emotionally resilient individuals, capable professionals, and healthy organizations supported by psychologically informed learning.</p></div>
+      <div class="mv-card"><div class="mv-card-label">Our Approach</div><h3>Personalized & Tailored</h3><p>Personalized training programs, corporate solutions tailored to industry needs, and culturally sensitive guidance for Qatar's diverse community.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why-section">
+  <div class="section-header"><div class="section-tag">Why Al Burraque</div><h2>What Sets Us Apart</h2></div>
+  <div class="why-grid">
+    <div class="why-card reveal"><div class="ico ico-g ico-xl"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h4>Experienced Experts</h4><p>Psychologists & certified trainers with deep industry experience in Qatar.</p></div>
+    <div class="why-card reveal reveal-delay-1"><div class="ico ico-g ico-xl"><svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div><h4>Evidence-Based Frameworks</h4><p>Research-backed methodologies ensuring measurable outcomes.</p></div>
+    <div class="why-card reveal reveal-delay-2"><div class="ico ico-g ico-xl"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div><h4>Trusted Across Qatar</h4><p>Serving organizations and individuals with a proven track record of excellence.</p></div>
+    <div class="why-card reveal reveal-delay-3"><div class="ico ico-g ico-xl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></div><h4>Holistic Approach</h4><p>Unique combination of mental wellness and professional skills development.</p></div>
+    <div class="why-card reveal reveal-delay-4"><div class="ico ico-g ico-xl"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><h4>Flexible Delivery</h4><p>Online & onsite options with schedules that fit your needs.</p></div>
+    <div class="why-card reveal reveal-delay-5"><div class="ico ico-g ico-xl"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><h4>Tailored Programs</h4><p>Customized for your industry, team size, and specific requirements.</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="section-header"><div class="section-tag">Get in Touch</div><h2>We're Here to Support Your Journey</h2><p>Reach out to discuss your training needs, mental wellness concerns, or corporate wellbeing programs.</p></div>
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <h3>Contact Us Anytime</h3>
+      <p>Have a question or need guidance? We're always here to help. Reach out and our team will respond promptly.</p>
+      <div class="contact-detail"><div class="ico ico-g"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div><h4>Call Us</h4><p><a href="tel:+97472004860">+974 7200 4860</a></p><p><a href="tel:+97470613193">+974 7061 3193 (24/7)</a></p></div></div>
+      <div class="contact-detail"><div class="ico ico-g"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><h4>Email</h4><p><a href="mailto:info@alburraqueconsultancy.com">info@alburraqueconsultancy.com</a></p></div></div>
+      <div class="contact-detail"><div class="ico ico-g"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><h4>Location</h4><p>Rawdhath Al Khail, Nuija<br>Doha, Qatar</p></div></div>
+      <div class="contact-detail"><div class="ico ico-g"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><h4>Working Hours</h4><p>Sat – Thu: 9:30 AM to 8:30 PM<br>Friday: 8 AM to 6 PM (11 AM–1 PM break)</p></div></div>
+    </div>
+    <div class="contact-form-wrapper reveal reveal-delay-2">
+      <h3>Send Us a Message</h3>
+      <div class="form-row"><div class="form-group"><label>Your Name</label><input type="text" placeholder="Full name"></div><div class="form-group"><label>Email Address</label><input type="email" placeholder="you@email.com"></div></div>
+      <div class="form-group"><label>Mobile Number</label><input type="tel" placeholder="+974 XXXX XXXX"></div>
+      <div class="form-group"><label>Interested In</label><select><option value="">Select an option...</option><option>Corporate Training</option><option>Individual Counselling</option><option>Mental Wellness Programs</option><option>Course Enrollment</option><option>Other Inquiry</option></select></div>
+      <div class="form-group"><label>Message</label><textarea placeholder="Tell us about your needs..."></textarea></div>
+      <button class="form-submit" onclick="this.textContent='Message Sent!';this.style.background='#064D40';setTimeout(()=>{this.textContent='Send Message';this.style.background=''},3000)">Send Message</button>
+    </div>
+  </div>
+</section>
+
+<section class="newsletter-section"><h2>Stay Up to Date</h2><p>Get the latest courses, wellness tips, and event updates delivered to your inbox.</p><div class="newsletter-form"><input type="email" placeholder="Enter your email address"><button onclick="this.textContent='Subscribed!';setTimeout(()=>this.textContent='Subscribe',3000)">Subscribe</button></div></section>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="https://alburraqueconsultancy.com/storage/site-branding/01KDQ5Z59YSMW6CQTBRMBZXP0K.png" alt="Al Burraque" class="footer-logo">
+      <p>Combining mental wellness expertise with skill-based training. Supporting individuals, families, and organizations in achieving sustainable growth.</p>
+      <div class="footer-social">
+        <a href="#" title="LinkedIn"><svg viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg></a>
+        <a href="#" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg></a>
+        <a href="#" title="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Quick Links</h4><a href="#home">Home</a><a href="#about">About Us</a><a href="#services">Services</a><a href="#courses">Courses</a><a href="#contact">Contact</a></div>
+    <div class="footer-col"><h4>Services</h4><a href="#">Corporate Wellness</a><a href="#">Professional Training</a><a href="#">Life Coaching</a><a href="#">Career Guidance</a><a href="#">Mental Health</a></div>
+    <div class="footer-col"><h4>Contact Info</h4><p>Rawdhath Al Khail, Nuija<br>Doha, Qatar</p><p style="margin-top:12px"><a href="tel:+97472004860" style="color:var(--text-on-dark)">+974 7200 4860</a></p><p><a href="mailto:info@alburraqueconsultancy.com" style="color:var(--text-on-dark)">info@alburraqueconsultancy.com</a></p></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 Al Burraque Consultancy. All rights reserved.</span><span><a href="#">Privacy Policy</a> &middot; <a href="#">Terms</a></span></div>
+</footer>
+
+<!-- CHATBOT -->
+<button class="chatbot-toggle" id="chatbotToggle" aria-label="Chat with us">
+  <svg class="chat-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/><path d="M7 9h2v2H7zM11 9h2v2h-2zM15 9h2v2h-2z"/></svg>
+  <svg class="close-icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+  <span class="chatbot-badge">AI</span>
+</button>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-header">
+    <div class="chatbot-avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+    <div class="chatbot-header-text"><h4>Al Burraque AI Assistant</h4><p>Powered by AI &middot; Always here to help</p></div>
+    <div class="chatbot-online"></div>
+  </div>
+  <div class="chatbot-messages" id="chatMessages"><div class="chat-msg bot">Hello! I'm the Al Burraque AI Assistant. I can help you with information about our services, courses, mental wellness programs, and more. How can I assist you today?</div></div>
+  <div class="chat-suggestions" id="chatSuggestions"><button class="chat-suggestion" onclick="sendSuggestion(this)">What services do you offer?</button><button class="chat-suggestion" onclick="sendSuggestion(this)">Tell me about courses</button><button class="chat-suggestion" onclick="sendSuggestion(this)">Mental wellness programs</button><button class="chat-suggestion" onclick="sendSuggestion(this)">How to contact you?</button></div>
+  <div class="chatbot-input"><input type="text" id="chatInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter')sendMessage()"><button onclick="sendMessage()" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button></div>
+</div>
+
+<script>
+window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('preloader').classList.add('hidden'),800)});
+window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50)});
+const hamburger=document.getElementById('hamburger'),mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{hamburger.classList.toggle('active');mobileMenu.classList.toggle('active')});
+function closeMobile(){hamburger.classList.remove('active');mobileMenu.classList.remove('active')}
+const observer=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
+
+const chatToggle=document.getElementById('chatbotToggle'),chatWindow=document.getElementById('chatbotWindow'),chatMessages=document.getElementById('chatMessages'),chatInput=document.getElementById('chatInput'),chatSuggestions=document.getElementById('chatSuggestions');
+chatToggle.addEventListener('click',()=>{chatToggle.classList.toggle('active');chatWindow.classList.toggle('active');if(chatWindow.classList.contains('active'))chatInput.focus()});
+function sendSuggestion(b){chatInput.value=b.textContent;sendMessage()}
+function sendMessage(){const m=chatInput.value.trim();if(!m)return;appendMsg(m,'user');chatInput.value='';chatSuggestions.style.display='none';showTyping();setTimeout(()=>{removeTyping();appendMsg(generateReply(m),'bot')},800+Math.random()*800)}
+function appendMsg(t,c){const d=document.createElement('div');d.className=`chat-msg ${c}`;d.textContent=t;chatMessages.appendChild(d);chatMessages.scrollTop=chatMessages.scrollHeight}
+function showTyping(){const d=document.createElement('div');d.className='chat-msg bot typing';d.id='typingIndicator';d.innerHTML='<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';chatMessages.appendChild(d);chatMessages.scrollTop=chatMessages.scrollHeight}
+function removeTyping(){const t=document.getElementById('typingIndicator');if(t)t.remove()}
+
+const K={about:{k:['about','who are you','what is al burraque','company','tell me about','what do you do','burraque'],r:"Al Burraque Consultancy and Training Center is based in Doha, Qatar. We combine mental wellness expertise with skill-based training. Our team of psychologists, counsellors, certified trainers, and industry experts work together to support individuals, families, and organizations in achieving sustainable growth and measurable outcomes. Our approach is evidence-based, personalized, and culturally sensitive."},services:{k:['services','what do you offer','service','offerings','what services','help with'],r:"We offer three core service areas:\n\n> Corporate Mental Wellness — Employee wellness programs, stress management workshops, leadership resilience training, workplace psychology consultations, and individual & group counseling.\n\n> Corporate Training & Development — Leadership & team-building workshops, sales & marketing training, HR training, customer service & soft skills, and time management.\n\n> Life Coaching & Career Guidance — Personal empowerment workshops, career path planning, work-life balance coaching, and goal setting strategies."},courses:{k:['courses','training','programs','learn','study','certificate','pmp','autocad','enroll','register'],r:"We offer courses across 6 categories:\n\n1. Project Management & Technical — PMP Certification, AutoCAD 2D & 3D, Primavera, and more.\n2. Corporate & Management — Leadership development, strategic management.\n3. Admin, HR & Office Skills — Office administration, HR management.\n4. IT & Digital Skills — Digital literacy, software proficiency.\n5. Communication — Business communication, public speaking.\n6. Mental Wellness Programs — Emotional resilience, mindfulness.\n\nUpcoming: PMP Certificate Training (19th March 2026), AutoCAD 2D & 3D (23rd March 2026). Contact us to enroll!"},mentalHealth:{k:['mental','wellness','counseling','counselling','psychology','stress','anxiety','therapy','emotional','mindfulness','resilience'],r:"Our Mental Health & Wellness Programs include:\n\n- Employee Wellness Programs designed for corporate teams\n- Stress Management Workshops\n- Leadership Resilience Training\n- Mindfulness & Emotional Resilience Training\n- Individual & Group Counseling sessions\n- Workplace Psychology Consultations\n\nAll programs are led by experienced psychologists and are evidence-based. We also have a 24/7 emergency line: +974 7200 4860."},contact:{k:['contact','phone','email','call','reach','location','address','where','hours','working hours','schedule'],r:"Here's how to reach us:\n\nPhone: +974 7200 4860 / +974 7061 3193 (24/7 emergency)\nEmail: info@alburraqueconsultancy.com\nLocation: Rawdhath Al Khail, Nuija, Doha, Qatar\n\nWorking Hours:\nSat - Thu: 9:30 AM to 8:30 PM\nFriday: 8 AM to 6 PM (11 AM - 1 PM break)\n\nYou can also fill out the contact form on our website or book a consultation directly!"},corporate:{k:['corporate','company training','team','organization','employee','workplace','business'],r:"Our corporate solutions are tailored to your industry and team size. We offer:\n\n- Corporate Mental Wellness — Employee wellness programs, stress management, and workplace psychology consultations\n- Corporate Training — Leadership workshops, sales & marketing training, HR development, customer service skills, and time management\n- Customized Programs — Designed specifically for your organization's needs\n\nOur workshops are expert-led, activity-based, and provide practical tools you can apply immediately. Contact us to discuss a tailored program!"},booking:{k:['book','appointment','consultation','schedule','meeting','session'],r:"To book a consultation, you can:\n\n1. Call us at +974 7200 4860 or +974 7061 3193\n2. Email us at info@alburraqueconsultancy.com\n3. Fill out the contact form on our website\n\nWe'll discuss your needs and create a personalized plan for you. Whether it's individual counseling, corporate training, or course enrollment — we're here to help!"},mission:{k:['mission','vision','values','goal','purpose'],r:"Our Mission: To design and deliver structured, evidence-informed learning experiences that strengthen emotional resilience, enhance professional competence, and build essential human skills for sustainable growth.\n\nOur Vision: A future where mental wellbeing and professional skill development grow together, creating emotionally resilient individuals, capable professionals, and healthy organizations.\n\nOur Values: Compassion — we deeply value every person's well-being. Excellence — we strive for the highest standards in every service."},pricing:{k:['price','cost','fee','how much','pricing','rate','payment'],r:"Our pricing varies based on the specific program, course, or service you're interested in. We offer flexible options for both individuals and corporates. For a detailed quote:\n\nCall: +974 7200 4860\nEmail: info@alburraqueconsultancy.com\n\nOur team will discuss your needs and provide a customized proposal. We also offer group discounts for corporate enrollments!"},emergency:{k:['emergency','urgent','crisis','24/7','help now','immediate'],r:"For emergency support, our 24/7 hotline is available:\n\n+974 7200 4860\n+974 7061 3193\n\nThese lines are staffed around the clock. Don't hesitate to reach out — we're here to support you."},greeting:{k:['hello','hi','hey','good morning','good afternoon','good evening','greetings','salam','assalamu'],r:"Hello! Welcome to Al Burraque Consultancy & Training Center! How can I help you today? I can tell you about our services, courses, mental wellness programs, or help you book a consultation."},thanks:{k:['thank','thanks','appreciate','helpful','great'],r:"You're very welcome! If you have any more questions, don't hesitate to ask. You can also reach us directly at +974 7200 4860 or info@alburraqueconsultancy.com. We're always happy to help!"}};
+
+function generateReply(input){const l=input.toLowerCase().replace(/[?!.,]/g,'');let bm=null,bs=0;for(const[,d]of Object.entries(K)){let s=0;for(const kw of d.k){if(l.includes(kw))s+=kw.split(' ').length}if(s>bs){bs=s;bm=d}}if(bm&&bs>0)return bm.r;const w=l.split(/\s+/);for(const[,d]of Object.entries(K)){for(const kw of d.k){for(const word of w){if(word.length>3&&kw.includes(word))return d.r}}}return "Thank you for your question! While I may not have the specific answer right now, our team would love to help. You can:\n\nCall: +974 7200 4860 (24/7)\nEmail: info@alburraqueconsultancy.com\n\nOr feel free to ask me about our services, courses, mental wellness programs, working hours, or how to book a consultation!"}
+</script>
+</body>
+</html>
