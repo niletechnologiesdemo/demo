@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peacemaker Coffee — Mobile App Design Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000000;
+  --dark: #111111;
+  --card: #1a1a1a;
+  --orange: #e8860c;
+  --orange-hover: #f5a623;
+  --yellow: #f0c040;
+  --white: #ffffff;
+  --gray: #999999;
+  --gray-light: #cccccc;
+  --border: #2a2a2a;
+  --blue-link: #4da6ff;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: #0a0a0a;
+  font-family: 'Source Sans 3', -apple-system, sans-serif;
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 30px 16px 60px;
+}
+
+/* =========== PAGE HEADER =========== */
+.page-header {
+  text-align: center;
+  max-width: 860px;
+  margin-bottom: 40px;
+}
+.page-header img.main-logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 12px;
+}
+.page-header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 6px;
+  color: var(--white);
+  text-transform: uppercase;
+}
+.page-header .tagline {
+  font-size: 0.95rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+.page-header .prepared {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: var(--gray);
+}
+.page-header .prepared strong { color: var(--white); }
+
+/* =========== PHONE GRID =========== */
+.phones-row {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1500px;
+}
+.phone-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.screen-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  color: var(--orange);
+}
+
+/* =========== PHONE FRAME =========== */
+.phone {
+  width: 375px;
+  height: 812px;
+  background: var(--black);
+  border-radius: 48px;
+  border: 3px solid #222;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+}
+.phone::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 155px; height: 32px;
+  background: var(--black);
+  border-radius: 0 0 22px 22px;
+  z-index: 100;
+}
+.statusbar {
+  height: 52px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 28px 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--white);
+  z-index: 50;
+  position: relative;
+}
+.screen-scroll {
+  height: calc(812px - 52px - 72px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.screen-scroll::-webkit-scrollbar { display: none; }
+
+/* =========== BOTTOM NAV =========== */
+.bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 72px;
+  background: var(--black);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 14px;
+  z-index: 50;
+}
+.nav-i {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.nav-i svg { width: 21px; height: 21px; stroke: #555; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-i.on svg { stroke: var(--orange); }
+.nav-i span { font-size: 0.5rem; text-transform: uppercase; letter-spacing: 1px; color: #555; font-weight: 600; }
+.nav-i.on span { color: var(--orange); }
+
+/* =========== APP HEADER BAR =========== */
+.app-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.app-bar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.app-bar-logo img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+.app-bar-text h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--white); }
+.app-bar-text p { font-size: 0.55rem; color: var(--orange); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+.app-bar-icons { display: flex; gap: 14px; }
+.app-bar-icons svg { width: 22px; height: 22px; stroke: var(--white); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+/* =========== OFFER STRIP =========== */
+.offer-strip {
+  background: var(--orange);
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--black);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* =========== HERO BANNER =========== */
+.hero-img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+}
+
+/* =========== SECTION HEADING =========== */
+.sec-head {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--white);
+  text-align: center;
+  padding: 18px 16px 4px;
+}
+.sec-sub {
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--orange);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding-bottom: 12px;
+}
+
+/* =========== HORIZONTAL PRODUCT SCROLL =========== */
+.h-scroll {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.h-scroll::-webkit-scrollbar { display: none; }
+
+.p-card {
+  min-width: 140px;
+  max-width: 140px;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.p-card img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+.p-card-info {
+  padding: 8px 10px 10px;
+}
+.p-card-badge {
+  display: inline-block;
+  background: var(--orange);
+  color: var(--black);
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-bottom: 4px;
+}
+.p-card-name {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.25;
+  margin-bottom: 2px;
+}
+.p-card-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  color: var(--orange);
+}
+.p-card-btn {
+  display: block;
+  text-align: center;
+  background: var(--orange);
+  color: var(--black);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 7px 0;
+  margin-top: 6px;
+  border-radius: 3px;
+}
+
+/* =========== QUICK NAV GRID =========== */
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 12px 16px;
+}
+.qg-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.qg-item svg { width: 22px; height: 22px; stroke: var(--orange); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.qg-item span { font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; color: var(--gray); text-align: center; line-height: 1.2; }
+
+/* =========== VIP AUTOSHIP CARD =========== */
+.vip-card {
+  margin: 0 16px 14px;
+  background: var(--dark);
+  border: 2px solid var(--orange);
+  border-radius: 10px;
+  padding: 14px;
+}
+.vip-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.vip-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  color: var(--orange);
+}
+.vip-card-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  color: var(--white);
+}
+.vip-card-price sup { font-size: 0.6rem; color: var(--gray); }
+.vip-card-desc {
+  font-size: 0.7rem;
+  color: var(--gray-light);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.vip-card-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+.vip-perk {
+  font-size: 0.65rem;
+  color: var(--gray-light);
+}
+.vip-perk::before { content: '✓ '; color: var(--orange); font-weight: 700; }
+.vip-card-btn {
+  display: block;
+  text-align: center;
+  background: var(--orange);
+  color: var(--black);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* =========== LOYALTY =========== */
+.loyalty-box {
+  margin: 0 16px 14px;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+.loyalty-box h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.loyalty-steps {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.l-step {
+  flex: 1;
+  text-align: center;
+}
+.l-step .l-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: var(--black);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.l-step .l-title {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.l-step .l-desc {
+  font-size: 0.55rem;
+  color: var(--gray);
+  line-height: 1.3;
+}
+.loyalty-detail {
+  font-size: 0.65rem;
+  color: var(--gray-light);
+  line-height: 1.4;
+  text-align: left;
+  padding: 0 4px;
+}
+.loyalty-detail strong { color: var(--orange); }
+
+/* =========== BLOG CARDS =========== */
+.blog-scroll {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.blog-scroll::-webkit-scrollbar { display: none; }
+.blog-card {
+  min-width: 200px;
+  max-width: 200px;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.blog-card img { width: 200px; height: 110px; object-fit: cover; display: block; }
+.blog-card-info { padding: 10px; }
+.blog-card-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.blog-card-meta { font-size: 0.55rem; color: var(--gray); }
+
+/* =========== ABOUT SECTION (in-phone) =========== */
+.about-section { padding: 16px; }
+.about-section h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.about-section p {
+  font-size: 0.72rem;
+  color: var(--gray-light);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.about-section .about-values {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.about-val {
+  font-size: 0.65rem;
+  color: var(--gray-light);
+}
+.about-val strong { color: var(--orange); }
+.lab-links { display: flex; flex-direction: column; gap: 4px; }
+.lab-link {
+  font-size: 0.65rem;
+  color: var(--blue-link);
+  text-decoration: underline;
+}
+
+/* =========== GRID (shop page) =========== */
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+.sg-card {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.sg-card img { width: 100%; height: 130px; object-fit: cover; display: block; }
+.sg-card-info { padding: 8px 10px 10px; }
+.sg-card-badge {
+  display: inline-block;
+  background: var(--orange);
+  color: var(--black);
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-bottom: 3px;
+}
+.sg-card-name { font-size: 0.68rem; font-weight: 600; color: var(--white); line-height: 1.2; margin-bottom: 2px; }
+.sg-card-sub { font-size: 0.55rem; color: var(--gray); margin-bottom: 6px; }
+.sg-card-row { display: flex; justify-content: space-between; align-items: center; }
+.sg-card-price { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; color: var(--orange); }
+.sg-add {
+  width: 26px; height: 26px; border-radius: 50%; background: var(--orange);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--black); font-size: 1rem; font-weight: 700; line-height: 1;
+}
+
+/* =========== FILTERS =========== */
+.filters {
+  display: flex;
+  gap: 6px;
+  padding: 8px 16px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filters::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--border);
+  color: var(--gray);
+  background: transparent;
+}
+.filter-chip.on { background: var(--orange); color: var(--black); border-color: var(--orange); }
+
+/* =========== REFERRAL BANNER =========== */
+.ref-banner {
+  margin: 0 16px 14px;
+  background: var(--dark);
+  border: 1px solid var(--orange);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+.ref-banner h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--orange);
+  margin-bottom: 4px;
+}
+.ref-banner p {
+  font-size: 0.68rem;
+  color: var(--gray-light);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.ref-btn {
+  display: inline-block;
+  background: var(--orange);
+  color: var(--black);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  padding: 8px 24px;
+  border-radius: 4px;
+}
+
+/* =========== NOTIFICATION CARDS =========== */
+.notif-card {
+  margin: 0 16px 10px;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+}
+.notif-card.unread { border-left: 3px solid var(--orange); }
+.notif-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(232,134,12,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.notif-body { flex: 1; }
+.notif-title { font-size: 0.72rem; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+.notif-text { font-size: 0.65rem; color: var(--gray); line-height: 1.35; }
+.notif-time { font-size: 0.55rem; color: #444; margin-top: 3px; }
+
+/* =========== APPAREL CARD =========== */
+.apparel-card img { width: 140px; height: 160px; object-fit: contain; display: block; background: #fff; }
+
+/* =========== FEATURES SECTION (BELOW PHONES) =========== */
+.features-block {
+  max-width: 1100px;
+  margin: 60px auto 0;
+  padding: 0 20px;
+  text-align: center;
+}
+.features-block h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 5px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.features-block .fb-sub {
+  font-size: 0.9rem;
+  color: var(--orange);
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 36px;
+}
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  text-align: left;
+}
+.feat-box {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.feat-box .f-icon { font-size: 1.4rem; margin-bottom: 10px; }
+.feat-box h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.feat-box p { font-size: 0.8rem; color: var(--gray); line-height: 1.5; }
+
+/* =========== PRICING TABLE =========== */
+.pricing-block {
+  max-width: 900px;
+  margin: 50px auto 0;
+  padding: 0 20px;
+  text-align: center;
+}
+.pricing-block h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 5px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.pricing-block .pb-sub {
+  font-size: 0.9rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+.ptable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.ptable th {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--orange);
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--orange);
+}
+.ptable td {
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  color: var(--gray-light);
+  border-bottom: 1px solid var(--border);
+}
+.ptable .pr { font-family: 'Bebas Neue', sans-serif; color: var(--orange); font-size: 0.95rem; }
+.ptable tr:last-child td { border-bottom: none; }
+.pricing-total {
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: var(--gray-light);
+  line-height: 1.7;
+}
+.pricing-total strong { color: var(--orange); font-size: 1.1rem; }
+
+/* =========== FOOTER =========== */
+.demo-footer {
+  margin-top: 50px;
+  text-align: center;
+  padding: 30px 20px;
+  border-top: 1px solid var(--border);
+  max-width: 700px;
+}
+.demo-footer p { font-size: 0.8rem; color: var(--gray); line-height: 1.6; }
+.demo-footer .nile {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  color: var(--white);
+  margin-top: 10px;
+}
+
+/* =========== RESPONSIVE =========== */
+@media (max-width: 420px) {
+  .phone { width: 100%; height: 780px; border-radius: 36px; }
+  .screen-scroll { height: calc(780px - 52px - 72px); }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== PAGE HEADER ========== -->
+<div class="page-header">
+  <img class="main-logo" src="https://static.wixstatic.com/media/f02a0c_05472da51925489f9661fc7605cf9490~mv2.png/v1/fill/w_212,h_223,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/PCC%20Logo-Transparent-White-Smaller-10-10-25.png" alt="Peacemaker Coffee Logo">
+  <h1>Peacemaker Coffee Company</h1>
+  <div class="tagline">Mobile App Design Preview</div>
+  <div class="prepared">Prepared exclusively for <strong>Chris Morris</strong> — Peacemaker Coffee Company, LLC</div>
+</div>
+
+<!-- ====================== ROW 1: HOME / SHOP / VIP ====================== -->
+<div class="phones-row">
+
+<!-- ==================== SCREEN 1: HOME ==================== -->
+<div class="phone-wrapper">
+<div class="screen-label">Home</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>⦿ 100%</span></div>
+  <div class="screen-scroll">
+    <!-- App Bar -->
+    <div class="app-bar">
+      <div class="app-bar-logo">
+        <img src="https://static.wixstatic.com/media/f02a0c_05472da51925489f9661fc7605cf9490~mv2.png/v1/fill/w_212,h_223,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/PCC%20Logo-Transparent-White-Smaller-10-10-25.png" alt="PCC">
+        <div class="app-bar-text">
+          <h2>Peacemaker Coffee</h2>
+          <p>Faith, Family, Community</p>
+        </div>
+      </div>
+      <div class="app-bar-icons">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </div>
+    </div>
+
+    <!-- Offer Strip -->
+    <div class="offer-strip">Free Shipping on orders over $35 · Ships in 3 days or less</div>
+
+    <!-- Hero Image -->
+    <img class="hero-img" src="https://static.wixstatic.com/media/11062b_58a73491fb4242ddbd4b53a289676221f000.jpg/v1/fill/w_750,h_380,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/11062b_58a73491fb4242ddbd4b53a289676221f000.jpg" alt="Peacemaker Coffee">
+    <div style="background:var(--dark);padding:12px 16px;margin-bottom:1px;">
+      <div style="font-family:'Bebas Neue';font-size:1.2rem;letter-spacing:3px;color:var(--white);">The #1 Mold-Free, Low-Acid Coffee</div>
+      <div style="font-size:0.7rem;color:var(--orange);font-weight:600;">Lab-Tested & Locally Roasted in Toledo, Ohio</div>
+    </div>
+
+    <!-- Quick Nav -->
+    <div class="quick-grid">
+      <div class="qg-item">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span>Shop Coffee</span>
+      </div>
+      <div class="qg-item">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>VIP Autoship</span>
+      </div>
+      <div class="qg-item">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>Loyalty</span>
+      </div>
+      <div class="qg-item">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Refer Friends</span>
+      </div>
+    </div>
+
+    <!-- Mold-Free Coffee Section -->
+    <div class="sec-head">Mold-Free Coffee</div>
+    <div class="sec-sub">Lab-Tested · Low-Acid · Specialty Grade</div>
+    <div class="h-scroll">
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_542215e8aee54c3f8793d5fb4e66a1d3~mv2.jpg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_542215e8aee54c3f8793d5fb4e66a1d3~mv2.jpg" alt="50 Count Pods">
+        <div class="p-card-info">
+          <div class="p-card-badge">Many Options</div>
+          <div class="p-card-name">50 Count Peacemaker Pods</div>
+          <div class="p-card-price">$35.00</div>
+          <div class="p-card-btn">Add to Cart</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_0ffbfd51acc744b68b22bd5437a7460e~mv2.jpeg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_0ffbfd51acc744b68b22bd5437a7460e~mv2.jpeg" alt="100 Count Pods">
+        <div class="p-card-info">
+          <div class="p-card-badge">Best Value</div>
+          <div class="p-card-name">100 Count Peacemaker Pods</div>
+          <div class="p-card-price">$52.00</div>
+          <div class="p-card-btn">Add to Cart</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_dac276f132cf4d3184ab530c2c8dc65b~mv2.jpeg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_dac276f132cf4d3184ab530c2c8dc65b~mv2.jpeg" alt="Rookie Light Roast">
+        <div class="p-card-info">
+          <div class="p-card-badge">Light & Pods</div>
+          <div class="p-card-name">Rookie Light Roast</div>
+          <div class="p-card-price">$15.99</div>
+          <div class="p-card-btn">Add to Cart</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_2ff859436a754604a1bb571f7436f846~mv2.jpg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_2ff859436a754604a1bb571f7436f846~mv2.jpg" alt="2nd Amendment Medium">
+        <div class="p-card-info">
+          <div class="p-card-badge">Medium & Pods</div>
+          <div class="p-card-name">2nd Amendment Medium Roast</div>
+          <div class="p-card-price">$15.99</div>
+          <div class="p-card-btn">Add to Cart</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_2ef88a7146ac455cb95842055d909178~mv2.jpg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_2ef88a7146ac455cb95842055d909178~mv2.jpg" alt="Veteran Dark Roast">
+        <div class="p-card-info">
+          <div class="p-card-badge">Dark & Pods</div>
+          <div class="p-card-name">Veteran Dark Roast</div>
+          <div class="p-card-price">$15.99</div>
+          <div class="p-card-btn">Add to Cart</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_4c42b6f0dd50467e94e0b831f897b923~mv2.png/v1/fill/w_300,h_300,al_c,q_85,enc_avif/f02a0c_4c42b6f0dd50467e94e0b831f897b923~mv2.png" alt="Dubai Chocolate">
+        <div class="p-card-info">
+          <div class="p-card-badge">Coffee & Pods</div>
+          <div class="p-card-name">Dubai Chocolate Coffee</div>
+          <div class="p-card-price">$15.99</div>
+          <div class="p-card-btn">Add to Cart</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flavored Coffees -->
+    <div class="sec-head">Flavored Coffees</div>
+    <div class="sec-sub">New Flavors · Lab-Tested · Low-Acid</div>
+    <div class="h-scroll">
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_c54994acf5c5420f8a46ff9ccc338b35~mv2.png/v1/fill/w_300,h_300,al_c,q_85,enc_avif/f02a0c_c54994acf5c5420f8a46ff9ccc338b35~mv2.png" alt="Salted Caramel">
+        <div class="p-card-info">
+          <div class="p-card-name">Salted Caramel</div>
+          <div class="p-card-price">$15.99</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_91c27af2dd70402d82ded6b98b3b1eed~mv2.png/v1/fill/w_300,h_300,al_c,q_85,enc_avif/f02a0c_91c27af2dd70402d82ded6b98b3b1eed~mv2.png" alt="Bourbon Pecan">
+        <div class="p-card-info">
+          <div class="p-card-name">Bourbon Pecan</div>
+          <div class="p-card-price">$15.99</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_06a8b62e082945ff97ba8442db2d539b~mv2.png/v1/fill/w_300,h_300,al_c,q_85,enc_avif/f02a0c_06a8b62e082945ff97ba8442db2d539b~mv2.png" alt="Elvis Special">
+        <div class="p-card-info">
+          <div class="p-card-name">Elvis's Special</div>
+          <div class="p-card-price">$15.99</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_3e33694b93ae447f9d5461157be23ceb~mv2.png/v1/fill/w_300,h_300,al_c,q_85,enc_avif/f02a0c_3e33694b93ae447f9d5461157be23ceb~mv2.png" alt="Toasted Coconut Mocha">
+        <div class="p-card-info">
+          <div class="p-card-name">Toasted Coconut Mocha</div>
+          <div class="p-card-price">$15.99</div>
+        </div>
+      </div>
+      <div class="p-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_43a808a16d02439090d72bf4bcfe8f11~mv2.png/v1/fill/w_300,h_300,al_c,q_85,enc_avif/f02a0c_43a808a16d02439090d72bf4bcfe8f11~mv2.png" alt="Caramel Macchiato">
+        <div class="p-card-info">
+          <div class="p-card-name">Caramel Macchiato</div>
+          <div class="p-card-price">$15.99</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW FLAVORS COMING SOON -->
+    <div style="padding:12px 16px;text-align:center;">
+      <div style="font-family:'Bebas Neue';font-size:0.85rem;letter-spacing:2px;color:var(--white);margin-bottom:8px;">New Flavors Coming Soon!</div>
+      <div style="display:flex;justify-content:center;gap:12px;">
+        <img src="https://static.wixstatic.com/media/f02a0c_878e06228cea4956b013161d0721ce81~mv2.png/v1/fill/w_120,h_120,al_c,q_85,enc_avif/Maple%20Bourbon.png" alt="Maple Bourbon" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">
+        <img src="https://static.wixstatic.com/media/f02a0c_35d434452bc34ec093ab325e69060452~mv2.png/v1/fill/w_120,h_120,al_c,q_85,enc_avif/Butter%20Rum.png" alt="Butter Rum" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">
+      </div>
+      <div style="font-size:0.6rem;color:var(--gray);margin-top:6px;">Maple Bourbon · Butter Rum</div>
+    </div>
+
+    <!-- Apparel -->
+    <div class="sec-head">Peacemaker Apparel</div>
+    <div class="sec-sub">Ethical Fashion With A Cause</div>
+    <div class="h-scroll">
+      <div class="p-card apparel-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_1ac83468e0ca4f43836765ba145bb20c~mv2.jpg/v1/fill/w_300,h_340,al_c,q_80,enc_avif/f02a0c_1ac83468e0ca4f43836765ba145bb20c~mv2.jpg" alt="Bless The Peacemakers">
+        <div class="p-card-info">
+          <div class="p-card-badge">Supports Heroes</div>
+          <div class="p-card-name">Bless The Peacemakers Shirt</div>
+          <div class="p-card-price">$25.99</div>
+        </div>
+      </div>
+      <div class="p-card apparel-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_e57fdf726b57400f8fd193a03aa9dea9~mv2.jpg/v1/fill/w_300,h_340,al_c,q_80,enc_avif/f02a0c_e57fdf726b57400f8fd193a03aa9dea9~mv2.jpg" alt="Trade Spouse">
+        <div class="p-card-info">
+          <div class="p-card-name">Will Trade Spouse T-Shirt</div>
+          <div class="p-card-price">$25.99</div>
+        </div>
+      </div>
+      <div class="p-card apparel-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_71a7346eabc049929cd44121ff80371e~mv2.jpg/v1/fill/w_300,h_340,al_c,q_80,enc_avif/f02a0c_71a7346eabc049929cd44121ff80371e~mv2.jpg" alt="PCC Logo Tee">
+        <div class="p-card-info">
+          <div class="p-card-name">PCC Logo Classic Tee</div>
+          <div class="p-card-price">$24.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blogs -->
+    <div class="sec-head">Blog & Resources</div>
+    <div class="sec-sub">Clean Coffee Education & Health</div>
+    <div class="blog-scroll">
+      <div class="blog-card">
+        <img src="https://cdn.marblism.com/cm4HxbZG_RY.webp" alt="Mold Free Coffee Toledo">
+        <div class="blog-card-info">
+          <div class="blog-card-title">The Search for Mold-Free Coffee in Toledo, Ohio</div>
+          <div class="blog-card-meta">Peacemaker Coffee · 5 min read</div>
+        </div>
+      </div>
+      <div class="blog-card">
+        <img src="https://cdn.marblism.com/cMFdar5N-xF.webp" alt="Histamine Intolerance">
+        <div class="blog-card-info">
+          <div class="blog-card-title">Coffee and Histamine Intolerance: Why Your Morning Cup Might Be Causing Allergies</div>
+          <div class="blog-card-meta">Peacemaker Coffee · 6 min read</div>
+        </div>
+      </div>
+      <div class="blog-card">
+        <img src="https://cdn.marblism.com/Ayu_eMgtrD9.webp" alt="FAQ">
+        <div class="blog-card-info">
+          <div class="blog-card-title">Frequently Asked Questions: The Peacemaker Standard</div>
+          <div class="blog-card-meta">Peacemaker Coffee · 5 min read</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Badges -->
+    <div style="display:flex;justify-content:center;gap:10px;padding:14px 16px 20px;">
+      <img src="https://static.wixstatic.com/media/f02a0c_0d7e1d6a9da94f2e91272a419e0f42c6~mv2.png/v1/fill/w_60,h_60,al_c,q_85,enc_avif/fda-logo.png" alt="FDA">
+      <img src="https://static.wixstatic.com/media/f02a0c_e315c8c83c9b421a803f050f6fac9df6~mv2.png/v1/fill/w_52,h_60,al_c,q_85,enc_avif/Fair%20Trade%20Logo.png" alt="Fair Trade">
+      <img src="https://static.wixstatic.com/media/f02a0c_f7692962901c4e4aac352d4a95749c22~mv2.png/v1/fill/w_60,h_58,al_c,q_85,enc_avif/Dept%20Of%20Ag.png" alt="Dept of Ag">
+      <img src="https://static.wixstatic.com/media/f02a0c_9355afd6c1454fca88882633dfe254c6~mv2.png/v1/fill/w_60,h_60,al_c,q_85,enc_avif/OH%20Proud.png" alt="Ohio Proud">
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <div class="nav-i on"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span>Shop</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>VIP</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span>Alerts</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ==================== SCREEN 2: SHOP ==================== -->
+<div class="phone-wrapper">
+<div class="screen-label">Shop — Coffee</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>⦿ 100%</span></div>
+  <div class="screen-scroll">
+    <div class="app-bar">
+      <div class="app-bar-logo">
+        <img src="https://static.wixstatic.com/media/f02a0c_05472da51925489f9661fc7605cf9490~mv2.png/v1/fill/w_212,h_223,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/PCC%20Logo-Transparent-White-Smaller-10-10-25.png" alt="PCC">
+        <div class="app-bar-text"><h2>Shop</h2><p>Mold-Free & Low-Acid Specialty Coffee</p></div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div style="margin:10px 16px;background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span style="font-size:0.75rem;color:#444;">Search coffees, pods, apparel...</span>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-chip on">All Coffee</div>
+      <div class="filter-chip">Pods</div>
+      <div class="filter-chip">Flavored</div>
+      <div class="filter-chip">Apparel</div>
+      <div class="filter-chip">Gift Card</div>
+      <div class="filter-chip">Roaster Supplies</div>
+    </div>
+
+    <!-- Shop Grid -->
+    <div class="shop-grid">
+      <div class="sg-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_542215e8aee54c3f8793d5fb4e66a1d3~mv2.jpg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_542215e8aee54c3f8793d5fb4e66a1d3~mv2.jpg">
+        <div class="sg-card-info">
+          <div class="sg-card-badge">Many Options</div>
+          <div class="sg-card-name">50 Count Pods</div>
+          <div class="sg-card-sub">You Pick Your Roast</div>
+          <div class="sg-card-row"><div class="sg-card-price">$35.00</div><div class="sg-add">+</div></div>
+        </div>
+      </div>
+      <div class="sg-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_0ffbfd51acc744b68b22bd5437a7460e~mv2.jpeg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_0ffbfd51acc744b68b22bd5437a7460e~mv2.jpeg">
+        <div class="sg-card-info">
+          <div class="sg-card-badge">Best Value</div>
+          <div class="sg-card-name">100 Count Pods</div>
+          <div class="sg-card-sub">You Pick Your Roast</div>
+          <div class="sg-card-row"><div class="sg-card-price">$52.00</div><div class="sg-add">+</div></div>
+        </div>
+      </div>
+      <div class="sg-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_dac276f132cf4d3184ab530c2c8dc65b~mv2.jpeg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_dac276f132cf4d3184ab530c2c8dc65b~mv2.jpeg">
+        <div class="sg-card-info">
+          <div class="sg-card-badge">Light & Pods</div>
+          <div class="sg-card-name">Rookie Light Roast</div>
+          <div class="sg-card-sub">Clean, Mold-Free</div>
+          <div class="sg-card-row"><div class="sg-card-price">$15.99</div><div class="sg-add">+</div></div>
+        </div>
+      </div>
+      <div class="sg-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_2ff859436a754604a1bb571f7436f846~mv2.jpg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_2ff859436a754604a1bb571f7436f846~mv2.jpg">
+        <div class="sg-card-info">
+          <div class="sg-card-badge">Medium & Pods</div>
+          <div class="sg-card-name">2nd Amendment Medium</div>
+          <div class="sg-card-sub">Low-Acid & Mold-Free</div>
+          <div class="sg-card-row"><div class="sg-card-price">$15.99</div><div class="sg-add">+</div></div>
+        </div>
+      </div>
+      <div class="sg-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_2ef88a7146ac455cb95842055d909178~mv2.jpg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_2ef88a7146ac455cb95842055d909178~mv2.jpg">
+        <div class="sg-card-info">
+          <div class="sg-card-badge">Dark & Pods</div>
+          <div class="sg-card-name">Veteran Dark Roast</div>
+          <div class="sg-card-sub">Bold, Mycotoxin-Free</div>
+          <div class="sg-card-row"><div class="sg-card-price">$15.99</div><div class="sg-add">+</div></div>
+        </div>
+      </div>
+      <div class="sg-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_01e8f76c328743bea647f8cbb33266ad~mv2.jpg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_01e8f76c328743bea647f8cbb33266ad~mv2.jpg">
+        <div class="sg-card-info">
+          <div class="sg-card-badge">Decaf & Pods</div>
+          <div class="sg-card-name">Decaf Medium</div>
+          <div class="sg-card-sub">Low-Acid & Mold-Free</div>
+          <div class="sg-card-row"><div class="sg-card-price">$15.99</div><div class="sg-add">+</div></div>
+        </div>
+      </div>
+      <div class="sg-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_0f1b79701f874a60b380813f541d8869~mv2.jpg/v1/fill/w_300,h_300,al_c,q_80,enc_avif/f02a0c_0f1b79701f874a60b380813f541d8869~mv2.jpg">
+        <div class="sg-card-info">
+          <div class="sg-card-badge">Darker & Pods</div>
+          <div class="sg-card-name">Espresso Darker Roast</div>
+          <div class="sg-card-sub">Low-Acid & Mold-Free</div>
+          <div class="sg-card-row"><div class="sg-card-price">$15.99</div><div class="sg-add">+</div></div>
+        </div>
+      </div>
+      <div class="sg-card">
+        <img src="https://static.wixstatic.com/media/f02a0c_4c42b6f0dd50467e94e0b831f897b923~mv2.png/v1/fill/w_300,h_300,al_c,q_85,enc_avif/f02a0c_4c42b6f0dd50467e94e0b831f897b923~mv2.png">
+        <div class="sg-card-info">
+          <div class="sg-card-badge">Coffee & Pods</div>
+          <div class="sg-card-name">Dubai Chocolate</div>
+          <div class="sg-card-sub">Dark Choc & Pistachio</div>
+          <div class="sg-card-row"><div class="sg-card-price">$15.99</div><div class="sg-add">+</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></div>
+    <div class="nav-i on"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span>Shop</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>VIP</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span>Alerts</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ==================== SCREEN 3: VIP AUTOSHIP ==================== -->
+<div class="phone-wrapper">
+<div class="screen-label">VIP Autoship</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>⦿ 100%</span></div>
+  <div class="screen-scroll">
+    <div class="app-bar">
+      <div class="app-bar-logo">
+        <img src="https://static.wixstatic.com/media/f02a0c_05472da51925489f9661fc7605cf9490~mv2.png/v1/fill/w_212,h_223,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/PCC%20Logo-Transparent-White-Smaller-10-10-25.png" alt="PCC">
+        <div class="app-bar-text"><h2>VIP Coffee Autoship</h2><p>Save Money · Warrior-Fueled</p></div>
+      </div>
+    </div>
+
+    <div style="background:var(--dark);padding:16px;text-align:center;border-bottom:1px solid var(--border);">
+      <div style="font-family:'Bebas Neue';font-size:1.15rem;letter-spacing:3px;color:var(--white);">Monthly "VIP Coffee" Autoship</div>
+      <div style="font-size:0.7rem;color:var(--orange);font-weight:600;margin-top:2px;">Guided by Faith, Family, and Community</div>
+      <div style="font-size:0.65rem;color:var(--gray);margin-top:8px;line-height:1.4;text-align:left;">Full 16oz (1 lb.) bags — not 10 or 12oz like competitors. High-quality, low-acidity, lab-tested, mold/mycotoxin clean coffee. Free shipping on all memberships. No cancellation fees.</div>
+    </div>
+
+    <!-- Pod Plans -->
+    <div class="sec-head">Pod Plans</div>
+
+    <div class="vip-card">
+      <div class="vip-card-head">
+        <div class="vip-card-title">66 Medium Pods</div>
+        <div class="vip-card-price">$36<sup>/mo</sup></div>
+      </div>
+      <div class="vip-card-desc">66 Count - 2nd Amendment K-Cup Medium Roast Coffee pods. Compatible with Keurig 2.0.</div>
+      <div class="vip-card-perks">
+        <div class="vip-perk">Free Shipping in the USA</div>
+        <div class="vip-perk">No cancellation or early termination fees</div>
+        <div class="vip-perk">Cancel via email — it's that easy</div>
+      </div>
+      <div class="vip-card-btn">Autoship Monthly</div>
+    </div>
+
+    <div class="vip-card">
+      <div class="vip-card-head">
+        <div class="vip-card-title">66 Dark Pods</div>
+        <div class="vip-card-price">$36<sup>/mo</sup></div>
+      </div>
+      <div class="vip-card-desc">66 Count - Veteran K-Cup Dark Roast. Keurig 2.0 compatible.</div>
+      <div class="vip-card-perks">
+        <div class="vip-perk">Free Shipping in the USA</div>
+        <div class="vip-perk">No cancellation fees</div>
+      </div>
+      <div class="vip-card-btn">Autoship Monthly</div>
+    </div>
+
+    <div class="vip-card">
+      <div class="vip-card-head">
+        <div class="vip-card-title">66 Med/Dark Pods</div>
+        <div class="vip-card-price">$36<sup>/mo</sup></div>
+      </div>
+      <div class="vip-card-desc">33 Medium + 33 Dark pods. Keurig 2.0 compatible.</div>
+      <div class="vip-card-perks">
+        <div class="vip-perk">Free Shipping in the USA</div>
+        <div class="vip-perk">No cancellation fees</div>
+      </div>
+      <div class="vip-card-btn">Autoship Monthly</div>
+    </div>
+
+    <!-- Bag Plans -->
+    <div class="sec-head">2-Bag Plans ($36/mo)</div>
+    <div class="sec-sub">Two 1 lb. bags · Ground or Whole Bean</div>
+
+    <div class="vip-card">
+      <div class="vip-card-head"><div class="vip-card-title">Medium Ground</div><div class="vip-card-price">$36<sup>/mo</sup></div></div>
+      <div class="vip-card-desc">Two (2) 1 lb. bags, ground, medium roast. Freshly roasted & shipped monthly.</div>
+      <div class="vip-card-perks"><div class="vip-perk">Free Shipping · No Fees</div></div>
+      <div class="vip-card-btn">Autoship Monthly</div>
+    </div>
+
+    <div class="vip-card">
+      <div class="vip-card-head"><div class="vip-card-title">Dark Whole Bean</div><div class="vip-card-price">$36<sup>/mo</sup></div></div>
+      <div class="vip-card-desc">Two (2) 1 lb. bags, whole bean, dark roast.</div>
+      <div class="vip-card-perks"><div class="vip-perk">Free Shipping · No Fees</div></div>
+      <div class="vip-card-btn">Autoship Monthly</div>
+    </div>
+
+    <div class="sec-head">3-Bag Plans ($45/mo)</div>
+    <div class="vip-card">
+      <div class="vip-card-head"><div class="vip-card-title">3 lbs Medium Whole Bean</div><div class="vip-card-price">$45<sup>/mo</sup></div></div>
+      <div class="vip-card-desc">Three (3) 1 lb. bags, whole bean, medium roast.</div>
+      <div class="vip-card-perks"><div class="vip-perk">Free Shipping · No Fees</div></div>
+      <div class="vip-card-btn">Autoship Monthly</div>
+    </div>
+
+    <div class="sec-head">4-Bag Plans ($56/mo)</div>
+    <div class="vip-card">
+      <div class="vip-card-head"><div class="vip-card-title">4 lbs Medium Whole Bean</div><div class="vip-card-price">$56<sup>/mo</sup></div></div>
+      <div class="vip-card-desc">Four (4) 1 lb. bags, whole bean, medium roast.</div>
+      <div class="vip-card-perks"><div class="vip-perk">Free Shipping · No Fees</div></div>
+      <div class="vip-card-btn">Autoship Monthly</div>
+    </div>
+
+    <div class="sec-head">5 lb. Bag Plans ($67/mo)</div>
+    <div class="vip-card">
+      <div class="vip-card-head"><div class="vip-card-title">5 lb. Medium Ground</div><div class="vip-card-price">$67<sup>/mo</sup></div></div>
+      <div class="vip-card-desc">One 5 lb. bag, ground, medium roast. For the serious coffee drinker.</div>
+      <div class="vip-card-perks"><div class="vip-perk">Free Shipping · No Fees</div></div>
+      <div class="vip-card-btn">Autoship Monthly</div>
+    </div>
+
+    <div style="height:20px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span>Shop</span></div>
+    <div class="nav-i on"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>VIP</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span>Alerts</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></div>
+  </div>
+</div>
+</div>
+
+</div><!-- end phones-row 1 -->
+
+<!-- ====================== ROW 2: ABOUT / LOYALTY / NOTIFICATIONS ====================== -->
+<div class="phones-row" style="margin-top:40px;">
+
+<!-- ==================== SCREEN 4: ABOUT ==================== -->
+<div class="phone-wrapper">
+<div class="screen-label">About Us</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>⦿ 100%</span></div>
+  <div class="screen-scroll">
+    <div class="app-bar">
+      <div class="app-bar-logo">
+        <img src="https://static.wixstatic.com/media/f02a0c_05472da51925489f9661fc7605cf9490~mv2.png/v1/fill/w_212,h_223,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/PCC%20Logo-Transparent-White-Smaller-10-10-25.png" alt="PCC">
+        <div class="app-bar-text"><h2>About</h2><p>The Peacemaker Coffee Story</p></div>
+      </div>
+    </div>
+
+    <div class="sec-head">Clean Coffee, Community Mission</div>
+    <div class="sec-sub">Our Story — Toledo, Ohio</div>
+
+    <div class="about-section">
+      <h3>Why We Roast Mold-Free Coffee</h3>
+      <p>Founded by now-retired police officer/chief Chris Morris after 20+ years of dedicated service, Peacemaker Coffee Company is a proud family-owned and operated business. We roast our beans right here in Toledo, Ohio.</p>
+      <p>Every bag we sell supports donations of coffee to first responders, veterans, educators, and frontline workers. Because exceptional coffee should fuel those who protect and care for us all.</p>
+
+      <h3>Our Values</h3>
+      <div class="about-values">
+        <div class="about-val"><strong>Faith, Family & Community</strong> — Rooted in service and togetherness.</div>
+        <div class="about-val"><strong>Support for Heroes</strong> — Coffee donations to police, fire, military, EMS, dispatchers, teachers, veterans.</div>
+        <div class="about-val"><strong>Transparency & Quality</strong> — 3rd-party lab-tested for mold, mycotoxins, and contaminants.</div>
+        <div class="about-val"><strong>Health-Focused</strong> — Low-acidity, regeneratively farmed, SCA score 82+ specialty grade.</div>
+        <div class="about-val"><strong>Ethically Sourced</strong> — Brazil, Colombia, Guatemala, Uganda via direct/fair trade.</div>
+      </div>
+
+      <h3>Lab Test Results</h3>
+      <p>We proudly share our lab results. Mycotoxin reduction by up to 96%.</p>
+      <div class="lab-links">
+        <span class="lab-link">Light Roast Lab Results (PDF)</span>
+        <span class="lab-link">Medium/Decaf Lab Results (PDF)</span>
+        <span class="lab-link">Medium/Flavor Lab Results (PDF)</span>
+        <span class="lab-link">Dark/Espresso Lab Results (PDF)</span>
+      </div>
+
+      <div style="margin-top:16px;padding:12px;background:var(--dark);border:1px solid var(--border);border-radius:8px;">
+        <div style="font-size:0.7rem;color:var(--gray-light);line-height:1.4;">
+          <strong style="color:var(--orange);">SCA Score:</strong> 82+ (Specialty Grade)<br>
+          <strong style="color:var(--orange);">Toxin Reduction:</strong> 96% reduction in mycotoxins via 3rd-party testing<br>
+          <strong style="color:var(--orange);">Location:</strong> 5265 Tractor Rd, Toledo, OH 43612<br>
+          <strong style="color:var(--orange);">Mission:</strong> Veteran & First Responder support through direct coffee donations
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Badges -->
+    <div style="display:flex;justify-content:center;gap:10px;padding:14px 16px 20px;">
+      <img src="https://static.wixstatic.com/media/f02a0c_0d7e1d6a9da94f2e91272a419e0f42c6~mv2.png/v1/fill/w_60,h_60,al_c,q_85,enc_avif/fda-logo.png" alt="FDA">
+      <img src="https://static.wixstatic.com/media/f02a0c_e315c8c83c9b421a803f050f6fac9df6~mv2.png/v1/fill/w_52,h_60,al_c,q_85,enc_avif/Fair%20Trade%20Logo.png" alt="Fair Trade">
+      <img src="https://static.wixstatic.com/media/f02a0c_f7692962901c4e4aac352d4a95749c22~mv2.png/v1/fill/w_60,h_58,al_c,q_85,enc_avif/Dept%20Of%20Ag.png" alt="Dept of Ag">
+      <img src="https://static.wixstatic.com/media/f02a0c_9355afd6c1454fca88882633dfe254c6~mv2.png/v1/fill/w_60,h_60,al_c,q_85,enc_avif/OH%20Proud.png" alt="Ohio Proud">
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span>Shop</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>VIP</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span>Alerts</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ==================== SCREEN 5: LOYALTY & REFERRALS ==================== -->
+<div class="phone-wrapper">
+<div class="screen-label">Loyalty & Referrals</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>⦿ 100%</span></div>
+  <div class="screen-scroll">
+    <div class="app-bar">
+      <div class="app-bar-logo">
+        <img src="https://static.wixstatic.com/media/f02a0c_05472da51925489f9661fc7605cf9490~mv2.png/v1/fill/w_212,h_223,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/PCC%20Logo-Transparent-White-Smaller-10-10-25.png" alt="PCC">
+        <div class="app-bar-text"><h2>Loyalty Rewards</h2><p>Earn Points & Save Money</p></div>
+      </div>
+    </div>
+
+    <div class="sec-head">Loyalty Program</div>
+    <div class="sec-sub">Earn Reward Points & Save Money</div>
+
+    <!-- 3-Step Flow -->
+    <div class="loyalty-box">
+      <div class="loyalty-steps">
+        <div class="l-step">
+          <div class="l-num">1</div>
+          <div class="l-title">Sign Up</div>
+          <div class="l-desc">Sign up as a member to start the loyalty program</div>
+        </div>
+        <div class="l-step">
+          <div class="l-num">2</div>
+          <div class="l-title">Earn Points</div>
+          <div class="l-desc">Get 5 Loyalty Rewards for every $1 spent. 50 rewards on sign-up.</div>
+        </div>
+        <div class="l-step">
+          <div class="l-num">3</div>
+          <div class="l-title">Redeem</div>
+          <div class="l-desc">1,000 Loyalty Rewards = 15% off coffee</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:0 16px 14px;">
+      <div class="loyalty-detail">
+        Every time you purchase your favorite Peacemaker Coffee — our bold <strong>Veteran Dark Roast</strong>, or our smooth <strong>2nd Amendment Medium Roast</strong> — you earn reward points redeemable for <strong>15% off future coffee orders</strong>.<br><br>
+        As a member, you also get exclusive access to new coffee promotions and early access to new blends.<br><br>
+        The more you drink, the more you save. Every cup closer to unlocking coffee-only discounts.
+      </div>
+    </div>
+
+    <!-- Refer Friends -->
+    <div class="sec-head">Refer Friends</div>
+    <div class="ref-banner">
+      <h3>Get 1,000 Loyalty Rewards</h3>
+      <p>For each friend you refer! Your friend also gets a 15% discount on their first order. Share your unique referral link and earn rewards together.</p>
+      <div class="ref-btn">Share Referral Link</div>
+    </div>
+
+    <div style="padding:0 16px 14px;">
+      <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:14px;">
+        <div style="font-size:0.72rem;font-weight:600;color:var(--white);margin-bottom:6px;">Your Rewards Summary</div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:0.65rem;color:var(--gray);">Current Points</span>
+          <span style="font-family:'Bebas Neue';font-size:1rem;color:var(--orange);">750</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:0.65rem;color:var(--gray);">Next Reward (15% Off)</span>
+          <span style="font-size:0.65rem;color:var(--gray-light);">250 more pts</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;">
+          <span style="font-size:0.65rem;color:var(--gray);">Friends Referred</span>
+          <span style="font-size:0.65rem;color:var(--gray-light);">3</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:20px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span>Shop</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>VIP</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span>Alerts</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ==================== SCREEN 6: PUSH NOTIFICATIONS ==================== -->
+<div class="phone-wrapper">
+<div class="screen-label">Push Notifications</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>⦿ 100%</span></div>
+  <div class="screen-scroll">
+    <div class="app-bar">
+      <div class="app-bar-logo">
+        <img src="https://static.wixstatic.com/media/f02a0c_05472da51925489f9661fc7605cf9490~mv2.png/v1/fill/w_212,h_223,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/PCC%20Logo-Transparent-White-Smaller-10-10-25.png" alt="PCC">
+        <div class="app-bar-text"><h2>Notifications</h2><p>Stay Connected</p></div>
+      </div>
+    </div>
+
+    <div style="padding:14px 16px 10px;">
+      <div style="font-family:'Bebas Neue';font-size:0.95rem;letter-spacing:2px;color:var(--white);">What's New</div>
+      <div style="font-size:0.65rem;color:var(--gray);">Timely alerts that drive repeat purchases</div>
+    </div>
+
+    <div class="notif-card unread">
+      <div class="notif-icon">🔥</div>
+      <div class="notif-body">
+        <div class="notif-title">New: Maple Bourbon Coffee!</div>
+        <div class="notif-text">Our newest flavor just dropped. Bags and pods available now. Lab-tested & mold-free.</div>
+        <div class="notif-time">Just now</div>
+      </div>
+    </div>
+
+    <div class="notif-card unread">
+      <div class="notif-icon">⚡</div>
+      <div class="notif-body">
+        <div class="notif-title">Flash Sale — 20% Off All Pods</div>
+        <div class="notif-text">24 hours only. 50-count, 100-count, 250-count — all pod packs on sale.</div>
+        <div class="notif-time">2 hours ago</div>
+      </div>
+    </div>
+
+    <div class="notif-card">
+      <div class="notif-icon">📦</div>
+      <div class="notif-body">
+        <div class="notif-title">Your VIP Autoship Ships Tomorrow</div>
+        <div class="notif-text">Your 2-bag Medium Ground subscription ships out tomorrow. Need to swap roasts or skip? Tap here.</div>
+        <div class="notif-time">Yesterday</div>
+      </div>
+    </div>
+
+    <div class="notif-card">
+      <div class="notif-icon">☕</div>
+      <div class="notif-body">
+        <div class="notif-title">Time to Reorder?</div>
+        <div class="notif-text">It's been 28 days since your last 100-count pod order. Reorder in one tap.</div>
+        <div class="notif-time">2 days ago</div>
+      </div>
+    </div>
+
+    <div class="notif-card">
+      <div class="notif-icon">⭐</div>
+      <div class="notif-body">
+        <div class="notif-title">250 Points Away From 15% Off!</div>
+        <div class="notif-text">You're almost at 1,000 loyalty points. One more order and you unlock 15% off your next coffee purchase.</div>
+        <div class="notif-time">3 days ago</div>
+      </div>
+    </div>
+
+    <div class="notif-card">
+      <div class="notif-icon">👥</div>
+      <div class="notif-body">
+        <div class="notif-title">Refer a Friend, Get 1,000 Points</div>
+        <div class="notif-text">Share your link. When a friend orders, you both win. 1,000 loyalty rewards for you, 15% off for them.</div>
+        <div class="notif-time">1 week ago</div>
+      </div>
+    </div>
+
+    <div class="notif-card">
+      <div class="notif-icon">🎁</div>
+      <div class="notif-body">
+        <div class="notif-title">Gift Card Special</div>
+        <div class="notif-text">Peacemaker Coffee gift cards — great for any coffee snob. Available in $25, $50, $75, $100+.</div>
+        <div class="notif-time">1 week ago</div>
+      </div>
+    </div>
+
+    <div class="notif-card">
+      <div class="notif-icon">📰</div>
+      <div class="notif-body">
+        <div class="notif-title">New Blog: Mold-Free Coffee in Toledo</div>
+        <div class="notif-text">Why local roots and specialty grade matter. Read the latest from our resource center.</div>
+        <div class="notif-time">2 weeks ago</div>
+      </div>
+    </div>
+
+    <div style="height:20px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span>Shop</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>VIP</span></div>
+    <div class="nav-i on"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span>Alerts</span></div>
+    <div class="nav-i"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></div>
+  </div>
+</div>
+</div>
+
+</div><!-- end phones-row 2 -->
+
+<!-- ====================== FEATURES SECTION ====================== -->
+<div class="features-block">
+  <h2>App Features</h2>
+  <div class="fb-sub">Everything on peacemakercoffeecompany.com — now in your pocket</div>
+  <div class="feat-grid">
+    <div class="feat-box"><div class="f-icon">🛒</div><h4>Full Product Catalog</h4><p>All coffees (pods, bags, flavored), apparel, roaster supplies, gift cards — browsable with filters by category, roast type, and format.</p></div>
+    <div class="feat-box"><div class="f-icon">📦</div><h4>VIP Autoship Management</h4><p>Subscribers manage their plan: swap roasts, switch between ground/whole bean, skip a month, adjust bag count, or cancel — all from the app. Exact plans from the website.</p></div>
+    <div class="feat-box"><div class="f-icon">⭐</div><h4>Loyalty Rewards Program</h4><p>5 points per $1 spent. 1,000 points = 15% off coffee. 50 points on sign-up. Fully integrated with the existing website loyalty system.</p></div>
+    <div class="feat-box"><div class="f-icon">👥</div><h4>Refer Friends</h4><p>1,000 loyalty rewards per referral. Friend gets 15% off their first order. Shareable referral link directly from the app.</p></div>
+    <div class="feat-box"><div class="f-icon">🔔</div><h4>Push Notifications</h4><p>New roast launches, flash sales, VIP shipment reminders, reorder nudges, loyalty point milestones, blog post alerts.</p></div>
+    <div class="feat-box"><div class="f-icon">📰</div><h4>Blog & Resource Center</h4><p>All blog articles from the website — mold-free coffee education, health resources, FAQ, brewing tips — available in-app.</p></div>
+    <div class="feat-box"><div class="f-icon">🏪</div><h4>Retail Store Locator</h4><p>Full retail location directory organized by state — matching the existing Retail page. Customers find local stores carrying Peacemaker Coffee.</p></div>
+    <div class="feat-box"><div class="f-icon">🎁</div><h4>Gift Cards</h4><p>Purchase digital gift cards ($25, $50, $75, $100+) directly in the app. Send to friends with a personalized message.</p></div>
+  </div>
+</div>
+
+<!-- ====================== PRICING SECTION ====================== -->
+<div class="pricing-block">
+  <h2>Investment Overview</h2>
+  <div class="pb-sub">Transparent cost breakdown</div>
+  <table class="ptable">
+    <thead><tr><th>Package</th><th>What's Included</th><th>Estimate</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Core E-Commerce App</strong><br><span style="font-size:0.72rem;color:var(--gray);">iOS + Android</span></td>
+        <td>Full product catalog (all categories: coffee, pods, flavored, apparel, roaster supplies, gift cards), shopping cart, checkout, Apple/Google Pay, order history, shipment tracking, user accounts, saved addresses/payment methods. Connected to your existing website admin — all orders reflected in the same dashboard.</td>
+        <td class="pr">~$6,000</td>
+      </tr>
+      <tr>
+        <td><strong>Customer Engagement</strong></td>
+        <td>Push notifications engine (new launches, flash sales, reorder reminders, subscription alerts), VIP Autoship management (swap roasts, skip/pause, cancel), blog/resource center in-app, retail store locator.</td>
+        <td class="pr">~$2,000</td>
+      </tr>
+      <tr>
+        <td><strong>Loyalty, Rewards & Referrals</strong></td>
+        <td>Full loyalty program (5 pts/$1, sign-up bonus, 15% off redemption), referral program (1,000 pts per referral, 15% friend discount), rewards dashboard with points tracking.</td>
+        <td class="pr">~$2,000</td>
+      </tr>
+      <tr>
+        <td><strong>Website Revamp</strong><br><span style="font-size:0.72rem;color:var(--gray);">If required</span></td>
+        <td>Can be done alongside the app if needed. Both app and website connected to the same admin console.</td>
+        <td class="pr">On Request</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pricing-total">
+    <strong>Full App (iOS + Android): ~$10,000</strong><br>
+    Core e-commerce + customer engagement + loyalty/referrals<br><br>
+    <span style="font-size:0.82rem;color:var(--gray);">All orders from the app will be reflected on your existing admin console — same dashboard you already use for the website. No separate system to manage.</span><br><br>
+    <span style="font-size:0.82rem;color:var(--gray);">The scope can be phased. Phase 1 (Core E-Commerce at ~$6K) gets you live on both app stores. Engagement and loyalty can be added as Phase 2.</span>
+  </div>
+</div>
+
+<!-- ====================== FOOTER ====================== -->
+<div class="demo-footer">
+  <p>This design preview was prepared exclusively for Peacemaker Coffee Company, LLC.<br>All screens use actual product data, images, and pricing from peacemakercoffeecompany.com.<br>Features, scope, and design can be refined based on your priorities.</p>
+  <div class="nile">Nile Technologies Pvt Ltd</div>
+  <p style="margin-top:4px;">www.niletechnologies.com · +1 424-389-3378 · +91 9582089016</p>
+</div>
+
+</body>
+</html>
