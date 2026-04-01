@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sara Collections — Premium Fashion Jewellery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<!-- Lenis Smooth Scroll -->
+<script src="https://unpkg.com/lenis@latest/dist/lenis.min.js"></script>
+<!-- Three.js for 3D particles -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bk:#1A1A1A;--g:#C9A96E;--gd:#B8964F;--cr:#FAF7F2;--ro:#E8D5D0;
+  --ch:#333;--gt:#F5EFE0;--w:#FFF;--bd:#F0EBE3;--gr:#666;--gl:#999;--gn:#2D7A4F;
+  --fd:'Playfair Display',Georgia,serif;--fb:'Inter',system-ui,sans-serif;--fp:'DM Serif Display',serif;
+  --ease:cubic-bezier(.25,.1,.25,1)
+}
+html{-webkit-font-smoothing:antialiased}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto}
+body{font-family:var(--fb);color:var(--ch);background:var(--bk);overflow-x:hidden;line-height:1.6;cursor:none}
+@media(max-width:1024px){body{cursor:auto}}
+a{color:inherit;text-decoration:none}
+button{cursor:none;border:none;background:none;font-family:inherit}
+@media(max-width:1024px){button{cursor:pointer}}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bk)}
+::-webkit-scrollbar-thumb{background:var(--g);border-radius:3px}
+
+/* ═══ 1. CINEMATIC LOADER ═══ */
+.loader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center}
+.loader-half{position:absolute;left:0;right:0;height:50%;background:var(--bk)}
+.loader-half.top{top:0}.loader-half.bot{bottom:0}
+.loader-center{position:relative;z-index:2;text-align:center}
+.loader-logo{font:700 clamp(30px,5vw,46px)/1 var(--fd);color:var(--w);letter-spacing:6px}
+.loader-logo span{display:inline-block;opacity:0;transform:translateY(35px)}
+.loader-logo .gold{color:var(--g)}
+.loader-bar{width:0;height:1.5px;background:var(--g);margin:18px auto 0}
+
+/* ═══ 7. CUSTOM CURSOR ═══ */
+.cur-d,.cur-r{position:fixed;top:0;left:0;pointer-events:none;z-index:99998;border-radius:50%;will-change:transform}
+.cur-d{width:8px;height:8px;background:var(--g);margin:-4px 0 0 -4px;mix-blend-mode:difference}
+.cur-r{width:40px;height:40px;border:1.5px solid rgba(201,169,110,.6);margin:-20px 0 0 -20px;opacity:.5;transition:width .3s,height .3s,margin .3s,opacity .3s,background .3s}
+.cur-r.hover{width:64px;height:64px;margin:-32px 0 0 -32px;opacity:.3;background:rgba(201,169,110,.06)}
+.cur-r.view{width:80px;height:80px;margin:-40px 0 0 -40px;opacity:.5;background:rgba(201,169,110,.08)}
+.cur-r.view::after{content:'VIEW';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 9px/1 var(--fb);color:var(--g);letter-spacing:3px}
+@media(max-width:1024px){.cur-d,.cur-r{display:none!important}}
+
+/* ═══ 10. THREE.JS PARTICLES CONTAINER ═══ */
+#three-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ═══ MAIN CONTENT WRAPPER — sits above fixed footer ═══ */
+.main-wrap{position:relative;z-index:2;background:var(--cr)}
+
+/* ═══ BUTTONS ═══ */
+.btn-p,.btn-s{display:inline-flex;align-items:center;justify-content:center;padding:15px 36px;font:600 11px/1 var(--fb);text-transform:uppercase;letter-spacing:2.5px;border-radius:6px;transition:all .35s var(--ease);min-height:50px;position:relative;overflow:hidden}
+.btn-p{background:var(--g);color:var(--bk)}.btn-p:hover{background:var(--gd);box-shadow:0 8px 28px rgba(201,169,110,.35)}
+.btn-s{background:transparent;color:var(--g);border:1px solid var(--g)}.btn-s:hover{background:var(--g);color:var(--bk)}
+/* Button shine sweep */
+.btn-p::before,.btn-s::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s}
+.btn-p:hover::before,.btn-s:hover::before{left:120%}
+
+/* ═══ TOP BAR ═══ */
+.topbar{height:34px;background:var(--bk);display:flex;align-items:center;justify-content:center;font:400 10px/1 var(--fb);color:rgba(255,255,255,.45);letter-spacing:.5px;position:relative;z-index:3}
+.topbar a{color:var(--g);margin-left:6px}
+
+/* ═══ HEADER ═══ */
+.header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);height:72px;display:flex;align-items:center;padding:0 40px;transition:all .3s var(--ease);border-bottom:1px solid rgba(0,0,0,.04)}
+.header.scrolled{height:58px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.header-in{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:1440px;margin:0 auto}
+.logo{font:700 22px/1 var(--fd);color:var(--bk);letter-spacing:2px;white-space:nowrap}.logo em{color:var(--g);font-style:normal}
+.nav{display:flex;gap:28px}.ni{position:static}
+.nl{font:500 11px/1 var(--fb);color:var(--bk);text-transform:uppercase;letter-spacing:1.8px;padding:26px 3px;display:block;position:relative;transition:color .2s}
+.nl::after{content:'';position:absolute;bottom:20px;left:3px;width:0;height:1.5px;background:var(--g);transition:width .3s var(--ease)}
+.nl:hover{color:var(--g)}.nl:hover::after{width:calc(100% - 6px)}
+/* MEGA MENU */
+.mm{position:absolute;top:100%;left:0;right:0;background:var(--w);padding:36px 48px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .35s var(--ease);border-bottom:2px solid var(--g);box-shadow:0 20px 60px rgba(0,0,0,.1);z-index:999}
+.ni:hover .mm{opacity:1;visibility:visible;transform:translateY(0)}
+.mm-in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 240px;gap:36px}
+.mc h4{font:600 10px/1 var(--fb);text-transform:uppercase;letter-spacing:2px;color:var(--g);margin-bottom:14px}
+.mc a{display:block;font:400 13px/1 var(--fb);color:var(--ch);padding:6px 0;transition:color .2s,padding-left .2s}.mc a:hover{color:var(--g);padding-left:6px}
+.mf{border-radius:10px;overflow:hidden;aspect-ratio:3/4;position:relative}
+.mf img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}.mf:hover img{transform:scale(1.05)}
+.mf-ov{position:absolute;bottom:0;left:0;right:0;padding:16px;background:linear-gradient(transparent,rgba(26,26,26,.7))}
+.mf-ov span{font:500 14px/1 var(--fd);color:var(--w)}
+.icons{display:flex;align-items:center;gap:16px}
+.ic{position:relative;width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:var(--bk);transition:color .2s}.ic:hover{color:var(--g)}
+.ic .badge{position:absolute;top:1px;right:1px;width:15px;height:15px;background:var(--g);color:var(--bk);border-radius:50%;font:700 8px/15px var(--fb);text-align:center}
+.mobt{display:none;flex-direction:column;gap:5px}.mobt span{display:block;width:20px;height:1.5px;background:var(--bk)}
+
+/* ═══ TICKER ═══ */
+.ticker{height:44px;background:var(--g);overflow:hidden;display:flex;align-items:center;position:relative;z-index:3}
+.ticker:hover .ticker-tr{animation-play-state:paused}
+.ticker-tr{display:flex;white-space:nowrap;animation:tick 26s linear infinite}
+.ticker-it{font:500 10px/1 var(--fb);color:var(--bk);text-transform:uppercase;letter-spacing:2.5px;padding:0 24px;flex-shrink:0}
+.ticker-it::after{content:'✦';margin-left:24px;opacity:.3;font-size:8px}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ═══ 4. HERO ═══ */
+.hero{height:100vh;min-height:650px;position:relative;overflow:hidden;background:var(--bk)}
+.hero-bg{position:absolute;inset:0;will-change:transform}
+.hero-slide{position:absolute;inset:0;opacity:0}
+.hero-slide.active{opacity:1}
+.hero-slide img{width:100%;height:100%;object-fit:cover;will-change:transform;transition:opacity 1.2s var(--ease)}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(105deg,rgba(26,26,26,.9) 0%,rgba(26,26,26,.55) 40%,rgba(26,26,26,.15) 70%,rgba(26,26,26,.05) 100%);z-index:2}
+/* Noise texture overlay for cinematic feel */
+.hero::after{content:'';position:absolute;inset:0;z-index:3;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");opacity:.4;pointer-events:none;mix-blend-mode:overlay}
+.hero-ct{position:absolute;left:0;top:0;bottom:0;width:55%;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(32px,6vw,80px);z-index:4}
+.hero-tag{font:600 11px/1 var(--fb);color:var(--g);text-transform:uppercase;letter-spacing:5px;margin-bottom:28px;opacity:0}
+.hero-h{font:700 clamp(36px,5.5vw,64px)/1.06 var(--fd);color:var(--w);margin-bottom:0}
+.hero-h .w{display:inline-block;overflow:hidden;vertical-align:top;margin-right:.2em}
+.hero-h .wi{display:inline-block;transform:translateY(110%)}
+.hero-line{width:0;height:2px;background:linear-gradient(90deg,var(--g),var(--gd));margin:22px 0;border-radius:1px}
+.hero-d{font:300 15px/1.85 var(--fb);color:rgba(255,255,255,.55);max-width:440px;margin-bottom:40px;opacity:0}
+.hero-cta{display:flex;gap:14px;opacity:0;transform:translateY(20px)}
+.hero-prog{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,var(--g),var(--gd));z-index:10;width:0}
+.hero-dots{position:absolute;bottom:36px;right:clamp(32px,6vw,80px);display:flex;gap:12px;z-index:10}
+.hero-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);background:transparent;transition:all .3s}
+.hero-dot.active{background:var(--g);border-color:var(--g);transform:scale(1.3)}
+
+/* ═══ ALL SECTIONS — position relative + z-index to sit ABOVE fixed footer ═══ */
+section,.section-block{position:relative;z-index:2}
+
+/* ═══ CATEGORIES ═══ */
+.cats{padding:100px 0;background:var(--cr)}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.s-title{font:600 clamp(28px,4vw,44px)/1.12 var(--fd);color:var(--bk)}
+.s-sub{font:400 14px/1.6 var(--fb);color:var(--gr);margin-top:10px}
+.cat-g{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+.cat-c{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;cursor:pointer}
+.cat-c img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}.cat-c:hover img{transform:scale(1.08)}
+.cat-ov{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(26,26,26,.7));display:flex;flex-direction:column;justify-content:flex-end;padding:24px;transition:background .4s}
+.cat-c:hover .cat-ov{background:linear-gradient(transparent 25%,rgba(26,26,26,.8))}
+.cat-name{font:500 21px/1.2 var(--fd);color:var(--w);margin-bottom:5px}
+.cat-arr{color:var(--g);width:16px;height:16px;transition:transform .3s var(--ease)}.cat-c:hover .cat-arr{transform:translateX(8px)}
+/* Light sweep on category cards */
+.cat-c::before{content:'';position:absolute;top:0;left:-80%;width:60%;height:100%;z-index:3;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.12) 50%,transparent 70%);transition:left .8s var(--ease)}
+.cat-c:hover::before{left:120%}
+
+/* ═══ PRODUCT CARD with 3D TILT ═══ */
+.pc{background:var(--w);border:1px solid var(--bd);border-radius:12px;overflow:hidden;position:relative;cursor:pointer;transition:box-shadow .35s;transform-style:preserve-3d;perspective:800px}
+.pc:hover{box-shadow:0 20px 50px rgba(0,0,0,.1)}
+.pc-img{position:relative;aspect-ratio:1;overflow:hidden;background:#f8f5f0}
+.pc-img img{width:100%;height:100%;object-fit:cover;transition:opacity .35s}
+.pc-img .ih{position:absolute;inset:0;opacity:0}.pc:hover .ih{opacity:1}.pc:hover .im{opacity:0}
+/* 3D tilt highlight */
+.pc-glow{position:absolute;inset:0;pointer-events:none;z-index:10;border-radius:12px;opacity:0;transition:opacity .3s}
+.pc:hover .pc-glow{opacity:1}
+.pc-wish{position:absolute;top:10px;right:10px;z-index:5;width:34px;height:34px;background:rgba(255,255,255,.92);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .2s}
+.pc-wish:hover{transform:scale(1.15)}.pc-wish.active svg{fill:var(--g);color:var(--g)}.pc-wish svg{width:16px;height:16px;color:#aaa}
+.pc-badge{position:absolute;top:10px;left:10px;z-index:5;padding:4px 10px;border-radius:20px;font:700 9px/1 var(--fb);text-transform:uppercase;letter-spacing:1px}
+.badge-sale{background:var(--g);color:var(--bk)}.badge-new{background:var(--bk);color:var(--w)}
+.pc-info{padding:14px 16px 16px}
+.pc-name{font:500 13px/1.4 var(--fb);color:var(--bk);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px;margin-bottom:6px}
+.pc-price{display:flex;align-items:baseline;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.pc-cur{font:400 18px/1 var(--fp);color:var(--bk)}.pc-orig{font:400 12px/1 var(--fb);color:var(--gl);text-decoration:line-through}
+.pc-disc{font:600 9px/1 var(--fb);color:var(--g);border:1px solid var(--g);border-radius:20px;padding:3px 7px}
+.pc-rat{display:flex;align-items:center;gap:5px;margin-bottom:10px}
+.stars{display:flex;gap:1px}.stars svg{width:12px;height:12px}.sf{color:var(--g);fill:var(--g)}.se{color:#ddd;fill:#ddd}
+.pc-rt{font:400 11px/1 var(--fb);color:var(--gl)}
+.pc-btn{width:100%;height:40px;border:1px solid var(--g);border-radius:6px;font:600 10px/1 var(--fb);text-transform:uppercase;letter-spacing:1.5px;color:var(--g);background:transparent;transition:all .25s var(--ease);position:relative;overflow:hidden}
+.pc-btn:hover{background:var(--g);color:var(--bk)}
+.pc-btn::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);transition:left .4s}
+.pc-btn:hover::before{left:120%}
+
+/* ═══ 5. HORIZONTAL SCROLL BEST SELLERS ═══ */
+.bs-sec{background:var(--w);padding-top:100px;position:relative;z-index:2}
+.bs-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:48px}
+.va-link{font:500 13px/1 var(--fb);color:var(--g);display:flex;align-items:center;gap:5px}
+.va-link svg{width:14px;height:14px;transition:transform .2s}.va-link:hover svg{transform:translateX(4px)}
+.hs-wrap{overflow:hidden;width:100%}
+.hs-track{display:flex;gap:22px;will-change:transform}
+.hs-track .pc{min-width:290px;flex-shrink:0}
+.hs-prog{height:3px;background:var(--bd);margin-top:40px;border-radius:2px;overflow:hidden}
+.hs-bar{height:100%;background:linear-gradient(90deg,var(--g),var(--gd));border-radius:2px;width:0;transition:width .15s}
+
+/* ═══ 6. COLLECTION BANNER ═══ */
+.coll-ban{height:80vh;min-height:500px;position:relative;overflow:hidden;display:flex;align-items:flex-end;z-index:2}
+.coll-bg{position:absolute;inset:-120px;background-size:cover;background-position:center;will-change:transform}
+.coll-ban::after{content:'';position:absolute;inset:0;background:linear-gradient(15deg,rgba(26,26,26,.75) 0%,rgba(26,26,26,.25) 50%,transparent 100%);z-index:1}
+.coll-panel{position:relative;z-index:2;max-width:500px;margin:0 0 clamp(32px,5vw,64px) clamp(24px,5vw,64px);padding:clamp(24px,4vw,48px);background:rgba(26,26,26,.35);backdrop-filter:blur(12px);border-radius:6px;border:1px solid transparent;will-change:transform}
+.coll-panel.border-in{border-color:rgba(201,169,110,.3);box-shadow:0 0 40px rgba(201,169,110,.06)}
+.coll-tag{font:600 11px/1 var(--fb);color:var(--g);text-transform:uppercase;letter-spacing:4px;margin-bottom:16px}
+.coll-h{font:700 clamp(24px,3.5vw,42px)/1.15 var(--fd);color:var(--w);margin-bottom:16px;overflow:hidden}
+.coll-h .cl{display:block;overflow:hidden}.coll-h .cli{display:block;transform:translateY(110%)}
+.coll-d{font:300 14px/1.7 var(--fb);color:rgba(255,255,255,.7);margin-bottom:28px}
+
+/* ═══ TRENDING ═══ */
+.trend{padding:100px 0;overflow:hidden;background:var(--gt);z-index:2;position:relative}
+.trend-wm{position:absolute;top:50%;left:0;white-space:nowrap;font:700 clamp(60px,10vw,120px)/1 var(--fd);color:rgba(201,169,110,.04);transform:translateY(-50%);will-change:transform;pointer-events:none;z-index:0}
+.trend-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:48px;position:relative;z-index:2}
+.tc{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;aspect-ratio:1}
+.tc.tall{grid-row:span 2;aspect-ratio:auto;height:100%}
+.tc img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}.tc:hover img{transform:scale(1.06)}
+.tc-ov{position:absolute;inset:0;background:rgba(26,26,26,.5);display:flex;flex-direction:column;justify-content:flex-end;padding:18px;opacity:0;transform:translateY(8px);transition:all .35s var(--ease)}
+.tc:hover .tc-ov{opacity:1;transform:translateY(0)}
+.tc-n{font:500 14px/1.3 var(--fb);color:var(--w)}.tc-p{font:400 15px/1 var(--fp);color:var(--w);margin:4px 0 7px}.tc-l{font:500 10px/1 var(--fb);color:var(--g);text-transform:uppercase;letter-spacing:1px}
+.tc-u{position:absolute;bottom:10px;left:10px;font:400 10px/1 var(--fb);color:rgba(255,255,255,.5);z-index:2}
+
+/* ═══ VALUE STRIP ═══ */
+.val{background:var(--bk);padding:52px 0;position:relative;z-index:2}
+.val-g{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.val-i{text-align:center}
+.val-ic{width:48px;height:48px;margin:0 auto 12px;color:var(--g);position:relative;display:flex;align-items:center;justify-content:center}
+.val-ic::before{content:'';position:absolute;inset:0;border:1.5px solid rgba(201,169,110,.2);border-radius:50%;animation:spin 12s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.val-t{font:600 11px/1 var(--fb);color:var(--w);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.val-s{font:300 11px/1.4 var(--fb);color:rgba(255,255,255,.35)}
+
+/* ═══ NEW ARRIVALS ═══ */
+.new-arr{padding:100px 0;background:var(--w);position:relative;z-index:2}
+.new-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:48px}
+.p-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+/* ═══ JOURNAL ═══ */
+.jour{padding:100px 0;background:var(--cr);position:relative;z-index:2}
+.jour-g{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+.jc{background:var(--w);border-radius:12px;overflow:hidden;transition:transform .35s var(--ease),box-shadow .35s}
+.jc:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.07)}
+.jc-img{aspect-ratio:16/9;overflow:hidden}.jc-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}.jc:hover .jc-img img{transform:scale(1.06)}
+.jc-ct{padding:22px}
+.jc-tag{font:600 10px/1 var(--fb);color:var(--g);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.jc-title{font:500 17px/1.35 var(--fd);color:var(--bk);margin-bottom:6px}
+.jc-meta{font:300 11px/1 var(--fb);color:var(--gl)}
+
+/* ═══ NEWSLETTER ═══ */
+.nwsl{background:linear-gradient(135deg,var(--ro) 0%,var(--cr) 100%);padding:80px 0;text-align:center;position:relative;z-index:2}
+.nwsl-h{font:600 clamp(26px,3.5vw,36px)/1.2 var(--fd);color:var(--bk);margin-bottom:10px}
+.nwsl-d{font:300 14px/1.7 var(--fb);color:var(--gr);max-width:440px;margin:0 auto 28px}
+.nwsl-f{display:flex;gap:10px;max-width:460px;margin:0 auto}
+.nwsl-f input{flex:1;height:50px;border:1px solid var(--g);border-radius:6px;padding:0 16px;font:400 13px var(--fb);background:var(--w);outline:none;transition:border-color .2s,box-shadow .2s}
+.nwsl-f input:focus{border-color:var(--gd);box-shadow:0 0 0 4px rgba(201,169,110,.12)}
+.nwsl-tr{font:300 11px/1 var(--fb);color:var(--gl);margin-top:10px}
+.nwsl-ok{display:none;align-items:center;justify-content:center;gap:10px;font:500 16px/1 var(--fb);color:var(--g)}
+.nwsl-ok.show{display:flex;animation:bIn .6s var(--ease)}
+@keyframes bIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+
+/* ═══ 13. FOOTER — fixed at bottom, revealed when content scrolls away ═══ */
+footer{position:fixed;bottom:0;left:0;right:0;z-index:1;background:var(--bk);color:rgba(255,255,255,.5);padding:72px 0 0}
+.ft-spacer{height:420px;position:relative;z-index:2;pointer-events:none;background:transparent}
+.ft-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.08)}
+.ft-brand .logo,.ft-brand .logo em{color:var(--w)}
+.ft-brand p{font:300 13px/1.7 var(--fb);margin:14px 0 20px}
+.ft-soc{display:flex;gap:10px}
+.ft-soc a{width:38px;height:38px;border:1px solid rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4);transition:all .25s}
+.ft-soc a:hover{border-color:var(--g);color:var(--g);transform:translateY(-2px)}
+.ft-col h4{font:600 10px/1 var(--fb);color:var(--w);text-transform:uppercase;letter-spacing:2px;margin-bottom:18px}
+.ft-col a{display:block;font:300 13px/1 var(--fb);color:rgba(255,255,255,.35);padding:5px 0;transition:color .2s}.ft-col a:hover{color:var(--g)}
+.ft-bot{padding:20px 0;display:flex;justify-content:space-between;align-items:center;font:300 11px/1 var(--fb)}
+.ft-pay{display:flex;gap:8px}.ft-pay span{padding:3px 8px;border:1px solid rgba(255,255,255,.08);border-radius:3px;font:500 8px/1 var(--fb);color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px}
+
+/* ═══ OVERLAYS ═══ */
+.s-ov{position:fixed;inset:0;background:rgba(26,26,26,.96);z-index:2000;display:flex;flex-direction:column;align-items:center;padding-top:120px;opacity:0;visibility:hidden;transition:all .3s var(--ease)}.s-ov.active{opacity:1;visibility:visible}
+.s-ov .s-close{position:absolute;top:28px;right:28px;color:var(--g)}
+.s-iw{width:100%;max-width:600px;padding:0 24px;transform:translateY(-16px);transition:transform .4s var(--ease)}.s-ov.active .s-iw{transform:translateY(0)}
+.s-iw input{width:100%;height:56px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.15);font:400 24px var(--fd);color:var(--w);outline:none;caret-color:var(--g)}.s-iw input::placeholder{color:rgba(255,255,255,.15)}
+.s-sug{max-width:600px;width:100%;margin-top:32px;padding:0 24px}
+.s-lab{font:600 10px/1 var(--fb);color:var(--g);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px}
+.s-pills{display:flex;flex-wrap:wrap;gap:8px}
+.s-pill{padding:8px 16px;border:1px solid rgba(201,169,110,.25);border-radius:20px;font:400 12px/1 var(--fb);color:var(--g);cursor:pointer;transition:all .2s}.s-pill:hover{background:var(--g);color:var(--bk)}
+.c-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;opacity:0;visibility:hidden;transition:all .3s}.c-ov.active{opacity:1;visibility:visible}
+.c-dr{position:fixed;top:0;right:0;width:420px;height:100%;background:var(--w);z-index:2001;transform:translateX(100%);transition:transform .4s var(--ease);display:flex;flex-direction:column;box-shadow:-4px 0 30px rgba(0,0,0,.1)}
+.c-dr.active{transform:translateX(0)}
+.c-hdr{display:flex;justify-content:space-between;align-items:center;padding:22px;border-bottom:1px solid var(--bd)}.c-hdr h3{font:600 17px/1 var(--fb);color:var(--bk)}
+.c-ship{padding:10px 22px;background:var(--gt);font:400 12px/1.4 var(--fb)}
+.c-ship-bar{height:3px;background:var(--bd);border-radius:2px;margin-top:7px}.c-ship-fill{height:100%;background:var(--g);border-radius:2px;width:100%}
+.c-items{flex:1;overflow-y:auto;padding:14px 22px}
+.c-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--bd)}
+.c-item-img{width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0}.c-item-img img{width:100%;height:100%;object-fit:cover}
+.c-item-info{flex:1}.c-item-name{font:500 13px/1.3 var(--fb);color:var(--bk);margin-bottom:3px}.c-item-var{font:300 11px/1 var(--fb);color:var(--gl);margin-bottom:7px}
+.c-item-bot{display:flex;justify-content:space-between;align-items:center}
+.c-qty{display:flex;border:1px solid var(--bd);border-radius:5px}.c-qty button{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px}.c-qty span{width:28px;text-align:center;font:500 12px/28px var(--fb)}
+.c-item-pr{font:400 15px/1 var(--fp)}
+.c-foot{padding:22px;border-top:1px solid var(--bd)}
+.c-promo{font:500 12px/1 var(--fb);color:var(--g);cursor:pointer;margin-bottom:14px;display:flex;align-items:center;gap:5px}
+.c-tots{margin-bottom:18px}.c-row{display:flex;justify-content:space-between;padding:3px 0;font:400 13px/1 var(--fb);color:var(--ch)}.c-row.total{font-weight:700;color:var(--bk);font-size:17px;padding-top:10px;border-top:1px solid var(--bd);margin-top:6px}
+
+.stt{position:fixed;bottom:22px;right:22px;z-index:900;width:46px;height:46px;background:var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--w);box-shadow:0 4px 16px rgba(201,169,110,.3);opacity:0;transform:scale(.8);pointer-events:none;transition:all .3s var(--ease)}.stt.visible{opacity:1;transform:scale(1);pointer-events:auto}.stt:hover{transform:scale(1.08) translateY(-2px)}
+.toast{position:fixed;top:22px;right:22px;z-index:3000;max-width:340px;background:var(--w);border-radius:10px;padding:14px 18px;box-shadow:0 8px 36px rgba(0,0,0,.12);border-left:3px solid var(--g);display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:transform .4s var(--ease)}.toast.show{transform:translateX(0)}.toast-text{font:400 13px/1.4 var(--fb);color:var(--bk)}
+.mob-menu{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--w);z-index:2500;transform:translateX(-100%);transition:transform .4s var(--ease);overflow-y:auto;padding:24px}.mob-menu.active{transform:translateX(0)}
+.mob-menu-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.mob-menu-n a{display:block;padding:13px 0;font:500 15px/1 var(--fb);color:var(--bk);border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:1px}
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--w);z-index:1000;box-shadow:0 -1px 12px rgba(0,0,0,.05)}
+.mob-nav-in{display:flex;justify-content:space-around;align-items:center;height:100%}
+.mni{display:flex;flex-direction:column;align-items:center;gap:2px;font:500 9px/1 var(--fb);color:var(--gl);position:relative}.mni.active{color:var(--g)}.mni svg{width:20px;height:20px}
+.mni .badge{position:absolute;top:-3px;right:-3px;width:13px;height:13px;background:var(--g);border-radius:50%;font:700 7px/13px var(--fb);color:var(--bk);text-align:center}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1024px){
+  .nav,.mm{display:none}.mobt{display:flex}.mob-nav{display:block}body{padding-bottom:56px}
+  .hero-ct{width:100%;padding:0 28px;top:auto;bottom:0;height:auto;justify-content:flex-end;padding-bottom:72px}
+  .hero-ov{background:linear-gradient(transparent 20%,rgba(26,26,26,.9))}
+  .hero-dots{right:28px;bottom:24px}
+  .cat-g,.trend-g{grid-template-columns:repeat(2,1fr)}.p-grid{grid-template-columns:repeat(2,1fr)}
+  .val-g{grid-template-columns:repeat(2,1fr)}.jour-g{grid-template-columns:1fr}
+  .ft-grid{grid-template-columns:repeat(2,1fr)}
+  .coll-ban{height:50vh}.coll-bg{inset:-40px}
+  .coll-panel{max-width:100%;margin:0 20px 28px}
+  .hs-track{padding:0 24px!important}.hs-track .pc{min-width:250px}
+  .trend-wm{font-size:50px}
+  /* Footer not fixed on mobile */
+  footer{position:relative}.ft-spacer{display:none}
+  .c-dr{width:100%}
+}
+@media(max-width:640px){
+  .topbar{font-size:9px}.header{height:54px;padding:0 16px}.logo{font-size:17px}
+  .container{padding:0 16px}
+  .hero-ct{padding:0 18px 56px}
+  .hero-cta{flex-direction:column}.hero-cta .btn-p,.hero-cta .btn-s{width:100%;justify-content:center}
+  .cat-g{gap:10px}.cat-c{aspect-ratio:1/1.2}.cat-name{font-size:16px}
+  .p-grid{gap:10px}
+  .coll-ban{height:55vh}
+  .nwsl-f{flex-direction:column}
+  .ft-grid{grid-template-columns:1fr;gap:24px}.ft-bot{flex-direction:column;gap:10px;text-align:center}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- 1. LOADER -->
+<div class="loader" id="loader"><div class="loader-half top"></div><div class="loader-half bot"></div><div class="loader-center"><div class="loader-logo"><span>S</span><span>A</span><span>R</span><span>A</span><span>&nbsp;</span><span class="gold">C</span><span class="gold">o</span><span class="gold">l</span><span class="gold">l</span><span class="gold">e</span><span class="gold">c</span><span class="gold">t</span><span class="gold">i</span><span class="gold">o</span><span class="gold">n</span><span class="gold">s</span></div><div class="loader-bar"></div></div></div>
+
+<!-- 7. CURSOR -->
+<div class="cur-d" id="cdot"></div><div class="cur-r" id="cring"></div>
+
+<!-- 10. THREE.JS PARTICLES -->
+<div id="three-bg"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">Free Shipping on Orders Above ₹1,499 · Easy 15-Day Returns <a href="#">Track Order</a></div>
+
+<!-- HEADER -->
+<header class="header" id="hdr"><div class="header-in">
+  <button class="mobt" onclick="tMM()"><span></span><span></span><span></span></button>
+  <a href="#" class="logo">SARA <em>Collections</em></a>
+  <nav class="nav">
+    <div class="ni"><a class="nl" href="#">New Arrivals</a><div class="mm"><div class="mm-in"><div class="mc"><h4>Shop New</h4><a href="#">This Week</a><a href="#">Trending Now</a><a href="#">Editor's Picks</a></div><div class="mc"><h4>Categories</h4><a href="#">Necklaces</a><a href="#">Earrings</a><a href="#">Bracelets</a><a href="#">Rings</a></div><div class="mc"><h4>Price</h4><a href="#">Under ₹999</a><a href="#">₹1K–₹2.5K</a><a href="#">₹5K+</a></div><div class="mf"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=500&fit=crop&q=80" alt="" loading="lazy"><div class="mf-ov"><span>Spring 2026 →</span></div></div></div></div></div>
+    <div class="ni"><a class="nl" href="#">Necklaces</a><div class="mm"><div class="mm-in"><div class="mc"><h4>Styles</h4><a href="#">Chains</a><a href="#">Pendants</a><a href="#">Chokers</a><a href="#">Layered Sets</a></div><div class="mc"><h4>Materials</h4><a href="#">Gold-Plated</a><a href="#">Silver</a><a href="#">Pearl</a><a href="#">Kundan</a></div><div class="mc"><h4>Occasion</h4><a href="#">Daily Wear</a><a href="#">Bridal</a><a href="#">Festive</a></div><div class="mf"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=500&fit=crop&q=80" alt="" loading="lazy"><div class="mf-ov"><span>Shop Necklaces →</span></div></div></div></div></div>
+    <div class="ni"><a class="nl" href="#">Earrings</a></div><div class="ni"><a class="nl" href="#">Bracelets</a></div><div class="ni"><a class="nl" href="#">Rings</a></div><div class="ni"><a class="nl" href="#">Sets</a></div><div class="ni"><a class="nl" href="#">Collections</a></div><div class="ni"><a class="nl" href="#" style="color:var(--g)">Sale</a></div>
+  </nav>
+  <div class="icons">
+    <button class="ic" onclick="tS()"><i data-lucide="search" style="width:19px;height:19px"></i></button>
+    <button class="ic"><i data-lucide="user" style="width:19px;height:19px"></i></button>
+    <button class="ic"><i data-lucide="heart" style="width:19px;height:19px"></i><span class="badge">2</span></button>
+    <button class="ic" onclick="tC()"><i data-lucide="shopping-bag" style="width:19px;height:19px"></i><span class="badge" id="cbadge">3</span></button>
+  </div>
+</div></header>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-tr"><span class="ticker-it">Free Shipping Above ₹1,499</span><span class="ticker-it">Easy 15-Day Returns</span><span class="ticker-it">Handcrafted with Love</span><span class="ticker-it">10% Off First Order: SARA10</span><span class="ticker-it">COD Available</span><span class="ticker-it">Free Shipping Above ₹1,499</span><span class="ticker-it">Easy 15-Day Returns</span><span class="ticker-it">Handcrafted with Love</span><span class="ticker-it">10% Off First Order: SARA10</span><span class="ticker-it">COD Available</span></div></div>
+
+<!-- ═══ MAIN CONTENT WRAPPER — everything in here sits above the fixed footer ═══ -->
+<div class="main-wrap">
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg" id="hero-bg">
+    <div class="hero-slide active"><img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1400&h=900&fit=crop&q=85" alt=""></div>
+    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1400&h=900&fit=crop&q=85" alt=""></div>
+    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=1400&h=900&fit=crop&q=85" alt=""></div>
+  </div>
+  <div class="hero-ov"></div>
+  <div class="hero-ct">
+    <div class="hero-tag">NEW SEASON — SPRING 2026</div>
+    <h1 class="hero-h"><span class="w"><span class="wi">Where</span></span><span class="w"><span class="wi">Tradition</span></span><span class="w"><span class="wi">Meets</span></span><span class="w"><span class="wi">the</span></span><span class="w"><span class="wi">Modern</span></span><span class="w"><span class="wi">Muse</span></span></h1>
+    <div class="hero-line"></div>
+    <p class="hero-d">Handcrafted jewellery honouring centuries of Indian artistry, reimagined for the woman who writes her own story.</p>
+    <div class="hero-cta"><a href="#" class="btn-p mag">Shop New Arrivals</a><a href="#" class="btn-s mag">Explore Collections</a></div>
+  </div>
+  <div class="hero-prog" id="hprog"></div>
+  <div class="hero-dots"><button class="hero-dot active" data-d="0"></button><button class="hero-dot" data-d="1"></button><button class="hero-dot" data-d="2"></button></div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="cats"><div class="container">
+  <div style="text-align:center"><h2 class="s-title spt">Shop by Category</h2><p class="s-sub">Discover pieces that speak your language.</p></div>
+  <div class="cat-g" id="catg">
+    <a href="#" class="cat-c"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&h=800&fit=crop&q=80" alt="" loading="lazy"><div class="cat-ov"><span class="cat-name">Necklaces</span><svg class="cat-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+    <a href="#" class="cat-c"><img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=600&h=800&fit=crop&q=80" alt="" loading="lazy"><div class="cat-ov"><span class="cat-name">Earrings</span><svg class="cat-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+    <a href="#" class="cat-c"><img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&h=800&fit=crop&q=80" alt="" loading="lazy"><div class="cat-ov"><span class="cat-name">Bracelets</span><svg class="cat-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+    <a href="#" class="cat-c"><img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&h=800&fit=crop&q=80" alt="" loading="lazy"><div class="cat-ov"><span class="cat-name">Rings</span><svg class="cat-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+    <a href="#" class="cat-c"><img src="https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=600&h=800&fit=crop&q=80" alt="" loading="lazy"><div class="cat-ov"><span class="cat-name">Bridal Sets</span><svg class="cat-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+    <a href="#" class="cat-c"><img src="https://images.unsplash.com/photo-1588444837495-c6cfeb53f32d?w=600&h=800&fit=crop&q=80" alt="" loading="lazy"><div class="cat-ov"><span class="cat-name">Ear Cuffs</span><svg class="cat-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></a>
+  </div>
+</div></section>
+
+<!-- BEST SELLERS -->
+<section class="bs-sec" id="bs-sec"><div class="container"><div class="bs-hdr"><h2 class="s-title spt">Our Best Sellers</h2><a href="#" class="va-link">View All <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div><div class="hs-wrap" id="hs-wrap"><div class="hs-track" id="hs-track"></div></div><div class="container"><div class="hs-prog"><div class="hs-bar" id="hs-bar"></div></div><div style="height:80px"></div></div></section>
+
+<!-- COLLECTION BANNER -->
+<section class="coll-ban" id="coll-ban"><div class="coll-bg" id="coll-bg" style="background-image:url('https://images.unsplash.com/photo-1596944924616-7b38e7cfac36?w=1920&h=1080&fit=crop&q=80')"></div><div class="coll-panel" id="coll-panel"><div class="coll-tag">THE BRIDAL LUXE COLLECTION</div><h2 class="coll-h"><span class="cl"><span class="cli">For the Day</span></span> <span class="cl"><span class="cli">You've Dreamt Of</span></span></h2><p class="coll-d">42 hand-selected pieces for the most important chapter of your love story.</p><a href="#" class="btn-p mag">Explore Bridal Luxe</a></div></section>
+
+<!-- TRENDING -->
+<section class="trend"><div class="trend-wm" id="twm">TRENDING ON @SARACOLLECTIONS ✦ TRENDING ON @SARACOLLECTIONS ✦ TRENDING ON @SARACOLLECTIONS ✦</div><div class="container">
+  <div style="text-align:center;position:relative;z-index:2"><h2 class="s-title spt">Trending on @SaraCollections</h2><p class="s-sub">Join 125,000+ women who style with Sara</p></div>
+  <div class="trend-g">
+    <div class="tc tall" style="grid-row:span 2"><img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=800&h=1000&fit=crop&q=80" alt="" loading="lazy"><div class="tc-ov"><span class="tc-n">Kundan Bridal Set</span><span class="tc-p">₹14,999</span><span class="tc-l">Shop This Look →</span></div></div>
+    <div class="tc"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&h=500&fit=crop&q=80" alt="" loading="lazy"><div class="tc-ov"><span class="tc-n">Pearl Cascade</span><span class="tc-p">₹1,299</span><span class="tc-l">Shop →</span></div><span class="tc-u">@priyastyle</span></div>
+    <div class="tc"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&h=500&fit=crop&q=80" alt="" loading="lazy"><div class="tc-ov"><span class="tc-n">Layered Trio</span><span class="tc-p">₹2,499</span><span class="tc-l">Shop →</span></div></div>
+    <div class="tc"><img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=500&h=500&fit=crop&q=80" alt="" loading="lazy"><div class="tc-ov"><span class="tc-n">Temple Jhumkas</span><span class="tc-p">₹1,799</span><span class="tc-l">Shop →</span></div><span class="tc-u">@ananya_r</span></div>
+    <div class="tc"><img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&h=500&fit=crop&q=80" alt="" loading="lazy"><div class="tc-ov"><span class="tc-n">Rose Gold Cuff</span><span class="tc-p">₹1,599</span><span class="tc-l">Shop →</span></div></div>
+  </div>
+</div></section>
+
+<!-- VALUE STRIP -->
+<section class="val"><div class="container"><div class="val-g">
+  <div class="val-i"><div class="val-ic"><i data-lucide="truck" style="width:22px;height:22px"></i></div><div class="val-t">Free Shipping</div><div class="val-s">On orders above ₹1,499</div></div>
+  <div class="val-i"><div class="val-ic"><i data-lucide="refresh-cw" style="width:22px;height:22px"></i></div><div class="val-t">15-Day Returns</div><div class="val-s">No questions asked</div></div>
+  <div class="val-i"><div class="val-ic"><i data-lucide="gem" style="width:22px;height:22px"></i></div><div class="val-t">Handcrafted</div><div class="val-s">By master artisans</div></div>
+  <div class="val-i"><div class="val-ic"><i data-lucide="shield-check" style="width:22px;height:22px"></i></div><div class="val-t">Secure Payment</div><div class="val-s">100% encrypted</div></div>
+</div></div></section>
+
+<!-- NEW ARRIVALS -->
+<section class="new-arr"><div class="container"><div class="new-hdr"><h2 class="s-title spt">Just Arrived</h2><a href="#" class="va-link">View All →</a></div><div class="p-grid" id="na-grid"></div></div></section>
+
+<!-- JOURNAL -->
+<section class="jour"><div class="container">
+  <div style="text-align:center"><h2 class="s-title spt">The Sara Journal</h2><p class="s-sub">Stories, styling tips & the art behind the craft</p></div>
+  <div class="jour-g">
+    <a href="#" class="jc"><div class="jc-img"><img src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=600&h=340&fit=crop&q=80" alt="" loading="lazy"></div><div class="jc-ct"><div class="jc-tag">STYLING</div><div class="jc-title">5 Ways to Layer Necklaces Like a Pro</div><div class="jc-meta">4 min read</div></div></a>
+    <a href="#" class="jc"><div class="jc-img"><img src="https://images.unsplash.com/photo-1596944924616-7b38e7cfac36?w=600&h=340&fit=crop&q=80" alt="" loading="lazy"></div><div class="jc-ct"><div class="jc-tag">BEHIND THE CRAFT</div><div class="jc-title">Meet the Artisans of Jaipur</div><div class="jc-meta">6 min read</div></div></a>
+    <a href="#" class="jc"><div class="jc-img"><img src="https://images.unsplash.com/photo-1515562141589-67f0d569b6c3?w=600&h=340&fit=crop&q=80" alt="" loading="lazy"></div><div class="jc-ct"><div class="jc-tag">TREND REPORT</div><div class="jc-title">Spring 2026: Return of Maximalism</div><div class="jc-meta">5 min read</div></div></a>
+  </div>
+</div></section>
+
+<!-- NEWSLETTER -->
+<section class="nwsl"><div class="container">
+  <h2 class="nwsl-h spt">Join the Inner Circle</h2>
+  <p class="nwsl-d">Early access to new launches, exclusive offers, and styling tips.</p>
+  <form class="nwsl-f" id="nlf" onsubmit="subNL(event)"><input type="email" placeholder="your@email.com" required><button type="submit" class="btn-p mag">Subscribe</button></form>
+  <p class="nwsl-tr">Join 42,000+ subscribers. Unsubscribe anytime.</p>
+  <div class="nwsl-ok" id="nlok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;color:var(--g)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Welcome to the family, beautiful.</div>
+</div></section>
+
+</div><!-- end main-wrap -->
+
+<!-- FOOTER SPACER (transparent gap that reveals fixed footer beneath) -->
+<div class="ft-spacer"></div>
+
+<!-- FOOTER (fixed at bottom of viewport, revealed when content scrolls past) -->
+<footer><div class="container">
+  <div class="ft-grid">
+    <div class="ft-brand"><div class="logo">SARA <em>Collections</em></div><p>Handcrafted fashion jewellery blending timeless elegance with contemporary Indian craftsmanship.</p><div class="ft-soc"><a href="#"><i data-lucide="instagram" style="width:16px;height:16px"></i></a><a href="#"><i data-lucide="youtube" style="width:16px;height:16px"></i></a><a href="#"><i data-lucide="facebook" style="width:16px;height:16px"></i></a></div></div>
+    <div class="ft-col"><h4>About Sara</h4><a href="#">Our Story</a><a href="#">Artisan Partners</a><a href="#">Sustainability</a><a href="#">Careers</a></div>
+    <div class="ft-col"><h4>Customer Care</h4><a href="#">Contact Us</a><a href="#">FAQs</a><a href="#">Shipping</a><a href="#">Returns</a><a href="#">Size Guide</a></div>
+    <div class="ft-col"><h4>My Account</h4><a href="#">Sign In</a><a href="#">Orders</a><a href="#">Wishlist</a><a href="#">Loyalty Points</a></div>
+  </div>
+  <div class="ft-bot"><span>© 2026 Sara Collections. All rights reserved.</span><div class="ft-pay"><span>Visa</span><span>Mastercard</span><span>UPI</span><span>PayTM</span><span>RazorPay</span><span>COD</span></div></div>
+</div></footer>
+
+<!-- OVERLAYS -->
+<div class="s-ov" id="sov"><button class="s-close" onclick="tS()"><i data-lucide="x" style="width:28px;height:28px"></i></button><div class="s-iw"><input type="text" placeholder="Search for chokers, jhumkas, bridal sets..."></div><div class="s-sug"><div class="s-lab">Popular Searches</div><div class="s-pills"><span class="s-pill">Kundan Set</span><span class="s-pill">Jhumkas under 1000</span><span class="s-pill">Bridal Necklace</span><span class="s-pill">Silver Rings</span><span class="s-pill">Pearl Earrings</span></div></div></div>
+<div class="c-ov" id="cov" onclick="tC()"></div>
+<div class="c-dr" id="cdr"><div class="c-hdr"><h3>Your Bag (3)</h3><button onclick="tC()"><i data-lucide="x" style="width:18px;height:18px;color:var(--g)"></i></button></div><div class="c-ship">🎉 You've unlocked <strong>free shipping!</strong><div class="c-ship-bar"><div class="c-ship-fill"></div></div></div><div class="c-items"><div class="c-item"><div class="c-item-img"><img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=160&h=160&fit=crop&q=80" alt=""></div><div class="c-item-info"><div class="c-item-name">Royal Kundan Choker Set</div><div class="c-item-var">Gold</div><div class="c-item-bot"><div class="c-qty"><button>−</button><span>1</span><button>+</button></div><span class="c-item-pr">₹4,999</span></div></div></div><div class="c-item"><div class="c-item-img"><img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?w=160&h=160&fit=crop&q=80" alt=""></div><div class="c-item-info"><div class="c-item-name">Temple Gold Jhumka</div><div class="c-item-var">Gold</div><div class="c-item-bot"><div class="c-qty"><button>−</button><span>1</span><button>+</button></div><span class="c-item-pr">₹1,799</span></div></div></div><div class="c-item"><div class="c-item-img"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=160&h=160&fit=crop&q=80" alt=""></div><div class="c-item-info"><div class="c-item-name">Pearl Cascade Drops</div><div class="c-item-var">White/Gold</div><div class="c-item-bot"><div class="c-qty"><button>−</button><span>2</span><button>+</button></div><span class="c-item-pr">₹2,598</span></div></div></div></div><div class="c-foot"><div class="c-promo"><i data-lucide="tag" style="width:13px;height:13px"></i> Have a promo code?</div><div class="c-tots"><div class="c-row"><span>Subtotal</span><span>₹9,396</span></div><div class="c-row"><span>Shipping</span><span style="color:var(--gn)">FREE</span></div><div class="c-row total"><span>Total</span><span>₹9,396</span></div></div><button class="btn-p" style="width:100%;margin-bottom:7px" onclick="toast('Proceeding to checkout...')">Proceed to Checkout</button><button class="btn-s" style="width:100%" onclick="tC()">Continue Shopping</button></div></div>
+<button class="stt" id="stt" onclick="window.scrollTo({top:0})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px"><path d="M18 15l-6-6-6 6"/></svg></button>
+<div class="toast" id="toastEl"><span class="toast-text" id="toastTxt"></span></div>
+<div class="mob-menu" id="mobm"><div class="mob-menu-h"><span class="logo">SARA <em>Collections</em></span><button onclick="tMM()"><i data-lucide="x" style="width:22px;height:22px"></i></button></div><nav class="mob-menu-n"><a href="#" onclick="tMM()">New Arrivals</a><a href="#" onclick="tMM()">Necklaces</a><a href="#" onclick="tMM()">Earrings</a><a href="#" onclick="tMM()">Bracelets</a><a href="#" onclick="tMM()">Rings</a><a href="#" onclick="tMM()">Sets</a><a href="#" onclick="tMM()">Collections</a><a href="#" onclick="tMM()" style="color:var(--g)">Sale</a></nav></div>
+<div class="mob-nav"><div class="mob-nav-in"><a href="#" class="mni active"><i data-lucide="home" style="width:20px;height:20px"></i><span>Home</span></a><a href="#" class="mni" onclick="tMM()"><i data-lucide="grid-3x3" style="width:20px;height:20px"></i><span>Shop</span></a><a href="#" class="mni" onclick="tS()"><i data-lucide="search" style="width:20px;height:20px"></i><span>Search</span></a><a href="#" class="mni"><i data-lucide="heart" style="width:20px;height:20px"></i><span>Wishlist</span><span class="badge">2</span></a><a href="#" class="mni" onclick="tC()"><i data-lucide="shopping-bag" style="width:20px;height:20px"></i><span>Bag</span><span class="badge">3</span></a></div></div>
+
+<script>
+const P=[
+{n:"Royal Kundan Choker Set",p:6999,s:4999,r:4.8,rv:312,b:"sale",i:"photo-1611652022419-a9419f74343d",i2:"photo-1596944924616-7b38e7cfac36"},
+{n:"Pearl Cascade Drops",p:1299,s:0,r:4.7,rv:189,b:"",i:"photo-1535632066927-ab7c9ab60908",i2:"photo-1617038220319-276d3cfab638"},
+{n:"Temple Gold Jhumka Pair",p:2199,s:1799,r:4.9,rv:456,b:"sale",i:"photo-1630019852942-f89202989a59",i2:"photo-1602751584552-8ba73aad10e1"},
+{n:"Twisted Rose Gold Cuff",p:1599,s:0,r:4.6,rv:143,b:"",i:"photo-1611591437281-460bfbe1220a",i2:"photo-1605100804763-247f67b3557e"},
+{n:"Diamond CZ Solitaire Studs",p:899,s:699,r:4.8,rv:567,b:"sale",i:"photo-1588444837495-c6cfeb53f32d",i2:"photo-1535632066927-ab7c9ab60908"},
+{n:"Layered Chain Necklace Trio",p:2499,s:0,r:4.5,rv:98,b:"",i:"photo-1599643478518-a784e5dc4c8f",i2:"photo-1611652022419-a9419f74343d"},
+{n:"Meenakari Bangle Set of 4",p:1999,s:1499,r:4.7,rv:210,b:"sale",i:"photo-1605100804763-247f67b3557e",i2:"photo-1611591437281-460bfbe1220a"},
+{n:"Oxidised Silver Nose Ring",p:499,s:0,r:4.4,rv:76,b:"",i:"photo-1515562141589-67f0d569b6c3",i2:"photo-1588444837495-c6cfeb53f32d"},
+{n:"Bridal Polki Rani Haar",p:12999,s:9999,r:4.9,rv:89,b:"sale",i:"photo-1596944924616-7b38e7cfac36",i2:"photo-1611652022419-a9419f74343d"},
+{n:"Emerald Green CZ Chandbali",p:2799,s:2299,r:4.8,rv:167,b:"sale",i:"photo-1602751584552-8ba73aad10e1",i2:"photo-1630019852942-f89202989a59"},
+{n:"Minimalist Bar Pendant",p:999,s:0,r:4.7,rv:234,b:"new",i:"photo-1617038220319-276d3cfab638",i2:"photo-1599643478518-a784e5dc4c8f"},
+{n:"Stackable Midi Ring Set",p:1199,s:0,r:4.4,rv:67,b:"new",i:"photo-1605100804763-247f67b3557e",i2:"photo-1611591437281-460bfbe1220a"}];
+const U=id=>`https://images.unsplash.com/${id}?w=560&h=560&fit=crop&q=80`;
+const fmt=v=>'₹'+v.toLocaleString('en-IN');
+const disc=(o,s)=>Math.round((1-s/o)*100);
+function stH(r){let h='<div class="stars">';for(let i=1;i<=5;i++)h+=`<svg class="${i<=Math.round(r)?'sf':'se'}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;return h+'</div>'}
+function cH(p,nw){const d=p.s?disc(p.p,p.s):0;const bg=p.b==='sale'?`<span class="pc-badge badge-sale">${d}% OFF</span>`:((nw||p.b==='new')?'<span class="pc-badge badge-new">NEW</span>':'');
+return`<div class="pc"><div class="pc-img">${bg}<button class="pc-wish" onclick="event.preventDefault();event.stopPropagation();tW(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button><img class="im" src="${U(p.i)}" alt="${p.n}" loading="lazy"><img class="ih" src="${U(p.i2)}" alt="" loading="lazy"></div><div class="pc-info"><div class="pc-name">${p.n}</div><div class="pc-price"><span class="pc-cur">${fmt(p.s||p.p)}</span>${p.s?`<span class="pc-orig">${fmt(p.p)}</span><span class="pc-disc">${d}% OFF</span>`:''}</div><div class="pc-rat">${stH(p.r)}<span class="pc-rt">${p.r} (${p.rv})</span></div><button class="pc-btn" onclick="event.stopPropagation();atb('${p.n}')">Add to Bag</button></div><div class="pc-glow"></div></div>`}
+function renderProducts(){
+  document.getElementById('hs-track').innerHTML=P.slice(0,8).map(p=>cH(p,false)).join('');
+  document.getElementById('na-grid').innerHTML=P.slice(4,12).map(p=>cH(p,true)).join('');
+  const t=document.getElementById('hs-track'),pw=Math.max(0,(window.innerWidth-1200)/2+24);
+  t.style.paddingLeft=pw+'px';t.style.paddingRight=pw+'px';
+}
+
+// ═══ TOGGLES ═══
+function tS(){const o=document.getElementById('sov');o.classList.toggle('active');document.body.style.overflow=o.classList.contains('active')?'hidden':'';if(o.classList.contains('active'))setTimeout(()=>o.querySelector('input').focus(),300)}
+function tC(){document.getElementById('cov').classList.toggle('active');document.getElementById('cdr').classList.toggle('active');document.body.style.overflow=document.getElementById('cdr').classList.contains('active')?'hidden':''}
+function tMM(){document.getElementById('mobm').classList.toggle('active');document.body.style.overflow=document.getElementById('mobm').classList.contains('active')?'hidden':''}
+function tW(b){b.classList.toggle('active');gsap.fromTo(b,{scale:1},{scale:1.3,duration:.15,yoyo:true,repeat:1});toast(b.classList.contains('active')?'Added to wishlist ♥':'Removed from wishlist')}
+function atb(n){toast(n+' added to bag!');const b=document.getElementById('cbadge');b.textContent=+b.textContent+1}
+function subNL(e){e.preventDefault();document.getElementById('nlf').style.display='none';document.querySelector('.nwsl-tr').style.display='none';document.getElementById('nlok').classList.add('show')}
+function toast(m){const t=document.getElementById('toastEl');document.getElementById('toastTxt').textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('sov').classList.remove('active');document.getElementById('cov').classList.remove('active');document.getElementById('cdr').classList.remove('active');document.getElementById('mobm').classList.remove('active');document.body.style.overflow=''}});
+
+// ═══ HERO SLIDESHOW ═══
+let cSlide=0,hTimer,pStart=Date.now();const SD=8000;
+function goSlide(i){document.querySelectorAll('.hero-slide').forEach((s,j)=>{s.classList.toggle('active',j===i);if(j===i)gsap.fromTo(s.querySelector('img'),{scale:1.15,opacity:.7},{scale:1,opacity:1,duration:1.5,ease:'power3.out'})});document.querySelectorAll('.hero-dot').forEach((d,j)=>d.classList.toggle('active',j===i));cSlide=i;pStart=Date.now()}
+function startSS(){pStart=Date.now();hTimer=setInterval(()=>goSlide((cSlide+1)%3),SD);(function upd(){document.getElementById('hprog').style.width=Math.min((Date.now()-pStart)/SD*100,100)+'%';requestAnimationFrame(upd)})()}
+document.querySelectorAll('.hero-dot').forEach(d=>d.addEventListener('click',()=>{clearInterval(hTimer);goSlide(+d.dataset.d);hTimer=setInterval(()=>goSlide((cSlide+1)%3),SD)}));
+
+// ═══ 10. THREE.JS 3D FLOATING PARTICLES ═══
+function initThreeParticles(){
+  const container=document.getElementById('three-bg');
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,1,1000);
+  camera.position.z=400;
+  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  container.appendChild(renderer.domElement);
+  // Create particles
+  const count=120;
+  const geo=new THREE.BufferGeometry();
+  const pos=new Float32Array(count*3);
+  const sizes=new Float32Array(count);
+  for(let i=0;i<count;i++){
+    pos[i*3]=Math.random()*800-400;
+    pos[i*3+1]=Math.random()*800-400;
+    pos[i*3+2]=Math.random()*400-200;
+    sizes[i]=Math.random()*3+1;
+  }
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('size',new THREE.BufferAttribute(sizes,1));
+  const mat=new THREE.PointsMaterial({color:0xC9A96E,size:2.5,transparent:true,opacity:0.15,blending:THREE.AdditiveBlending,sizeAttenuation:true});
+  const particles=new THREE.Points(geo,mat);
+  scene.add(particles);
+  // Animate
+  let mouseX=0,mouseY=0;
+  document.addEventListener('mousemove',e=>{mouseX=(e.clientX-window.innerWidth/2)*.0003;mouseY=(e.clientY-window.innerHeight/2)*.0003});
+  function animate(){
+    requestAnimationFrame(animate);
+    particles.rotation.x+=0.0002;
+    particles.rotation.y+=0.0003;
+    particles.rotation.x+=(mouseY-particles.rotation.x)*.02;
+    particles.rotation.y+=(mouseX-particles.rotation.y)*.02;
+    // Drift particles slowly
+    const p=geo.attributes.position.array;
+    for(let i=0;i<count;i++){
+      p[i*3+1]-=0.15;
+      if(p[i*3+1]<-400)p[i*3+1]=400;
+    }
+    geo.attributes.position.needsUpdate=true;
+    renderer.render(scene,camera);
+  }
+  animate();
+  window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight)});
+}
+
+// ═══ 7. CUSTOM CURSOR ═══
+function initCursor(){if(window.innerWidth<1024)return;const dt=document.getElementById('cdot'),rn=document.getElementById('cring');
+window.addEventListener('mousemove',e=>{gsap.to(dt,{x:e.clientX,y:e.clientY,duration:.08,overwrite:true});gsap.to(rn,{x:e.clientX,y:e.clientY,duration:.25,overwrite:true})});
+document.querySelectorAll('a,button,.pc,.cat-c,.tc,.s-pill,.jc').forEach(el=>{el.addEventListener('mouseenter',()=>rn.classList.add('hover'));el.addEventListener('mouseleave',()=>{rn.classList.remove('hover','view')})});
+document.querySelectorAll('.pc-img,.cat-c,.tc,.mf,.hero-slide,.jc-img').forEach(el=>{el.addEventListener('mouseenter',()=>{rn.classList.add('view','hover')});el.addEventListener('mouseleave',()=>{rn.classList.remove('view','hover')})})}
+
+// ═══ 8. MAGNETIC BUTTONS ═══
+function initMag(){if(window.innerWidth<1024)return;document.querySelectorAll('.mag').forEach(b=>{b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;gsap.to(b,{x:x*.15,y:y*.15,duration:.3,ease:'power2.out'})});b.addEventListener('mouseleave',()=>gsap.to(b,{x:0,y:0,duration:.6,ease:'elastic.out(1,.3)'}))})}
+
+// ═══ 3D TILT on product cards ═══
+function init3DTilt(){if(window.innerWidth<1024)return;
+document.querySelectorAll('.pc').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    const cx=r.width/2,cy=r.height/2;
+    const rx=((y-cy)/cy)*-4,ry=((x-cx)/cx)*4;
+    gsap.to(card,{rotateX:rx,rotateY:ry,duration:.4,ease:'power2.out',transformPerspective:800});
+    const glow=card.querySelector('.pc-glow');
+    if(glow)glow.style.background=`radial-gradient(circle at ${x}px ${y}px, rgba(201,169,110,.12), transparent 60%)`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    gsap.to(card,{rotateX:0,rotateY:0,duration:.6,ease:'power3.out'});
+  });
+})}
+
+// ═══ 1. LOADER ═══
+function playLoader(){const tl=gsap.timeline();
+tl.to('.loader-logo span',{y:0,opacity:1,duration:.45,stagger:.035,ease:'power3.out'})
+.to('.loader-bar',{width:'140px',duration:.5,ease:'power2.inOut'},'+=.15')
+.to('.loader-center',{opacity:0,scale:.95,duration:.3},'+=.35')
+.to('.loader-half.top',{yPercent:-100,duration:.8,ease:'power3.inOut'},'+=.05')
+.to('.loader-half.bot',{yPercent:100,duration:.8,ease:'power3.inOut'},'<')
+.set('#loader',{display:'none'})
+.add(()=>{animHero();startSS()})}
+
+// ═══ 4. HERO ANIMATION ═══
+function animHero(){gsap.timeline()
+.to('.hero-tag',{opacity:1,duration:.6,ease:'power3.out'})
+.to('.hero-h .wi',{y:'0%',duration:.8,stagger:.08,ease:'power4.out'},'<.2')
+.to('.hero-line',{width:'140px',duration:.6,ease:'power2.inOut'},'+=.08')
+.to('.hero-d',{opacity:1,duration:.5,ease:'power3.out'},'<.1')
+.to('.hero-cta',{opacity:1,y:0,duration:.5,ease:'power3.out'},'<.2')
+.from('.hero-dots .hero-dot',{scale:0,duration:.3,stagger:.08,ease:'back.out(1.7)'},'<')}
+
+// ═══ 3. GSAP SCROLLTRIGGER — ALL ANIMATIONS ═══
+function initScrollAnims(){
+  // Split text section titles — letter by letter
+  document.querySelectorAll('.spt').forEach(el=>{if(el.dataset.done)return;el.dataset.done='1';const t=el.textContent;
+  el.innerHTML=t.split('').map(c=>c===' '?'<span style="display:inline-block;width:.22em">&nbsp;</span>':`<span style="display:inline-block">${c}</span>`).join('');
+  gsap.from(el.querySelectorAll('span'),{y:40,opacity:0,duration:.4,stagger:.025,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 85%'}})});
+  // Subtitles
+  gsap.utils.toArray('.s-sub').forEach(s=>gsap.from(s,{y:20,opacity:0,duration:.5,ease:'power3.out',scrollTrigger:{trigger:s,start:'top 88%'}}));
+  // Category cards — stagger scale + opacity
+  gsap.utils.toArray('.cat-c').forEach((c,i)=>gsap.from(c,{scale:.8,opacity:0,duration:.65,delay:i*.15,ease:'power3.out',scrollTrigger:{trigger:c,start:'top 85%'}}));
+  // Product cards — rise + rotation
+  gsap.utils.toArray('.p-grid .pc').forEach((c,i)=>gsap.from(c,{y:80,opacity:0,rotation:2,duration:.6,delay:(i%4)*.1,ease:'power3.out',scrollTrigger:{trigger:c,start:'top 88%'}}));
+  // Value icons — bounce
+  gsap.utils.toArray('.val-i').forEach((v,i)=>gsap.from(v,{scale:0,opacity:0,duration:.5,delay:i*.12,ease:'back.out(1.7)',scrollTrigger:{trigger:v,start:'top 90%'}}));
+  // Journal cards — alternating sides
+  gsap.utils.toArray('.jc').forEach((c,i)=>gsap.from(c,{x:i%2===0?-60:60,opacity:0,duration:.65,ease:'power3.out',scrollTrigger:{trigger:c,start:'top 85%'}}));
+  // Trending cards
+  gsap.utils.toArray('.tc').forEach((c,i)=>gsap.from(c,{y:40,opacity:0,duration:.55,delay:i*.08,ease:'power3.out',scrollTrigger:{trigger:c,start:'top 88%'}}));
+  // 4. Hero parallax
+  if(window.innerWidth>=1024)gsap.to('#hero-bg',{y:-120,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  // 6. Collection banner parallax — BG 50% speed, panel 70% speed
+  if(window.innerWidth>=1024){
+    gsap.to('#coll-bg',{y:150,ease:'none',scrollTrigger:{trigger:'#coll-ban',start:'top bottom',end:'bottom top',scrub:true}});
+    gsap.to('#coll-panel',{y:-60,ease:'none',scrollTrigger:{trigger:'#coll-ban',start:'top bottom',end:'bottom top',scrub:true}});
+  }
+  // 9. Collection text reveal — masked slide up
+  gsap.from('#coll-panel .coll-tag',{y:30,opacity:0,duration:.6,scrollTrigger:{trigger:'#coll-panel',start:'top 82%'}});
+  gsap.to('.coll-h .cli',{y:'0%',duration:.7,stagger:.15,ease:'power4.out',scrollTrigger:{trigger:'.coll-h',start:'top 82%'}});
+  gsap.from('#coll-panel .coll-d',{y:20,opacity:0,duration:.5,delay:.3,scrollTrigger:{trigger:'#coll-panel',start:'top 82%'}});
+  ScrollTrigger.create({trigger:'#coll-panel',start:'top 80%',onEnter:()=>document.getElementById('coll-panel').classList.add('border-in')});
+  // 11. Trending watermark marquee
+  gsap.to('#twm',{x:-600,ease:'none',scrollTrigger:{trigger:'.trend',start:'top bottom',end:'bottom top',scrub:true}});
+  // 5. Horizontal scroll best sellers (desktop pin, mobile overflow)
+  if(window.innerWidth>=1024){
+    const track=document.getElementById('hs-track'),wrap=document.getElementById('hs-wrap');
+    const totalW=track.scrollWidth-wrap.offsetWidth;
+    gsap.to(track,{x:-totalW,ease:'none',scrollTrigger:{trigger:'#bs-sec',start:'top top',end:()=>'+='+totalW,pin:true,scrub:.8,onUpdate:s=>document.getElementById('hs-bar').style.width=s.progress*100+'%'}});
+  }else{
+    const wrap=document.getElementById('hs-wrap');wrap.style.overflowX='auto';wrap.style.webkitOverflowScrolling='touch';
+    wrap.addEventListener('scroll',()=>{document.getElementById('hs-bar').style.width=wrap.scrollLeft/(wrap.scrollWidth-wrap.clientWidth)*100+'%'});
+  }
+  // 12. Section background color transitions (visible shifts)
+  gsap.to('.cats',{backgroundColor:'#FFFFFF',ease:'none',scrollTrigger:{trigger:'.cats',start:'center center',end:'bottom top',scrub:1}});
+  gsap.to('.trend',{backgroundColor:'#FAF7F2',ease:'none',scrollTrigger:{trigger:'.trend',start:'center center',end:'bottom top',scrub:1}});
+  gsap.to('.new-arr',{backgroundColor:'#FAF7F2',ease:'none',scrollTrigger:{trigger:'.new-arr',start:'center center',end:'bottom top',scrub:1}});
+  // 13. Footer spacer height
+  if(window.innerWidth>=1024){const fh=document.querySelector('footer').offsetHeight;document.querySelector('.ft-spacer').style.height=fh+'px'}
+}
+
+// ═══ 2. LENIS SMOOTH SCROLL ═══
+let lenis;
+function initLenis(){lenis=new Lenis({lerp:.07,smoothWheel:true});lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0)}
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded',()=>{
+  lucide.createIcons();
+  renderProducts();
+  gsap.registerPlugin(ScrollTrigger);
+  initLenis();
+  initThreeParticles();
+  initCursor();
+  initMag();
+  playLoader();
+  setTimeout(()=>{initScrollAnims();init3DTilt()},2700);
+  window.addEventListener('scroll',()=>{document.getElementById('hdr').classList.toggle('scrolled',window.scrollY>80);document.getElementById('stt').classList.toggle('visible',window.scrollY>500)});
+});
+</script>
+</body>
+</html>
