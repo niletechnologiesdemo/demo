@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al-Hidaayah Books | Premium Islamic Books & Publishing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Amiri:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-deep: #1B5E20;
+  --green-mid: #2E7D32;
+  --green-light: #4CAF50;
+  --green-pale: #E8F5E9;
+  --green-accent: #00C853;
+  --gold: #C9963B;
+  --gold-light: #D4A84B;
+  --gold-pale: #F5ECD7;
+  --gold-deep: #8B6914;
+  --black: #1A1A1A;
+  --black-soft: #2D2D2D;
+  --white: #FFFFFF;
+  --off-white: #FAFAF7;
+  --cream: #F8F6F0;
+  --gray-100: #F5F5F5;
+  --gray-200: #EEEEEE;
+  --gray-300: #E0E0E0;
+  --gray-400: #BDBDBD;
+  --gray-500: #9E9E9E;
+  --gray-600: #757575;
+  --gray-700: #616161;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; color: var(--black-soft); background: var(--white); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+/* ===== GEOMETRIC ISLAMIC PATTERN (SVG-based) ===== */
+.islamic-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9963B' fill-opacity='0.07'%3E%3Cpath d='M30 0L60 30L30 60L0 30z M30 8L52 30L30 52L8 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.islamic-pattern-dark {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9963B' fill-opacity='0.12'%3E%3Cpath d='M30 0L60 30L30 60L0 30z M30 8L52 30L30 52L8 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  background: var(--green-deep);
+  color: var(--white);
+  font-size: 13px;
+  padding: 8px 0;
+  letter-spacing: 0.3px;
+}
+.top-bar .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.top-bar a { color: var(--gold-light); text-decoration: none; transition: color 0.2s; }
+.top-bar a:hover { color: var(--gold); }
+.top-bar-left { display: flex; align-items: center; gap: 20px; }
+.top-bar-right { display: flex; align-items: center; gap: 16px; }
+.top-bar-right select { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+
+/* ===== PROMO BANNER ===== */
+.promo-banner {
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-deep) 100%);
+  color: var(--white);
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.promo-banner span { font-family: 'Amiri', serif; font-size: 16px; }
+
+/* ===== HEADER ===== */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  gap: 24px;
+}
+.logo { display: flex; align-items: center; gap: 14px; text-decoration: none; flex-shrink: 0; }
+.logo-icon {
+  width: 52px; height: 52px;
+  background: var(--green-deep);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(27,94,32,0.3);
+}
+.logo-icon::after {
+  content: '';
+  width: 42px; height: 42px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  position: absolute;
+}
+.logo-icon svg { width: 24px; height: 24px; fill: var(--gold); position: relative; z-index: 1; }
+.logo-text h1 { font-family: 'Amiri', serif; font-size: 26px; color: var(--green-deep); line-height: 1.1; font-weight: 700; }
+.logo-text p { font-size: 11px; color: var(--gold-deep); letter-spacing: 2.5px; text-transform: uppercase; font-weight: 500; }
+
+.search-bar {
+  flex: 1;
+  max-width: 520px;
+  position: relative;
+}
+.search-bar input {
+  width: 100%;
+  padding: 12px 48px 12px 20px;
+  border: 2px solid var(--gray-200);
+  border-radius: 50px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.3s;
+  background: var(--gray-100);
+}
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--green-mid);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(46,125,50,0.1);
+}
+.search-bar input::placeholder { color: var(--gray-500); }
+.search-bar button {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  width: 40px;
+  background: var(--green-deep);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.search-bar button:hover { background: var(--green-mid); }
+.search-bar button svg { width: 18px; height: 18px; fill: white; }
+
+.header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.header-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--black-soft);
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.2s;
+  text-decoration: none;
+  position: relative;
+}
+.header-btn:hover { color: var(--green-deep); }
+.header-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.cart-count {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  background: var(--gold);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== NAV ===== */
+.nav {
+  background: var(--green-deep);
+}
+.nav-list {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav-list li a {
+  display: block;
+  padding: 14px 20px;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+}
+.nav-list li a:hover, .nav-list li a.active {
+  color: var(--white);
+  background: rgba(255,255,255,0.08);
+  border-bottom-color: var(--gold);
+}
+.nav-list li:first-child a { padding-left: 0; }
+
+/* ===== CONTAINER ===== */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(135deg, var(--green-deep) 0%, #0D3B12 60%, var(--black) 100%);
+  position: relative;
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23C9963B' stroke-opacity='0.08' stroke-width='1'%3E%3Cpath d='M40 0L80 40L40 80L0 40z'/%3E%3Cpath d='M40 10L70 40L40 70L10 40z'/%3E%3Cpath d='M40 20L60 40L40 60L20 40z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -50%; right: -20%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(201,150,59,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero .container { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 60px 24px; }
+.hero-content { max-width: 560px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,150,59,0.15);
+  border: 1px solid rgba(201,150,59,0.3);
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  color: var(--gold-light);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.hero-badge svg { width: 14px; height: 14px; fill: var(--gold-light); }
+.hero h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  line-height: 1.15;
+  color: var(--white);
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+.hero h2 em { font-style: italic; color: var(--gold); }
+.hero p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 32px;
+  max-width: 460px;
+}
+.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px;
+  background: var(--gold);
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-primary:hover { background: var(--gold-deep); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,150,59,0.4); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px;
+  background: transparent;
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 600;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-secondary:hover { border-color: var(--white); background: rgba(255,255,255,0.05); }
+
+.hero-visual {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.hero-book {
+  width: 160px;
+  height: 220px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-book::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  background: rgba(0,0,0,0.15);
+}
+.hero-book:nth-child(1) {
+  background: linear-gradient(160deg, #1B5E20, #0D3B12);
+  transform: rotate(-3deg) translateY(-20px);
+}
+.hero-book:nth-child(2) {
+  background: linear-gradient(160deg, var(--gold-deep), var(--gold));
+  width: 170px;
+  height: 240px;
+  transform: translateY(-10px);
+  z-index: 2;
+}
+.hero-book:nth-child(3) {
+  background: linear-gradient(160deg, #1A1A1A, #333);
+  transform: rotate(3deg) translateY(-5px);
+}
+.hero-book h4 {
+  font-family: 'Amiri', serif;
+  color: var(--white);
+  font-size: 15px;
+  line-height: 1.3;
+  margin-top: 8px;
+}
+.hero-book .book-ornament {
+  width: 40px;
+  height: 1px;
+  background: rgba(255,255,255,0.3);
+  margin: 10px auto;
+}
+.hero-book small { color: rgba(255,255,255,0.6); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ===== EMAIL CAPTURE BANNER ===== */
+.email-capture {
+  background: var(--cream);
+  border-top: 3px solid var(--gold);
+  padding: 32px 0;
+}
+.email-capture .container { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+.email-capture-text h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--green-deep);
+  margin-bottom: 4px;
+}
+.email-capture-text p { font-size: 14px; color: var(--gray-600); }
+.email-capture-form { display: flex; gap: 10px; flex: 1; max-width: 480px; }
+.email-capture-form input {
+  flex: 1;
+  padding: 14px 20px;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.3s;
+}
+.email-capture-form input:focus { outline: none; border-color: var(--green-mid); }
+.email-capture-form button {
+  padding: 14px 28px;
+  background: var(--green-deep);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+}
+.email-capture-form button:hover { background: var(--green-mid); }
+.email-capture-consent { font-size: 11px; color: var(--gray-500); margin-top: 6px; }
+
+/* ===== SECTION COMMON ===== */
+.section { padding: 64px 0; }
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  gap: 16px;
+}
+.section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  color: var(--black);
+  line-height: 1.2;
+}
+.section-header h2 span { color: var(--green-deep); }
+.section-header p { font-size: 15px; color: var(--gray-600); margin-top: 4px; }
+.section-header a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green-deep);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: gap 0.2s;
+}
+.section-header a:hover { gap: 8px; }
+.section-header a svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* ===== CATEGORY GRID ===== */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+.cat-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 28px 16px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.cat-card:hover {
+  border-color: var(--green-mid);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.cat-card:hover .cat-icon { background: var(--green-deep); }
+.cat-card:hover .cat-icon svg { fill: var(--gold); }
+.cat-icon {
+  width: 56px; height: 56px;
+  background: var(--green-pale);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  transition: all 0.3s;
+}
+.cat-icon svg { width: 26px; height: 26px; fill: var(--green-deep); transition: fill 0.3s; }
+.cat-card h3 { font-size: 14px; font-weight: 600; color: var(--black-soft); margin-bottom: 2px; }
+.cat-card span { font-size: 12px; color: var(--gray-500); }
+
+/* ===== PRODUCT GRID ===== */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.product-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+  transition: all 0.3s;
+  position: relative;
+}
+.product-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); border-color: transparent; }
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  z-index: 2;
+}
+.badge-new { background: var(--green-deep); color: white; }
+.badge-sale { background: #D32F2F; color: white; }
+.badge-best { background: var(--gold); color: white; }
+.product-wishlist {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  z-index: 2;
+  transition: all 0.2s;
+}
+.product-wishlist:hover { background: #FFF0F0; }
+.product-wishlist svg { width: 18px; height: 18px; stroke: var(--gray-500); fill: none; stroke-width: 2; }
+.product-image {
+  height: 260px;
+  background: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+}
+.product-image .book-cover {
+  width: 120px;
+  height: 175px;
+  border-radius: 4px;
+  box-shadow: 4px 4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 14px 10px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s;
+}
+.product-card:hover .book-cover { transform: scale(1.05); }
+.book-cover::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: rgba(0,0,0,0.12);
+  border-radius: 4px 0 0 4px;
+}
+.book-cover h5 { font-family: 'Amiri', serif; color: white; font-size: 12px; line-height: 1.3; }
+.book-cover small { font-size: 8px; color: rgba(255,255,255,0.6); margin-top: 6px; display: block; letter-spacing: 0.5px; text-transform: uppercase; }
+.product-info { padding: 18px; }
+.product-category { font-size: 11px; color: var(--green-mid); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+.product-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--black-soft);
+  line-height: 1.4;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.product-author { font-size: 13px; color: var(--gray-600); margin-bottom: 10px; }
+.product-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+.stars { color: var(--gold); font-size: 13px; letter-spacing: 1px; }
+.rating-count { font-size: 12px; color: var(--gray-500); }
+.product-bottom { display: flex; align-items: center; justify-content: space-between; }
+.product-price { font-size: 20px; font-weight: 700; color: var(--green-deep); }
+.product-price .old-price { font-size: 14px; color: var(--gray-400); text-decoration: line-through; margin-left: 6px; font-weight: 400; }
+.add-to-cart {
+  width: 40px; height: 40px;
+  background: var(--green-deep);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.add-to-cart:hover { background: var(--green-mid); transform: scale(1.05); }
+.add-to-cart svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; }
+
+/* ===== FEATURED BANNER ===== */
+.featured-banner {
+  background: linear-gradient(135deg, var(--green-deep) 0%, #0D3B12 100%);
+  border-radius: var(--radius-lg);
+  padding: 56px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  position: relative;
+  overflow: hidden;
+  margin: 20px 0;
+}
+.featured-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23C9963B' fill-opacity='0.06'%3E%3Cpath d='M30 0L60 30L30 60L0 30z M30 10L50 30L30 50L10 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.featured-banner > * { position: relative; z-index: 2; }
+.featured-banner .book-stack {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.featured-banner .fb-book {
+  width: 130px;
+  height: 185px;
+  border-radius: 6px;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 16px;
+  text-align: center;
+  position: relative;
+}
+.featured-banner .fb-book::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 6px 0 0 6px;
+}
+.featured-banner .fb-book:nth-child(1) { background: linear-gradient(160deg, #8B6914, #C9963B); transform: rotate(-4deg); }
+.featured-banner .fb-book:nth-child(2) { background: linear-gradient(160deg, #1B5E20, #2E7D32); height: 200px; width: 140px; }
+.featured-banner .fb-book:nth-child(3) { background: linear-gradient(160deg, #1A1A1A, #444); transform: rotate(3deg); }
+.featured-banner .fb-book h5 { font-family: 'Amiri', serif; color: white; font-size: 13px; line-height: 1.3; }
+.featured-banner .fb-book small { color: rgba(255,255,255,0.5); font-size: 9px; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+.featured-content h3 {
+  font-family: 'Playfair Display', serif;
+  color: var(--white);
+  font-size: 30px;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+.featured-content h3 em { color: var(--gold); font-style: italic; }
+.featured-content p { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.7; margin-bottom: 24px; max-width: 480px; }
+.featured-content .btn-primary { background: var(--gold); }
+.featured-content .btn-primary:hover { background: var(--gold-deep); }
+
+/* ===== TRUST BAR ===== */
+.trust-bar {
+  background: var(--off-white);
+  padding: 40px 0;
+  border-top: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--gray-200);
+}
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+.trust-item { display: flex; align-items: flex-start; gap: 16px; }
+.trust-icon {
+  width: 50px; height: 50px;
+  background: var(--green-pale);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.trust-icon svg { width: 24px; height: 24px; stroke: var(--green-deep); fill: none; stroke-width: 1.8; }
+.trust-item h4 { font-size: 14px; font-weight: 700; color: var(--black-soft); margin-bottom: 2px; }
+.trust-item p { font-size: 13px; color: var(--gray-600); line-height: 1.4; }
+
+/* ===== NEWSLETTER SECTION ===== */
+.newsletter-section {
+  background: linear-gradient(135deg, var(--green-deep) 0%, #0D3B12 100%);
+  padding: 72px 0;
+  position: relative;
+  overflow: hidden;
+}
+.newsletter-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23C9963B' stroke-opacity='0.06' stroke-width='1'%3E%3Cpath d='M40 0L80 40L40 80L0 40z'/%3E%3Cpath d='M40 15L65 40L40 65L15 40z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.newsletter-section .container { position: relative; z-index: 2; text-align: center; max-width: 640px; }
+.newsletter-section h2 { font-family: 'Playfair Display', serif; color: white; font-size: 36px; margin-bottom: 12px; }
+.newsletter-section p { color: rgba(255,255,255,0.7); font-size: 16px; margin-bottom: 32px; line-height: 1.6; }
+.newsletter-form { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; }
+.newsletter-form input {
+  flex: 1;
+  padding: 16px 20px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+}
+.newsletter-form input::placeholder { color: rgba(255,255,255,0.4); }
+.newsletter-form input:focus { outline: none; border-color: var(--gold); background: rgba(255,255,255,0.12); }
+.newsletter-form button {
+  padding: 16px 32px;
+  background: var(--gold);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.newsletter-form button:hover { background: var(--gold-deep); }
+.newsletter-consent { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 12px; }
+
+/* ===== BLOG PREVIEW ===== */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.blog-card { text-decoration: none; color: inherit; }
+.blog-card:hover .blog-img-inner { transform: scale(1.05); }
+.blog-img {
+  height: 200px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.blog-img-inner {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s;
+  font-family: 'Amiri', serif;
+  color: white;
+  font-size: 20px;
+  padding: 24px;
+  text-align: center;
+}
+.blog-tag { font-size: 11px; color: var(--green-mid); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.blog-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--black); line-height: 1.4; margin-bottom: 8px; }
+.blog-card p { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--black);
+  color: rgba(255,255,255,0.7);
+  padding: 64px 0 0;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.3fr;
+  gap: 40px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.footer-brand .logo-text h3 { font-family: 'Amiri', serif; font-size: 24px; color: white; margin-bottom: 4px; }
+.footer-brand .logo-text p { font-size: 11px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+.footer-brand > p { font-size: 13px; line-height: 1.7; margin-bottom: 20px; }
+.footer-social { display: flex; gap: 10px; }
+.footer-social a {
+  width: 38px; height: 38px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.footer-social a:hover { background: var(--green-deep); }
+.footer-social a svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.7); }
+.footer-col h4 { font-size: 14px; font-weight: 700; color: white; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 1px; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 10px; }
+.footer-col ul li a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+.footer-col ul li a:hover { color: var(--gold); }
+.footer-contact p { font-size: 13px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; }
+.footer-contact svg { width: 16px; height: 16px; stroke: var(--gold); fill: none; stroke-width: 1.8; flex-shrink: 0; margin-top: 2px; }
+.footer-bottom {
+  padding: 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.4); }
+.payment-icons { display: flex; gap: 8px; align-items: center; }
+.payment-icon {
+  background: rgba(255,255,255,0.08);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.5px;
+}
+
+/* ===== POPUP ===== */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.3s ease;
+}
+.popup {
+  background: white;
+  border-radius: var(--radius-lg);
+  max-width: 520px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  animation: popIn 0.4s ease;
+}
+.popup-header {
+  background: linear-gradient(135deg, var(--green-deep) 0%, #0D3B12 100%);
+  padding: 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.popup-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23C9963B' fill-opacity='0.08'%3E%3Cpath d='M30 0L60 30L30 60L0 30z M30 10L50 30L30 50L10 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.popup-header > * { position: relative; z-index: 2; }
+.popup-header h3 { font-family: 'Playfair Display', serif; color: white; font-size: 24px; margin-bottom: 6px; }
+.popup-header p { color: rgba(255,255,255,0.7); font-size: 14px; }
+.popup-body { padding: 32px; }
+.popup-body input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+.popup-body input:focus { outline: none; border-color: var(--green-mid); }
+.popup-body button {
+  width: 100%;
+  padding: 14px;
+  background: var(--green-deep);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+  margin-bottom: 12px;
+}
+.popup-body button:hover { background: var(--green-mid); }
+.popup-body .consent { font-size: 11px; color: var(--gray-500); line-height: 1.5; }
+.popup-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: background 0.2s;
+}
+.popup-close:hover { background: rgba(255,255,255,0.25); }
+.popup-no { text-align: center; }
+.popup-no a { font-size: 13px; color: var(--gray-500); text-decoration: none; cursor: pointer; }
+.popup-no a:hover { color: var(--gray-700); text-decoration: underline; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .categories-grid { grid-template-columns: repeat(3, 1fr); }
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  .footer-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero h2 { font-size: 38px; }
+  .hero-visual { display: none; }
+  .featured-banner { flex-direction: column; padding: 40px 32px; }
+}
+@media (max-width: 768px) {
+  .top-bar .container { justify-content: center; text-align: center; }
+  .top-bar-left, .top-bar-right { display: none; }
+  .header-main { flex-wrap: wrap; }
+  .search-bar { order: 3; max-width: 100%; flex-basis: 100%; }
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .blog-grid { grid-template-columns: 1fr; }
+  .trust-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .email-capture .container { flex-direction: column; text-align: center; }
+  .email-capture-form { max-width: 100%; }
+  .newsletter-form { flex-direction: column; }
+  .hero .container { padding: 40px 24px; }
+  .hero h2 { font-size: 32px; }
+  .featured-banner .book-stack { display: none; }
+}
+@media (max-width: 480px) {
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: 1fr; }
+  .nav-list li a { padding: 12px 14px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== EMAIL POPUP ===== -->
+<div class="popup-overlay" id="emailPopup" style="display:none;">
+  <div class="popup">
+    <div class="popup-header">
+      <button class="popup-close" onclick="document.getElementById('emailPopup').style.display='none'">&times;</button>
+      <h3>Get 10% Off Your First Order</h3>
+      <p>Join 15,000+ readers in our community</p>
+    </div>
+    <div class="popup-body">
+      <input type="email" placeholder="Enter your email address">
+      <button onclick="document.getElementById('emailPopup').style.display='none'">Claim My 10% Discount</button>
+      <p class="consent">By subscribing, you agree to receive marketing emails from Al-Hidaayah Books. Unsubscribe anytime. We respect your privacy.</p>
+      <div class="popup-no" style="margin-top:12px;">
+        <a onclick="document.getElementById('emailPopup').style.display='none'">No thanks, I'll pay full price</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span>Need help? <a href="tel:+1234567890">Call us</a></span>
+      <span><a href="mailto:info@alhidaayahbooks.com">info@alhidaayahbooks.com</a></span>
+    </div>
+    <div class="top-bar-right">
+      <a href="#">Order Tracking</a>
+      <a href="#">Wishlist</a>
+      <select>
+        <option>USD $</option>
+        <option>GBP &pound;</option>
+        <option>EUR &euro;</option>
+        <option>CAD $</option>
+        <option>AUD $</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROMO BANNER ===== -->
+<div class="promo-banner">
+  <span>&#9733;</span> FREE SHIPPING on all orders over $35 &nbsp;&mdash;&nbsp; Use code <strong>HIDAAYAH10</strong> for 10% off your first order <span>&#9733;</span>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <div class="container">
+    <div class="header-main">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7L12 4.18z"/><path d="M12 2v20M2 7l10 5 10-5"/></svg>
+        </div>
+        <div class="logo-text">
+          <h1>Al-Hidaayah</h1>
+          <p>Books &amp; Publishing</p>
+        </div>
+      </a>
+      <div class="search-bar">
+        <input type="text" placeholder="Search by title, author, ISBN, or topic...">
+        <button>
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+        </button>
+      </div>
+      <div class="header-actions">
+        <a href="#" class="header-btn">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Account
+        </a>
+        <a href="#" class="header-btn">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Wishlist
+        </a>
+        <a href="#" class="header-btn">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-count">3</span>
+          Cart
+        </a>
+      </div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="container">
+      <ul class="nav-list">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#">All Books</a></li>
+        <li><a href="#">Quran &amp; Tafsir</a></li>
+        <li><a href="#">Hadith</a></li>
+        <li><a href="#">Creed (Aqeedah)</a></li>
+        <li><a href="#">Children's Books</a></li>
+        <li><a href="#">History &amp; Biography</a></li>
+        <li><a href="#">Purification of the Soul</a></li>
+        <li><a href="#">Learning Arabic</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Over 3,000 titles in stock
+      </div>
+      <h2>Discover the <em>Treasures</em> of Islamic Knowledge</h2>
+      <p>Your trusted source for authentic Islamic books, Quran translations, children's literature, and scholarly works from leading publishers worldwide. Serving the North American Muslim community since day one.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary">
+          Browse Collection
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#" class="btn-secondary">New Arrivals</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-book">
+        <small>Quran</small>
+        <div class="book-ornament"></div>
+        <h4>The Noble Quran</h4>
+        <div class="book-ornament"></div>
+        <small>Translation</small>
+      </div>
+      <div class="hero-book">
+        <small>Bestseller</small>
+        <div class="book-ornament"></div>
+        <h4>Dua: The Weapon of the Believer</h4>
+        <div class="book-ornament"></div>
+        <small>Yasir Qadhi</small>
+      </div>
+      <div class="hero-book">
+        <small>Essential</small>
+        <div class="book-ornament"></div>
+        <h4>Fundamentals of Tawheed</h4>
+        <div class="book-ornament"></div>
+        <small>Bilal Phillips</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EMAIL CAPTURE INLINE ===== -->
+<div class="email-capture">
+  <div class="container">
+    <div class="email-capture-text">
+      <h3>Join Our Reading Community</h3>
+      <p>Get exclusive deals, new arrival alerts, and curated reading recommendations</p>
+    </div>
+    <div style="flex:1;max-width:480px;">
+      <div class="email-capture-form">
+        <input type="email" placeholder="Enter your email address">
+        <button>Subscribe</button>
+      </div>
+      <p class="email-capture-consent">We respect your privacy. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CATEGORIES ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>Shop by <span>Category</span></h2>
+        <p>Explore our carefully curated collection across every field of Islamic scholarship</p>
+      </div>
+      <a href="#">View All Categories <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="categories-grid">
+      <a href="#" class="cat-card">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <h3>Quran &amp; Tafsir</h3>
+        <span>240+ Books</span>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Creed (Aqeedah)</h3>
+        <span>180+ Books</span>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Children's Books</h3>
+        <span>320+ Books</span>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>History &amp; Biography</h3>
+        <span>210+ Books</span>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Purification of the Soul</h3>
+        <span>150+ Books</span>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <h3>Learning Arabic</h3>
+        <span>90+ Books</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEW ARRIVALS ===== -->
+<section class="section" style="background: var(--off-white); padding-top: 64px; padding-bottom: 64px;">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>New <span>Arrivals</span></h2>
+        <p>The latest additions to our growing library</p>
+      </div>
+      <a href="#">View All New Arrivals <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="products-grid">
+
+      <!-- Product 1 -->
+      <div class="product-card">
+        <span class="product-badge badge-new">New</span>
+        <button class="product-wishlist"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <div class="product-image">
+          <div class="book-cover" style="background: linear-gradient(160deg, #1B5E20, #2E7D32);">
+            <h5>A Concise Thematic Tafsir of the Quran</h5>
+            <small>3 Volumes</small>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Quran Explanation</div>
+          <div class="product-title">A Concise Thematic Tafsir of the Quran &mdash; 3 Volume Set</div>
+          <div class="product-author">by Shaykh Abdurrahman ibn Nasir As-Sa'di</div>
+          <div class="product-rating">
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span class="rating-count">(24 reviews)</span>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$64.95</span>
+            <button class="add-to-cart"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card">
+        <span class="product-badge badge-new">New</span>
+        <button class="product-wishlist"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <div class="product-image">
+          <div class="book-cover" style="background: linear-gradient(160deg, #8B6914, #C9963B);">
+            <h5>Historical Atlas of the Prophets &amp; Messengers</h5>
+            <small>Al-Maghlouth</small>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">History</div>
+          <div class="product-title">Historical Atlas of the Prophets &amp; Messengers</div>
+          <div class="product-author">by Sami ibn Abdullah Al-Maghlouth</div>
+          <div class="product-rating">
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+            <span class="rating-count">(18 reviews)</span>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$59.95</span>
+            <button class="add-to-cart"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card">
+        <span class="product-badge badge-best">Bestseller</span>
+        <button class="product-wishlist"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <div class="product-image">
+          <div class="book-cover" style="background: linear-gradient(160deg, #1A1A1A, #333);">
+            <h5>The Disease and The Cure</h5>
+            <small>Ibn Qayyim</small>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Purification of the Soul</div>
+          <div class="product-title">The Disease and The Cure &mdash; Revised Second Edition</div>
+          <div class="product-author">by Imam Ibn Qayyim al-Jawziyyah</div>
+          <div class="product-rating">
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span class="rating-count">(47 reviews)</span>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$59.95</span>
+            <button class="add-to-cart"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="product-card">
+        <span class="product-badge badge-new">New</span>
+        <button class="product-wishlist"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <div class="product-image">
+          <div class="book-cover" style="background: linear-gradient(160deg, #2E7D32, #4CAF50);">
+            <h5>Allah Loves the Humble</h5>
+            <small>Ibn Abi Dunya</small>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">General</div>
+          <div class="product-title">Allah Loves the Humble</div>
+          <div class="product-author">by Al-Hafiz Ibn Abi Dunya (D. 281AH)</div>
+          <div class="product-rating">
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span class="rating-count">(12 reviews)</span>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$7.50</span>
+            <button class="add-to-cart"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED BANNER ===== -->
+<section class="section">
+  <div class="container">
+    <div class="featured-banner">
+      <div class="book-stack">
+        <div class="fb-book">
+          <h5>Fundamentals of Tawheed</h5>
+          <small>Bilal Phillips</small>
+        </div>
+        <div class="fb-book">
+          <h5>Dua: The Weapon of the Believer</h5>
+          <small>Yasir Qadhi</small>
+        </div>
+        <div class="fb-book">
+          <h5>Etiquette of Seeking Knowledge</h5>
+          <small>Bakr Abu Zayd</small>
+        </div>
+      </div>
+      <div class="featured-content">
+        <h3>Al-Hidaayah <em>Originals</em><br>Published In-House</h3>
+        <p>Explore our exclusive collection of titles published directly by Al-Hidaayah. Carefully edited, beautifully printed, and available only from us. From foundational texts on Tawheed to practical guides for daily worship.</p>
+        <a href="#" class="btn-primary">Shop Al-Hidaayah Publications</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BESTSELLERS ===== -->
+<section class="section" style="background: var(--off-white); padding-top: 64px; padding-bottom: 64px;">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>Customer <span>Favourites</span></h2>
+        <p>The books our community loves most</p>
+      </div>
+      <a href="#">View All Bestsellers <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="products-grid">
+
+      <!-- Product 5 -->
+      <div class="product-card">
+        <span class="product-badge badge-best">Bestseller</span>
+        <button class="product-wishlist"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <div class="product-image">
+          <div class="book-cover" style="background: linear-gradient(160deg, #1B5E20, #0D3B12);">
+            <h5>Explanation of the Three Fundamental Principles</h5>
+            <small>Ibn al-Uthaymeen</small>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Creed (Aqeedah)</div>
+          <div class="product-title">An Explanation of the Three Fundamental Principles of Islam</div>
+          <div class="product-author">by Shaykh Ibn al-Uthaymeen</div>
+          <div class="product-rating">
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span class="rating-count">(63 reviews)</span>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$16.95</span>
+            <button class="add-to-cart"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="product-card">
+        <span class="product-badge badge-sale">20% Off</span>
+        <button class="product-wishlist"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <div class="product-image">
+          <div class="book-cover" style="background: linear-gradient(160deg, #5D4037, #795548);">
+            <h5>Explanation of Kitab Al-Tawhid</h5>
+            <small>Al-Sa'di</small>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Creed (Aqeedah)</div>
+          <div class="product-title">An Explanation of Kitab Al-Tawhid</div>
+          <div class="product-author">by Allama Abdur-Rahman Al-Sa'di</div>
+          <div class="product-rating">
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span class="rating-count">(51 reviews)</span>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$13.56 <span class="old-price">$16.95</span></span>
+            <button class="add-to-cart"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 7 -->
+      <div class="product-card">
+        <span class="product-badge badge-best">Bestseller</span>
+        <button class="product-wishlist"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <div class="product-image">
+          <div class="book-cover" style="background: linear-gradient(160deg, #8B6914, #D4A84B);">
+            <h5>Dua: The Weapon of the Believer</h5>
+            <small>Yasir Qadhi</small>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Supplication</div>
+          <div class="product-title">Dua: The Weapon of the Believer</div>
+          <div class="product-author">by Abu Ammar Yasir Qadhi</div>
+          <div class="product-rating">
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span class="rating-count">(89 reviews)</span>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$8.95</span>
+            <button class="add-to-cart"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 8 -->
+      <div class="product-card">
+        <button class="product-wishlist"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <div class="product-image">
+          <div class="book-cover" style="background: linear-gradient(160deg, #1A237E, #3949AB);">
+            <h5>Hajj &amp; Umrah Made Easy</h5>
+            <small>Dr. Taqi Hashmi</small>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Hajj &amp; Umrah</div>
+          <div class="product-title">Hajj &amp; Umrah Made Easy</div>
+          <div class="product-author">by Dr. Taqi Hashmi &amp; Adnan Malik</div>
+          <div class="product-rating">
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+            <span class="rating-count">(34 reviews)</span>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$14.50</span>
+            <button class="add-to-cart"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== TRUST BAR ===== -->
+<section class="trust-bar">
+  <div class="container">
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+        </div>
+        <div>
+          <h4>Free Shipping Over $35</h4>
+          <p>Fast delivery across the US and worldwide shipping available</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h4>Secure Checkout</h4>
+          <p>256-bit SSL encryption. Your data is always safe with us</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </div>
+        <div>
+          <h4>Easy Returns</h4>
+          <p>30-day hassle-free return policy on all orders</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <h4>Dedicated Support</h4>
+          <p>Our team is here to help. Reach us by phone, email, or chat</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BLOG PREVIEW ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>From Our <span>Blog</span></h2>
+        <p>Reading guides, book reviews, and reflections from our community</p>
+      </div>
+      <a href="#">Visit the Blog <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="blog-grid">
+      <a href="#" class="blog-card">
+        <div class="blog-img">
+          <div class="blog-img-inner" style="background: linear-gradient(135deg, var(--green-deep), #0D3B12);">Essential Reads for New Muslims</div>
+        </div>
+        <div class="blog-tag">Reading Guide</div>
+        <h3>10 Essential Books Every New Muslim Should Read</h3>
+        <p>A carefully curated list covering the foundations of faith, from Tawheed to daily worship practices and prophetic biography.</p>
+      </a>
+      <a href="#" class="blog-card">
+        <div class="blog-img">
+          <div class="blog-img-inner" style="background: linear-gradient(135deg, #8B6914, #C9963B);">Ramadan Preparation Guide</div>
+        </div>
+        <div class="blog-tag">Seasonal</div>
+        <h3>Preparing Your Library for Ramadan 2026</h3>
+        <p>Our recommended reading list to help you make the most of the blessed month, from tafsir selections to books on fasting.</p>
+      </a>
+      <a href="#" class="blog-card">
+        <div class="blog-img">
+          <div class="blog-img-inner" style="background: linear-gradient(135deg, #1A1A1A, #444);">Children's Islamic Education</div>
+        </div>
+        <div class="blog-tag">Parenting</div>
+        <h3>Building a Home Library for Muslim Children</h3>
+        <p>Age-appropriate Islamic book recommendations from toddler through teens, plus tips on making reading a daily family habit.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEWSLETTER ===== -->
+<section class="newsletter-section">
+  <div class="container">
+    <h2>Stay Connected with <span style="color:var(--gold);">Al-Hidaayah</span></h2>
+    <p>Join thousands of readers. Get exclusive discounts, be the first to know about new arrivals, and receive curated reading recommendations delivered straight to your inbox.</p>
+    <div class="newsletter-form">
+      <input type="email" placeholder="Your email address">
+      <button>Join the Community</button>
+    </div>
+    <p class="newsletter-consent">We respect your privacy and you can unsubscribe at any time. No spam, ever.</p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-text">
+          <h3>Al-Hidaayah Books</h3>
+          <p>Books &amp; Publishing</p>
+        </div>
+        <p>Your trusted source for authentic Islamic books, serving the North American Muslim community. Al-Hidaayah Group, Inc. D/B/A Al-Hidaayah Books.</p>
+        <div class="footer-social">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="#">All Books</a></li>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Bestsellers</a></li>
+          <li><a href="#">Children's Books</a></li>
+          <li><a href="#">Quran &amp; Tafsir</a></li>
+          <li><a href="#">Sale</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="#">Creed (Aqeedah)</a></li>
+          <li><a href="#">Hadith</a></li>
+          <li><a href="#">History &amp; Biography</a></li>
+          <li><a href="#">Learning Arabic</a></li>
+          <li><a href="#">Purification of the Soul</a></li>
+          <li><a href="#">Worship</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Return Policy</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col footer-contact">
+        <h4>Contact Us</h4>
+        <p>
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          PO Box 25, South Orange, NJ 07079
+        </p>
+        <p>
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          info@alhidaayahbooks.com
+        </p>
+        <p>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Mon&ndash;Fri: 9 AM &ndash; 6 PM EST
+        </p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Al-Hidaayah Group, Inc. D/B/A Al-Hidaayah Books. All rights reserved.</p>
+      <div class="payment-icons">
+        <span class="payment-icon">VISA</span>
+        <span class="payment-icon">MC</span>
+        <span class="payment-icon">AMEX</span>
+        <span class="payment-icon">PAYPAL</span>
+        <span class="payment-icon">APPLE PAY</span>
+        <span class="payment-icon">GOOGLE PAY</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Show popup after 4 seconds
+setTimeout(() => {
+  document.getElementById('emailPopup').style.display = 'flex';
+}, 4000);
+
+// Close popup on overlay click
+document.getElementById('emailPopup').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+
+// Smooth hover effects on product cards
+document.querySelectorAll('.add-to-cart').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    this.style.background = '#4CAF50';
+    this.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="white" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+    setTimeout(() => {
+      this.style.background = '';
+      this.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="white" fill="none" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>';
+    }, 1500);
+  });
+});
+
+// Wishlist toggle
+document.querySelectorAll('.product-wishlist').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    const svg = this.querySelector('svg');
+    if (svg.getAttribute('fill') === 'none') {
+      svg.setAttribute('fill', '#D32F2F');
+      svg.setAttribute('stroke', '#D32F2F');
+    } else {
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', '');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
