@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ascending Analytics — AI-Powered Agricultural Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --teal: #0A7E8C;
+  --teal-deep: #065A64;
+  --teal-light: #E8F6F8;
+  --teal-glow: #22B8CF;
+  --blue: #1B4F72;
+  --blue-dark: #0E2F44;
+  --white: #FFFFFF;
+  --off-white: #F7FAFB;
+  --gray-50: #F0F4F5;
+  --gray-100: #E0E7E9;
+  --gray-200: #B8C6CA;
+  --gray-500: #6B8084;
+  --gray-700: #2D4A4E;
+  --gray-900: #0F1E20;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --max-w: 1200px;
+  --section-pad: clamp(60px, 10vw, 120px);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--gray-900);
+  background: var(--white);
+  line-height: 1.7;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--gray-100);
+  transition: box-shadow 0.3s;
+}
+.nav.scrolled { box-shadow: 0 2px 30px rgba(10,126,140,0.08); }
+.nav-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px;
+}
+.nav-logo {
+  font-family: var(--font-display); font-size: 1.45rem; color: var(--teal-deep);
+  display: flex; align-items: center; gap: 10px; font-weight: 700;
+}
+.nav-logo svg { flex-shrink: 0; }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a {
+  font-size: 0.9rem; font-weight: 500; color: var(--gray-700);
+  transition: color 0.2s; letter-spacing: 0.01em;
+}
+.nav-links a:hover { color: var(--teal); }
+.nav-cta {
+  background: var(--teal); color: var(--white) !important;
+  padding: 10px 24px; border-radius: 8px; font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+.nav-cta:hover { background: var(--teal-deep); transform: translateY(-1px); }
+.mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+.mobile-toggle span {
+  display: block; width: 24px; height: 2px; background: var(--gray-900);
+  margin: 6px 0; transition: 0.3s; border-radius: 2px;
+}
+
+/* ─── HERO ─── */
+.hero {
+  padding-top: 72px;
+  min-height: 100vh;
+  display: flex; align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(168deg, var(--white) 0%, var(--teal-light) 50%, var(--white) 100%);
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -40%; right: -20%;
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(10,126,140,0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 20s ease-in-out infinite;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: -30%; left: -15%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(34,184,207,0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 25s ease-in-out infinite reverse;
+}
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -40px); }
+}
+.hero-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  align-items: center; position: relative; z-index: 2;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--white); border: 1px solid var(--gray-100);
+  padding: 8px 18px; border-radius: 100px;
+  font-size: 0.82rem; font-weight: 600; color: var(--teal);
+  margin-bottom: 28px;
+  box-shadow: 0 2px 12px rgba(10,126,140,0.06);
+}
+.hero-badge::before {
+  content: ''; width: 8px; height: 8px;
+  background: var(--teal-glow); border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+.hero h1 {
+  font-family: var(--font-display); font-size: clamp(2.6rem, 5vw, 3.8rem);
+  line-height: 1.12; color: var(--blue-dark);
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  color: var(--teal); font-style: italic;
+}
+.hero-sub {
+  font-size: 1.12rem; color: var(--gray-500); max-width: 520px;
+  margin-bottom: 36px; line-height: 1.8;
+}
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+.btn-primary {
+  background: var(--teal); color: var(--white);
+  padding: 15px 36px; border-radius: 10px;
+  font-weight: 600; font-size: 0.95rem;
+  transition: all 0.25s; border: none; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(10,126,140,0.25);
+  font-family: var(--font-body);
+}
+.btn-primary:hover { background: var(--teal-deep); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(10,126,140,0.3); }
+.btn-secondary {
+  background: var(--white); color: var(--teal-deep);
+  padding: 15px 36px; border-radius: 10px;
+  font-weight: 600; font-size: 0.95rem;
+  border: 1.5px solid var(--gray-100);
+  transition: all 0.25s; cursor: pointer;
+  font-family: var(--font-body);
+}
+.btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
+.hero-stats { display: flex; gap: 40px; }
+.hero-stat h3 {
+  font-family: var(--font-display); font-size: 2rem; color: var(--teal);
+}
+.hero-stat p { font-size: 0.82rem; color: var(--gray-500); margin-top: 4px; font-weight: 500; }
+.hero-visual {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-img-wrap {
+  width: 100%; aspect-ratio: 4/3;
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(10,126,140,0.12), 0 0 0 1px rgba(10,126,140,0.06);
+  position: relative;
+}
+.hero-img-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.hero-float-card {
+  position: absolute; background: var(--white);
+  border-radius: 14px; padding: 16px 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  display: flex; align-items: center; gap: 12px;
+  animation: floatCard 6s ease-in-out infinite;
+}
+.hero-float-card.top { top: -20px; right: -20px; }
+.hero-float-card.bottom { bottom: -20px; left: -20px; animation-delay: -3s; }
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.float-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.float-icon.green { background: #E6F9F0; color: #0D9255; }
+.float-icon.blue { background: var(--teal-light); color: var(--teal); }
+.float-card-text h4 { font-size: 0.85rem; font-weight: 700; color: var(--gray-900); }
+.float-card-text p { font-size: 0.75rem; color: var(--gray-500); }
+
+/* ─── SECTION SHARED ─── */
+.section { padding: var(--section-pad) 0; }
+.section-label {
+  font-size: 0.78rem; font-weight: 700; color: var(--teal);
+  text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 14px;
+}
+.section-title {
+  font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--blue-dark); line-height: 1.2; margin-bottom: 18px;
+}
+.section-desc {
+  font-size: 1.05rem; color: var(--gray-500); max-width: 640px; line-height: 1.8;
+}
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-header .section-desc { margin: 0 auto; }
+
+/* ─── PROBLEM ─── */
+.problem { background: var(--off-white); }
+.problem-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+}
+.problem-list { display: flex; flex-direction: column; gap: 20px; margin-top: 32px; }
+.problem-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--white); padding: 20px 24px; border-radius: 14px;
+  border: 1px solid var(--gray-100);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.problem-item:hover {
+  border-color: var(--teal); box-shadow: 0 4px 20px rgba(10,126,140,0.06);
+}
+.problem-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: #FEF2F2; color: #DC2626;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 1.1rem;
+}
+.problem-item h4 { font-size: 0.95rem; font-weight: 600; color: var(--gray-900); margin-bottom: 4px; }
+.problem-item p { font-size: 0.88rem; color: var(--gray-500); line-height: 1.6; }
+.problem-img {
+  border-radius: 20px; overflow: hidden; aspect-ratio: 4/3;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+.problem-img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ─── SOLUTION ─── */
+.solution-top {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  margin-bottom: 72px;
+}
+.solution-img {
+  border-radius: 20px; overflow: hidden; aspect-ratio: 4/3;
+  box-shadow: 0 12px 40px rgba(10,126,140,0.1);
+}
+.solution-img img { width: 100%; height: 100%; object-fit: cover; }
+.solution-features {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.feature-card {
+  background: var(--white); border: 1px solid var(--gray-100);
+  border-radius: 16px; padding: 32px 28px;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.feature-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: linear-gradient(90deg, var(--teal), var(--teal-glow));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.35s;
+}
+.feature-card:hover { border-color: var(--teal); transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(10,126,140,0.1);
+}
+.feature-card:hover::before { transform: scaleX(1); }
+.feature-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--teal-light); color: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; font-size: 1.3rem;
+}
+.feature-card h3 {
+  font-size: 1.05rem; font-weight: 700; color: var(--gray-900);
+  margin-bottom: 10px;
+}
+.feature-card p { font-size: 0.88rem; color: var(--gray-500); line-height: 1.7; }
+
+/* ─── HOW IT WORKS ─── */
+.how-it-works { background: var(--blue-dark); color: var(--white); }
+.how-it-works .section-label { color: var(--teal-glow); }
+.how-it-works .section-title { color: var(--white); }
+.how-it-works .section-desc { color: rgba(255,255,255,0.6); }
+.how-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-top: 20px; }
+.how-step {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px; padding: 36px 28px; text-align: center;
+  transition: all 0.3s; position: relative;
+}
+.how-step:hover { background: rgba(255,255,255,0.08); border-color: rgba(34,184,207,0.3); transform: translateY(-4px); }
+.step-num {
+  font-family: var(--font-display); font-size: 2.4rem; color: var(--teal-glow);
+  opacity: 0.4; margin-bottom: 16px;
+}
+.how-step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+.how-step p { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+/* ─── MARKET ─── */
+.market-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  margin-bottom: 60px;
+}
+.market-stat {
+  text-align: center; padding: 36px 24px; background: var(--teal-light);
+  border-radius: 18px; border: 1px solid rgba(10,126,140,0.08);
+}
+.market-stat h3 {
+  font-family: var(--font-display); font-size: 2.2rem; color: var(--teal);
+  margin-bottom: 8px;
+}
+.market-stat p { font-size: 0.88rem; color: var(--gray-500); font-weight: 500; }
+.market-drivers {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+}
+.market-driver {
+  display: flex; gap: 18px; padding: 28px; background: var(--white);
+  border-radius: 16px; border: 1px solid var(--gray-100);
+  transition: border-color 0.25s;
+}
+.market-driver:hover { border-color: var(--teal); }
+.driver-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--teal-light); color: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 1.2rem;
+}
+.market-driver h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+.market-driver p { font-size: 0.88rem; color: var(--gray-500); line-height: 1.7; }
+
+/* ─── IMPACT / RESULTS ─── */
+.impact { background: var(--off-white); }
+.impact-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+}
+.impact-card {
+  background: var(--white); border-radius: 20px; padding: 44px 36px;
+  text-align: center; border: 1px solid var(--gray-100);
+  transition: all 0.3s;
+}
+.impact-card:hover { transform: translateY(-6px); box-shadow: 0 16px 50px rgba(10,126,140,0.1); border-color: var(--teal); }
+.impact-num {
+  font-family: var(--font-display); font-size: 3rem; color: var(--teal);
+  margin-bottom: 8px;
+}
+.impact-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+.impact-card p { font-size: 0.88rem; color: var(--gray-500); line-height: 1.7; }
+
+/* ─── PRICING ─── */
+.pricing-box {
+  max-width: 680px; margin: 0 auto;
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--teal-deep) 100%);
+  border-radius: 24px; padding: 56px; text-align: center; color: var(--white);
+  position: relative; overflow: hidden;
+}
+.pricing-box::before {
+  content: ''; position: absolute; top: -50%; right: -30%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(34,184,207,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.pricing-price {
+  font-family: var(--font-display); font-size: 3.4rem; margin: 24px 0 8px;
+  position: relative;
+}
+.pricing-price span { font-size: 1.2rem; opacity: 0.7; font-family: var(--font-body); }
+.pricing-sub { opacity: 0.65; font-size: 0.95rem; margin-bottom: 32px; }
+.pricing-features {
+  display: flex; flex-direction: column; gap: 14px;
+  text-align: left; margin-bottom: 36px; position: relative;
+}
+.pricing-features li {
+  list-style: none; display: flex; align-items: center; gap: 12px;
+  font-size: 0.95rem; opacity: 0.85;
+}
+.pricing-features li::before {
+  content: '\2713'; font-weight: 700; color: var(--teal-glow);
+  width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(34,184,207,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; flex-shrink: 0;
+}
+.btn-white {
+  background: var(--white); color: var(--teal-deep);
+  padding: 16px 40px; border-radius: 10px;
+  font-weight: 700; font-size: 1rem;
+  border: none; cursor: pointer;
+  transition: all 0.25s; position: relative;
+  font-family: var(--font-body);
+}
+.btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+
+/* ─── EIS TAX ─── */
+.eis { background: var(--teal-light); }
+.eis-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+}
+.eis-card {
+  background: var(--white); border-radius: 18px; padding: 36px 30px;
+  border: 1px solid rgba(10,126,140,0.1);
+  transition: all 0.3s;
+}
+.eis-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(10,126,140,0.08); }
+.eis-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--teal-light); color: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px; font-size: 1.3rem;
+}
+.eis-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 10px; }
+.eis-card p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.7; }
+.eis-card .eis-highlight {
+  font-family: var(--font-display); font-size: 2rem; color: var(--teal);
+  margin-bottom: 4px; display: block;
+}
+
+/* ─── COMPETITIVE EDGE ─── */
+.competitive { background: var(--white); }
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.comp-col { background: var(--off-white); border-radius: 18px; padding: 36px; border: 1px solid var(--gray-100); }
+.comp-col.highlight { background: linear-gradient(135deg, var(--teal) 0%, var(--teal-deep) 100%); color: var(--white); border: none; }
+.comp-col h3 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 20px; }
+.comp-col.highlight h3 { color: var(--white); }
+.comp-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.comp-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.92rem; line-height: 1.6; }
+.comp-list li .x { color: #DC2626; font-weight: 700; flex-shrink: 0; }
+.comp-list li .check { color: var(--teal-glow); font-weight: 700; flex-shrink: 0; }
+.comp-col.highlight .comp-list li { opacity: 0.9; }
+
+/* ─── CTA ─── */
+.cta-section {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-deep) 100%);
+  color: var(--white); text-align: center; padding: var(--section-pad) 0;
+}
+.cta-section .section-title { color: var(--white); }
+.cta-section p { color: rgba(255,255,255,0.75); font-size: 1.1rem; max-width: 600px; margin: 0 auto 36px; line-height: 1.8; }
+
+/* ─── RISKS ─── */
+.risks { background: var(--off-white); }
+.risks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.risk-item {
+  background: var(--white); border-radius: 14px; padding: 28px;
+  border: 1px solid var(--gray-100); display: flex; gap: 16px; align-items: flex-start;
+}
+.risk-icon {
+  width: 40px; height: 40px; border-radius: 10px; background: #FFF7ED; color: #D97706;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem;
+}
+.risk-item h4 { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+.risk-item p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+/* ─── FOOTER ─── */
+.footer {
+  background: var(--gray-900); color: rgba(255,255,255,0.5);
+  padding: 60px 0 40px;
+}
+.footer-inner {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+}
+.footer-brand {
+  font-family: var(--font-display); font-size: 1.3rem; color: var(--white);
+  margin-bottom: 14px; display: block;
+}
+.footer-desc { font-size: 0.88rem; line-height: 1.7; max-width: 300px; }
+.footer h4 { color: var(--white); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 18px; }
+.footer ul { list-style: none; }
+.footer li { margin-bottom: 10px; }
+.footer a { font-size: 0.88rem; transition: color 0.2s; }
+.footer a:hover { color: var(--teal-glow); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: 48px; padding-top: 28px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.82rem;
+}
+
+/* ─── ANIMATIONS ─── */
+.fade-up {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .hero-inner, .problem-grid, .solution-top, .comp-grid { grid-template-columns: 1fr; }
+  .solution-features { grid-template-columns: repeat(2, 1fr); }
+  .how-steps { grid-template-columns: repeat(2, 1fr); }
+  .market-stats { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .mobile-toggle { display: block; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: 72px; left: 0; right: 0;
+    background: var(--white); padding: 24px;
+    border-bottom: 1px solid var(--gray-100);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    gap: 16px;
+  }
+  .hero-inner { text-align: center; }
+  .hero-sub { margin: 0 auto 36px; }
+  .hero-actions { justify-content: center; }
+  .hero-stats { justify-content: center; }
+  .hero-visual { margin-top: 40px; }
+  .solution-features, .impact-grid, .eis-grid { grid-template-columns: 1fr; }
+  .how-steps { grid-template-columns: 1fr; }
+  .market-stats { grid-template-columns: 1fr 1fr; }
+  .market-drivers, .risks-grid { grid-template-columns: 1fr; }
+  .pricing-box { padding: 36px 24px; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ NAV ═══════ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="#0A7E8C"/>
+        <path d="M16 6L24 22H8L16 6Z" fill="white" opacity="0.9"/>
+        <path d="M16 12L20 22H12L16 12Z" fill="#22B8CF"/>
+      </svg>
+      Ascending Analytics
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#problem">Problem</a>
+      <a href="#solution">Solution</a>
+      <a href="#market">Market</a>
+      <a href="#impact">Impact</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#eis">EIS</a>
+      <a href="#invest" class="nav-cta">Invest Now</a>
+    </div>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">UK EIS Eligible Investment</div>
+        <h1>Transforming Agriculture with <em>Artificial Intelligence</em></h1>
+        <p class="hero-sub">We increase farm yield and reduce input costs using AI-driven decision systems — building a data-driven platform for UK farmers under pressure from labour shortages, climate change, and input inflation.</p>
+        <div class="hero-actions">
+          <a href="#invest" class="btn-primary">Invest in the Future</a>
+          <a href="#solution" class="btn-secondary">Explore Platform</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <h3>£3M</h3>
+            <p>Target ARR</p>
+          </div>
+          <div class="hero-stat">
+            <h3>£250</h3>
+            <p>/month per farm</p>
+          </div>
+          <div class="hero-stat">
+            <h3>1,000</h3>
+            <p>Farm target</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-img-wrap">
+          <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&q=80" alt="Smart agriculture field with technology overlay" loading="eager">
+        </div>
+        <div class="hero-float-card top">
+          <div class="float-icon green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+          <div class="float-card-text">
+            <h4>Yield Increase</h4>
+            <p>5–15% improvement</p>
+          </div>
+        </div>
+        <div class="hero-float-card bottom">
+          <div class="float-icon blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="float-card-text">
+            <h4>Cost Savings</h4>
+            <p>£5K–£20K annually</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PROBLEM ═══════ -->
+<section class="section problem" id="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="fade-up">
+        <p class="section-label">The Challenge</p>
+        <h2 class="section-title">Modern Agriculture Is Under Pressure</h2>
+        <p class="section-desc">Farmers often rely on manual observation and fragmented data sources, making it difficult to detect emerging issues early or optimise resource usage effectively.</p>
+        <div class="problem-list">
+          <div class="problem-item">
+            <div class="problem-icon">📈</div>
+            <div>
+              <h4>Rising Production Costs</h4>
+              <p>Fertiliser, pesticides, fuel, and labour costs continue to rise, squeezing margins for farms of all sizes.</p>
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="problem-icon">🌡️</div>
+            <div>
+              <h4>Climate Variability</h4>
+              <p>Unpredictable weather patterns make data-driven decision-making more important than ever before.</p>
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="problem-icon">🌱</div>
+            <div>
+              <h4>Soil Degradation</h4>
+              <p>Declining fertility and increasing pressure to reduce chemical inputs threaten long-term sustainability.</p>
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="problem-icon">👥</div>
+            <div>
+              <h4>Labour Shortages</h4>
+              <p>Agricultural labour is increasingly scarce, driving need for automation and operational efficiency tools.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="problem-img fade-up" style="transition-delay: 0.15s">
+        <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=700&q=80" alt="Farmer examining crops in field" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SOLUTION ═══════ -->
+<section class="section" id="solution">
+  <div class="container">
+    <div class="solution-top">
+      <div class="solution-img fade-up">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&q=80" alt="Data analytics dashboard on screen" loading="lazy">
+      </div>
+      <div class="fade-up" style="transition-delay: 0.15s">
+        <p class="section-label">The Solution</p>
+        <h2 class="section-title">One Intelligent Platform, All Your Farm Data</h2>
+        <p class="section-desc">Ascending Analytics integrates satellite imagery, drone imaging, soil sensors, weather data, and farm management records into a single AI-powered decision system — delivering actionable insights directly to farmers in real time.</p>
+      </div>
+    </div>
+
+    <div class="solution-features">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h3>Crop Health Monitoring</h3>
+        <p>AI analysis of satellite and drone imagery to identify crop stress, disease indicators, pest activity, and nutrient deficiencies early.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.08s">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Soil Intelligence</h3>
+        <p>Integration of soil sensor data to analyse moisture levels, nutrient balance, soil structure, and fertiliser optimisation recommendations.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.16s">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Predictive Yield Analytics</h3>
+        <p>Machine learning models that estimate expected crop yield based on soil conditions, weather patterns, and historical farm performance.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.24s">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3>Pest & Disease Detection</h3>
+        <p>Early warning alerts when environmental conditions suggest increased risk of crop diseases or pest infestations before they spread.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.32s">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+        </div>
+        <h3>Resource Optimisation</h3>
+        <p>Intelligent recommendations for irrigation schedules, fertiliser application, and pesticide usage to reduce costs while maintaining productivity.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.40s">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <h3>Financial Intelligence</h3>
+        <p>Connecting farm production data to commodity pricing and financial forecasting — a capability missing from most AgTech platforms today.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ HOW IT WORKS ═══════ -->
+<section class="section how-it-works" id="how">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">How It Works</p>
+      <h2 class="section-title">From Raw Data to Smart Decisions</h2>
+      <p class="section-desc">Our AI platform transforms fragmented agricultural data into clear, actionable intelligence.</p>
+    </div>
+    <div class="how-steps">
+      <div class="how-step fade-up">
+        <div class="step-num">01</div>
+        <h3>Data Collection</h3>
+        <p>Satellite imagery, drone imaging, IoT soil sensors, weather feeds, and farm management records are integrated into one system.</p>
+      </div>
+      <div class="how-step fade-up" style="transition-delay:0.1s">
+        <div class="step-num">02</div>
+        <h3>AI Analysis</h3>
+        <p>Machine learning models identify correlations between environmental conditions and crop performance across your specific farm.</p>
+      </div>
+      <div class="how-step fade-up" style="transition-delay:0.2s">
+        <div class="step-num">03</div>
+        <h3>Predictive Insights</h3>
+        <p>The platform generates predictive models tailored to your farm — forecasting yields, disease risks, and optimal resource allocation.</p>
+      </div>
+      <div class="how-step fade-up" style="transition-delay:0.3s">
+        <div class="step-num">04</div>
+        <h3>Actionable Decisions</h3>
+        <p>Farmers receive practical, real-time recommendations they can act on immediately — no data science degree required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ MARKET OPPORTUNITY ═══════ -->
+<section class="section" id="market">
+  <div class="container">
+    <div class="section-header fade-up">
+      <p class="section-label">Market Opportunity</p>
+      <h2 class="section-title">A Rapidly Growing Global Sector</h2>
+      <p class="section-desc">The agricultural technology sector is experiencing rapid global growth as farmers adopt digital tools to improve productivity and sustainability.</p>
+    </div>
+
+    <div class="market-stats fade-up">
+      <div class="market-stat">
+        <h3>£5T+</h3>
+        <p>Global Agriculture Sector</p>
+      </div>
+      <div class="market-stat">
+        <h3>10–30%</h3>
+        <p>AI-Driven Yield Increase</p>
+      </div>
+      <div class="market-stat">
+        <h3>20–40%</h3>
+        <p>Input Cost Reduction</p>
+      </div>
+      <div class="market-stat">
+        <h3>SaaS</h3>
+        <p>Recurring Revenue Model</p>
+      </div>
+    </div>
+
+    <div class="market-drivers">
+      <div class="market-driver fade-up">
+        <div class="driver-icon">🌡️</div>
+        <div>
+          <h4>Climate Change & Weather Volatility</h4>
+          <p>Increasingly unpredictable weather makes AI-driven forecasting and real-time decision support essential for modern farming operations.</p>
+        </div>
+      </div>
+      <div class="market-driver fade-up" style="transition-delay:0.08s">
+        <div class="driver-icon">💷</div>
+        <div>
+          <h4>Rising Input Costs</h4>
+          <p>Fertiliser, pesticides, fuel, and labour costs continue to climb — technologies that optimise resource use are no longer optional.</p>
+        </div>
+      </div>
+      <div class="market-driver fade-up" style="transition-delay:0.16s">
+        <div class="driver-icon">📋</div>
+        <div>
+          <h4>Environmental Regulations</h4>
+          <p>Governments and regulators are placing greater emphasis on sustainable farming practices, reduced chemical usage, and carbon accountability.</p>
+        </div>
+      </div>
+      <div class="market-driver fade-up" style="transition-delay:0.24s">
+        <div class="driver-icon">🌍</div>
+        <div>
+          <h4>Food Security & Population Growth</h4>
+          <p>A growing global population demands more food produced sustainably — precision agriculture is the path to achieving both goals.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ COMPETITIVE EDGE ═══════ -->
+<section class="section competitive">
+  <div class="container">
+    <div class="section-header fade-up">
+      <p class="section-label">Strategic Positioning</p>
+      <h2 class="section-title">The Gap We Fill</h2>
+      <p class="section-desc">Current solutions are fragmented — farm analytics here, disease detection there, trading platforms elsewhere. Ascending Analytics unifies it all.</p>
+    </div>
+    <div class="comp-grid">
+      <div class="comp-col fade-up">
+        <h3>Current Market (Fragmented)</h3>
+        <ul class="comp-list">
+          <li><span class="x">✕</span> Farm analytics platforms (Climate, CropX) — data only, no financial layer</li>
+          <li><span class="x">✕</span> Disease detection tools (Plantix, Taranis) — single-function, siloed</li>
+          <li><span class="x">✕</span> Robotics solutions (Blue River) — hardware-heavy, high capital risk</li>
+          <li><span class="x">✕</span> Livestock monitors (Afimilk) — species-specific, not crop-applicable</li>
+          <li><span class="x">✕</span> Trading platforms (FBN) — marketplace only, no farm-level AI</li>
+        </ul>
+      </div>
+      <div class="comp-col highlight fade-up" style="transition-delay:0.1s">
+        <h3>Ascending Analytics (Unified)</h3>
+        <ul class="comp-list">
+          <li><span class="check">✓</span> Farm production data, soil, and weather in one platform</li>
+          <li><span class="check">✓</span> Financial forecasting and commodity pricing intelligence</li>
+          <li><span class="check">✓</span> ESG and carbon tracking for sustainability reporting</li>
+          <li><span class="check">✓</span> Trade integration connecting farmers to buyers and markets</li>
+          <li><span class="check">✓</span> SaaS model — scalable, recurring revenue, low capital risk</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ IMPACT ═══════ -->
+<section class="section impact" id="impact">
+  <div class="container">
+    <div class="section-header fade-up">
+      <p class="section-label">Projected Impact</p>
+      <h2 class="section-title">Real Results for Real Farms</h2>
+      <p class="section-desc">Our AI platform targets measurable, meaningful improvements in farm performance and profitability.</p>
+    </div>
+    <div class="impact-grid">
+      <div class="impact-card fade-up">
+        <div class="impact-num">5–15%</div>
+        <h3>Yield Increase</h3>
+        <p>AI-optimised crop management delivers measurable improvements in harvest productivity across seasons.</p>
+      </div>
+      <div class="impact-card fade-up" style="transition-delay:0.1s">
+        <div class="impact-num">10–20%</div>
+        <h3>Fertiliser Reduction</h3>
+        <p>Precision application means less waste, lower costs, and significantly reduced environmental impact.</p>
+      </div>
+      <div class="impact-card fade-up" style="transition-delay:0.2s">
+        <div class="impact-num">£5K–£20K</div>
+        <h3>Annual Savings Per Farm</h3>
+        <p>Direct cost savings through optimised inputs, better timing, and reduced losses from disease and pests.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PRICING ═══════ -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-header fade-up">
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title">Simple, Transparent Pricing</h2>
+      <p class="section-desc">Start with a free pilot — experience the value before you commit.</p>
+    </div>
+    <div class="pricing-box fade-up">
+      <p class="section-label" style="color: var(--teal-glow);">Farm Subscription</p>
+      <div class="pricing-price">£250 <span>/ month per farm</span></div>
+      <p class="pricing-sub">Start with a 60–90 day free pilot — no commitment required</p>
+      <ul class="pricing-features">
+        <li>Full AI-powered crop health monitoring</li>
+        <li>Soil intelligence and sensor integration</li>
+        <li>Predictive yield analytics and forecasting</li>
+        <li>Pest and disease early warning alerts</li>
+        <li>Resource optimisation recommendations</li>
+        <li>Dedicated onboarding and support</li>
+      </ul>
+      <button class="btn-white" onclick="document.getElementById('invest').scrollIntoView({behavior:'smooth'})">Start Free Pilot</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SCALABILITY ═══════ -->
+<section class="section" style="background: var(--off-white);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <p class="section-label">Scalable Platform</p>
+      <h2 class="section-title">Built to Grow Across Markets</h2>
+      <p class="section-desc">Once developed, the technology scales across every segment of the agricultural industry.</p>
+    </div>
+    <div class="market-drivers">
+      <div class="market-driver fade-up">
+        <div class="driver-icon">🌾</div>
+        <div>
+          <h4>Small & Medium Farms</h4>
+          <p>Accessible precision agriculture tools that were previously only available to large enterprise operations — democratising smart farming.</p>
+        </div>
+      </div>
+      <div class="market-driver fade-up" style="transition-delay:0.08s">
+        <div class="driver-icon">🏭</div>
+        <div>
+          <h4>Large Commercial Operations</h4>
+          <p>Enterprise-grade analytics with premium modules for large-scale farming operations requiring advanced insights and integration.</p>
+        </div>
+      </div>
+      <div class="market-driver fade-up" style="transition-delay:0.16s">
+        <div class="driver-icon">🤝</div>
+        <div>
+          <h4>Agricultural Cooperatives</h4>
+          <p>Enterprise licensing for cooperatives seeking to provide data-driven tools and intelligence across their member networks.</p>
+        </div>
+      </div>
+      <div class="market-driver fade-up" style="transition-delay:0.24s">
+        <div class="driver-icon">📊</div>
+        <div>
+          <h4>Consultants & Advisors</h4>
+          <p>Advisory organisations can leverage the platform to deliver evidence-based recommendations to their farm clients at scale.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ EIS TAX RELIEF ═══════ -->
+<section class="section eis" id="eis">
+  <div class="container">
+    <div class="section-header fade-up">
+      <p class="section-label">Tax Benefits</p>
+      <h2 class="section-title">Enterprise Investment Scheme (EIS)</h2>
+      <p class="section-desc">Ascending Analytics is eligible under the UK's EIS — offering significant tax incentives for qualifying investors.</p>
+    </div>
+    <div class="eis-grid">
+      <div class="eis-card fade-up">
+        <div class="eis-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <span class="eis-highlight">30%</span>
+        <h3>Income Tax Relief</h3>
+        <p>Up to 30% income tax relief on EIS investments — up to £1 million per tax year, or £2 million for knowledge-intensive companies.</p>
+      </div>
+      <div class="eis-card fade-up" style="transition-delay:0.1s">
+        <div class="eis-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <span class="eis-highlight">0%</span>
+        <h3>CGT Disposal Relief</h3>
+        <p>Any gain on EIS shares is Capital Gains Tax free, provided shares are held for the qualifying period and conditions are met.</p>
+      </div>
+      <div class="eis-card fade-up" style="transition-delay:0.2s">
+        <div class="eis-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <span class="eis-highlight">EIS</span>
+        <h3>Use of Funds</h3>
+        <p>Investment will fund AI algorithm R&D, platform engineering, pilot deployments with agricultural partners, and commercialisation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ RISKS ═══════ -->
+<section class="section risks">
+  <div class="container">
+    <div class="section-header fade-up">
+      <p class="section-label">Important Information</p>
+      <h2 class="section-title">Key Risk Factors</h2>
+      <p class="section-desc">As with any early-stage technology investment, there are risks investors should be aware of.</p>
+    </div>
+    <div class="risks-grid">
+      <div class="risk-item fade-up">
+        <div class="risk-icon">⚠️</div>
+        <div>
+          <h4>Adoption Risk</h4>
+          <p>Farmers may be slow to adopt new technology platforms — the 60–90 day free pilot is designed to mitigate this barrier.</p>
+        </div>
+      </div>
+      <div class="risk-item fade-up" style="transition-delay:0.08s">
+        <div class="risk-icon">📊</div>
+        <div>
+          <h4>Data Accuracy Dependency</h4>
+          <p>AI model performance depends on the quality and consistency of input data from sensors, satellites, and farm records.</p>
+        </div>
+      </div>
+      <div class="risk-item fade-up" style="transition-delay:0.16s">
+        <div class="risk-icon">🌦️</div>
+        <div>
+          <h4>Weather Variability</h4>
+          <p>Extreme or unpredictable weather events remain an uncontrollable variable that can impact agricultural outcomes.</p>
+        </div>
+      </div>
+      <div class="risk-item fade-up" style="transition-delay:0.24s">
+        <div class="risk-icon">🏁</div>
+        <div>
+          <h4>Competitive Landscape</h4>
+          <p>The AgTech sector is growing and attracting significant investment — maintaining differentiation is an ongoing priority.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CTA ═══════ -->
+<section class="cta-section" id="invest">
+  <div class="container fade-up">
+    <p class="section-label" style="color: rgba(255,255,255,0.6);">Get Started</p>
+    <h2 class="section-title">Invest in the Future of Farming</h2>
+    <p>Join us in building the AI-powered agricultural intelligence platform that connects farm-level data to smarter, more sustainable decision-making across the supply chain.</p>
+    <a href="mailto:invest@ascendinganalytics.com" class="btn-white" style="display:inline-block;">Request Investment Pack</a>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <span class="footer-brand">Ascending Analytics Ltd</span>
+        <p class="footer-desc">A UK-based technology company developing AI-powered agricultural intelligence tools under the Enterprise Investment Scheme (EIS).</p>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#solution">Crop Monitoring</a></li>
+          <li><a href="#solution">Soil Intelligence</a></li>
+          <li><a href="#solution">Yield Analytics</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#problem">Our Mission</a></li>
+          <li><a href="#market">Market</a></li>
+          <li><a href="#eis">EIS Tax Relief</a></li>
+          <li><a href="#invest">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Investors</h4>
+        <ul>
+          <li><a href="#invest">Investment Pack</a></li>
+          <li><a href="#eis">Tax Benefits</a></li>
+          <li><a href="#impact">Projected Impact</a></li>
+          <li><a href="#market">Market Size</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ascending Analytics Ltd. All rights reserved.</span>
+      <span>Registered in England & Wales</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Mobile menu
+document.getElementById('mobileToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// Close mobile menu on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+
+// Fade-up on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Smooth scroll for all anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+
+</body>
+</html>
