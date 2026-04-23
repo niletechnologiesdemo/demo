@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project — Training & Fitness</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white:#FFFFFF;--off-white:#F7F8FA;--light-gray:#E8ECF1;--mid-gray:#B0B8C4;
+  --dark-gray:#5A6577;--charcoal:#2C3341;--near-black:#161B24;--black:#0D1117;
+  --blue-50:#EBF4FF;--blue-100:#D0E4FF;--blue-200:#A3CAFF;--blue-300:#6AADFF;
+  --blue-400:#3B93FF;--blue-500:#1A7AFF;--blue-600:#0062E6;--blue-700:#004BB3;
+  --accent:var(--blue-500);--accent-dim:rgba(26,122,255,0.08);--accent-mid:rgba(26,122,255,0.18);
+  --success:#22C55E;--error:#EF4444;--warning:#F59E0B;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:20px;--radius-xl:32px;--radius-full:100px;
+  --font-display:'Bebas Neue',sans-serif;--font-body:'Outfit',sans-serif;--font-mono:'JetBrains Mono',monospace;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.12);--shadow-blue:0 8px 32px rgba(26,122,255,0.25);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-body);background:var(--white);color:var(--near-black);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+.page{display:none;min-height:100vh;opacity:0;transform:translateY(8px)}
+.page.active{display:block;animation:pageIn .45s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes pageIn{to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{0%{transform:scale(0)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}70%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes slideRight{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid transparent;transition:all .3s}
+nav.scrolled{border-bottom-color:var(--light-gray)}
+nav.dark-mode{background:rgba(13,17,23,.75)}
+nav.dark-mode .nav-logo{color:var(--white)}
+nav.dark-mode .nav-link{color:rgba(255,255,255,.6)}
+nav.dark-mode .nav-link:hover{color:var(--white);background:rgba(255,255,255,.08)}
+nav.dark-mode .nav-cta-login{color:var(--blue-200);background:rgba(26,122,255,.15);border-color:rgba(26,122,255,.25)}
+.nav-logo{font-family:var(--font-display);font-size:1.6rem;letter-spacing:.06em;color:var(--near-black);cursor:pointer;transition:color .3s}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{padding:8px 16px;font-size:.85rem;font-weight:500;color:var(--dark-gray);cursor:pointer;border:none;background:none;font-family:var(--font-body);border-radius:var(--radius-sm);transition:all .2s}
+.nav-link:hover{color:var(--near-black);background:var(--off-white)}
+.nav-link.active{color:var(--accent);font-weight:600}
+.nav-cta-login{padding:8px 20px;margin-left:8px;font-size:.85rem;font-weight:600;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(26,122,255,.15);border-radius:var(--radius-full);cursor:pointer;font-family:var(--font-body);transition:all .25s}
+.nav-cta-login:hover{background:var(--accent-mid);border-color:rgba(26,122,255,.3)}
+.nav-user{display:none;align-items:center;gap:10px;padding:6px 16px 6px 6px;background:var(--off-white);border:1px solid var(--light-gray);border-radius:var(--radius-full);cursor:pointer;font-size:.82rem;font-weight:500;transition:all .2s}
+.nav-user:hover{background:var(--light-gray)}
+.nav-user .avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700}
+.nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px}
+.nav-hamburger span{display:block;width:20px;height:2px;background:var(--near-black);margin:4px 0;transition:.3s;border-radius:2px}
+nav.dark-mode .nav-hamburger span{background:var(--white)}
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-hamburger{display:block}
+  .nav-links{display:none;position:absolute;top:64px;left:0;right:0;background:var(--white);border-bottom:1px solid var(--light-gray);flex-direction:column;padding:12px 20px;gap:2px}
+  nav.dark-mode .nav-links{background:var(--black);border-color:rgba(255,255,255,.08)}
+  .nav-links.open{display:flex;animation:fadeIn .2s}
+}
+
+/* ===== COMMON ===== */
+.container{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* ===== SPLIT HERO (HOME) ===== */
+.split-hero{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;position:relative}
+@media(max-width:768px){.split-hero{grid-template-columns:1fr;min-height:auto}}
+.split-panel{position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:60px 48px 56px;min-height:100vh;cursor:pointer;overflow:hidden}
+@media(max-width:768px){.split-panel{min-height:50vh;padding:40px 24px}}
+.split-panel .panel-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s cubic-bezier(.22,1,.36,1),filter .6s;filter:brightness(.35)}
+.split-panel:hover .panel-bg{transform:scale(1.05);filter:brightness(.55)}
+.panel-bootcamp .panel-bg{background-image:linear-gradient(180deg,rgba(13,17,23,.3)0%,rgba(13,17,23,.75)100%),url('https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80')}
+.panel-sgt .panel-bg{background-image:linear-gradient(180deg,rgba(13,17,23,.3)0%,rgba(13,17,23,.75)100%),url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=80')}
+.split-hero::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:1px;background:rgba(255,255,255,.15);z-index:2;pointer-events:none}
+@media(max-width:768px){.split-hero::after{top:auto;left:0;right:0;bottom:50%;width:100%;height:1px}}
+.panel-content{position:relative;z-index:2}
+.panel-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:var(--radius-full);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);font-size:.7rem;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px;backdrop-filter:blur(8px);animation:fadeUp .6s .2s both}
+.panel-tag .dot{width:5px;height:5px;border-radius:50%;background:var(--blue-400);animation:pulse 2s infinite}
+.split-panel h2{font-family:var(--font-display);font-size:clamp(3rem,5.5vw,5.5rem);color:var(--white);letter-spacing:.04em;line-height:.95;margin-bottom:12px;animation:fadeUp .6s .3s both}
+.panel-tagline{font-size:1rem;font-weight:300;color:rgba(255,255,255,.65);max-width:320px;line-height:1.5;margin-bottom:32px;animation:fadeUp .6s .4s both}
+.panel-cta{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:var(--radius-full);font-size:.88rem;font-weight:600;cursor:pointer;border:none;font-family:var(--font-body);transition:all .3s;animation:fadeUp .6s .5s both}
+.panel-bootcamp .panel-cta{background:var(--white);color:var(--near-black)}
+.panel-bootcamp .panel-cta:hover,.panel-sgt .panel-cta:hover{background:var(--blue-400);color:var(--white);box-shadow:var(--shadow-blue);transform:translateY(-2px)}
+.panel-sgt .panel-cta{background:var(--accent);color:var(--white)}
+.panel-cta .arrow{transition:transform .3s}
+.split-panel:hover .panel-cta .arrow{transform:translateX(4px)}
+
+/* ===== LANDING PAGE HERO (inner pages) ===== */
+.lp-hero{position:relative;min-height:520px;display:flex;align-items:flex-end;overflow:hidden}
+@media(max-width:768px){.lp-hero{min-height:420px}}
+.lp-hero .lp-bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.lp-hero .lp-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,17,23,.45) 0%,rgba(13,17,23,.88) 100%)}
+.lp-hero .lp-content{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:0 24px 56px;width:100%}
+.lp-hero .lp-back{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;background:none;border:none;font-family:var(--font-body);margin-bottom:20px;transition:color .2s}
+.lp-hero .lp-back:hover{color:var(--white)}
+.lp-hero .lp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:var(--radius-full);background:rgba(26,122,255,.2);border:1px solid rgba(26,122,255,.3);font-size:.7rem;font-weight:600;color:var(--blue-200);text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;backdrop-filter:blur(8px);animation:fadeUp .5s .1s both}
+.lp-hero .lp-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--blue-400);animation:pulse 2s infinite}
+.lp-hero h1{font-family:var(--font-display);font-size:clamp(2.8rem,5.5vw,4.5rem);color:var(--white);letter-spacing:.04em;line-height:.95;margin-bottom:16px;animation:fadeUp .5s .2s both}
+.lp-hero .lp-sub{font-size:1.1rem;font-weight:300;color:rgba(255,255,255,.7);max-width:520px;line-height:1.6;margin-bottom:28px;animation:fadeUp .5s .3s both}
+.lp-hero .lp-actions{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .5s .4s both}
+.lp-hero .lp-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--radius-full);font-size:.88rem;font-weight:600;cursor:pointer;border:none;font-family:var(--font-body);transition:all .3s}
+.lp-cta-primary{background:var(--accent);color:white}
+.lp-cta-primary:hover{background:var(--blue-600);box-shadow:var(--shadow-blue);transform:translateY(-2px)}
+.lp-cta-ghost{background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.2)!important}
+.lp-cta-ghost:hover{background:rgba(255,255,255,.18)}
+
+/* Stats bar */
+.stats-bar{background:var(--near-black);border-bottom:1px solid rgba(255,255,255,.06);padding:0}
+.stats-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:0 24px}
+@media(max-width:768px){.stats-inner{grid-template-columns:repeat(2,1fr)}}
+.stat-item{padding:24px 20px;text-align:center;border-right:1px solid rgba(255,255,255,.06)}
+.stat-item:last-child{border-right:none}
+.stat-item .stat-num{font-family:var(--font-display);font-size:2rem;color:var(--white);letter-spacing:.03em;animation:countUp .6s both}
+.stat-item .stat-num span{color:var(--blue-400)}
+.stat-item .stat-label{font-size:.72rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+
+/* ===== TABS (inner) ===== */
+.tabs-bar{position:sticky;top:64px;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--light-gray)}
+.tabs{display:flex;gap:0;max-width:1120px;margin:0 auto;padding:0 24px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{padding:16px 20px;font-size:.84rem;font-weight:500;color:var(--mid-gray);cursor:pointer;border:none;background:none;font-family:var(--font-body);white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.tab-btn:hover{color:var(--dark-gray)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab-content{display:none;padding:48px 0 80px}
+.tab-content.active{display:block;animation:fadeUp .35s both}
+
+/* ===== BLOCKS ===== */
+.block{background:var(--white);border:1px solid var(--light-gray);border-radius:var(--radius-lg);padding:32px;margin-bottom:20px;transition:box-shadow .3s}
+.block:hover{box-shadow:var(--shadow-sm)}
+.block h3{font-family:var(--font-display);font-size:1.5rem;letter-spacing:.03em;color:var(--near-black);margin-bottom:6px}
+.block .sub{font-size:.82rem;font-weight:400;color:var(--mid-gray);margin-bottom:16px}
+.block p,.block li{font-size:.92rem;color:var(--dark-gray);line-height:1.7}
+
+/* Steps */
+.steps-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:20px}
+.step-card{padding:24px 20px;background:var(--off-white);border:1px solid var(--light-gray);border-radius:var(--radius-md);transition:all .3s}
+.step-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.step-card .num{font-family:var(--font-display);font-size:2.8rem;color:var(--blue-200);line-height:1;margin-bottom:12px}
+.step-card h4{font-size:.92rem;font-weight:600;margin-bottom:6px}
+.step-card p{font-size:.8rem;color:var(--dark-gray);line-height:1.5}
+
+/* Highlight block — for key selling points */
+.highlight-block{background:linear-gradient(135deg,var(--blue-50),var(--white));border:1px solid var(--blue-100);border-radius:var(--radius-lg);padding:36px;margin-bottom:20px;position:relative;overflow:hidden}
+.highlight-block::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;border-radius:50%;background:rgba(26,122,255,.06);pointer-events:none}
+.highlight-block h3{font-family:var(--font-display);font-size:1.5rem;letter-spacing:.03em;color:var(--near-black);margin-bottom:6px}
+.highlight-block .sub{font-size:.82rem;color:var(--accent);font-weight:500;margin-bottom:16px}
+.highlight-block p{font-size:.92rem;color:var(--dark-gray);line-height:1.7}
+
+/* CTA block */
+.cta-block{background:linear-gradient(135deg,var(--blue-600),var(--blue-800));border-radius:var(--radius-lg);padding:56px 40px;text-align:center;position:relative;overflow:hidden;margin-bottom:20px}
+.cta-block::before{content:'';position:absolute;top:-30%;right:-5%;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none}
+.cta-block h3{font-family:var(--font-display);font-size:2rem;letter-spacing:.03em;color:var(--white);margin-bottom:8px}
+.cta-block p{font-size:.95rem;color:rgba(255,255,255,.7);max-width:420px;margin:0 auto 28px;line-height:1.6}
+
+/* ===== PLAN CARDS ===== */
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+@media(max-width:768px){.plans-grid{grid-template-columns:1fr}}
+.plan-card{background:var(--white);border:2px solid var(--light-gray);border-radius:var(--radius-lg);padding:28px 24px;cursor:pointer;transition:all .3s;position:relative}
+.plan-card:hover{border-color:var(--blue-200);box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.plan-card.selected{border-color:var(--accent);background:var(--blue-50);box-shadow:0 0 0 3px rgba(26,122,255,.12)}
+.plan-card.selected::after{content:'✓';position:absolute;top:14px;right:14px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
+.plan-card .plan-label{font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mid-gray);margin-bottom:10px}
+.plan-card.recommended .plan-label{color:var(--accent)}
+.plan-card .plan-name{font-family:var(--font-display);font-size:1.8rem;letter-spacing:.03em;margin-bottom:4px}
+.plan-card .plan-desc{font-size:.82rem;color:var(--dark-gray);margin-bottom:16px}
+.plan-card .plan-price{font-family:var(--font-display);font-size:2rem;color:var(--accent)}
+.plan-card .plan-price span{font-size:.82rem;color:var(--mid-gray);font-family:var(--font-body)}
+.plan-features{margin-top:16px;padding-top:14px;border-top:1px solid var(--light-gray);list-style:none}
+.plan-features li{font-size:.78rem;color:var(--dark-gray);padding:5px 0;display:flex;align-items:center;gap:8px}
+.plan-features li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* ===== VIDEO CARDS ===== */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:20px}
+.video-card{background:var(--white);border:1px solid var(--light-gray);border-radius:var(--radius-md);overflow:hidden;cursor:pointer;transition:all .3s}
+.video-card:hover{box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.video-thumb{height:165px;background:linear-gradient(135deg,var(--near-black),var(--charcoal));display:flex;align-items:center;justify-content:center;position:relative}
+.video-thumb .play-icon{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;color:white;font-size:1.3rem;transition:all .3s}
+.video-card:hover .play-icon{background:var(--accent);transform:scale(1.1)}
+.video-thumb .free-badge{position:absolute;top:10px;left:10px;padding:3px 10px;border-radius:4px;background:var(--success);color:white;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.video-thumb .dur{position:absolute;bottom:8px;right:10px;padding:2px 8px;border-radius:4px;background:rgba(0,0,0,.6);color:white;font-size:.68rem;font-family:var(--font-mono)}
+.video-info{padding:16px}
+.video-info h4{font-size:.9rem;font-weight:600;margin-bottom:4px}
+.video-info p{font-size:.76rem;color:var(--mid-gray)}
+
+/* On-demand note */
+.ondemand-note{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:var(--radius-sm);background:#FFFBEB;border:1px solid rgba(245,158,11,.2);font-size:.78rem;color:#B45309;margin-top:16px}
+
+/* ===== FORMS & PAYMENT ===== */
+.pay-grid{display:grid;grid-template-columns:1fr 380px;gap:32px}
+@media(max-width:868px){.pay-grid{grid-template-columns:1fr}}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:.78rem;font-weight:500;color:var(--dark-gray);margin-bottom:6px}
+.form-input{width:100%;padding:12px 16px;border-radius:var(--radius-sm);background:var(--off-white);border:1px solid var(--light-gray);color:var(--near-black);font-size:.88rem;font-family:var(--font-body);transition:border-color .2s,box-shadow .2s;outline:none}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,122,255,.08)}
+.form-input::placeholder{color:var(--mid-gray)}
+.form-input.err{border-color:var(--error)}
+.form-err{font-size:.72rem;color:var(--error);margin-top:4px;display:none}
+.form-err.show{display:block;animation:shake .3s}
+.flow-steps{display:flex;align-items:center;gap:0;margin-bottom:32px;overflow-x:auto}
+.flow-step{display:flex;align-items:center;gap:8px;padding:8px 14px;white-space:nowrap;font-size:.8rem;color:var(--mid-gray)}
+.flow-step .sn{width:28px;height:28px;border-radius:50%;background:var(--off-white);border:1px solid var(--light-gray);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:600;transition:all .3s}
+.flow-step.done .sn,.flow-step.current .sn{background:var(--accent);color:white;border-color:var(--accent)}
+.flow-step.current{color:var(--near-black);font-weight:600}
+.flow-step.done{color:var(--dark-gray)}
+.flow-conn{width:28px;height:1px;background:var(--light-gray);flex-shrink:0}
+.flow-conn.done{background:var(--accent)}
+.summary{background:var(--off-white);border:1px solid var(--light-gray);border-radius:var(--radius-lg);padding:28px;position:sticky;top:140px}
+.summary h3{font-family:var(--font-display);font-size:1.2rem;letter-spacing:.03em;margin-bottom:18px}
+.sum-row{display:flex;justify-content:space-between;padding:8px 0;font-size:.85rem}
+.sum-row .lbl{color:var(--dark-gray)}.sum-row .val{font-weight:500}
+.sum-row.total{border-top:1px solid var(--light-gray);margin-top:8px;padding-top:14px;font-size:1rem}
+.sum-row.total .val{color:var(--accent);font-family:var(--font-display);font-size:1.4rem}
+
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 28px;border-radius:var(--radius-full);font-size:.88rem;font-weight:600;cursor:pointer;border:none;font-family:var(--font-body);transition:all .25s}
+.btn-primary{background:var(--accent);color:white}
+.btn-primary:hover{background:var(--blue-600);box-shadow:var(--shadow-blue);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-outline{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn-outline:hover{background:var(--accent-dim)}
+.btn-ghost{background:var(--off-white);color:var(--near-black);border:1px solid var(--light-gray)}
+.btn-ghost:hover{background:var(--light-gray)}
+.btn-white{background:white;color:var(--near-black)}
+.btn-white:hover{background:var(--blue-50);transform:translateY(-1px)}
+
+/* ===== CONFIRMATION ===== */
+.confirm-wrap{text-align:center;padding:80px 24px}
+.confirm-check{width:72px;height:72px;border-radius:50%;background:var(--accent);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:white;animation:popIn .4s cubic-bezier(.22,1,.36,1)}
+.confirm-wrap h2{font-family:var(--font-display);font-size:2.2rem;letter-spacing:.03em;margin-bottom:10px}
+.confirm-wrap p{color:var(--dark-gray);font-size:.95rem;max-width:440px;margin:0 auto;line-height:1.6}
+.conf-box{margin:32px auto 0;max-width:400px;background:var(--off-white);border:1px solid var(--light-gray);border-radius:var(--radius-lg);padding:24px;text-align:left}
+
+/* ===== SGT SELECTORS ===== */
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+@media(max-width:768px){.opt-grid{grid-template-columns:1fr}}
+.opt-card{background:var(--white);border:2px solid var(--light-gray);border-radius:var(--radius-md);padding:24px;cursor:pointer;transition:all .3s}
+.opt-card:hover{border-color:var(--blue-200);box-shadow:var(--shadow-sm)}
+.opt-card.selected{border-color:var(--accent);background:var(--blue-50);box-shadow:0 0 0 3px rgba(26,122,255,.08)}
+.opt-card h4{font-family:var(--font-display);font-size:1.2rem;letter-spacing:.03em;margin-bottom:4px}
+.opt-card .opt-sub{font-size:.82rem;color:var(--dark-gray)}
+.batch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:20px 0}
+.batch-slot{background:var(--white);border:1px solid var(--light-gray);border-radius:var(--radius-md);padding:18px 12px;text-align:center;cursor:pointer;transition:all .25s}
+.batch-slot:hover{border-color:var(--blue-200);box-shadow:var(--shadow-sm)}
+.batch-slot.selected{border-color:var(--accent);background:var(--blue-50);box-shadow:0 0 0 3px rgba(26,122,255,.08)}
+.batch-slot.full{opacity:.35;cursor:not-allowed;pointer-events:none}
+.batch-slot .b-time{font-family:var(--font-mono);font-size:.92rem;font-weight:500;margin-bottom:6px}
+.batch-slot .b-spots{font-size:.68rem;color:var(--mid-gray)}
+.batch-slot .b-spots.low{color:var(--warning);font-weight:600}
+.batch-slot .b-spots.none{color:var(--error)}
+.loc-card{background:var(--off-white);border:1px solid var(--light-gray);border-radius:var(--radius-lg);overflow:hidden;margin:20px 0}
+.loc-map{height:180px;background:linear-gradient(135deg,var(--blue-50),var(--blue-100));display:flex;align-items:center;justify-content:center}
+.loc-pin{width:44px;height:44px;border-radius:50% 50% 50% 0;background:var(--accent);transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-blue)}
+.loc-pin span{transform:rotate(45deg);font-size:1.1rem}
+.loc-info{padding:18px 24px}
+.loc-info h4{font-size:.95rem;font-weight:600;margin-bottom:4px}
+.loc-info p{font-size:.82rem;color:var(--dark-gray)}
+.feat-list{margin-top:20px}
+.feat-item{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--light-gray)}
+.feat-item:last-child{border-bottom:none}
+.feat-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:var(--accent-dim);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.feat-text h4{font-size:.92rem;font-weight:600;margin-bottom:4px}
+.feat-text p{font-size:.8rem;color:var(--dark-gray);line-height:1.5}
+
+/* ===== DASHBOARD ===== */
+.dash-header{padding:100px 0 32px;background:var(--off-white);border-bottom:1px solid var(--light-gray)}
+.dash-header .container{padding-top:20px}
+.dash-greeting{font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);letter-spacing:.03em;margin-bottom:4px}
+.dash-plan-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:var(--radius-full);background:var(--accent-dim);color:var(--accent);font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:32px}
+@media(max-width:868px){.dash-grid{grid-template-columns:1fr}}
+.dash-full{grid-column:1/-1}
+.today-card{background:linear-gradient(135deg,var(--blue-600),var(--blue-800));border-radius:var(--radius-lg);padding:32px;color:white;position:relative;overflow:hidden}
+.today-card::before{content:'';position:absolute;top:-30%;right:-10%;width:250px;height:250px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none}
+.today-card .today-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.today-card .live-dot{width:8px;height:8px;border-radius:50%;background:#EF4444;animation:livePulse 1.5s infinite}
+.today-card h3{font-family:var(--font-display);font-size:1.8rem;letter-spacing:.03em;margin-bottom:4px}
+.today-card .today-time{font-family:var(--font-mono);font-size:1.1rem;color:rgba(255,255,255,.8);margin-bottom:20px}
+.today-card .zoom-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--radius-full);background:white;color:var(--blue-700);font-size:.88rem;font-weight:700;border:none;cursor:pointer;font-family:var(--font-body);transition:all .25s;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.today-card .zoom-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.today-card .no-class{font-size:.9rem;color:rgba(255,255,255,.6);font-style:italic}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:16px}
+@media(max-width:768px){.week-grid{grid-template-columns:repeat(4,1fr)}}
+.day-cell{background:var(--white);border:1px solid var(--light-gray);border-radius:var(--radius-md);padding:14px 10px;text-align:center;cursor:pointer;transition:all .25s}
+.day-cell.disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+.day-cell.booked{border-color:var(--accent);background:var(--blue-50);box-shadow:0 0 0 2px rgba(26,122,255,.1)}
+.day-cell.missed{border-color:var(--warning);background:#FFFBEB}
+.day-cell.today-cell{border-color:var(--accent);border-width:2px}
+.day-cell:not(.disabled):hover{border-color:var(--blue-300);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.day-cell .d-label{font-size:.68rem;color:var(--mid-gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.day-cell .d-num{font-family:var(--font-display);font-size:1.5rem;margin-bottom:1px}
+.day-cell .d-time{font-size:.68rem;color:var(--dark-gray);font-family:var(--font-mono)}
+.day-cell .d-status{margin-top:6px;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.day-cell.booked .d-status{color:var(--accent)}
+.day-cell.missed .d-status{color:var(--warning)}
+.history-list{margin-top:12px}
+.history-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--light-gray)}
+.history-item:last-child{border-bottom:none}
+.history-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.history-dot.attended{background:var(--success)}
+.history-dot.missed{background:var(--warning)}
+.history-info{flex:1}
+.history-info .h-date{font-size:.82rem;font-weight:500}
+.history-info .h-sub{font-size:.72rem;color:var(--mid-gray)}
+.history-badge{font-size:.68rem;font-weight:600;padding:3px 10px;border-radius:var(--radius-full)}
+.history-badge.attended{background:rgba(34,197,94,.08);color:var(--success)}
+.history-badge.missed{background:rgba(245,158,11,.08);color:var(--warning)}
+.od-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:14px}
+.od-card{background:var(--white);border:1px solid var(--light-gray);border-radius:var(--radius-md);overflow:hidden;cursor:pointer;transition:all .3s}
+.od-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.od-card .od-thumb{height:120px;background:linear-gradient(135deg,var(--charcoal),var(--near-black));display:flex;align-items:center;justify-content:center;position:relative}
+.od-card .od-thumb .play-sm{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;transition:all .3s}
+.od-card:hover .play-sm{background:var(--accent)}
+.od-badge{position:absolute;top:8px;left:8px;padding:2px 8px;border-radius:4px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.od-badge.available{background:var(--warning);color:white}
+.od-badge.expired{background:var(--mid-gray);color:white}
+.od-card .od-info{padding:12px}
+.od-card .od-info h4{font-size:.82rem;font-weight:600;margin-bottom:2px}
+.od-card .od-info p{font-size:.7rem;color:var(--mid-gray)}
+
+/* Login modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,17,23,.5);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.show{display:flex;animation:fadeIn .2s}
+.modal-box{background:var(--white);border:1px solid var(--light-gray);border-radius:var(--radius-lg);padding:36px;max-width:420px;width:100%;animation:modalIn .3s cubic-bezier(.22,1,.36,1);position:relative}
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-box h3{font-family:var(--font-display);font-size:1.6rem;letter-spacing:.03em;margin-bottom:6px}
+.modal-box .modal-sub{font-size:.88rem;color:var(--dark-gray);margin-bottom:24px}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--off-white);border:none;cursor:pointer;font-size:1rem;color:var(--dark-gray);display:flex;align-items:center;justify-content:center}
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);padding:14px 24px;border-radius:var(--radius-md);background:var(--near-black);color:white;font-size:.85rem;z-index:600;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg);transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--error)}
+footer{border-top:1px solid var(--light-gray);padding:40px 0;margin-top:60px}
+footer .foot-inner{max-width:1120px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
+footer p{font-size:.78rem;color:var(--mid-gray)}
+</style>
+</head>
+<body>
+
+<nav id="mainNav" class="dark-mode">
+  <div class="nav-logo" onclick="go('home')">PROJECT</div>
+  <button class="nav-hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <button class="nav-link active" data-nav="home" onclick="go('home')">Home</button>
+    <button class="nav-link" data-nav="bootcamp" onclick="go('bootcamp')">Bootcamp</button>
+    <button class="nav-link" data-nav="sgt" onclick="go('sgt')">Small Group</button>
+    <button class="nav-cta-login" id="loginBtn" onclick="openLogin()">Log In</button>
+    <div class="nav-user" id="navUser" onclick="go('dashboard')"><div class="avatar" id="navAvatar">A</div><span>My Dashboard</span></div>
+  </div>
+</nav>
+
+<!-- ===== HOME ===== -->
+<div class="page active" id="page-home">
+  <div class="split-hero">
+    <div class="split-panel panel-bootcamp" onclick="go('bootcamp')">
+      <div class="panel-bg"></div>
+      <div class="panel-content">
+        <div class="panel-tag"><span class="dot"></span> Online Classes</div>
+        <h2>BOOTCAMP</h2>
+        <p class="panel-tagline">Live virtual training at 6:45 AM. Pick your days, show up, transform.</p>
+        <button class="panel-cta" onclick="event.stopPropagation();go('bootcamp')">Learn More <span class="arrow">→</span></button>
+      </div>
+    </div>
+    <div class="split-panel panel-sgt" onclick="go('sgt')">
+      <div class="panel-bg"></div>
+      <div class="panel-content">
+        <div class="panel-tag"><span class="dot"></span> In-Studio</div>
+        <h2>SMALL GROUP<br>TRAINING</h2>
+        <p class="panel-tagline">Max 4 per group. Pick your batch, train with focus at our studio.</p>
+        <button class="panel-cta" onclick="event.stopPropagation();go('sgt')">Explore <span class="arrow">→</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BOOTCAMP ===== -->
+<div class="page" id="page-bootcamp">
+  <!-- LANDING HERO -->
+  <div class="lp-hero">
+    <div class="lp-bg" style="background-image:url('https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1400&q=80')"></div>
+    <div class="lp-overlay"></div>
+    <div class="lp-content">
+      <button class="lp-back" onclick="go('home')">← Home</button>
+      <div class="lp-badge"><span class="dot"></span> Online · Live Every Morning</div>
+      <h1>BOOTCAMP</h1>
+      <p class="lp-sub">Live virtual training at 6:45 AM. Choose your plan, subscribe, and get instant access to book your classes from your member dashboard.</p>
+      <div class="lp-actions">
+        <button class="lp-cta lp-cta-primary" onclick="switchTab('bc-tabs','bc-plans')">See Plans & Pricing →</button>
+        <button class="lp-cta lp-cta-ghost" onclick="switchTab('bc-tabs','bc-preview')">▶ Watch Free Preview</button>
+      </div>
+    </div>
+  </div>
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-num">6:45<span>AM</span></div><div class="stat-label">Every Morning</div></div>
+      <div class="stat-item"><div class="stat-num">3 <span>Plans</span></div><div class="stat-label">Flexible Frequency</div></div>
+      <div class="stat-item"><div class="stat-num">On<span>-Demand</span></div><div class="stat-label">Same-Day Replays</div></div>
+      <div class="stat-item"><div class="stat-num">Live <span>Zoom</span></div><div class="stat-label">Real Coaching</div></div>
+    </div>
+  </div>
+
+  <div class="tabs-bar"><div class="tabs" id="bc-tabs">
+    <button class="tab-btn active" data-tab="bc-info">Overview</button>
+    <button class="tab-btn" data-tab="bc-preview">Free Preview</button>
+    <button class="tab-btn" data-tab="bc-plans">Plans & Pricing</button>
+    <button class="tab-btn" data-tab="bc-pay">Get Membership</button>
+  </div></div>
+
+  <div class="container">
+    <div class="tab-content active" id="bc-info">
+      <div class="block"><h3>WHAT IS BOOTCAMP?</h3><div class="sub">A live, online group workout — every single morning</div><p>Bootcamp is a high-energy workout streamed live at 6:45 AM daily. Join from anywhere and train together with the group in real time. A trainer leads the session, corrects form via camera, and pushes you through the work.</p></div>
+      <div class="block"><h3>HOW IT WORKS</h3>
+        <div class="steps-row">
+          <div class="step-card"><div class="num">01</div><h4>Choose your plan</h4><p>1, 3, or 5 classes per week.</p></div>
+          <div class="step-card"><div class="num">02</div><h4>Get membership</h4><p>Subscribe — account created instantly.</p></div>
+          <div class="step-card"><div class="num">03</div><h4>Log in & book</h4><p>Pick which days to attend each week.</p></div>
+          <div class="step-card"><div class="num">04</div><h4>Show up at 6:45 AM</h4><p>Zoom link in your dashboard on class day.</p></div>
+        </div>
+      </div>
+      <div class="highlight-block"><h3>NEVER MISS A CLASS</h3><div class="sub">On-demand safety net</div><p>If you booked and couldn't make it, the live recording is available for on-demand viewing for the rest of that calendar day only. It expires at midnight. Not a video library — a same-day second chance.</p><div class="ondemand-note">⏱ On-demand expires at midnight — only for days you booked</div></div>
+      <div class="cta-block"><h3>READY TO START?</h3><p>Watch free previews first, or jump straight into choosing a plan.</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn btn-white" onclick="switchTab('bc-tabs','bc-preview')">▶ Free Previews</button><button class="btn btn-primary" onclick="switchTab('bc-tabs','bc-plans')" style="background:white;color:var(--blue-700)">See Plans & Pricing →</button></div></div>
+    </div>
+    <div class="tab-content" id="bc-preview">
+      <div class="block"><h3>GET BOOTCAMP READY</h3><div class="sub">Free preview — no account needed</div><p>Watch these before committing. See exactly what a session looks like, equipment needed, and fitness level to start.</p></div>
+      <div class="video-grid">
+        <div class="video-card"><div class="video-thumb"><span class="free-badge">Free</span><div class="play-icon">▶</div><span class="dur">4:32</span></div><div class="video-info"><h4>What to Expect</h4><p>Your first bootcamp morning</p></div></div>
+        <div class="video-card"><div class="video-thumb" style="background:linear-gradient(135deg,#0a1a2e,#162a44)"><span class="free-badge">Free</span><div class="play-icon">▶</div><span class="dur">12:15</span></div><div class="video-info"><h4>Sample Class: Full Body</h4><p>12-min clip from a live session</p></div></div>
+        <div class="video-card"><div class="video-thumb" style="background:linear-gradient(135deg,#1a0a2e,#2a1444)"><span class="free-badge">Free</span><div class="play-icon">▶</div><span class="dur">3:08</span></div><div class="video-info"><h4>Equipment Checklist</h4><p>Everything you need (and don't)</p></div></div>
+      </div>
+      <div style="text-align:center;margin-top:40px"><p style="color:var(--dark-gray);font-size:.9rem;margin-bottom:14px">Liked what you saw?</p><button class="btn btn-primary" onclick="switchTab('bc-tabs','bc-plans')">Choose a Plan →</button></div>
+    </div>
+    <div class="tab-content" id="bc-plans">
+      <div class="block"><h3>CHOOSE YOUR PLAN</h3><div class="sub">Monthly subscription · Cancel anytime</div><p>All plans include live class access at 6:45 AM, on-demand replay for missed sessions, and member dashboard.</p></div>
+      <div class="plans-grid" id="plansGrid">
+        <div class="plan-card" data-plan="1x" onclick="pickPlan(this)"><div class="plan-label">Starter</div><div class="plan-name">1× / WEEK</div><div class="plan-desc">1 live class per week</div><div class="plan-price">—<span> /mo</span></div><ul class="plan-features"><li>Book 1 day each week</li><li>On-demand if missed</li><li>Maintenance mode</li></ul></div>
+        <div class="plan-card recommended" data-plan="3x" onclick="pickPlan(this)"><div class="plan-label">★ Popular</div><div class="plan-name">3× / WEEK</div><div class="plan-desc">3 live classes per week</div><div class="plan-price">—<span> /mo</span></div><ul class="plan-features"><li>Book any 3 days</li><li>On-demand for missed</li><li>Consistent progress</li></ul></div>
+        <div class="plan-card" data-plan="5x" onclick="pickPlan(this)"><div class="plan-label">All In</div><div class="plan-name">5× / WEEK</div><div class="plan-desc">5 live classes per week</div><div class="plan-price">—<span> /mo</span></div><ul class="plan-features"><li>Book any 5 days</li><li>On-demand for missed</li><li>Full transformation</li></ul></div>
+      </div>
+      <div style="text-align:center;margin-top:28px"><button class="btn btn-primary" id="planCta" disabled onclick="switchTab('bc-tabs','bc-pay')">Select a plan to continue</button></div>
+    </div>
+    <div class="tab-content" id="bc-pay">
+      <div id="bcPayForm">
+        <div class="flow-steps"><div class="flow-step done"><span class="sn">✓</span> Plan</div><div class="flow-conn done"></div><div class="flow-step current"><span class="sn">2</span> Payment & Account</div></div>
+        <div class="pay-grid">
+          <div>
+            <div class="block"><h3>CREATE YOUR ACCOUNT</h3><div class="sub">You'll log in with these after purchase</div>
+              <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text" placeholder="Enter your full name" id="bcName"><div class="form-err" id="bcNameErr">Please enter your name</div></div>
+              <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" placeholder="you@email.com" id="bcEmail"><div class="form-err" id="bcEmailErr">Enter a valid email</div></div>
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" placeholder="+91 XXXXX XXXXX"></div>
+              <div class="form-group"><label class="form-label">Create Password</label><input class="form-input" type="password" placeholder="Min 8 characters" id="bcPass"></div>
+            </div>
+            <div class="block"><h3>PAYMENT METHOD</h3><div class="sub">Monthly auto-renewal · Cancel anytime</div>
+              <div class="form-group"><label class="form-label">Card Number</label><input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="form-group"><label class="form-label">Expiry</label><input class="form-input" placeholder="MM/YY" maxlength="5"></div><div class="form-group"><label class="form-label">CVV</label><input class="form-input" placeholder="•••" maxlength="3"></div></div>
+            </div>
+          </div>
+          <div><div class="summary"><h3>ORDER SUMMARY</h3>
+            <div class="sum-row"><span class="lbl">Plan</span><span class="val" id="sumPlan">—</span></div>
+            <div class="sum-row"><span class="lbl">Class Time</span><span class="val">6:45 AM daily</span></div>
+            <div class="sum-row"><span class="lbl">Billing</span><span class="val">Monthly</span></div>
+            <div class="sum-row"><span class="lbl">Includes</span><span class="val">Dashboard + On-Demand</span></div>
+            <div class="sum-row total"><span class="lbl">Total / month</span><span class="val">—</span></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:18px" onclick="buyBootcamp()">Start Membership →</button>
+            <p style="font-size:.7rem;color:var(--mid-gray);text-align:center;margin-top:10px">Account created at checkout. Log in to book.</p>
+          </div></div>
+        </div>
+      </div>
+      <div id="bcConfirm" style="display:none"><div class="confirm-wrap"><div class="confirm-check">✓</div><h2>MEMBERSHIP ACTIVE!</h2><p>Your account is ready. Log in to book this week's classes and access your Zoom link.</p><div class="conf-box"><div class="sum-row"><span class="lbl">Plan</span><span class="val" id="confPlan">—</span></div><div class="sum-row"><span class="lbl">Account</span><span class="val" id="confEmail">—</span></div><div class="sum-row"><span class="lbl">Next Step</span><span class="val">Log in → Book classes</span></div></div><div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn btn-primary" onclick="loginAndGoDash()">Go to Dashboard →</button><button class="btn btn-ghost" onclick="go('home')">Back to Home</button></div></div></div>
+    </div>
+  </div>
+  <footer><div class="foot-inner"><p>© 2026 Project. All rights reserved.</p><p>Terms · Privacy</p></div></footer>
+</div>
+
+<!-- ===== SGT ===== -->
+<div class="page" id="page-sgt">
+  <div class="lp-hero">
+    <div class="lp-bg" style="background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1400&q=80')"></div>
+    <div class="lp-overlay"></div>
+    <div class="lp-content">
+      <button class="lp-back" onclick="go('home')">← Home</button>
+      <div class="lp-badge"><span class="dot"></span> In-Studio · Small Group</div>
+      <h1>SMALL GROUP<br>TRAINING</h1>
+      <p class="lp-sub">Maximum 4 people per batch. Pick your days, pick your time, and train with focused coaching at our studio. Three days a week, every week.</p>
+      <div class="lp-actions">
+        <button class="lp-cta lp-cta-primary" onclick="switchTab('sgt-tabs','sgt-select')">Select Your Batch →</button>
+        <button class="lp-cta lp-cta-ghost" onclick="switchTab('sgt-tabs','sgt-info')">Learn More</button>
+      </div>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-num">Max <span>4</span></div><div class="stat-label">Per Group</div></div>
+      <div class="stat-item"><div class="stat-num">3<span>×</span>/wk</div><div class="stat-label">Fixed Schedule</div></div>
+      <div class="stat-item"><div class="stat-num">5 <span>Slots</span></div><div class="stat-label">Daily Batches</div></div>
+      <div class="stat-item"><div class="stat-num">In<span>-Studio</span></div><div class="stat-label">Hands-On Coaching</div></div>
+    </div>
+  </div>
+  <div class="tabs-bar"><div class="tabs" id="sgt-tabs">
+    <button class="tab-btn active" data-tab="sgt-info">Overview</button>
+    <button class="tab-btn" data-tab="sgt-select">Select Batch</button>
+    <button class="tab-btn" data-tab="sgt-pay">Subscribe & Pay</button>
+  </div></div>
+  <div class="container">
+    <div class="tab-content active" id="sgt-info">
+      <div class="block"><h3>WHAT IS SMALL GROUP TRAINING?</h3><div class="sub">In-person coaching · Maximum 4 people</div><p>Every session has a maximum of 4 participants — real form correction, real attention, real accountability. You come to our studio at your selected time, three days a week.</p></div>
+      <div class="block"><h3>HOW IT WORKS</h3>
+        <div class="steps-row">
+          <div class="step-card"><div class="num">01</div><h4>Pick your days</h4><p>Mon/Wed/Fri or Tue/Thu/Sat.</p></div>
+          <div class="step-card"><div class="num">02</div><h4>Pick your time</h4><p>7:30, 8:30, 9:30 AM, 12 PM, or 1 PM.</p></div>
+          <div class="step-card"><div class="num">03</div><h4>Subscribe monthly</h4><p>Fixed fee. Batch reserved every week.</p></div>
+          <div class="step-card"><div class="num">04</div><h4>Show up & train</h4><p>Studio. Trainer. Your group. Go.</p></div>
+        </div>
+      </div>
+      <div class="highlight-block"><h3>KEY DETAILS</h3><div class="sub">What makes this different</div>
+        <div class="feat-list">
+          <div class="feat-item"><div class="feat-icon">👥</div><div class="feat-text"><h4>Maximum 4 per batch</h4><p>Full means full. No overflow.</p></div></div>
+          <div class="feat-item"><div class="feat-icon">📍</div><div class="feat-text"><h4>Always at our studio</h4><p>Location shown during batch selection.</p></div></div>
+          <div class="feat-item"><div class="feat-icon">🔄</div><div class="feat-text"><h4>Portal for subscription only</h4><p>Handles batch, subscription, payments. Training is physical.</p></div></div>
+        </div>
+      </div>
+      <div class="cta-block"><h3>FIND YOUR BATCH</h3><p>Select your preferred days and time to check availability.</p><button class="btn btn-white" onclick="switchTab('sgt-tabs','sgt-select')">Select Batch →</button></div>
+    </div>
+    <div class="tab-content" id="sgt-select">
+      <div class="block"><h3>STEP 1 — PICK YOUR DAYS</h3><div class="sub">3 sessions per week on fixed days</div>
+        <div class="opt-grid" id="dayOpts">
+          <div class="opt-card" data-opt="mwf" onclick="pickDays(this)"><h4>MON / WED / FRI</h4><div class="opt-sub">Start your week strong</div></div>
+          <div class="opt-card" data-opt="tts" onclick="pickDays(this)"><h4>TUE / THU / SAT</h4><div class="opt-sub">Alternate rhythm</div></div>
+        </div>
+      </div>
+      <div id="batchArea" style="display:none">
+        <div class="block"><h3>STEP 2 — PICK YOUR TIME</h3><div class="sub">5 daily batches · Max 4 people each</div><div class="batch-grid" id="batchGrid"></div></div>
+        <div class="loc-card"><div class="loc-map"><div class="loc-pin"><span>📍</span></div></div><div class="loc-info"><h4>Pa Nije Training Studio</h4><p>All sessions here. Full address shared after enrollment.</p></div></div>
+        <div style="text-align:right;margin-top:20px"><button class="btn btn-primary" id="batchCta" disabled onclick="switchTab('sgt-tabs','sgt-pay')">Continue to Payment →</button></div>
+      </div>
+    </div>
+    <div class="tab-content" id="sgt-pay">
+      <div id="sgtPayForm">
+        <div class="flow-steps"><div class="flow-step done"><span class="sn">✓</span> Days</div><div class="flow-conn done"></div><div class="flow-step done"><span class="sn">✓</span> Batch</div><div class="flow-conn done"></div><div class="flow-step current"><span class="sn">3</span> Payment</div></div>
+        <div class="pay-grid">
+          <div>
+            <div class="block"><h3>YOUR DETAILS</h3><div class="sub">Account created at checkout</div>
+              <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text" placeholder="Full name" id="sgtName"></div>
+              <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com" id="sgtEmail"></div>
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" placeholder="+91 XXXXX XXXXX"></div>
+              <div class="form-group"><label class="form-label">Create Password</label><input class="form-input" type="password" placeholder="Min 8 characters"></div>
+            </div>
+            <div class="block"><h3>PAYMENT METHOD</h3><div class="sub">Monthly auto-renewal · Cancel anytime</div>
+              <div class="form-group"><label class="form-label">Card Number</label><input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="form-group"><label class="form-label">Expiry</label><input class="form-input" placeholder="MM/YY" maxlength="5"></div><div class="form-group"><label class="form-label">CVV</label><input class="form-input" placeholder="•••" maxlength="3"></div></div>
+            </div>
+          </div>
+          <div><div class="summary"><h3>ORDER SUMMARY</h3>
+            <div class="sum-row"><span class="lbl">Service</span><span class="val">Small Group Training</span></div>
+            <div class="sum-row"><span class="lbl">Days</span><span class="val" id="sgtSumDays">—</span></div>
+            <div class="sum-row"><span class="lbl">Batch</span><span class="val" id="sgtSumBatch">—</span></div>
+            <div class="sum-row"><span class="lbl">Location</span><span class="val">Training Studio</span></div>
+            <div class="sum-row"><span class="lbl">Group Size</span><span class="val">Max 4</span></div>
+            <div class="sum-row total"><span class="lbl">Total / month</span><span class="val">—</span></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:18px" onclick="buySgt()">Start Membership →</button>
+          </div></div>
+        </div>
+      </div>
+      <div id="sgtConfirm" style="display:none"><div class="confirm-wrap"><div class="confirm-check">✓</div><h2>BATCH RESERVED!</h2><p>Your spot is locked. Check email for studio directions and login credentials.</p><div class="conf-box"><div class="sum-row"><span class="lbl">Days</span><span class="val" id="sgtConfDays">—</span></div><div class="sum-row"><span class="lbl">Time</span><span class="val" id="sgtConfTime">—</span></div><div class="sum-row"><span class="lbl">Location</span><span class="val">Training Studio</span></div></div><button class="btn btn-ghost" style="margin-top:28px" onclick="go('home')">Back to Home</button></div></div>
+    </div>
+  </div>
+  <footer><div class="foot-inner"><p>© 2026 Project. All rights reserved.</p><p>Terms · Privacy</p></div></footer>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div class="page" id="page-dashboard">
+  <div class="dash-header"><div class="container"><button class="back-btn" onclick="go('home')">← Home</button><h1 class="dash-greeting" id="dashGreeting">Good morning, Member</h1><div class="dash-plan-badge" id="dashPlanBadge">Bootcamp · 3×/week</div></div></div>
+  <div class="container" style="padding-top:32px;padding-bottom:80px">
+    <div class="today-card" id="todayCard">
+      <div class="today-label"><span class="live-dot"></span> TODAY'S CLASS</div>
+      <h3>BOOTCAMP — FULL BODY STRENGTH</h3>
+      <div class="today-time">6:45 AM — Starting in 2h 15m</div>
+      <button class="zoom-btn" onclick="toast('Opening Zoom...','success')">📹 Join Zoom Class</button>
+    </div>
+    <div class="dash-grid" style="margin-top:20px">
+      <div class="block dash-full"><h3>THIS WEEK'S SCHEDULE</h3><div class="sub" id="dashSchedSub">Book up to 3 classes this week</div>
+        <div class="week-grid" id="dashWeekGrid"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <span style="display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--mid-gray)"><span style="width:12px;height:12px;border-radius:3px;background:var(--blue-50);border:1px solid var(--accent);display:inline-block"></span> Booked</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--mid-gray)"><span style="width:12px;height:12px;border-radius:3px;background:#FFFBEB;border:1px solid var(--warning);display:inline-block"></span> Missed</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--mid-gray)"><span style="width:12px;height:12px;border-radius:3px;border:2px solid var(--accent);display:inline-block"></span> Today</span>
+          </div>
+          <button class="btn btn-primary" id="dashBookBtn" disabled onclick="confirmDashBooking()">Confirm Booking</button>
+        </div>
+      </div>
+      <div class="block"><h3>PREVIOUS CLASSES</h3><div class="sub">Recent attendance</div>
+        <div class="history-list">
+          <div class="history-item"><div class="history-dot attended"></div><div class="history-info"><div class="h-date">Mon, Apr 20 · 6:45 AM</div><div class="h-sub">Full Body Strength</div></div><span class="history-badge attended">Attended</span></div>
+          <div class="history-item"><div class="history-dot attended"></div><div class="history-info"><div class="h-date">Fri, Apr 18 · 6:45 AM</div><div class="h-sub">HIIT Cardio</div></div><span class="history-badge attended">Attended</span></div>
+          <div class="history-item"><div class="history-dot missed"></div><div class="history-info"><div class="h-date">Wed, Apr 16 · 6:45 AM</div><div class="h-sub">Core & Mobility</div></div><span class="history-badge missed">Missed</span></div>
+          <div class="history-item"><div class="history-dot attended"></div><div class="history-info"><div class="h-date">Mon, Apr 14 · 6:45 AM</div><div class="h-sub">Upper Body Power</div></div><span class="history-badge attended">Attended</span></div>
+          <div class="history-item"><div class="history-dot attended"></div><div class="history-info"><div class="h-date">Fri, Apr 11 · 6:45 AM</div><div class="h-sub">Lower Body & Glutes</div></div><span class="history-badge attended">Attended</span></div>
+        </div>
+      </div>
+      <div class="block"><h3>ON-DEMAND VIDEOS</h3><div class="sub">Replays from missed booked sessions</div>
+        <div class="od-grid">
+          <div class="od-card"><div class="od-thumb"><span class="od-badge available">Available Today</span><div class="play-sm">▶</div></div><div class="od-info"><h4>Core & Mobility — Apr 16</h4><p>Booked but missed · Expires midnight</p></div></div>
+          <div class="od-card" style="opacity:.5;pointer-events:none"><div class="od-thumb" style="background:var(--light-gray)"><span class="od-badge expired">Expired</span><div class="play-sm" style="background:var(--mid-gray)">✕</div></div><div class="od-info"><h4>HIIT Blast — Apr 9</h4><p>Expired at midnight Apr 9</p></div></div>
+        </div>
+        <div class="ondemand-note" style="margin-top:16px">⏱ On-demand only on the day you missed — expires at midnight</div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="foot-inner"><p>© 2026 Project. All rights reserved.</p><p>Terms · Privacy</p></div></footer>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginOverlay">
+  <div class="modal-box"><button class="modal-close" onclick="closeLogin()">✕</button><h3>LOG IN</h3><p class="modal-sub">Access your dashboard, bookings, and classes.</p>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com" id="loginEmail"></div>
+    <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Your password" id="loginPass"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="doLogin()">Log In</button>
+    <p style="text-align:center;margin-top:14px;font-size:.8rem;color:var(--dark-gray)">No account? <span style="color:var(--accent);cursor:pointer;font-weight:600" onclick="closeLogin();go('bootcamp')">Get a Membership</span></p>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const S={page:'home',loggedIn:false,userName:'',bc:{plan:null,max:0,booked:[]},sgt:{days:null,batch:null}};
+
+function go(page,tab){
+  if(page==='dashboard'&&!S.loggedIn){openLogin();return}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  setTimeout(()=>{
+    document.getElementById(`page-${page}`).classList.add('active');
+    window.scrollTo(0,0);S.page=page;
+    const nav=document.getElementById('mainNav');
+    nav.classList.toggle('dark-mode',page==='home'||page==='bootcamp'||page==='sgt');
+    document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.dataset.nav===page));
+    if(page==='dashboard')buildDashboard();
+    if(tab)setTimeout(()=>switchTab(page==='bootcamp'?'bc-tabs':'sgt-tabs',tab),80);
+  },30);
+  document.getElementById('navLinks').classList.remove('open');
+}
+function updateNavAuth(){
+  document.getElementById('loginBtn').style.display=S.loggedIn?'none':'';
+  const nu=document.getElementById('navUser');nu.style.display=S.loggedIn?'flex':'none';
+  if(S.loggedIn)document.getElementById('navAvatar').textContent=S.userName.charAt(0).toUpperCase();
+}
+document.querySelectorAll('.tabs').forEach(bar=>{bar.querySelectorAll('.tab-btn').forEach(btn=>{btn.addEventListener('click',()=>switchTab(bar.id,btn.dataset.tab))})});
+function switchTab(barId,tabId){
+  const bar=document.getElementById(barId);bar.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const t=bar.querySelector(`[data-tab="${tabId}"]`);if(t)t.classList.add('active');
+  bar.closest('.page').querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  const c=document.getElementById(tabId);if(c)c.classList.add('active');
+}
+function pickPlan(card){
+  document.querySelectorAll('#plansGrid .plan-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');S.bc.plan=card.dataset.plan;
+  S.bc.max=S.bc.plan==='1x'?1:S.bc.plan==='3x'?3:5;
+  const btn=document.getElementById('planCta');btn.disabled=false;
+  btn.textContent=`Continue with ${S.bc.plan}/week →`;
+  document.getElementById('sumPlan').textContent=`Bootcamp ${S.bc.plan}/week`;
+}
+function buyBootcamp(){
+  const n=document.getElementById('bcName').value.trim(),e=document.getElementById('bcEmail').value.trim();let err=false;
+  if(!n){document.getElementById('bcName').classList.add('err');document.getElementById('bcNameErr').classList.add('show');err=true}
+  if(!e||!e.includes('@')){document.getElementById('bcEmail').classList.add('err');document.getElementById('bcEmailErr').classList.add('show');err=true}
+  if(err){toast('Please fill required fields','error');return}
+  S.userName=n;document.getElementById('confPlan').textContent=`Bootcamp ${S.bc.plan}/week`;
+  document.getElementById('confEmail').textContent=e;
+  document.getElementById('bcPayForm').style.display='none';document.getElementById('bcConfirm').style.display='block';
+  toast('Membership activated!','success');
+}
+function loginAndGoDash(){S.loggedIn=true;updateNavAuth();go('dashboard')}
+function buildDashboard(){
+  const h=new Date().getHours(),greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('dashGreeting').textContent=`${greet}, ${S.userName||'Member'}`;
+  document.getElementById('dashPlanBadge').textContent=`Bootcamp · ${S.bc.plan||'3x'}/week`;
+  document.getElementById('dashSchedSub').textContent=`Book up to ${S.bc.max||3} classes this week`;
+  const now=new Date(),classTime=new Date(now);classTime.setHours(6,45,0);const diff=classTime-now;
+  const tc=document.getElementById('todayCard');
+  if(diff>0){const hh=Math.floor(diff/3600000),mm=Math.floor((diff%3600000)/60000);tc.querySelector('.today-time').textContent=`6:45 AM — Starting in ${hh}h ${mm}m`}
+  else if(diff>-3600000){tc.querySelector('.today-label').innerHTML='<span class="live-dot"></span> LIVE NOW';tc.querySelector('.today-time').textContent='6:45 AM — Class is live!';tc.querySelector('.zoom-btn').textContent='📹 Join Now — Class is Live!'}
+  else{tc.querySelector('.today-label').textContent="TODAY'S CLASS";tc.querySelector('.today-time').textContent='6:45 AM — Completed';tc.querySelector('.zoom-btn').style.display='none';if(!tc.querySelector('.no-class')){const p=document.createElement('p');p.className='no-class';p.textContent="Today's class ended. If you missed it and had booked, check On-Demand below.";tc.appendChild(p)}}
+  buildDashWeek();
+}
+function buildDashWeek(){
+  const grid=document.getElementById('dashWeekGrid'),days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],now=new Date(),start=new Date(now);start.setDate(now.getDate()-now.getDay()+1);
+  grid.innerHTML='';S.bc.booked=[];
+  days.forEach((d,i)=>{
+    const dt=new Date(start);dt.setDate(start.getDate()+i);const past=dt<new Date(now.toDateString()),isToday=dt.toDateString()===now.toDateString(),missed=past&&i===2;
+    const el=document.createElement('div');let cls='day-cell';if(past&&!missed)cls+=' disabled';if(missed)cls+=' missed';if(isToday)cls+=' today-cell';if(past&&i===0)cls+=' booked';
+    el.className=cls;el.innerHTML=`<div class="d-label">${d}</div><div class="d-num">${dt.getDate()}</div><div class="d-time">6:45 AM</div>${past&&i===0?'<div class="d-status" style="color:var(--success)">Attended</div>':''}${missed?'<div class="d-status">On-Demand</div>':''}${isToday?'<div class="d-status" style="color:var(--accent)">Today</div>':''}`;
+    if(!past||isToday)el.addEventListener('click',()=>toggleDashDay(el,i));
+    grid.appendChild(el);
+  });
+}
+function toggleDashDay(el,idx){
+  if(el.classList.contains('booked')&&!(el.querySelector('.d-status')?.textContent||'').includes('Attended')){
+    el.classList.remove('booked');const s=el.querySelector('.d-status');if(s&&s.textContent==='Booked')s.remove();S.bc.booked=S.bc.booked.filter(d=>d!==idx)
+  }else if(!el.classList.contains('booked')){
+    const max=S.bc.max||3;if(S.bc.booked.length>=max){toast(`Max ${max} classes/week on your plan`,'error');return}
+    el.classList.add('booked');let s=el.querySelector('.d-status');
+    if(!s){s=document.createElement('div');s.className='d-status';s.style.color='var(--accent)';s.textContent='Booked';el.appendChild(s)}
+    else if(s.textContent==='Today'){s.textContent='Booked · Today';s.style.color='var(--accent)'}
+    S.bc.booked.push(idx);
+  }
+  const btn=document.getElementById('dashBookBtn');btn.disabled=S.bc.booked.length===0;
+  btn.textContent=S.bc.booked.length===0?'Confirm Booking':`Confirm ${S.bc.booked.length} Booking${S.bc.booked.length>1?'s':''} →`;
+}
+function confirmDashBooking(){toast(`${S.bc.booked.length} class${S.bc.booked.length>1?'es':''} booked!`,'success');const btn=document.getElementById('dashBookBtn');btn.disabled=true;btn.textContent='Booked ✓'}
+function pickDays(card){
+  document.querySelectorAll('#dayOpts .opt-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');
+  S.sgt.days=card.dataset.opt;S.sgt.batch=null;document.getElementById('batchArea').style.display='block';
+  document.getElementById('sgtSumDays').textContent=S.sgt.days==='mwf'?'M / W / F':'T / TH / S';
+  buildBatches();setTimeout(()=>document.getElementById('batchArea').scrollIntoView({behavior:'smooth',block:'start'}),120);
+}
+function buildBatches(){
+  const grid=document.getElementById('batchGrid'),slots=[{t:'7:30 AM',s:2},{t:'8:30 AM',s:4},{t:'9:30 AM',s:1},{t:'12:00 PM',s:3},{t:'1:00 PM',s:0}];
+  grid.innerHTML='';slots.forEach(sl=>{const full=sl.s===0,el=document.createElement('div');el.className=`batch-slot${full?' full':''}`;
+  const cls=sl.s<=1&&sl.s>0?'low':sl.s===0?'none':'';el.innerHTML=`<div class="b-time">${sl.t}</div><div class="b-spots ${cls}">${full?'Full':sl.s+' spot'+(sl.s>1?'s':'')+' left'}</div>`;
+  if(!full)el.addEventListener('click',()=>pickBatch(el,sl.t));grid.appendChild(el)});
+}
+function pickBatch(el,time){document.querySelectorAll('.batch-slot').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');S.sgt.batch=time;document.getElementById('batchCta').disabled=false;document.getElementById('sgtSumBatch').textContent=time}
+function buySgt(){const n=document.getElementById('sgtName').value.trim(),e=document.getElementById('sgtEmail').value.trim();if(!n||!e||!e.includes('@')){toast('Please fill name and email','error');return}document.getElementById('sgtConfDays').textContent=S.sgt.days==='mwf'?'Mon / Wed / Fri':'Tue / Thu / Sat';document.getElementById('sgtConfTime').textContent=S.sgt.batch||'—';document.getElementById('sgtPayForm').style.display='none';document.getElementById('sgtConfirm').style.display='block';toast('Batch reserved!','success')}
+function openLogin(){document.getElementById('loginOverlay').classList.add('show')}
+function closeLogin(){document.getElementById('loginOverlay').classList.remove('show')}
+document.getElementById('loginOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLogin()});
+function doLogin(){const e=document.getElementById('loginEmail').value.trim();if(!e){toast('Enter your email','error');return}S.loggedIn=true;S.userName=S.userName||e.split('@')[0];if(!S.bc.plan){S.bc.plan='3x';S.bc.max=3}updateNavAuth();closeLogin();toast('Welcome back!','success');setTimeout(()=>go('dashboard'),300)}
+function toast(msg,type='info'){const t=document.getElementById('toast');t.className=`toast ${type}`;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200)}
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>20)});
+document.querySelectorAll('.form-input').forEach(inp=>{inp.addEventListener('input',()=>{inp.classList.remove('err');const e=inp.parentElement.querySelector('.form-err');if(e)e.classList.remove('show')})});
+</script>
+</body>
+</html>
