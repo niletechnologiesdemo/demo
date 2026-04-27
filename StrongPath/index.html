@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Strong Path Diagnostics</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--navy:#1B2A4A;--teal:#2A7B88;--gold:#D4A843;--bg:#F5F7FA;--border:#E2E5EA;
+--text:#333;--muted:#667;--success:#27AE60;--danger:#E74C3C;--warn:#F39C12;--info:#3498DB;--purple:#8E44AD;
+--r:8px;--shadow:0 1px 4px rgba(27,42,74,.07);--shadow-lg:0 4px 20px rgba(27,42,74,.1);
+--ff:'DM Sans',system-ui,sans-serif;--fd:'Playfair Display',Georgia,serif;
+--side:260px;--top:56px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--ff);color:var(--text);background:var(--bg)}
+a{color:var(--teal);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+button{cursor:pointer;font-family:var(--ff);border:none;outline:none}
+input,select,textarea{font-family:var(--ff)}
+.icon{display:inline-flex;vertical-align:middle;flex-shrink:0}
+.icon svg{width:100%;height:100%}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r);font-weight:500;transition:all .15s;white-space:nowrap}
+.btn-md{padding:8px 18px;font-size:13.5px}.btn-sm{padding:5px 12px;font-size:12.5px}
+.btn-pri{background:var(--navy);color:#fff}.btn-pri:hover{background:#253d66}
+.btn-sec{background:#fff;color:var(--teal);border:1.5px solid var(--teal)}.btn-sec:hover{background:var(--teal);color:#fff}
+.btn-dan{background:var(--danger);color:#fff}.btn-dan:hover{background:#c0392b}
+.btn-ghost{background:transparent;color:var(--teal);padding:8px 10px}.btn-ghost:hover{text-decoration:underline}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+
+/* Card */
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
+
+/* Table */
+.tbl-wrap{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--navy);color:#fff;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:12px 16px;text-align:left;white-space:nowrap}
+tbody td{padding:11px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr{transition:background .1s}
+tbody tr:nth-child(even){background:var(--bg)}
+tbody tr:hover{background:#E8F4F6}
+
+/* Forms */
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-size:12px;font-weight:500;color:var(--text)}.fl .req{color:var(--danger)}
+.fi,.fs,.ft{padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;background:#fff;transition:border-color .15s;width:100%}
+.fi:focus,.fs:focus,.ft:focus{outline:none;border-color:var(--teal)}
+.ft{min-height:80px;resize:vertical}
+.fi[disabled]{background:var(--bg)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}
+.fgrid .full{grid-column:1/-1}
+.fhint{font-size:11px;color:var(--muted)}
+
+/* Layout */
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--top);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
+.sidebar{position:fixed;top:var(--top);left:0;width:var(--side);height:calc(100vh - var(--top));background:var(--navy);padding:12px 0;overflow-y:auto;z-index:90}
+.content{margin-left:var(--side);margin-top:var(--top);padding:28px 32px;min-height:calc(100vh - var(--top))}
+
+/* Sidebar nav */
+.nav-sec{padding:10px 20px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-top:8px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 20px;color:rgba(255,255,255,.65);font-size:13.5px;cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{color:#fff;background:rgba(42,123,136,.15);border-left-color:var(--teal)}
+.nav-badge{margin-left:auto;background:rgba(42,123,136,.4);color:#fff;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600}
+
+/* Utility */
+.flex{display:flex}.gap8{gap:8px}.gap12{gap:12px}.gap16{gap:16px}.gap24{gap:24px}
+.aic{align-items:center}.jcsb{justify-content:space-between}.wrap{flex-wrap:wrap}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
+.fs12{font-size:12px}.fs13{font-size:13px}.fs14{font-size:14px}
+.fw500{font-weight:500}.fw600{font-weight:600}.fw700{font-weight:700}
+.c-navy{color:var(--navy)}.c-teal{color:var(--teal)}.c-muted{color:var(--muted)}.c-success{color:var(--success)}.c-danger{color:var(--danger)}
+.ptr{cursor:pointer}
+.h1{font-family:var(--fd);font-size:1.65rem;color:var(--navy);font-weight:700}
+.h2{font-family:var(--fd);font-size:1.4rem;color:var(--navy);font-weight:700}
+.h3{font-size:15px;font-weight:600;color:var(--navy)}
+.ct{font-family:var(--fd);font-size:1.1rem;color:var(--navy);font-weight:600}
+
+/* Breadcrumb */
+.bc{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);margin-bottom:14px}
+.bc .sep{color:var(--border);font-size:10px}.bc .cur{color:var(--navy);font-weight:600}
+.bc a{color:var(--teal);text-decoration:none;cursor:pointer}.bc a:hover{text-decoration:underline}
+
+/* Metric card */
+.mc{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:20px;border-left:3px solid var(--teal);transition:transform .15s,box-shadow .15s}
+.mc:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.mc-val{font-size:1.9rem;font-weight:700;color:var(--navy);line-height:1.1}
+.mc-lbl{font-size:12px;color:var(--muted);margin-top:4px}
+.mc-trend{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px}
+.tab{padding:10px 20px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab:hover{color:var(--navy)}.tab.on{color:var(--teal);border-bottom-color:var(--teal);font-weight:600}
+
+/* Progress */
+.prog-bg{background:var(--border);border-radius:20px;height:8px;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;background:var(--teal);transition:width .3s}
+
+/* Pipeline */
+.pipe{display:flex;align-items:center;gap:0;margin:16px 0 24px;flex-wrap:wrap}
+.pipe-s{padding:6px 14px;font-size:11.5px;font-weight:500;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.pipe-c{width:20px;height:2px;display:inline-block}
+
+/* Status strip */
+.sstrip{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.schip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.schip:hover{transform:translateY(-1px)}
+
+/* Filter */
+.fbar{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.sinput{flex:1;min-width:200px;padding:8px 14px 8px 36px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23999' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 12px center no-repeat}
+.sinput:focus{outline:none;border-color:var(--teal)}
+.fsel{padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:12.5px;background:#fff;cursor:pointer}
+
+/* Pagination */
+.pgn{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.pgn-nums{display:flex;gap:3px}
+.pgn-n{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;font-size:12px}
+.pgn-n.on{background:var(--navy);color:#fff;font-weight:700}
+
+/* Action icons */
+.aicons{display:flex;gap:4px}
+.aicon{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .15s;background:transparent}
+.aicon:hover{background:var(--bg);color:var(--teal)}
+
+/* Test type cards */
+.ttgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ttcard{border:2px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;cursor:pointer;transition:all .15s;position:relative}
+.ttcard:hover{border-color:var(--teal);transform:translateY(-2px)}
+.ttcard.sel{border-color:var(--teal);background:#E8F4F6}
+.ttcard .tc-chk{position:absolute;top:8px;right:8px;color:var(--teal);display:none}
+.ttcard.sel .tc-chk{display:block}
+
+/* Upload zone */
+.upzone{border:2px dashed var(--border);border-radius:var(--r);padding:48px;text-align:center;cursor:pointer;background:#fafbfc;transition:all .15s;margin-bottom:20px}
+.upzone:hover{border-color:var(--teal);background:#E8F4F6}
+
+/* Wizard */
+.wiz{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:32px}
+.wiz-circ{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.wiz-conn{width:50px;height:2px;background:var(--border);margin:0 10px}
+
+/* Client portal */
+.c-top{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:100}
+.c-nav{display:flex;gap:28px}
+.c-nav a{font-size:13.5px;font-weight:500;color:var(--muted);padding:20px 0;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s}
+.c-nav a:hover,.c-nav a.on{color:var(--teal);border-bottom-color:var(--teal);text-decoration:none;font-weight:600}
+.c-body{margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;padding:28px 32px}
+.c-foot{text-align:center;padding:24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:40px}
+
+/* Vial input */
+.vial{padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;width:100%;font-family:var(--ff)}
+.vial:focus{outline:none;border-color:var(--teal)}
+.vial:disabled{background:var(--bg)}
+
+/* Result select */
+.rsel{padding:4px 6px;border:1px solid transparent;border-radius:4px;font-size:12px;background:transparent;width:100%;cursor:pointer;font-family:var(--ff)}
+.rsel:focus{border-color:var(--teal);outline:none;background:#fff}
+
+/* Result num input */
+.rnum{padding:3px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;width:60px;font-family:var(--ff)}
+.rnum:focus{outline:none;border-color:var(--teal)}
+
+/* Page container */
+.page{display:none}.page.show{display:block}
+
+/* View toggle */
+.vtog{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;background:#fff;border-radius:var(--r);box-shadow:var(--shadow-lg);overflow:hidden;border:1.5px solid var(--border)}
+.vtog-b{padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;background:#fff;color:var(--text)}
+.vtog-b.on{background:var(--navy);color:#fff}
+
+/* Login */
+.login{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+.login-brand{background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;position:relative;overflow:hidden}
+.login-brand::before{content:'';position:absolute;inset:0;opacity:.08;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,.03) 20px,rgba(255,255,255,.03) 40px)}
+.login-form{display:flex;align-items:center;justify-content:center;padding:48px;background:#fff}
+.login-inner{width:100%;max-width:380px}
+
+@media(max-width:1024px){
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr}
+  .ttgrid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- SVG ICON DEFS (hidden) -->
+<!-- ============================================================ -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></symbol>
+<symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="15" y2="18"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v7l5 8a2 2 0 01-1.7 3H5.7A2 2 0 014 18l5-8V3"/><line x1="9" y1="3" x2="15" y2="3"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+<symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+<symbol id="i-trendup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+<symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+<symbol id="i-droplet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></symbol>
+<symbol id="i-thermo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+<symbol id="i-chevr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></symbol>
+</defs>
+</svg>
+
+<!-- ============================================================ -->
+<!-- VIEW TOGGLE -->
+<!-- ============================================================ -->
+<div class="vtog" id="vtog">
+  <div class="vtog-b on" onclick="switchView('admin')">Admin Panel</div>
+  <div class="vtog-b" onclick="switchView('client')">Client Portal</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ADMIN VIEW -->
+<!-- ============================================================ -->
+<div id="adminView">
+<div id="adminContent"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CLIENT VIEW -->
+<!-- ============================================================ -->
+<div id="clientView" style="display:none">
+<div id="clientContent"></div>
+</div>
+
+<script>
+// ── Icon helper ──
+function ic(name, size=18) {
+  return `<svg class="icon" style="width:${size}px;height:${size}px"><use href="#i-${name}"/></svg>`;
+}
+
+// ── Badge helper ──
+const badgeColors = {
+  Active:{bg:"#E8F8F5",c:"#27AE60"},Archived:{bg:"#f5f5f5",c:"#999"},
+  Scheduled:{bg:"#EBF5FB",c:"#3498DB"},"In Progress":{bg:"#FEF9E7",c:"#F39C12"},
+  "Samples Collected":{bg:"#E8F4F6",c:"#2A7B88"},"Sent to Lab":{bg:"#F4ECF7",c:"#8E44AD"},
+  "Results Pending":{bg:"#FEF9E7",c:"#F39C12"},"Results Complete":{bg:"#E8F8F5",c:"#27AE60"},
+  Broadcast:{bg:"#F5F7FA",c:"#1B2A4A"},Collected:{bg:"#E8F4F6",c:"#2A7B88"},
+  Absent:{bg:"#FDEDEC",c:"#E74C3C"},Clear:{bg:"#E8F8F5",c:"#27AE60"},
+  Flagged:{bg:"#FDEDEC",c:"#E74C3C"},Normal:{bg:"#E8F8F5",c:"#27AE60"},
+  Desirable:{bg:"#E8F8F5",c:"#27AE60"},Diabetic:{bg:"#FDEDEC",c:"#E74C3C"},
+  Pending:{bg:"#FEF9E7",c:"#F39C12"},Complete:{bg:"#E8F8F5",c:"#27AE60"},
+  Delivered:{bg:"#E8F8F5",c:"#27AE60"},Failed:{bg:"#FDEDEC",c:"#E74C3C"},
+};
+function badge(s) {
+  const x = badgeColors[s]||{bg:"#f5f5f5",c:"#666"};
+  return `<span class="badge" style="background:${x.bg};color:${x.c}">${s}</span>`;
+}
+
+// ── Button helper ──
+function btn(label, cls="pri", size="md", icon="", onclick="") {
+  const oc = onclick ? `onclick="${onclick}"` : '';
+  return `<button class="btn btn-${cls} btn-${size}" ${oc}>${icon?ic(icon,14)+' ':''}${label}</button>`;
+}
+
+// ── Action icons ──
+function aicons(actions) {
+  return `<div class="aicons">${actions.map(a=>`<span class="aicon" title="${a.t}" ${a.oc?`onclick="${a.oc}"`:''}>${ic(a.i,15)}</span>`).join('')}</div>`;
+}
+
+// ── Table helper ──
+function tbl(cols, rows, footer="") {
+  return `<div class="tbl-wrap"><table>
+    <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table>${footer?`<div class="pgn">${footer}</div>`:''}</div>`;
+}
+
+function pgn(showing, total) {
+  return `<span>Showing ${showing} of ${total}</span><div class="pgn-nums"><span class="pgn-n">&lt;</span><span class="pgn-n on">1</span><span class="pgn-n">2</span><span class="pgn-n">3</span><span class="pgn-n">&gt;</span></div>`;
+}
+
+// ── Breadcrumb ──
+function bc(items) {
+  return `<div class="bc">${items.map((it,i)=>{
+    if(i<items.length-1) return `<a onclick="go('${it.r}')">${it.l}</a><span class="sep">${ic('chevr',10)}</span>`;
+    return `<span class="cur">${it.l}</span>`;
+  }).join('')}</div>`;
+}
+
+// ── Metric card ──
+function mc(val,lbl,trend="",tdir="",bc="#2A7B88",oc="") {
+  return `<div class="mc ptr" style="border-left-color:${bc}" ${oc?`onclick="go('${oc}')"`:''}>
+    <div class="mc-val">${val}</div><div class="mc-lbl">${lbl}</div>
+    ${trend?`<div class="mc-trend" style="color:${tdir==='up'?'#27AE60':'#667'}">${tdir==='up'?ic('trendup',12)+'':''} ${trend}</div>`:''}
+  </div>`;
+}
+
+// ── Field ──
+function field(label, type="text", opts={}) {
+  const req = opts.req ? '<span class="req"> *</span>' : '';
+  const cls = opts.full ? 'fg full' : 'fg';
+  let input = '';
+  if (type === 'select') {
+    input = `<select class="fs"${opts.disabled?' disabled':''}>${(opts.options||[]).map(o=>`<option${opts.value===o?' selected':''}>${o}</option>`).join('')}</select>`;
+  } else if (type === 'textarea') {
+    input = `<textarea class="ft" placeholder="${opts.ph||''}">${opts.value||''}</textarea>`;
+  } else {
+    input = `<input class="fi" type="${type}" placeholder="${opts.ph||''}" value="${opts.value||''}"${opts.disabled?' disabled':''}>`;
+  }
+  return `<div class="${cls}"><label class="fl">${label}${req}</label>${opts.custom||input}${opts.hint?`<span class="fhint">${opts.hint}</span>`:''}</div>`;
+}
+
+// ── Progress bar ──
+function prog(pct, label="") {
+  return `${label?`<div class="fs13 mb12">${label}</div>`:''}<div class="prog-bg"><div class="prog-fill" style="width:${pct}%"></div></div>`;
+}
+
+// ── Test types data ──
+const testTypes = [
+  {k:"drug",n:"Drug Testing",i:"droplet",s:"Urine / Oral fluid",t:"1-3 days"},
+  {k:"dna",n:"Paternity / DNA",i:"activity",s:"Buccal swab",t:"5-10 days"},
+  {k:"a1c",n:"A1C Hemoglobin",i:"activity",s:"Blood draw",t:"1-2 days"},
+  {k:"covid",n:"COVID / Flu",i:"thermo",s:"Nasal swab",t:"15min-2 days"},
+  {k:"chol",n:"Cholesterol",i:"heart",s:"Blood draw",t:"1-2 days"},
+  {k:"gluc",n:"Glucose",i:"droplet",s:"Blood / Finger",t:"Same day"},
+  {k:"hiv",n:"HIV Testing",i:"shield",s:"Blood / Oral",t:"1-5 days"},
+  {k:"lipid",n:"Lipid Profile",i:"chart",s:"Blood (fasting)",t:"1-2 days"},
+];
+
+// ── Sidebar mapping ──
+const sideMap = {
+  dashboard:"dashboard",orgs:"orgs","org-detail":"orgs","org-add":"orgs","emp-upload":"orgs","emp-detail":"orgs","emp-add":"orgs",
+  cycles:"cycles","cycle-create":"cycles","cycle-detail":"cycles",roster:"cycles","result-grid":"cycles","result-review":"cycles",broadcast:"cycles",
+  reports:"reports","settings-users":"settings-users","settings-tests":"settings-tests","settings-email":"settings-email","settings-profile":"settings-profile"
+};
+
+// ── Admin Shell ──
+function adminShell(content, activePage) {
+  const activeNav = sideMap[activePage] || 'dashboard';
+  const navItems = [
+    {sec:"Main"},
+    {k:"dashboard",i:"grid",l:"Dashboard"},
+    {k:"orgs",i:"building",l:"Organisations",b:"24"},
+    {k:"cycles",i:"flask",l:"Test Cycles",b:"6"},
+    {k:"reports",i:"chart",l:"Reports"},
+    {sec:"Configuration"},
+    {k:"settings-users",i:"users",l:"User Management"},
+    {k:"settings-tests",i:"sliders",l:"Test Configuration"},
+    {k:"settings-email",i:"mail",l:"Email Templates"},
+    {k:"settings-profile",i:"info",l:"Company Profile"},
+  ];
+
+  return `
+  <div class="topbar">
+    <div class="flex aic gap12">
+      <div style="width:32px;height:32px;background:#2A7B88;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">SP</div>
+      <span style="font-family:var(--fd);font-size:1.1rem;color:var(--navy);font-weight:700">Strong Path Diagnostics</span>
+    </div>
+    <div class="flex aic gap16">
+      <span style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--muted);cursor:pointer">${ic('search',16)}</span>
+      <span style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--muted);cursor:pointer;position:relative">${ic('bell',16)}<span style="position:absolute;top:-1px;right:-1px;width:16px;height:16px;border-radius:50%;background:#E74C3C;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700">3</span></span>
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12.5px;cursor:pointer">CS</div>
+    </div>
+  </div>
+  <div class="sidebar">
+    ${navItems.map(n=>{
+      if(n.sec) return `<div class="nav-sec">${n.sec}</div>`;
+      const act = activeNav===n.k ? 'active' : '';
+      return `<div class="nav-item ${act}" onclick="go('${n.k}')">${ic(n.i,18)} ${n.l}${n.b?`<span class="nav-badge">${n.b}</span>`:''}</div>`;
+    }).join('')}
+  </div>
+  <div class="content">${content}</div>`;
+}
+
+// ════════════════════════════════════════════════════════
+// PAGE RENDERERS
+// ════════════════════════════════════════════════════════
+
+const pages = {};
+
+// ── LOGIN ──
+pages.login = () => `
+<div class="login">
+  <div class="login-brand">
+    <div style="font-family:var(--fd);font-size:2.2rem;color:#fff;font-weight:700;z-index:1;text-align:center;line-height:1.2">Strong Path<br>Diagnostics</div>
+    <div style="color:rgba(255,255,255,.45);font-size:15px;margin-top:10px;z-index:1">B2B Diagnostic Testing Platform</div>
+  </div>
+  <div class="login-form">
+    <div class="login-inner">
+      <h2 style="font-family:var(--fd);font-size:1.6rem;color:var(--navy);margin-bottom:4px">Welcome Back</h2>
+      <p class="c-muted fs14" style="margin-bottom:28px">Sign in to your admin account</p>
+      <div class="fg mb16"><label class="fl">Email Address</label><input class="fi" placeholder="admin@strongpathdiag.com"></div>
+      <div class="fg mb16"><label class="fl">Password</label><input class="fi" type="password" placeholder="Enter your password"></div>
+      <div class="flex aic jcsb mb20 fs13"><label><input type="checkbox"> Remember me</label><a>Forgot Password?</a></div>
+      <button class="btn btn-pri btn-md" style="width:100%;justify-content:center;padding:11px;font-size:15px" onclick="go('dashboard')">Sign In</button>
+    </div>
+  </div>
+</div>`;
+
+// ── DASHBOARD ──
+pages.dashboard = () => `
+  <div class="flex aic jcsb mb24"><h1 class="h1">Dashboard</h1><span class="fs13 c-muted">Welcome back, Chris &middot; April 27, 2026</span></div>
+  <div class="grid4 mb24">
+    ${mc("24","Total Organisations","+3 this month","up","#2A7B88","orgs")}
+    ${mc("1,847","Total Employees","+142 this month","up","#3498DB")}
+    ${mc("6","Active Test Cycles","3 pending results","","#F39C12","cycles")}
+    ${mc("312","Tests This Month","+18% vs last month","up","#27AE60","reports")}
+  </div>
+  <div class="flex gap12 mb24">
+    ${btn("Add Organisation","pri","md","plus","go('org-add')")}
+    ${btn("Start Test Cycle","pri","md","flask","go('cycle-create')")}
+    ${btn("Enter Results","sec","md","clipboard","go('cycles')")}
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="flex aic jcsb mb16"><span class="ct">Recent Activity</span>${btn("View All","ghost","sm")}</div>
+      ${[
+        {i:"building",t:`New organisation <strong>NexGen Labs</strong> added`,d:"2 hours ago",c:"#3498DB",bg:"#EBF5FB"},
+        {i:"flask",t:`Test cycle <strong>Q2 Drug Screen</strong> created`,d:"4 hours ago",c:"#F39C12",bg:"#FEF9E7"},
+        {i:"check",t:`Results entered for <strong>42 employees</strong> at Meridian`,d:"Yesterday",c:"#27AE60",bg:"#E8F8F5"},
+        {i:"send",t:`Results broadcast to <strong>TechFlow Inc</strong>`,d:"2 days ago",c:"#8E44AD",bg:"#F4ECF7"},
+      ].map((a,i,arr)=>`<div class="flex gap12" style="padding:12px 0;${i<arr.length-1?'border-bottom:1px solid var(--border)':''}">
+        <span style="width:32px;height:32px;border-radius:50%;background:${a.bg};color:${a.c};display:flex;align-items:center;justify-content:center;flex-shrink:0">${ic(a.i,14)}</span>
+        <div><div class="fs13" style="line-height:1.4">${a.t}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${a.d}</div></div>
+      </div>`).join('')}
+    </div>
+    <div class="card">
+      <span class="ct">Upcoming Tests</span>
+      <div class="mt16">
+        ${[{o:"Acme Corp",t:"Drug Testing",d:"May 14",n:42},{o:"TechFlow",t:"A1C, Glucose",d:"May 20",n:86},{o:"Meridian Health",t:"Full Panel",d:"May 28",n:124}]
+        .map((t,i,arr)=>`<div class="flex gap12 ptr" style="padding:12px 0;${i<arr.length-1?'border-bottom:1px solid var(--border)':''}" onclick="go('cycles')">
+          <span style="width:32px;height:32px;border-radius:50%;background:#E8F4F6;color:#2A7B88;display:flex;align-items:center;justify-content:center;flex-shrink:0">${ic('flask',14)}</span>
+          <div><div class="fs13 fw600 c-navy">${t.o}</div><div style="font-size:11.5px;color:var(--muted)">${t.t} &middot; ${t.d} &middot; ${t.n} employees</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+
+// ── ORG LIST ──
+pages.orgs = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Organisations"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Organisations</h1>${btn("Add Organisation","pri","md","plus","go('org-add')")}</div>
+  <div class="fbar">
+    <input class="sinput" placeholder="Search by name, industry, or contact...">
+    <select class="fsel"><option>All Status</option><option>Active</option><option>Archived</option></select>
+    <select class="fsel"><option>All Industries</option><option>Healthcare</option><option>Manufacturing</option><option>Construction</option><option>Technology</option></select>
+    <select class="fsel"><option>Name A-Z</option><option>Newest First</option><option>Most Employees</option></select>
+  </div>
+  <div class="fs12 c-muted mb12">Showing 6 organisations</div>
+  ${tbl(["Organisation Name","Industry","Primary Contact","Employees","Cycles","Status","Actions"],
+    [
+      [`<a onclick="go('org-detail')">Acme Corporation</a>`,"Manufacturing","John Smith","142","8",badge("Active"),aicons([{i:"eye",t:"View",oc:"go('org-detail')"},{i:"edit",t:"Edit",oc:"go('org-add')"},{i:"archive",t:"Archive"}])],
+      [`<a onclick="go('org-detail')">TechFlow Inc</a>`,"Technology","Sarah Chen","86","5",badge("Active"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"},{i:"archive",t:"Archive"}])],
+      [`<a>Meridian Health Group</a>`,"Healthcare","David Williams","124","12",badge("Active"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"},{i:"archive",t:"Archive"}])],
+      [`<a>NexGen Labs</a>`,"Technology","Mike Torres","58","2",badge("Active"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"},{i:"archive",t:"Archive"}])],
+      [`<a>Summit Construction</a>`,"Construction","Lisa Brown","210","15",badge("Active"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"},{i:"archive",t:"Archive"}])],
+      [`<a>Brightwell Co</a>`,"Finance","Amy Park","45","3",badge("Archived"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"},{i:"archive",t:"Archive"}])],
+    ], pgn("1-6",24))}`;
+
+// ── ORG DETAIL ──
+pages['org-detail'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Organisations",r:"orgs"},{l:"Acme Corporation"}])}
+  <div class="card">
+    <div class="flex jcsb wrap gap12" style="align-items:flex-start">
+      <div>
+        <div class="flex aic gap12 mb8"><h2 class="h2" style="margin:0">Acme Corporation</h2>${badge("Active")}<span style="background:#EBF5FB;color:#3498DB;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:500">Manufacturing</span></div>
+        <div class="fs13 c-muted">1234 Industrial Blvd, Houston, TX 77001 &middot; (713) 555-0142 &middot; john.smith@acmecorp.com</div>
+      </div>
+      <div class="flex gap8">${btn("Edit","sec","sm","edit","go('org-add')")} ${btn("Start Test Cycle","pri","sm","flask","go('cycle-create')")} ${btn("Upload Employees","sec","sm","upload","go('emp-upload')")}</div>
+    </div>
+  </div>
+  <div class="grid4 mb24">
+    ${mc("142","Total Employees")} ${mc("2","Active Cycles","","","#F39C12")} ${mc("8","Completed Cycles","","","#27AE60")} ${mc("Apr 20","Last Test Date","","","#3498DB")}
+  </div>
+  <div class="tabs"><div class="tab on">Employees (142)</div><div class="tab" onclick="go('cycles')">Test Cycles</div><div class="tab">Billing &amp; Contract</div><div class="tab">Activity Log</div></div>
+  <div class="fbar">
+    <input class="sinput" placeholder="Search by name, ID, or email...">
+    <select class="fsel"><option>All Departments</option><option>Engineering</option><option>Operations</option><option>HR</option></select>
+    ${btn("Add Employee","sec","sm","plus","go('emp-add')")} ${btn("Bulk Upload","pri","sm","upload","go('emp-upload')")}
+  </div>
+  ${tbl(["Employee Name","Employee ID","Department","Email","Phone","Status","Actions"],
+    [
+      [`<a onclick="go('emp-detail')">Jane Smith</a>`,"EMP-0042","Engineering","jane@acme.com","(555) 123-4567",badge("Active"),aicons([{i:"eye",t:"View",oc:"go('emp-detail')"},{i:"edit",t:"Edit",oc:"go('emp-add')"}])],
+      [`<a>Tom Johnson</a>`,"EMP-0043","Operations","tom@acme.com","(555) 234-5678",badge("Active"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"}])],
+      [`<a>Maria Garcia</a>`,"EMP-0044","HR","maria@acme.com","(555) 345-6789",badge("Active"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"}])],
+      [`<a>Robert Lee</a>`,"EMP-0045","Engineering","robert@acme.com","(555) 456-7890",badge("Active"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"}])],
+      [`<a>Sarah Davis</a>`,"EMP-0046","Finance","sarah@acme.com","(555) 567-8901",badge("Active"),aicons([{i:"eye",t:"View"},{i:"edit",t:"Edit"}])],
+    ], pgn("1-5",142))}`;
+
+// ── ORG FORM ──
+pages['org-add'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Organisations",r:"orgs"},{l:"Add New Organisation"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Add New Organisation</h1><div class="flex gap8">${btn("Cancel","sec","md","","go('orgs')")} ${btn("Save Organisation","pri","md","check")}</div></div>
+  <div class="card"><div class="h3 mb16">Organisation Details</div><div class="fgrid">
+    ${field("Organisation Name","text",{req:true,ph:"Enter organisation name"})}
+    ${field("Industry","select",{req:true,options:["Select industry","Healthcare","Manufacturing","Construction","Education","Technology","Finance","Government","Retail","Other"]})}
+    ${field("Address Line 1","text",{req:true,ph:"Street address"})}
+    ${field("Address Line 2","text",{ph:"Suite, floor, etc."})}
+    ${field("City","text",{req:true,ph:"City"})}
+    ${field("State","select",{req:true,options:["Select state","TX","CA","NY","FL"]})}
+    ${field("ZIP Code","text",{req:true,ph:"XXXXX"})}
+  </div></div>
+  <div class="card"><div class="h3 mb16">Primary Contact</div><div class="fgrid">
+    ${field("Contact Name","text",{req:true,ph:"First and last name"})}
+    ${field("Designation / Title","text",{ph:"e.g., HR Director"})}
+    ${field("Email","email",{req:true,ph:"contact@company.com"})}
+    ${field("Phone","text",{req:true,ph:"(XXX) XXX-XXXX"})}
+  </div></div>
+  <div class="card"><div class="h3 mb16">Contract &amp; Preferences</div><div class="fgrid">
+    ${field("Contract Start Date","date",{req:true})}
+    ${field("Contract Type","select",{req:true,options:["Per-Test","Per-Cycle","Annual Retainer"]})}
+    ${field("Communication Channel","text",{custom:'<div class="flex gap16 mt8"><label class="fs13"><input type="checkbox" checked> Email</label><label class="fs13"><input type="checkbox"> SMS</label></div>'})}
+    ${field("Notes","textarea",{full:true,ph:"Internal notes about this client..."})}
+  </div></div>`;
+
+// ── EMP UPLOAD ──
+pages['emp-upload'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Organisations",r:"orgs"},{l:"Acme Corporation",r:"org-detail"},{l:"Upload Employees"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Bulk Employee Upload</h1></div>
+  <div class="card" style="text-align:center">
+    <p class="fs14 mb12">Download the employee template to get started</p>
+    ${btn("Download CSV Template","sec","sm","download")} <span style="margin:0 8px"></span> ${btn("Download Excel Template","sec","sm","download")}
+  </div>
+  <div class="upzone">
+    <div style="margin-bottom:12px">${ic('upload',40)}</div>
+    <div class="fs14 fw500">Drag and drop your file here</div>
+    <div class="c-muted fs13 mt8">or <a>Browse Files</a> &middot; CSV, XLSX &middot; Max 5MB</div>
+  </div>
+  <div class="card">
+    <div class="h3 mb16">Validation Preview</div>
+    <div class="grid3 mb16">
+      ${mc("148","Total Rows","","","#3498DB")} ${mc("142","Ready to Import","","","#27AE60")} ${mc("6","Errors Found","","","#E74C3C")}
+    </div>
+    ${tbl(["First Name","Last Name","Email","Employee ID","Department","DOB"],[
+      ["Alice","Wang","alice@acme.com","EMP-0100","Engineering","03/14/1990"],
+      ["Bob","Martinez",`<span class="c-danger fw500">bob@invalid</span>`,"EMP-0101","Operations","07/22/1985"],
+      ["Claire","Johnson","claire@acme.com","EMP-0102","HR","11/30/1992"],
+    ])}
+    <div class="flex gap8 mt16" style="justify-content:flex-end">${btn("Re-upload File","sec","md")} ${btn("Import 142 Employees","pri","md")}</div>
+  </div>`;
+
+// ── EMP DETAIL ──
+pages['emp-detail'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Organisations",r:"orgs"},{l:"Acme Corporation",r:"org-detail"},{l:"Jane Smith"}])}
+  <div class="card">
+    <div class="flex jcsb wrap gap12" style="align-items:flex-start">
+      <div>
+        <div class="flex aic gap12 mb8"><h2 class="h2" style="margin:0">Jane Smith</h2><span style="background:var(--bg);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;color:var(--navy)">EMP-0042</span>${badge("Active")}</div>
+        <div class="fs13 c-muted">Engineering &middot; jane@acme.com &middot; (555) 123-4567 &middot; DOB: 05/14/1988</div>
+      </div>
+      <div class="flex gap8">${btn("Edit","sec","sm","edit","go('emp-add')")} ${btn("Deactivate","dan","sm")}</div>
+    </div>
+  </div>
+  <div class="tabs"><div class="tab on">Test History</div><div class="tab">Personal Details</div></div>
+  ${[{cy:"Q2 Drug Screening",dt:"Apr 20, 2026",st:"Complete",rows:[["Drug Testing (5-Panel)","VL-2026-0891","THC: Positive",badge("Flagged")],["A1C Hemoglobin","VL-2026-0892","5.4%",badge("Normal")],["Cholesterol","VL-2026-0893","Total: 195 mg/dL",badge("Desirable")]]},
+    {cy:"Q1 Annual Health Screen",dt:"Jan 15, 2026",st:"Broadcast",rows:[["Drug Testing","VL-2026-0201","All Negative",badge("Clear")],["Glucose","VL-2026-0202","92 mg/dL",badge("Normal")]]}
+  ].map(c=>`<div class="card">
+    <div class="flex aic gap12 mb12"><span class="fw600 c-navy fs14">${c.cy}</span><span class="fs12 c-muted">${c.dt}</span>${badge(c.st)}</div>
+    ${tbl(["Test Type","Vial #","Result","Classification"],c.rows)}
+  </div>`).join('')}`;
+
+// ── EMP FORM ──
+pages['emp-add'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Acme Corporation",r:"org-detail"},{l:"Add Employee"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Add Employee</h1><div class="flex gap8">${btn("Cancel","sec","md","","go('org-detail')")} ${btn("Save &amp; Add Another","sec","md")} ${btn("Save Employee","pri","md","check")}</div></div>
+  <div class="card"><div class="fgrid">
+    ${field("Organisation","text",{value:"Acme Corporation",disabled:true})}
+    ${field("Employee ID","text",{req:true,ph:"e.g., EMP-0100"})}
+    ${field("First Name","text",{req:true,ph:"First name"})}
+    ${field("Last Name","text",{req:true,ph:"Last name"})}
+    ${field("Email","email",{req:true,ph:"employee@company.com"})}
+    ${field("Phone","text",{ph:"(XXX) XXX-XXXX"})}
+    ${field("Department","text",{ph:"e.g., Engineering"})}
+    ${field("Date of Birth","date",{req:true})}
+    ${field("Gender","select",{req:true,options:["Select","Male","Female","Non-Binary","Prefer Not to Say"]})}
+  </div></div>`;
+
+// ── CYCLE LIST ──
+pages.cycles = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Test Cycles"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Test Cycles</h1>${btn("New Test Cycle","pri","md","plus","go('cycle-create')")}</div>
+  <div class="sstrip">
+    ${[{l:"Scheduled (3)",bg:"#EBF5FB",c:"#3498DB"},{l:"In Progress (1)",bg:"#FEF9E7",c:"#F39C12"},{l:"Sent to Lab (2)",bg:"#F4ECF7",c:"#8E44AD"},{l:"Results Pending (1)",bg:"#FEF9E7",c:"#F39C12"},{l:"Complete (2)",bg:"#E8F8F5",c:"#27AE60"},{l:"Broadcast (14)",bg:"#F5F7FA",c:"#1B2A4A"}]
+    .map(s=>`<span class="schip" style="background:${s.bg};color:${s.c}">${s.l}</span>`).join('')}
+  </div>
+  <div class="fbar"><input class="sinput" placeholder="Search test cycles..."><select class="fsel"><option>All Organisations</option><option>Acme Corp</option><option>TechFlow</option></select><select class="fsel"><option>All Status</option><option>Scheduled</option><option>Sent to Lab</option><option>Results Complete</option></select></div>
+  ${tbl(["Cycle Name","Organisation","Test Types","Date","Emp.","Status","Actions"],
+    [
+      [`<a onclick="go('cycle-detail')">Q2 Drug Screening</a>`,"Acme Corporation",`${badge("Collected")} ${badge("Sent to Lab")}`,"Apr 20, 2026","42",badge("Results Complete"),aicons([{i:"eye",t:"View",oc:"go('cycle-detail')"},{i:"clipboard",t:"Results",oc:"go('result-grid')"},{i:"send",t:"Broadcast",oc:"go('broadcast')"}])],
+      [`<a>Annual Health Check</a>`,"TechFlow Inc",`${badge("Collected")} ${badge("Scheduled")}`,"May 20, 2026","86",badge("Scheduled"),aicons([{i:"eye",t:"View"}])],
+      [`<a>Pre-Employment Screen</a>`,"Summit Construction",badge("Collected"),"Apr 15, 2026","28",badge("Sent to Lab"),aicons([{i:"eye",t:"View"},{i:"clipboard",t:"Results"}])],
+      [`<a>Full Panel Q2</a>`,"Meridian Health",`${badge("Collected")} ${badge("Sent to Lab")} <span class="fs12 c-muted">+3</span>`,"May 28, 2026","124",badge("Scheduled"),aicons([{i:"eye",t:"View"}])],
+    ], pgn("1-4",24))}`;
+
+// ── CYCLE CREATE ──
+pages['cycle-create'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Test Cycles",r:"cycles"},{l:"New Test Cycle"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Create Test Cycle</h1></div>
+  <div class="wiz">
+    ${[{n:1,l:"Details",s:"on"},{n:2,l:"Test Types",s:""},{n:3,l:"Employees",s:""},{n:4,l:"Review",s:""}].map((st,i)=>`
+      <div class="flex aic gap8"><div class="wiz-circ" style="background:${st.s==='on'?'#2A7B88':'#E2E5EA'};color:${st.s==='on'?'#fff':'#999'}">${st.n}</div><span class="fs13 ${st.s==='on'?'fw600 c-teal':''}">${st.l}</span></div>
+      ${i<3?'<div class="wiz-conn"></div>':''}
+    `).join('')}
+  </div>
+  <div class="card"><div class="h3 mb16">Organisation &amp; Details</div><div class="fgrid">
+    ${field("Organisation","select",{req:true,options:["Acme Corporation","TechFlow Inc","Meridian Health Group"]})}
+    ${field("Test Cycle Name","text",{req:true,ph:"e.g., Q3 Drug Screen - Acme Corp"})}
+    ${field("Scheduled Date","date",{req:true})}
+    ${field("Scheduled Time","time")}
+    ${field("Location","select",{req:true,options:["On-site at Client","Strong Path Facility","Mobile Unit","Other"]})}
+    ${field("Notes","textarea",{full:true,ph:"Special instructions..."})}
+  </div></div>
+  <div class="card"><div class="h3 mb16">Select Test Types</div>
+    <div class="ttgrid mb16">
+      ${testTypes.map((t,i)=>{
+        const sel = i===0||i===2||i===4 ? 'sel' : '';
+        return `<div class="ttcard ${sel}" onclick="this.classList.toggle('sel')">
+          <span class="tc-chk">${ic('check',14)}</span>
+          ${ic(t.i,24)}
+          <div class="fw600 fs13 c-navy mt8">${t.n}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">${t.s} &middot; ${t.t}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="fs13 c-teal fw500">3 test types selected</div>
+  </div>
+  <div class="flex gap8" style="justify-content:flex-end">${btn("Cancel","sec","md","","go('cycles')")} ${btn("Continue to Employee Selection","pri","md")}</div>`;
+
+// ── CYCLE DETAIL ──
+pages['cycle-detail'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Test Cycles",r:"cycles"},{l:"Q2 Drug Screening"}])}
+  <div class="card">
+    <div class="flex jcsb wrap gap12" style="align-items:flex-start">
+      <div><h2 class="h2" style="margin:0">Q2 Drug Screening &ndash; Acme Corp</h2><div class="fs13 c-muted mt8"><a onclick="go('org-detail')">Acme Corporation</a></div></div>
+      <div class="flex gap8 aic">${badge("Results Complete")} ${btn("Broadcast Results","pri","sm","send","go('broadcast')")} ${btn("Review Summary","sec","sm","","go('result-review')")}</div>
+    </div>
+  </div>
+  <div class="pipe">
+    ${["Scheduled","In Progress","Collected","Sent to Lab","Results Pending","Results Complete","Broadcast"].map((s,i)=>{
+      const ci=5;
+      const sty = i<ci?'background:#E8F8F5;color:#27AE60':i===ci?'background:#2A7B88;color:#fff':'background:#F5F7FA;color:#999';
+      return `<span class="pipe-s" style="${sty}">${i<ci?ic('check',11)+' ':''}${s}</span>${i<6?`<span class="pipe-c" style="background:${i<ci?'#27AE60':'#E2E5EA'}"></span>`:''}`;
+    }).join('')}
+  </div>
+  <div class="grid4 mb24">
+    <div class="card" style="padding:16px"><div class="fs12 c-muted">Scheduled Date</div><div class="fw600 mt8 fs14">Apr 20, 2026 &middot; 9:00 AM</div></div>
+    <div class="card" style="padding:16px"><div class="fs12 c-muted">Location</div><div class="fw600 mt8 fs14">On-site at Client</div></div>
+    <div class="card" style="padding:16px"><div class="fs12 c-muted">Test Types</div><div class="mt8 flex gap8">${badge("Collected")} ${badge("Sent to Lab")} ${badge("Scheduled")}</div></div>
+    <div class="card" style="padding:16px"><div class="fs12 c-muted">Employees</div><div class="fw700 mt8 c-navy" style="font-size:1.3rem">42</div></div>
+  </div>
+  <div class="tabs"><div class="tab on" onclick="go('roster')">Testing Roster</div><div class="tab">Lab Shipment</div><div class="tab" onclick="go('result-grid')">Results</div><div class="tab">Broadcast History</div></div>
+  <div class="card"><p class="fs13 c-muted">Click <strong>Testing Roster</strong> to view sample collection, or <strong>Results</strong> to enter test results.</p>
+    ${btn("Open Full Roster","pri","sm","","go('roster')")} <span style="margin:0 8px"></span> ${btn("Enter Results","sec","sm","","go('result-grid')")}
+  </div>`;
+
+// ── ROSTER ──
+pages.roster = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Test Cycles",r:"cycles"},{l:"Q2 Drug Screening",r:"cycle-detail"},{l:"Testing Roster"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Testing Roster</h1><div class="flex gap8">${btn("Save Progress","sec","sm")} ${btn("Save &amp; Mark Collected","pri","sm","check")}</div></div>
+  <div class="card flex aic gap24 wrap" style="padding:12px 20px">
+    <span class="fs13"><strong>42</strong> employees</span>
+    <span class="fs13 c-success"><strong>38</strong> collected</span>
+    <span class="fs13 c-danger"><strong>3</strong> absent</span>
+    <span class="fs13" style="color:var(--warn)"><strong>1</strong> remaining</span>
+    <div style="flex:1">${prog(90)}</div>
+  </div>
+  ${tbl(["#","Employee Name","Emp ID","Drug Test Vial #","A1C Vial #","Cholesterol Vial #","Status"],
+    [
+      ["1","Jane Smith","EMP-0042",`<input class="vial" value="VL-2026-0891">`,`<input class="vial" value="VL-2026-0892">`,`<input class="vial" value="VL-2026-0893">`,badge("Collected")],
+      ["2","Tom Johnson","EMP-0043",`<input class="vial" value="VL-2026-0894">`,`<input class="vial" placeholder="Enter vial #">`,`<input class="vial" value="VL-2026-0895">`,badge("Collected")],
+      ["3",`<span class="c-muted">Maria Garcia</span>`,"EMP-0044",`<input class="vial" disabled>`,`<input class="vial" disabled>`,`<input class="vial" disabled>`,badge("Absent")],
+      ["4","Robert Lee","EMP-0045",`<input class="vial" value="VL-2026-0896">`,`<input class="vial" value="VL-2026-0897">`,`<input class="vial" value="VL-2026-0898">`,badge("Collected")],
+      ["5","Sarah Davis","EMP-0046",`<input class="vial" placeholder="Enter vial #">`,`<input class="vial" placeholder="Enter vial #">`,`<input class="vial" placeholder="Enter vial #">`,badge("Pending")],
+    ])}`;
+
+// ── RESULT GRID ──
+pages['result-grid'] = () => {
+  const sel = (v) => `<select class="rsel"><option${v==='Positive'?' selected':''}>Positive</option><option${v==='Negative'?' selected':''}>Negative</option></select>`;
+  return `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Test Cycles",r:"cycles"},{l:"Q2 Drug Screening",r:"cycle-detail"},{l:"Enter Results"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Result Entry</h1><div class="flex gap8">${btn("Save Progress","sec","sm")} ${btn("Mark All Complete","pri","sm","check")}</div></div>
+  <div class="card" style="padding:12px 20px">${prog(90,"Results entered for 38 of 42 employees")}</div>
+  <div class="tabs"><div class="tab on">Drug Testing (38/42)</div><div class="tab">A1C (40/42)</div><div class="tab">Cholesterol (36/42)</div></div>
+  ${tbl(["Employee","Marijuana","Cocaine","Opiates","Amphetamines","PCP","Overall",""],
+    [
+      [`<strong>Jane Smith</strong>`,sel("Positive"),sel("Negative"),sel("Negative"),sel("Negative"),sel("Negative"),badge("Flagged"),ic('alert',14)],
+      [`<strong>Tom Johnson</strong>`,sel("Negative"),sel("Negative"),sel("Negative"),sel("Negative"),sel("Negative"),badge("Clear"),ic('check',14)],
+      [`<strong>Robert Lee</strong>`,sel("Negative"),sel("Negative"),sel("Negative"),sel("Negative"),sel("Negative"),badge("Clear"),ic('check',14)],
+      [`<strong>Sarah Davis</strong>`,sel("Negative"),sel("Negative"),sel("Negative"),sel("Negative"),sel("Negative"),badge("Clear"),ic('check',14)],
+    ])}
+  <div class="flex gap8 mt12" style="justify-content:flex-end">${btn("Attach Lab Report PDF","sec","sm","file")} ${btn("Save All Results","pri","sm")}</div>`;
+};
+
+// ── RESULT REVIEW ──
+pages['result-review'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Test Cycles",r:"cycles"},{l:"Q2 Drug Screening",r:"cycle-detail"},{l:"Result Review"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Result Review &amp; Summary</h1><div class="flex gap8">${btn("Export PDF","ghost","sm","download")} ${btn("Return to Entry","sec","sm","","go('result-grid')")} ${btn("Broadcast Results","pri","md","send","go('broadcast')")}</div></div>
+  <div class="card flex aic" style="justify-content:space-around;text-align:center;padding:32px">
+    ${[{v:42,l:"Total Tested",bg:"#F5F7FA",c:"#1B2A4A"},{v:38,l:"All Clear",bg:"#E8F8F5",c:"#27AE60"},{v:4,l:"Flagged",bg:"#FDEDEC",c:"#E74C3C"}].map(m=>
+      `<div><div style="width:80px;height:80px;border-radius:50%;background:${m.bg};display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:${m.c};margin:0 auto 8px">${m.v}</div><div class="fs13" style="color:${m.c}">${m.l}</div></div>`
+    ).join('')}
+  </div>
+  <div class="card" style="border-left:3px solid #E74C3C">
+    <div class="h3 c-danger flex aic gap8 mb12">${ic('alert',16)} Flagged Results (4)</div>
+    ${tbl(["Employee","Test Type","Flagged Value","Hold Back?"],[
+      ["Jane Smith","Drug Testing","THC: Positive",'<input type="checkbox">'],
+      ["Mike Torres","Drug Testing","Cocaine: Positive",'<input type="checkbox">'],
+      ["Bob Lee","A1C","HbA1c: 6.8% (Diabetic)",'<input type="checkbox">'],
+      ["Lisa Chen","Cholesterol","Total: 262 mg/dL (High)",'<input type="checkbox">'],
+    ])}
+  </div>`;
+
+// ── BROADCAST ──
+pages.broadcast = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Test Cycles",r:"cycles"},{l:"Q2 Drug Screening",r:"cycle-detail"},{l:"Broadcast Results"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Broadcast Results</h1></div>
+  <div class="card">
+    <div class="h3 flex aic gap8 mb16">${ic('mail',16)} Organisation Report</div>
+    <label class="flex aic gap8 mb12 fs13"><input type="checkbox" checked> Send aggregate report to organisation admin</label>
+    <div class="fgrid">${field("Recipient","text",{value:"John Smith (john.smith@acmecorp.com)"})} ${field("Format","select",{options:["PDF Attachment","In-Portal Link"]})}</div>
+    <div class="mt8">${btn("Preview Aggregate Report","ghost","sm","eye")}</div>
+  </div>
+  <div class="card">
+    <div class="h3 flex aic gap8 mb16">${ic('users',16)} Individual Employee Results</div>
+    <label class="flex aic gap8 mb12 fs13"><input type="checkbox" checked> Send individual results to employees via email</label>
+    <div class="flex gap16 mb12 fs13"><label><input type="radio" name="scope" checked> Send to all 42 employees</label><label><input type="radio" name="scope"> Select specific employees</label></div>
+    ${btn("Preview Sample Individual Report","ghost","sm","eye")}
+  </div>
+  <div class="card" style="border-left:3px solid #F39C12;background:#FEF9E7">
+    <span class="fs13 flex aic gap8">${ic('alert',14)} <strong>4 results are held back</strong> from this broadcast. Review flagged results before sending.</span>
+  </div>
+  <div class="flex gap8 mt12" style="justify-content:flex-end">${btn("Cancel","sec","md","","go('cycle-detail')")} ${btn("Schedule Send","sec","md")} ${btn("Send Now","pri","md","send")}</div>`;
+
+// ── REPORTS ──
+pages.reports = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Reports &amp; Analytics"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Reports &amp; Analytics</h1><div class="flex gap8">${btn("Export PDF","sec","sm","download")} ${btn("Export CSV","sec","sm","download")}</div></div>
+  <div class="fbar"><select class="fsel"><option>Last 3 Months</option><option>Last 6 Months</option></select><select class="fsel"><option>All Organisations</option><option>Acme Corp</option></select><select class="fsel"><option>All Test Types</option><option>Drug Testing</option></select></div>
+  <div class="grid2">
+    <div class="card"><div class="h3 mb16">Tests Performed by Month</div>
+      <div style="height:180px;display:flex;align-items:flex-end;gap:16px;padding-top:20px">
+        ${[{h:45,v:82,m:"Jan"},{h:65,v:104,m:"Feb"},{h:80,v:126,m:"Mar"},{h:100,v:312,m:"Apr"}].map((b,i)=>
+          `<div style="flex:1;display:flex;flex-direction:column;align-items:center"><span class="fs12 fw600" style="margin-bottom:4px">${b.v}</span><div style="width:100%;height:${b.h}%;background:${i===3?'#1B2A4A':'#2A7B88'};border-radius:4px 4px 0 0"></div><span class="fs12 c-muted" style="margin-top:6px">${b.m}</span></div>`
+        ).join('')}
+      </div>
+    </div>
+    <div class="card"><div class="h3 mb16">Results Distribution</div>
+      <div class="flex aic" style="justify-content:center;gap:32px;padding:24px">
+        <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(#27AE60 0% 88%,#E74C3C 88% 100%);display:flex;align-items:center;justify-content:center"><div style="width:70px;height:70px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">88%</div></div>
+        <div><div class="flex aic gap8 mb8"><span style="width:12px;height:12px;border-radius:2px;background:#27AE60"></span><span class="fs13">Clear (274)</span></div><div class="flex aic gap8"><span style="width:12px;height:12px;border-radius:2px;background:#E74C3C"></span><span class="fs13">Flagged (38)</span></div></div>
+      </div>
+    </div>
+  </div>`;
+
+// ── SETTINGS PAGES ──
+pages['settings-users'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"User Management"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">User Management</h1>${btn("Invite User","pri","sm","plus")}</div>
+  ${tbl(["Name","Email","Role","Status","Last Login","Actions"],[
+    [`<strong>Chris Strong</strong>`,"chris@strongpathdiag.com","Super Admin",badge("Active"),"Today, 9:14 AM",aicons([{i:"edit",t:"Edit"}])],
+    ["Amanda Price","amanda@strongpathdiag.com","Admin Staff",badge("Active"),"Yesterday",aicons([{i:"edit",t:"Edit"}])],
+  ])}`;
+
+pages['settings-tests'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Test Configuration"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Test Configuration</h1></div>
+  <div class="ttgrid mb20">
+    ${testTypes.map(t=>`<div class="ttcard" style="cursor:default">${ic(t.i,24)}<div class="fw600 fs13 c-navy mt8">${t.n}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">${t.s}</div><div class="mt8">${badge("Active")}</div></div>`).join('')}
+  </div>
+  <div class="ttcard" style="max-width:200px;border-style:dashed;cursor:pointer;text-align:center">${ic('plus',24)}<div class="fs13 c-teal fw500 mt8">Add New Test Type</div></div>`;
+
+pages['settings-email'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Email Templates"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Email Templates</h1></div>
+  ${tbl(["Template","Trigger","Last Modified","Actions"],[
+    [`<strong>Organisation Result Report</strong>`,"Broadcast aggregate results","Apr 10, 2026",aicons([{i:"edit",t:"Edit"},{i:"eye",t:"Preview"}])],
+    [`<strong>Individual Result Email</strong>`,"Broadcast personal results","Apr 10, 2026",aicons([{i:"edit",t:"Edit"},{i:"eye",t:"Preview"}])],
+    [`<strong>Test Cycle Scheduled</strong>`,"New test cycle created","Mar 28, 2026",aicons([{i:"edit",t:"Edit"},{i:"eye",t:"Preview"}])],
+    [`<strong>Password Reset</strong>`,"Admin password reset","Mar 1, 2026",aicons([{i:"edit",t:"Edit"},{i:"eye",t:"Preview"}])],
+    [`<strong>User Invitation</strong>`,"New user invited","Feb 15, 2026",aicons([{i:"edit",t:"Edit"},{i:"eye",t:"Preview"}])],
+  ])}`;
+
+pages['settings-profile'] = () => `
+  ${bc([{l:"Home",r:"dashboard"},{l:"Company Profile"}])}
+  <div class="flex aic jcsb mb24"><h1 class="h1">Company Profile</h1>${btn("Save Changes","pri","sm","check")}</div>
+  <div class="card"><div class="fgrid">
+    ${field("Company Name","text",{value:"Strong Path Diagnostics"})}
+    ${field("Tagline","text",{value:"Trusted B2B Diagnostic Testing"})}
+    ${field("Logo","text",{custom:'<div class="flex aic gap12"><div style="width:60px;height:60px;background:#2A7B88;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px">SP</div>'+btn("Upload Logo","sec","sm","upload")+'</div>'})}
+    ${field("Primary Brand Colour","text",{custom:'<div class="flex aic gap8"><input type="color" value="#2A7B88" style="width:40px;height:32px;border:none;cursor:pointer"><input class="fi" value="#2A7B88" style="width:120px"></div>'})}
+    ${field("Address","text",{value:"500 Main Street, Suite 200, Houston, TX 77001"})}
+    ${field("Phone","text",{value:"(713) 555-0100"})}
+    ${field("Email","email",{value:"info@strongpathdiag.com"})}
+    ${field("Website","text",{value:"www.strongpathdiag.com"})}
+  </div></div>`;
+
+
+// ════════════════════════════════════════════════════════
+// CLIENT PORTAL PAGES
+// ════════════════════════════════════════════════════════
+const cpages = {};
+
+cpages['c-dashboard'] = () => `
+  <div style="background:linear-gradient(135deg,#1B2A4A 0%,#2A7B88 100%);border-radius:12px;padding:32px;color:#fff;margin-bottom:24px">
+    <h2 style="font-family:var(--fd);font-size:1.5rem;margin-bottom:4px">Welcome, John</h2>
+    <p style="opacity:.7;font-size:14px">Acme Corporation &middot; Last login: April 26, 2026</p>
+  </div>
+  <div class="card flex aic gap12" style="border-left:3px solid #F39C12;background:#FEF9E7">
+    ${ic('bell',18)} <span class="fs13"><strong>New test results are available</strong> from Q2 Drug Screening. <a onclick="cgo('c-results')">View now</a></span>
+  </div>
+  <div class="grid3 mb24">
+    ${mc("142","Total Employees")}
+    <div class="card" style="padding:20px;border-left:3px solid #3498DB"><div class="fs12 c-muted">Last Test Date</div><div class="fw600 mt8" style="font-size:1.1rem">Apr 20, 2026</div><a class="fs12" onclick="cgo('c-results')">View Results</a></div>
+    <div class="card" style="padding:20px;border-left:3px solid #27AE60"><div class="fs12 c-muted">Next Scheduled Test</div><div class="fw600 mt8" style="font-size:1.1rem">May 20, 2026</div><div class="fs12 c-muted">A1C, Glucose</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="h3 mb12">Latest Results Summary</div>
+      <div class="flex gap24 mb16">${[{v:42,l:"Tested",c:"#1B2A4A"},{v:38,l:"All Clear",c:"#27AE60"},{v:4,l:"Flagged",c:"#E74C3C"}].map(m=>`<div style="text-align:center"><div style="font-size:1.5rem;font-weight:700;color:${m.c}">${m.v}</div><div class="fs12 c-muted">${m.l}</div></div>`).join('')}</div>
+      ${btn("View Full Results","sec","sm","","cgo('c-results')")}
+    </div>
+    <div class="card">
+      <div class="h3 mb12">Quick Actions</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${btn("View All Results","pri","md","clipboard","cgo('c-results')")}
+        ${btn("Request a Test Cycle","sec","md","file","cgo('c-request')")}
+        ${btn("View Test History","ghost","md","calendar","cgo('c-history')")}
+      </div>
+    </div>
+  </div>`;
+
+cpages['c-results'] = () => `
+  <div class="flex aic jcsb mb24"><h1 class="h1">Employee Results</h1>${btn("Download All Results PDF","sec","sm","download")}</div>
+  <div class="fbar"><input class="sinput" placeholder="Search by name or employee ID..."><select class="fsel"><option>All Departments</option></select><select class="fsel"><option>All Status</option><option>All Clear</option><option>Flagged</option></select></div>
+  ${tbl(["Employee Name","Employee ID","Department","Last Tested","Result Status","Actions"],
+    [
+      [`<a onclick="cgo('c-emp-detail')">Jane Smith</a>`,"EMP-0042","Engineering","Apr 20, 2026",badge("Flagged"),btn("PDF","ghost","sm","download")],
+      ["Tom Johnson","EMP-0043","Operations","Apr 20, 2026",badge("Clear"),btn("PDF","ghost","sm","download")],
+      ["Robert Lee","EMP-0045","Engineering","Apr 20, 2026",badge("Clear"),btn("PDF","ghost","sm","download")],
+      ["Sarah Davis","EMP-0046","Finance","Apr 20, 2026",badge("Clear"),btn("PDF","ghost","sm","download")],
+      ["Mike Torres","EMP-0047","Operations","Apr 20, 2026",badge("Flagged"),btn("PDF","ghost","sm","download")],
+    ], pgn("1-5",142))}`;
+
+cpages['c-emp-detail'] = () => `
+  <div class="bc"><a onclick="cgo('c-results')">Results</a><span class="sep">${ic('chevr',10)}</span><span class="cur">Jane Smith</span></div>
+  <div class="card"><div class="flex jcsb aic"><div><h2 class="h2" style="margin:0">Jane Smith</h2><span class="fs13 c-muted">EMP-0042 &middot; Engineering</span></div>${btn("Download All Results PDF","sec","sm","download")}</div></div>
+  <div class="card">
+    <div class="flex aic gap12 mb12"><span class="fw600 c-navy fs14">Q2 Drug Screening</span><span class="fs12 c-muted">Apr 20, 2026</span>${badge("Complete")}</div>
+    ${tbl(["Test Type","Result","Classification","Status"],[
+      ["Drug Testing","THC: Positive",badge("Flagged"),ic('alert',14)],
+      ["A1C Hemoglobin","5.4%",badge("Normal"),ic('check',14)],
+      ["Cholesterol","Total: 195 mg/dL",badge("Desirable"),ic('check',14)],
+    ])}
+  </div>`;
+
+cpages['c-history'] = () => `
+  <div class="flex aic jcsb mb24"><h1 class="h1">Test Cycle History</h1></div>
+  ${tbl(["Cycle Name","Test Types","Date","Employees","Status","Actions"],
+    [
+      ["Q2 Drug Screening",`${badge("Collected")} ${badge("Sent to Lab")} ${badge("Scheduled")}`,"Apr 20, 2026","42",badge("Complete"),btn("View Report","ghost","sm")],
+      ["Q1 Annual Health Screen",`${badge("Collected")} ${badge("Scheduled")}`,"Jan 15, 2026","138",badge("Broadcast"),btn("View Report","ghost","sm")],
+      ["Q4 2025 Screening",`${badge("Collected")} ${badge("Sent to Lab")}`,"Oct 8, 2025","135",badge("Broadcast"),btn("View Report","ghost","sm")],
+    ])}`;
+
+cpages['c-request'] = () => `
+  <div class="flex aic jcsb mb24"><h1 class="h1">Request a Test Cycle</h1></div>
+  <div class="card"><div class="fgrid">
+    ${field("Preferred Date","date",{req:true,hint:"Must be at least 5 business days from today"})}
+    ${field("Location Preference","select",{options:["On-site at Our Office","Your Facility","No Preference"]})}
+    <div class="full"><label class="fl">Test Types Needed <span class="req">*</span></label>
+      <div class="ttgrid mt8">${testTypes.map((t,i)=>{
+        const sel=i===0||i===4?'sel':'';
+        return `<div class="ttcard ${sel}" style="padding:12px" onclick="this.classList.toggle('sel')"><span class="tc-chk">${ic('check',12)}</span><div class="fw600 fs12 c-navy">${t.n}</div></div>`;
+      }).join('')}</div>
+    </div>
+    ${field("Employee Scope","text",{req:true,custom:'<div class="flex gap16 mt8 fs13"><label><input type="radio" name="csc" checked> All Employees (142)</label><label><input type="radio" name="csc"> Specific Employees</label></div>'})}
+    ${field("Additional Notes","textarea",{full:true,ph:"Any special requests or timing preferences..."})}
+  </div>
+  <div class="flex mt16" style="justify-content:flex-end">${btn("Submit Request","pri","md","send")}</div>
+  </div>`;
+
+
+// ════════════════════════════════════════════════════════
+// NAVIGATION ENGINE
+// ════════════════════════════════════════════════════════
+
+let currentAdminPage = 'login';
+let currentClientPage = 'c-dashboard';
+let currentView = 'admin';
+
+function go(page) {
+  currentAdminPage = page;
+  renderAdmin();
+  window.scrollTo(0,0);
+}
+
+function cgo(page) {
+  currentClientPage = page;
+  renderClient();
+  window.scrollTo(0,0);
+}
+
+function switchView(view) {
+  currentView = view;
+  document.getElementById('adminView').style.display = view==='admin'?'':'none';
+  document.getElementById('clientView').style.display = view==='client'?'':'none';
+  document.querySelectorAll('.vtog-b').forEach(b=>b.classList.remove('on'));
+  document.querySelector(`.vtog-b:${view==='admin'?'first':'last'}-child`).classList.add('on');
+  if(view==='admin' && currentAdminPage==='login') renderAdmin();
+  if(view==='client') renderClient();
+  window.scrollTo(0,0);
+}
+
+function renderAdmin() {
+  const page = currentAdminPage;
+  const renderer = pages[page];
+  if(!renderer) return;
+  const el = document.getElementById('adminContent');
+  if(page === 'login') {
+    el.innerHTML = renderer();
+  } else {
+    el.innerHTML = adminShell(renderer(), page);
+  }
+}
+
+function renderClient() {
+  const page = currentClientPage;
+  const renderer = cpages[page];
+  if(!renderer) return;
+  const navItems = [{k:'c-dashboard',l:'Dashboard'},{k:'c-results',l:'Results'},{k:'c-history',l:'History'},{k:'c-request',l:'Request Test'}];
+  document.getElementById('clientContent').innerHTML = `
+    <div class="c-top">
+      <div class="flex aic gap12">
+        <div style="width:32px;height:32px;background:#2A7B88;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">SP</div>
+        <span style="font-family:var(--fd);font-size:1.05rem;color:var(--navy);font-weight:700">Strong Path Diagnostics</span>
+        <span class="fs12 c-teal fw500" style="margin-left:4px">Client Portal</span>
+      </div>
+      <div class="c-nav">${navItems.map(n=>`<a class="${page===n.k?'on':''}" onclick="cgo('${n.k}')">${n.l}</a>`).join('')}</div>
+      <div class="flex aic gap16">
+        <span style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--muted);cursor:pointer;position:relative">${ic('bell',16)}<span style="position:absolute;top:-1px;right:-1px;width:16px;height:16px;border-radius:50%;background:#E74C3C;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700">2</span></span>
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12.5px;cursor:pointer">JS</div>
+      </div>
+    </div>
+    <div class="c-body">${renderer()}</div>
+    <div class="c-foot">Powered by <strong>Strong Path Diagnostics</strong></div>`;
+}
+
+// Initial render
+renderAdmin();
+</script>
+</body>
+</html>
