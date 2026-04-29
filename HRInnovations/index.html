@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Innovation & Growth — AI Care Compliance Platform | EIS Investment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#0b1e2d; --ink-mid:#1a3a52; --ink-light:#3d6680; --ink-faint:#7a9bb5;
+  --blue:#0e6ba8; --blue-mid:#1282cc; --blue-light:#2e9be0;
+  --brand:#1a5276; --brand-mid:#1f6fa8; --brand-light:#2e86c1;
+  --teal:#0d9488; --teal-light:#14b8a6; --green:#16a34a; --green-light:#22c55e;
+  --gold:#d4a017; --gold-light:#f5c518;
+  --bg:#f0f5fa; --white:#ffffff; --border:#d4e0ec;
+  --card-shadow:0 2px 20px rgba(11,30,45,.07),0 0 0 1px rgba(11,30,45,.04);
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Plus Jakarta Sans','Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--white);color:var(--ink);overflow-x:hidden;line-height:1.6}
+img{max-width:100%;height:auto}
+a{text-decoration:none;color:inherit}
+.container{max-width:1180px;margin:0 auto;padding:0 28px}
+.eyebrow{font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase}
+.section-headline{font-family:var(--serif);font-size:clamp(28px,4vw,50px);line-height:1.12;letter-spacing:-.02em;color:var(--ink);margin-bottom:18px}
+.section-headline em{font-style:italic;color:var(--teal)}
+.section-sub{font-size:16px;color:var(--ink-light);line-height:1.75;max-width:620px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:13px;font-weight:700;padding:14px 28px;border-radius:100px;cursor:pointer;border:none;transition:all .25s}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--teal));color:white;box-shadow:0 4px 18px rgba(14,107,168,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(14,107,168,.4)}
+.btn-ghost{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.22);color:white}
+.btn-ghost:hover{background:rgba(255,255,255,.18)}
+
+/* Animations */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-36px);transition:opacity .8s ease,transform .8s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(36px);transition:opacity .8s ease,transform .8s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* Sticky Disclaimer */
+.disclaimer-bar{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(11,30,45,.96);backdrop-filter:blur(10px);padding:10px 20px;text-align:center;font-size:11px;color:rgba(255,255,255,.7);line-height:1.5;border-top:1px solid rgba(255,255,255,.1)}
+.disclaimer-bar strong{color:var(--gold-light);font-weight:700}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;transition:all .3s}
+nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);box-shadow:0 2px 16px rgba(0,0,0,.05)}
+.nav-inner{max-width:1180px;margin:0 auto;padding:0 28px;height:68px;display:flex;align-items:center;gap:28px}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{height:42px;width:auto}
+.nav-logo-text{font-family:var(--sans);font-weight:800;font-size:14px;color:white;line-height:1.2}
+.nav-logo-text span{display:block;font-size:9.5px;font-weight:500;opacity:.65}
+nav.scrolled .nav-logo-text{color:var(--ink)}
+.nav-links{display:flex;align-items:center;gap:24px;flex:1}
+.nav-link{font-size:13.5px;font-weight:500;color:rgba(255,255,255,.7);transition:color .2s}
+.nav-link:hover{color:white}
+nav.scrolled .nav-link{color:var(--ink-light)}
+nav.scrolled .nav-link:hover{color:var(--blue)}
+.nav-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+.nav-cta{background:linear-gradient(135deg,var(--blue),var(--teal));color:white;padding:9px 20px;border-radius:100px;font-size:12.5px;font-weight:700;transition:all .25s;box-shadow:0 3px 12px rgba(14,107,168,.25)}
+
+/* Hero */
+.hero{min-height:100vh;background:var(--ink);display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative;padding:80px 0 60px}
+.hero-mesh{position:absolute;inset:0;pointer-events:none}
+.hero-mesh::before{content:'';position:absolute;top:-15%;right:-8%;width:650px;height:650px;background:radial-gradient(circle,rgba(20,184,166,.15) 0%,transparent 70%);border-radius:50%}
+.hero-mesh::after{content:'';position:absolute;bottom:-15%;left:-8%;width:550px;height:550px;background:radial-gradient(circle,rgba(14,107,168,.15) 0%,transparent 70%);border-radius:50%}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px}
+.hero-inner{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.22);color:var(--teal-light);padding:6px 14px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px}
+.hero-badge-dot{width:7px;height:7px;background:var(--teal-light);border-radius:50%;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-headline{font-family:var(--serif);font-size:clamp(38px,5vw,62px);line-height:1.08;letter-spacing:-.03em;color:white;margin-bottom:22px}
+.hero-headline em{font-style:italic;background:linear-gradient(135deg,var(--teal-light),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:16.5px;line-height:1.75;color:rgba(255,255,255,.55);max-width:480px;margin-bottom:32px}
+.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hero-trust{display:flex;align-items:center;gap:10px;margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap}
+.trust-chip{display:flex;align-items:center;gap:7px;padding:7px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px}
+.trust-chip svg{width:16px;height:16px;flex-shrink:0}
+.trust-chip-text{font-size:11px;color:rgba(255,255,255,.6);font-weight:500}
+.trust-chip-text strong{color:white;display:block;font-size:11.5px}
+
+/* Hero visual */
+.hero-visual{position:relative}
+.hero-visual-img{width:100%;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 70px rgba(0,0,0,.4)}
+.hero-visual-img img{width:100%;display:block}
+
+/* Stats band */
+.stats-band{position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.06)}
+.stats-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.06)}
+.stat-block{padding:20px 24px;background:var(--ink);text-align:center}
+.stat-num{font-family:var(--serif);font-size:36px;line-height:1;color:white;margin-bottom:4px}
+.stat-num span{background:linear-gradient(135deg,var(--teal-light),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-lbl{font-size:11px;color:rgba(255,255,255,.4);font-weight:500}
+
+/* Sections */
+.section{padding:100px 0}
+.section-light{background:var(--bg)}
+.section-white{background:var(--white)}
+.section-header{text-align:center;max-width:700px;margin:0 auto 56px}
+
+/* Human background sections */
+.section-human-bg{position:relative;overflow:hidden}
+.section-human-bg .bg-image{position:absolute;inset:0;z-index:0}
+.section-human-bg .bg-image img{width:100%;height:100%;object-fit:cover}
+.section-human-bg .bg-overlay{position:absolute;inset:0;z-index:1}
+.section-human-bg .container{position:relative;z-index:2}
+
+/* Problem */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.prob-cards{display:flex;flex-direction:column;gap:14px}
+.prob-card{background:white;border-radius:14px;padding:20px;border:1px solid var(--border);display:flex;gap:14px;align-items:flex-start;box-shadow:var(--card-shadow);transition:transform .3s}
+.prob-card:hover{transform:translateX(5px)}
+.prob-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prob-icon svg{width:20px;height:20px}
+.pi-r{background:rgba(239,68,68,.08)} .pi-a{background:rgba(245,158,11,.08)} .pi-b{background:rgba(14,107,168,.08)} .pi-p{background:rgba(139,92,246,.08)}
+.prob-card h3{font-size:14px;font-weight:700;margin-bottom:4px}
+.prob-card p{font-size:12.5px;color:var(--ink-light);line-height:1.65}
+
+/* Features */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feat-card{background:white;border-radius:16px;padding:28px;border:1px solid var(--border);box-shadow:var(--card-shadow);transition:all .3s}
+.feat-card:hover{transform:translateY(-5px);box-shadow:0 16px 50px rgba(11,30,45,.1)}
+.feat-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.feat-icon svg{width:22px;height:22px}
+.fi-blue{background:rgba(14,107,168,.1)} .fi-teal{background:rgba(13,148,136,.1)} .fi-green{background:rgba(22,163,74,.1)} .fi-gold{background:rgba(212,160,23,.1)} .fi-navy{background:rgba(11,30,45,.08)} .fi-purple{background:rgba(139,92,246,.1)}
+.feat-card h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.feat-card p{font-size:13px;color:var(--ink-light);line-height:1.7}
+
+/* Workflow */
+.workflow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px}
+.wf-step{text-align:center}
+.wf-num{width:48px;height:48px;background:linear-gradient(135deg,var(--blue),var(--teal));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:white;margin:0 auto 16px}
+.wf-step h3{font-size:14.5px;font-weight:700;margin-bottom:6px}
+.wf-step p{font-size:12.5px;color:var(--ink-light);line-height:1.65}
+
+/* EIS */
+.eis-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.eis-benefits{display:flex;flex-direction:column;gap:16px}
+.eis-benefit{display:flex;gap:14px;align-items:flex-start}
+.eis-icon{width:40px;height:40px;border-radius:11px;background:rgba(212,160,23,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.eis-icon svg{width:20px;height:20px}
+.eis-benefit h3{font-size:14.5px;font-weight:700;margin-bottom:4px}
+.eis-benefit p{font-size:13px;color:var(--ink-light);line-height:1.65}
+.eis-example{background:var(--ink);border-radius:18px;padding:32px;color:white;position:sticky;top:90px}
+.eis-headline{font-family:var(--serif);font-size:24px;line-height:1.25;margin-bottom:24px}
+.eis-item{display:flex;align-items:center;gap:11px;padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:10px;margin-bottom:10px}
+.eis-item-icon{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.eis-item-icon svg{width:14px;height:14px}
+.eis-item-val{font-family:var(--sans);font-size:18px;font-weight:800;color:white}
+.eis-item-lbl{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:1px}
+
+/* Invest */
+.invest-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.invest-points{display:flex;flex-direction:column;gap:20px}
+.invest-point{display:flex;gap:14px;align-items:flex-start}
+.ip-num{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white;flex-shrink:0}
+.invest-point h3{font-size:14.5px;font-weight:700;margin-bottom:5px}
+.invest-point p{font-size:13px;color:var(--ink-light);line-height:1.7}
+.traction-card{background:var(--ink);border-radius:20px;padding:32px;color:white;position:sticky;top:90px}
+.traction-card .eyebrow{color:var(--gold-light);margin-bottom:14px}
+
+/* Market */
+.market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:48px}
+.market-card{background:white;border-radius:18px;padding:28px;border:1px solid var(--border);box-shadow:var(--card-shadow);text-align:center;transition:all .3s}
+.market-card:hover{transform:translateY(-5px);box-shadow:0 16px 50px rgba(11,30,45,.1)}
+.mc-icon svg{width:30px;height:30px;margin:0 auto 12px;display:block}
+.mc-num{font-family:var(--serif);font-size:44px;line-height:1;color:var(--ink);margin-bottom:6px}
+.mc-num span{color:var(--teal)}
+.mc-lbl{font-size:12.5px;color:var(--ink-light);line-height:1.5}
+.mc-lbl strong{display:block;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:3px}
+
+/* Risk */
+.risk-section{background:#fef9e7;border-top:3px solid var(--gold);padding:60px 0}
+.risk-inner{max-width:900px;margin:0 auto}
+.risk-title{font-family:var(--serif);font-size:24px;margin-bottom:20px}
+.risk-list{display:flex;flex-direction:column;gap:16px}
+.risk-item{display:flex;gap:14px;align-items:flex-start}
+.risk-num{width:28px;height:28px;background:var(--gold);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.risk-item h3{font-size:14px;font-weight:700;margin-bottom:3px}
+.risk-item p{font-size:13px;color:var(--ink-mid);line-height:1.65}
+
+/* Compliance */
+.compliance-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.comp-cards-stack{display:flex;flex-direction:column;gap:12px}
+.c-card{background:white;border-radius:14px;padding:20px;border:1px solid var(--border);box-shadow:var(--card-shadow);transition:all .3s}
+.c-card:hover{transform:translateX(6px);border-color:var(--teal)}
+.c-card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.c-card-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.c-card-icon svg{width:16px;height:16px}
+.c-card-title{font-size:13px;font-weight:700}
+.c-card-sub{font-size:10px;color:var(--ink-faint)}
+.c-pct{margin-left:auto;font-size:16px;font-weight:800}
+.c-progress{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.c-progress-fill{height:100%;border-radius:3px}
+.cpf-g{background:linear-gradient(90deg,var(--green),var(--teal-light))} .cpf-b{background:linear-gradient(90deg,var(--blue),var(--teal))} .cpf-t{background:linear-gradient(90deg,var(--teal),var(--green-light))}
+.c-prog-lbl{font-size:10px;color:var(--ink-faint);display:flex;justify-content:space-between}
+.reg-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.reg-badge{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:var(--ink-mid);display:flex;align-items:center;gap:5px}
+.comp-checklist{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.cc-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-mid)}
+.cc-check{width:24px;height:24px;border-radius:7px;background:rgba(22,163,74,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:var(--green)}
+
+/* Testimonials */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.testi-card{background:white;border-radius:18px;padding:28px;border:1px solid var(--border);box-shadow:var(--card-shadow);transition:all .3s}
+.testi-card:hover{transform:translateY(-5px)}
+.testi-stars{margin-bottom:12px;font-size:13px;color:var(--gold);letter-spacing:2px}
+.testi-text{font-size:13.5px;line-height:1.75;color:var(--ink-mid);font-style:italic;margin-bottom:16px}
+.testi-author{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--border)}
+.testi-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;flex-shrink:0}
+.ta-1{background:linear-gradient(135deg,var(--blue),var(--teal))} .ta-2{background:linear-gradient(135deg,var(--green),var(--teal-light))} .ta-3{background:linear-gradient(135deg,var(--ink),var(--blue))}
+.testi-name{font-size:13px;font-weight:700}
+.testi-role{font-size:10.5px;color:var(--ink-faint)}
+
+/* Pricing */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto}
+.price-card{background:var(--bg);border-radius:20px;padding:30px;border:1.5px solid var(--border);position:relative;transition:all .3s}
+.price-card.featured{background:var(--ink);border-color:var(--ink);color:white;transform:scale(1.03);box-shadow:0 16px 50px rgba(11,30,45,.18)}
+.price-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--teal),var(--green));color:white;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:4px 14px;border-radius:100px}
+.price-tier{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;color:var(--ink-faint)}
+.price-card.featured .price-tier{color:rgba(255,255,255,.4)}
+.price-amount{font-family:var(--serif);font-size:44px;line-height:1;margin-bottom:3px}
+.price-card.featured .price-amount{color:white}
+.price-period{font-size:12px;color:var(--ink-faint);margin-bottom:22px}
+.price-card.featured .price-period{color:rgba(255,255,255,.4)}
+.price-features{list-style:none;margin-bottom:24px;display:flex;flex-direction:column;gap:9px}
+.price-features li{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-light)}
+.price-card.featured .price-features li{color:rgba(255,255,255,.68)}
+.price-check{color:var(--green);font-weight:700}
+.price-btn{width:100%;padding:12px;border-radius:10px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--ink);transition:all .2s}
+.price-card.featured .price-btn{background:linear-gradient(135deg,var(--teal),var(--green));border-color:transparent;color:white}
+
+/* CTA */
+.cta-section{padding:90px 0;background:var(--ink);position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:350px;background:radial-gradient(ellipse,rgba(20,184,166,.1) 0%,transparent 70%)}
+.cta-inner{max-width:700px;margin:0 auto;text-align:center;position:relative;z-index:1;padding:0 28px}
+.cta-headline{font-family:var(--serif);font-size:clamp(30px,5vw,52px);line-height:1.1;color:white;margin:14px 0 18px}
+.cta-headline em{font-style:italic;background:linear-gradient(135deg,var(--teal-light),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-sub{font-size:14.5px;color:rgba(255,255,255,.48);margin-bottom:36px;line-height:1.7}
+.cta-form{display:flex;gap:10px;max-width:420px;margin:0 auto 36px}
+.cta-input{flex:1;padding:13px 18px;border-radius:100px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:white;font-size:14px;font-family:var(--sans);outline:none}
+.cta-input::placeholder{color:rgba(255,255,255,.3)}
+
+/* Footer */
+footer{background:#060e18;padding:56px 0 28px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand-logo{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.footer-brand-logo img{height:40px;width:auto}
+.footer-brand-text{font-family:var(--sans);font-size:15px;font-weight:800;color:white;line-height:1.25}
+.footer-brand-text span{display:block;font-size:10.5px;font-weight:400;color:rgba(255,255,255,.35)}
+.footer-brand p{font-size:12.5px;color:rgba(255,255,255,.35);line-height:1.7;max-width:260px;margin-bottom:16px}
+.footer-reg-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.frb{padding:4px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.5px}
+.footer-col h4{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:14px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col li a{font-size:12.5px;color:rgba(255,255,255,.38);transition:color .2s}
+.footer-col li a:hover{color:rgba(255,255,255,.75)}
+.footer-bottom{padding-top:22px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.footer-bottom p{font-size:11px;color:rgba(255,255,255,.22)}
+.footer-disclaimer{max-width:900px;margin:0 auto;padding:24px 0 0;font-size:10.5px;color:rgba(255,255,255,.25);line-height:1.6;text-align:center}
+
+/* Original product/dashboard/mobile CSS */
+/* ── PRODUCT ── */
+.product-section{padding:110px 0;background:white}
+.section-header{text-align:center;max-width:680px;margin:0 auto 64px}
+.section-header .eyebrow{color:var(--brand-mid);margin-bottom:14px}
+.section-sub{font-size:16px;color:var(--ink-light);line-height:1.7}
+.prod-tabs{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:44px;flex-wrap:wrap}
+.p-tab{display:flex;align-items:center;gap:8px;padding:11px 22px;border-radius:100px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);color:var(--ink-light);background:transparent;transition:all .2s}
+.p-tab:hover{border-color:var(--brand-mid);color:var(--brand-mid)}
+.p-tab.active{background:var(--ink);border-color:var(--ink);color:white}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Dashboard full preview */
+.dash-full-wrap{background:linear-gradient(135deg,#091e34,#0d2b45);border-radius:20px;padding:20px;box-shadow:0 40px 100px rgba(11,24,36,.2),0 0 0 1px rgba(11,24,36,.08)}
+.browser-bar2{background:#060f1c;border-radius:10px 10px 0 0;padding:11px 16px;display:flex;align-items:center;gap:8px}
+.b-url2{flex:1;margin:0 10px;background:rgba(255,255,255,.07);border-radius:5px;padding:5px 14px;font-size:11px;color:rgba(255,255,255,.35);font-family:monospace}
+.dash-full-body{display:flex;background:#0d2b45;border-radius:0 0 12px 12px;overflow:hidden;height:500px}
+/* Sidebar */
+.full-sidebar{width:220px;background:#091e34;border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;padding:18px 14px;flex-shrink:0}
+.fs-logo{display:flex;align-items:center;gap:10px;padding-bottom:16px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.fs-logo img{height:30px;width:auto;object-fit:contain}
+.fs-logo-txt{font-size:11px;font-weight:700;color:white;line-height:1.3}
+.fs-logo-txt span{font-size:9.5px;color:rgba(255,255,255,.4);font-weight:400}
+.fs-org{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.fs-org-av{width:28px;height:28px;background:linear-gradient(135deg,var(--brand-mid),var(--teal));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white;flex-shrink:0}
+.fs-org-name{font-size:10px;font-weight:600;color:white}
+.fs-org-plan{font-size:9px;color:rgba(255,255,255,.35)}
+.fs-section-lbl{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.25);padding:8px 8px 4px}
+.fs-nav{display:flex;align-items:center;gap:7px;padding:8px 8px;border-radius:6px;margin-bottom:1px;font-size:11px;font-weight:500;color:rgba(255,255,255,.55);cursor:default;transition:all .15s;position:relative}
+.fs-nav:hover{background:rgba(255,255,255,.04);color:rgba(255,255,255,.8)}
+.fs-nav.active{background:rgba(39,174,96,.13);color:white}
+.fs-nav.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green-light);border-radius:0 2px 2px 0}
+.fs-nav-icon{font-size:13px;flex-shrink:0}
+.fs-badge{margin-left:auto;background:#e74c3c;color:white;font-size:9px;font-weight:700;border-radius:10px;padding:2px 6px}
+.fs-badge.warn{background:var(--gold)}
+.fs-badge.ok{background:var(--green)}
+.fs-footer{margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.06)}
+.fs-user{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;cursor:default}
+.fs-user-av{width:30px;height:30px;background:linear-gradient(135deg,var(--teal),var(--brand-mid));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white}
+.fs-user-name{font-size:11px;font-weight:600;color:white}
+.fs-user-role{font-size:9.5px;color:rgba(255,255,255,.35)}
+/* Main area */
+.full-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.full-topbar{background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.06);padding:0 20px;height:50px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+.topbar-title{font-family:'Instrument Serif',serif;font-size:16px;color:white}
+.topbar-meta{font-size:10px;color:rgba(255,255,255,.4)}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-home-sel{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:7px;font-size:11px;font-weight:500;color:rgba(255,255,255,.75)}
+.tb-notif{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;position:relative;cursor:default;font-size:13px}
+.nb-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:#e74c3c;border-radius:50%;border:2px solid #0d2b45}
+.tb-btn{background:linear-gradient(135deg,var(--brand-mid),var(--teal));color:white;border:none;border-radius:7px;padding:7px 14px;font-size:11px;font-weight:700;cursor:default;font-family:'DM Sans',sans-serif}
+.full-content{padding:16px 20px;flex:1;overflow:hidden}
+.full-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.full-kpi{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 16px;position:relative}
+.fk-lbl{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.fk-val{font-size:26px;font-weight:800;color:white;line-height:1;margin-bottom:6px}
+.fk-trend{font-size:10px;font-weight:500;color:#2ecc71}
+.fk-trend.w{color:#f39c12}.fk-trend.r{color:#e74c3c}
+.fk-icon{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.fi-b{background:rgba(31,111,168,.15)} .fi-g{background:rgba(39,174,96,.15)} .fi-t{background:rgba(20,143,143,.15)} .fi-w{background:rgba(243,156,18,.15)}
+.full-bottom{display:grid;grid-template-columns:1fr 240px;gap:12px}
+.data-table-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.dt-header{padding:10px 14px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between}
+.dt-title{font-size:12px;font-weight:700;color:white}
+.dt-link{font-size:10px;color:var(--teal-light);cursor:default}
+.dt-filter{display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.05)}
+.dt-search{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:5px 10px;flex:1;font-size:10px;color:rgba(255,255,255,.4)}
+.dt-select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:5px 10px;font-size:10px;color:rgba(255,255,255,.5);cursor:default;outline:none}
+.dt-table{width:100%;border-collapse:collapse}
+.dt-table thead th{padding:7px 12px;text-align:left;font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;color:rgba(255,255,255,.3);background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.05)}
+.dt-table tbody tr{border-bottom:1px solid rgba(255,255,255,.04);cursor:default}
+.dt-table tbody tr:hover{background:rgba(255,255,255,.03)}
+.dt-table tbody td{padding:9px 12px;font-size:10px;color:rgba(255,255,255,.7)}
+.stu-cell{display:flex;align-items:center;gap:8px}
+.stu-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0}
+.av1{background:linear-gradient(135deg,var(--brand-mid),var(--teal))} .av2{background:linear-gradient(135deg,var(--green),var(--teal-light))} .av3{background:linear-gradient(135deg,var(--teal),var(--brand-mid))}
+.stu-name{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.85)}
+.stu-id{font-size:8.5px;color:rgba(255,255,255,.35)}
+.row-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:8.5px;font-weight:700}
+.rt-k{background:rgba(31,111,168,.25);color:#5dade2}.rt-i{background:rgba(231,76,60,.2);color:#ec7063}.rt-w{background:rgba(39,174,96,.2);color:#58d68d}.rt-r{background:rgba(243,156,18,.2);color:#f5b942}
+.row-status{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:500}
+.rs-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rsd-g{background:#2ecc71}.rsd-y{background:#f39c12}.rsd-grey{background:#8fa5b8}
+/* Right side panels */
+.right-panels{display:flex;flex-direction:column;gap:12px}
+.comp-panel{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px}
+.cp-title{font-size:12px;font-weight:700;color:white;margin-bottom:10px}
+.cp-ring{position:relative;width:80px;height:80px;margin:0 auto 10px}
+.cp-ring svg{transform:rotate(-90deg)}
+.cp-ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cp-pct{font-size:18px;font-weight:800;color:white}
+.cp-pct-lbl{font-size:7px;color:rgba(255,255,255,.4)}
+.cp-list{display:flex;flex-direction:column;gap:6px}
+.cp-row{display:flex;justify-content:space-between;align-items:center;font-size:10px}
+.cp-item-l{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.45)}
+.cp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cp-val{font-weight:700;color:white}
+.risk-panel{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.rp-head{padding:10px 12px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.rp-title{font-size:11px;font-weight:700;color:white}
+.rp-link{font-size:9.5px;color:var(--teal-light)}
+.risk-item-row{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:9px;align-items:flex-start}
+.risk-item-row:last-child{border-bottom:none}
+.risk-level{width:4px;border-radius:2px;align-self:stretch;flex-shrink:0}
+.rl-h{background:#e74c3c}.rl-m{background:#f39c12}.rl-l{background:#27ae60}
+.ri-nm{font-size:10px;font-weight:700;color:rgba(255,255,255,.8)}
+.ri-mt{font-size:8.5px;color:rgba(255,255,255,.35);margin-top:1px}
+
+/* ── MOBILE SCREENS ── */
+.mobile-section-wrap{background:linear-gradient(135deg,#091e34,#0a1628);border-radius:20px;padding:36px 24px}
+.mobile-screens-row{display:flex;justify-content:center;align-items:flex-start;gap:28px;flex-wrap:wrap}
+.phone-shell{position:relative}
+.phone-device{width:240px;background:#0a1628;border-radius:32px;border:2px solid rgba(255,255,255,.12);overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);transition:transform .3s}
+.phone-device:hover{transform:translateY(-8px)}
+.phone-device.ai-active{border-color:rgba(155,89,182,.5);box-shadow:0 30px 80px rgba(155,89,182,.2),0 30px 80px rgba(0,0,0,.4)}
+/* Screen 1 */
+.ph-status{background:var(--brand);padding:10px 18px 8px;display:flex;justify-content:space-between;align-items:center}
+.ph-time{font-size:12px;font-weight:700;color:white}
+.ph-icons{display:flex;align-items:center;gap:5px;font-size:11px;color:white}
+.ph-header{background:var(--brand);padding:8px 18px 18px;color:white}
+.ph-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ph-app-logo{display:flex;align-items:center;gap:8px}
+.ph-app-logo img{height:24px;width:auto}
+.ph-app-name{font-size:11px;font-weight:600;color:rgba(255,255,255,.8)}
+.ph-avatar{width:30px;height:30px;background:linear-gradient(135deg,var(--teal),var(--green));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white}
+.ph-greeting{font-size:17px;font-weight:700;margin-bottom:2px}
+.ph-sub{font-size:11.5px;opacity:.65}
+.ph-home-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;margin-top:9px}
+.ph-body{padding:14px}
+.ph-section-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ink-faint);margin-bottom:9px;margin-top:4px}
+.ph-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.ph-action-tile{background:white;border-radius:14px;padding:14px;border:1.5px solid var(--border);cursor:default;transition:all .2s}
+.ph-action-tile:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.07)}
+.pa-icon{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px}
+.pa-b{background:rgba(31,111,168,.1)}.pa-r{background:rgba(231,76,60,.1)}.pa-g{background:rgba(39,174,96,.1)}.pa-a{background:rgba(243,156,18,.1)}
+.pa-name{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.pa-meta{font-size:10px;color:var(--ink-faint)}
+.ph-students{background:white;border-radius:14px;border:1.5px solid var(--border);overflow:hidden}
+.ph-stu-item{display:flex;align-items:center;gap:11px;padding:11px 13px;border-bottom:1px solid var(--border);cursor:default}
+.ph-stu-item:last-child{border-bottom:none}
+.ph-stu-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0}
+.psa1{background:linear-gradient(135deg,var(--brand-mid),var(--teal))} .psa2{background:linear-gradient(135deg,var(--green),var(--teal-light))} .psa3{background:linear-gradient(135deg,var(--teal),var(--brand-mid))}
+.ph-stu-name{font-size:13px;font-weight:600;color:var(--ink)}
+.ph-stu-meta{font-size:10.5px;color:var(--ink-faint)}
+.ph-stu-badge{font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:auto;flex-shrink:0}
+.psb-ok{background:rgba(39,174,96,.1);color:var(--green)}.psb-due{background:rgba(243,156,18,.1);color:var(--gold)}.psb-risk{background:rgba(231,76,60,.1);color:#e74c3c}
+/* Bottom nav */
+.ph-bottom-nav{background:white;border-top:1px solid var(--border);display:flex;align-items:center;padding:7px 0 9px}
+.pbn-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:3px;cursor:default;color:var(--ink-faint)}
+.pbn-btn.active{color:var(--brand-mid)}
+.pbn-icon{font-size:19px}
+.pbn-lbl{font-size:9px;font-weight:600}
+.pbn-center{width:48px;height:48px;background:linear-gradient(135deg,var(--brand-mid),var(--teal));border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-16px;box-shadow:0 4px 14px rgba(31,111,168,.35);flex-shrink:0;font-size:20px;color:white}
+
+/* Screen 2 – AI Recording */
+.ph2-status{background:#0a1628;padding:10px 18px 8px;display:flex;justify-content:space-between;align-items:center}
+.ph2-live{display:flex;align-items:center;gap:5px;background:rgba(155,89,182,.25);padding:3px 9px;border-radius:10px}
+.ph2-live-dot{width:6px;height:6px;border-radius:50%;background:#e74c3c;animation:blink 1s infinite}
+.ph2-live-txt{font-size:10px;font-weight:800;color:#e74c3c}
+.ph2-header{background:#0d1f38;padding:11px 18px 15px}
+.ph2-back{width:28px;height:28px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:white;margin-bottom:10px;cursor:default}
+.ph2-student{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.ph2-stu-av{width:30px;height:30px;background:linear-gradient(135deg,var(--brand-mid),var(--teal));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white}
+.ph2-stu-name{font-size:13px;font-weight:700;color:white}
+.ph2-stu-home{font-size:10px;color:rgba(255,255,255,.45)}
+.ph2-type-chips{display:flex;gap:7px;flex-wrap:wrap}
+.ph2-chip{padding:5px 12px;border-radius:20px;font-size:10.5px;font-weight:600;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.65);cursor:default}
+.ph2-chip.selected{background:white;color:var(--brand);border-color:white}
+/* AI zone */
+.ph2-ai-zone{background:#0a1628;padding:20px 18px;text-align:center;position:relative}
+.ph2-ai-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(155,89,182,.3),rgba(26,188,156,.3));border:1px solid rgba(155,89,182,.4);color:white;padding:5px 13px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
+.ph2-ai-dot{width:6px;height:6px;background:#e74c3c;border-radius:50%;animation:blink 1s infinite}
+/* Orbit rings */
+.ph2-rings{position:relative;width:100px;height:100px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
+.ph2-ring{position:absolute;border-radius:50%;border:1px solid rgba(155,89,182,.25);animation:ringPulse 3s ease-out infinite}
+.ph2-ring:nth-child(1){width:100px;height:100px;animation-delay:0s}
+.ph2-ring:nth-child(2){width:74px;height:74px;animation-delay:.8s}
+.ph2-ring:nth-child(3){width:50px;height:50px;animation-delay:1.6s}
+@keyframes ringPulse{0%{opacity:.8;transform:scale(.9)}100%{opacity:0;transform:scale(1.2)}}
+.ph2-mic{width:56px;height:56px;background:linear-gradient(135deg,#9b59b6,#1abc9c);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;box-shadow:0 0 0 8px rgba(155,89,182,.1),0 0 30px rgba(155,89,182,.3);animation:micGlow 2s ease-in-out infinite;font-size:22px;color:white;margin:0 auto}
+@keyframes micGlow{0%,100%{box-shadow:0 0 0 8px rgba(155,89,182,.1),0 0 20px rgba(155,89,182,.25)}50%{box-shadow:0 0 0 12px rgba(155,89,182,.15),0 0 40px rgba(155,89,182,.4)}}
+.ph2-waveform{display:flex;align-items:center;justify-content:center;gap:3px;height:48px;margin:12px 0}
+.ph2-wbar{width:3px;border-radius:2px;background:linear-gradient(180deg,#9b59b6,#1abc9c);animation:wave 1.2s ease-in-out infinite}
+.ph2-wbar:nth-child(1){height:14px;animation-delay:0s}.ph2-wbar:nth-child(2){height:28px;animation-delay:.1s}.ph2-wbar:nth-child(3){height:20px;animation-delay:.2s}.ph2-wbar:nth-child(4){height:38px;animation-delay:.05s}.ph2-wbar:nth-child(5){height:24px;animation-delay:.15s}.ph2-wbar:nth-child(6){height:42px;animation-delay:.25s}.ph2-wbar:nth-child(7){height:16px;animation-delay:.1s}.ph2-wbar:nth-child(8){height:34px;animation-delay:.3s}.ph2-wbar:nth-child(9){height:26px;animation-delay:.05s}.ph2-wbar:nth-child(10){height:18px;animation-delay:.2s}.ph2-wbar:nth-child(11){height:32px;animation-delay:.12s}.ph2-wbar:nth-child(12){height:22px;animation-delay:.08s}
+.ph2-timer{font-size:26px;font-weight:800;color:white;font-variant-numeric:tabular-nums}
+.ph2-rec-lbl{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;margin-bottom:14px}
+.ph2-transcript{margin:0 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:10px 12px}
+.ph2-tr-lbl{font-size:8.5px;text-transform:uppercase;letter-spacing:1px;font-weight:700;color:var(--teal-light);margin-bottom:5px}
+.ph2-tr-txt{font-size:11px;color:rgba(255,255,255,.65);line-height:1.65}
+.ph2-cursor{display:inline-block;width:2px;height:11px;background:var(--teal-light);border-radius:1px;margin-left:1px;animation:blink 1s step-end infinite;vertical-align:middle}
+.ph2-controls{display:flex;align-items:center;justify-content:center;gap:20px;padding:13px 18px}
+.ph2-ctrl{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:default}
+.ph2-ctrl-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px}
+.cc-pause{background:rgba(31,111,168,.15);color:var(--brand-mid)}.cc-stop{background:rgba(231,76,60,.15);color:#e74c3c}.cc-note{background:rgba(39,174,96,.15);color:var(--green)}
+.ph2-ctrl-lbl{font-size:9px;color:rgba(255,255,255,.4);font-weight:600}
+
+/* Screen 3 – Review */
+.ph3-header{background:var(--brand);padding:11px 18px 16px;color:white}
+.ph3-header-top{display:flex;align-items:center;gap:11px;margin-bottom:0}
+.ph3-back{width:28px;height:28px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:default}
+.ph3-title{font-size:15px;font-weight:700}
+.ph3-sub{font-size:10px;opacity:.6;margin-top:2px}
+.ai-gen-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(155,89,182,.15),rgba(26,188,156,.15));border:1px solid rgba(155,89,182,.3);color:#8e44ad;font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:20px;margin-left:auto}
+.ph3-body{padding:12px;overflow:auto;flex:1;background:var(--bg)}
+.review-card{background:white;border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:10px}
+.rc-head{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-bottom:1px solid var(--border);background:#f8fafc}
+.rc-head-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-faint)}
+.rc-edit{font-size:11px;color:var(--brand-mid);font-weight:600;cursor:default}
+.rc-text{padding:11px 13px;font-size:11.5px;line-height:1.7;color:var(--ink)}
+.rc-chips{padding:9px 13px;display:flex;gap:7px;flex-wrap:wrap}
+.rc-chip{padding:5px 11px;border-radius:20px;font-size:10px;font-weight:600;border:1.5px solid var(--border);color:var(--ink-faint);cursor:default}
+.rc-chip.sel{background:var(--brand-mid);border-color:var(--brand-mid);color:white}
+.approve-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--teal));color:white;border-radius:14px;font-size:14px;font-weight:700;cursor:default;border:none;font-family:'DM Sans',sans-serif;margin-top:12px;box-shadow:0 4px 14px rgba(39,174,96,.3)}
+.audit-note{display:flex;align-items:center;gap:8px;padding:9px 13px;background:rgba(31,111,168,.06);border:1px solid rgba(31,111,168,.15);border-radius:11px;font-size:10px;color:var(--ink-faint);margin-bottom:0;line-height:1.5}
+
+/* phone labels */
+.phone-label{text-align:center;margin-top:14px}
+.phone-label-tag{display:inline-block;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);padding:4px 14px;border-radius:20px;font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:1px}
+.phone-device.ai-active + .phone-label .phone-label-tag{color:#9b59b6;background:rgba(155,89,182,.15)}
+
+/* Feature grid */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
+.feat-card{background:var(--bg);border-radius:18px;padding:26px;border:1px solid var(--border);transition:all .3s}
+.feat-card:hover{background:white;border-color:var(--brand-mid);box-shadow:0 8px 40px rgba(31,111,168,.1);transform:translateY(-4px)}
+.feat-icon{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:23px;margin-bottom:16px}
+.fi-tl{background:rgba(20,143,143,.1)}.fi-bl{background:rgba(31,111,168,.1)}.fi-gr{background:rgba(39,174,96,.1)}.fi-gd{background:rgba(240,165,0,.1)}.fi-nv{background:rgba(11,24,36,.08)}.fi-pu{background:rgba(155,89,182,.1)}
+.feat-card h3{font-size:15.5px;font-weight:700;margin-bottom:9px;color:var(--ink)}
+.feat-card p{font-size:13px;color:var(--ink-light);line-height:1.7}
+
+/* ── AI SECTION ── */
+.ai-section{padding:110px 0;background:var(--ink);position:relative;overflow:hidden}
+.ai-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(26,188,156,.14) 0%,transparent 70%)}
+.ai-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;position:relative;z-index:1}
+.ai-text .eyebrow{color:var(--teal-light);margin-bottom:14px}
+.ai-headline{font-family:'Instrument Serif',serif;font-size:clamp(34px,4vw,54px);line-height:1.07;letter-spacing:-.03em;color:white;margin-bottom:22px}
+.ai-headline em{font-style:italic;background:linear-gradient(135deg,var(--teal-light),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ai-body{font-size:15px;color:rgba(255,255,255,.58);line-height:1.8;margin-bottom:34px}
+.ai-steps{display:flex;flex-direction:column;gap:14px}
+.ai-step{display:flex;align-items:flex-start;gap:14px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:13px;transition:all .3s}
+.ai-step:hover{background:rgba(255,255,255,.07);border-color:rgba(26,188,156,.3)}
+.ai-step-num{width:32px;height:32px;background:linear-gradient(135deg,var(--teal),var(--green));border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:white;flex-shrink:0}
+.ai-step h4{font-size:13.5px;font-weight:700;color:white;margin-bottom:4px}
+.ai-step p{font-size:12px;color:rgba(255,255,255,.48);line-height:1.6}
+/* AI phone visual */
+.ai-phone-wrap{position:relative}
+.ai-phone{width:260px;margin:0 auto;background:#0a1628;border-radius:38px;border:2px solid rgba(155,89,182,.5);overflow:hidden;box-shadow:0 0 0 4px rgba(155,89,182,.08),0 0 50px rgba(155,89,182,.22),0 40px 80px rgba(0,0,0,.5)}
+.ai-float-badge{position:absolute;top:-16px;right:-16px;background:linear-gradient(135deg,#9b59b6,#1abc9c);color:white;padding:9px 16px;border-radius:12px;font-size:11px;font-weight:800;font-family:'Syne',sans-serif;letter-spacing:.5px;box-shadow:0 8px 30px rgba(155,89,182,.4)}
+.ai-float-tag{position:absolute;bottom:30px;left:-24px;background:white;color:var(--ink);padding:10px 16px;border-radius:12px;font-size:11px;font-weight:700;font-family:'Syne',sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.15);border:1px solid var(--border)}
+
+/* ── INVESTOR ── */
+.investor-section{padding:110px 0;background:var(--bg)}
+.investor-header{text-align:center;max-width:700px;margin:0 auto 72px}
+.investor-header .eyebrow{color:var(--gold);margin-bottom:14px}
+.market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:56px}
+.market-card{background:white;border-radius:20px;padding:30px;border:1px solid var(--border);box-shadow:var(--card-shadow);text-align:center;transition:all .3s}
+.market-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(11,24,36,.12)}
+.mc-icon{font-size:34px;margin-bottom:14px;display:block}
+.mc-num{font-family:'Instrument Serif',serif;font-size:48px;line-height:1;color:var(--ink);margin-bottom:8px}
+.mc-num sup{font-size:26px}
+.mc-num span{color:var(--teal)}
+.mc-lbl{font-size:12.5px;color:var(--ink-light);line-height:1.5}
+.mc-lbl strong{display:block;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.invest-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.invest-points{display:flex;flex-direction:column;gap:22px}
+.invest-point{display:flex;gap:16px;align-items:flex-start}
+.ip-num{width:38px;height:38px;background:linear-gradient(135deg,var(--brand-mid),var(--teal));border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:white;flex-shrink:0}
+.invest-point h3{font-size:15.5px;font-weight:700;margin-bottom:6px;color:var(--ink)}
+.invest-point p{font-size:13px;color:var(--ink-light);line-height:1.7}
+.traction-card{background:var(--ink);border-radius:22px;padding:36px;color:white;position:sticky;top:90px}
+.traction-card .eyebrow{color:var(--gold);margin-bottom:18px}
+.traction-headline{font-family:'Instrument Serif',serif;font-size:26px;line-height:1.2;margin-bottom:26px}
+.traction-items{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.traction-item{display:flex;align-items:center;gap:12px;padding:13px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:11px}
+.ti-icon{font-size:18px;flex-shrink:0}
+.ti-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:white}
+.ti-lbl{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.traction-cta{display:flex;align-items:center;gap:10px;padding:16px;background:linear-gradient(135deg,rgba(26,188,156,.14),rgba(31,111,168,.14));border:1px solid rgba(26,188,156,.22);border-radius:13px;margin-bottom:16px}
+.tc-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--teal),var(--green));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.tc-text{font-size:12.5px;color:rgba(255,255,255,.65)}
+.tc-text strong{color:white;display:block;font-size:13.5px;margin-bottom:2px}
+
+/* ── COMPLIANCE ── */
+.compliance-section{padding:110px 0;background:white}
+.compliance-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.comp-cards-stack{display:flex;flex-direction:column;gap:14px}
+.c-card{background:white;border-radius:16px;padding:22px;border:1px solid var(--border);box-shadow:var(--card-shadow);transition:all .3s}
+.c-card:hover{transform:translateX(8px);border-color:var(--teal)}
+.c-card-header{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+.c-card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.c-card-title{font-size:13.5px;font-weight:700;color:var(--ink)}
+.c-card-sub{font-size:10.5px;color:var(--ink-faint)}
+.c-pct{margin-left:auto;font-size:17px;font-weight:800;color:var(--ink)}
+.c-progress{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:5px}
+.c-progress-fill{height:100%;border-radius:3px}
+.cpf-g{background:linear-gradient(90deg,var(--green),var(--teal-light))}.cpf-b{background:linear-gradient(90deg,var(--brand-mid),var(--teal))}.cpf-t{background:linear-gradient(90deg,var(--teal),var(--green-light))}
+.c-prog-lbl{font-size:10.5px;color:var(--ink-faint);display:flex;justify-content:space-between}
+.reg-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.reg-badge{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:8px 14px;font-size:11.5px;font-weight:700;color:var(--ink-mid);display:flex;align-items:center;gap:6px}
+.comp-text .eyebrow{color:var(--teal);margin-bottom:14px}
+.comp-checklist{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+.cc-item{display:flex;align-items:center;gap:11px;font-size:13.5px;color:var(--ink-mid)}
+.cc-check{width:26px;height:26px;border-radius:8px;background:rgba(39,174,96,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+
+/* ── TESTIMONIALS ── */
+.testi-section{padding:110px 0;background:var(--bg)}
+.testi-header{text-align:center;margin-bottom:56px}
+.testi-header .eyebrow{color:var(--teal);margin-bottom:14px}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.testi-card{background:white;border-radius:20px;padding:30px;border:1px solid var(--border);box-shadow:var(--card-shadow);transition:all .3s}
+.testi-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(11,24,36,.12)}
+.testi-stars{margin-bottom:14px;font-size:14px;color:var(--gold);letter-spacing:2px}
+.testi-text{font-size:14px;line-height:1.75;color:var(--ink-mid);font-style:italic;margin-bottom:18px}
+.testi-author{display:flex;align-items:center;gap:11px;padding-top:14px;border-top:1px solid var(--border)}
+.testi-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0}
+.ta-1{background:linear-gradient(135deg,var(--brand-mid),var(--teal))} .ta-2{background:linear-gradient(135deg,var(--green),var(--teal-light))} .ta-3{background:linear-gradient(135deg,var(--ink),var(--brand))}
+.testi-name{font-size:13.5px;font-weight:700;color:var(--ink)}
+.testi-role{font-size:11px;color:var(--ink-faint)}
+
+/* ── PRICING ── */
+.pricing-section{padding:110px 0;background:white}
+.pricing-header{text-align:center;max-width:600px;margin:0 auto 56px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:980px;margin:0 auto}
+.price-card{background:var(--bg);border-radius:22px;padding:34px;border:1.5px solid var(--border);position:relative;transition:all .3s}
+.price-card:hover{border-color:var(--brand-mid);box-shadow:0 12px 50px rgba(31,111,168,.1)}
+.price-card.featured{background:var(--ink);border-color:var(--ink);color:white;transform:scale(1.04);box-shadow:0 20px 60px rgba(11,24,36,.2)}
+.price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--teal),var(--green));color:white;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 16px;border-radius:100px}
+.price-tier{font-family:'Syne',sans-serif;font-size:11.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;color:var(--ink-faint)}
+.price-card.featured .price-tier{color:rgba(255,255,255,.45)}
+.price-amount{font-family:'Instrument Serif',serif;font-size:50px;line-height:1;color:var(--ink);margin-bottom:4px}
+.price-card.featured .price-amount{color:white}
+.price-period{font-size:12.5px;color:var(--ink-faint);margin-bottom:26px}
+.price-card.featured .price-period{color:rgba(255,255,255,.45)}
+.price-features{list-style:none;margin-bottom:28px;display:flex;flex-direction:column;gap:11px}
+.price-features li{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-light)}
+.price-card.featured .price-features li{color:rgba(255,255,255,.72)}
+.price-check{width:17px;height:17px;border-radius:50%;background:rgba(39,174,96,.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9.5px}
+.price-card.featured .price-check{background:rgba(26,188,156,.2)}
+.price-btn{width:100%;padding:13px;border-radius:11px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--ink);transition:all .2s}
+.price-btn:hover{background:var(--brand-mid);border-color:var(--brand-mid);color:white}
+.price-card.featured .price-btn{background:linear-gradient(135deg,var(--teal),var(--green));border-color:transparent;color:white}
+
+/* ── CTA ── */
+.cta-section{padding:100px 0;background:var(--ink);position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(26,188,156,.11) 0%,transparent 70%)}
+.cta-inner{max-width:740px;margin:0 auto;text-align:center;position:relative;z-index:1;padding:0 32px}
+.cta-headline{font-family:'Instrument Serif',serif;font-size:clamp(34px,5vw,58px);line-height:1.07;letter-spacing:-.03em;color:white;margin:18px 0 22px}
+.cta-headline em{font-style:italic;background:linear-gradient(135deg,var(--teal-light),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-sub{font-size:15px;color:rgba(255,255,255,.5);margin-bottom:40px;line-height:1.7}
+.cta-form{display:flex;gap:10px;max-width:440px;margin:0 auto 40px}
+.cta-input{flex:1;padding:14px 20px;border-radius:100px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:white;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.cta-input::placeholder{color:rgba(255,255,255,.35)}
+.cta-input:focus{border-color:rgba(26,188,156,.5)}
+.cta-bottom-stats{display:flex;justify-content:center;gap:36px;flex-wrap:wrap}
+.cbs-item{text-align:center}
+.cbs-num{font-family:'Instrument Serif',serif;font-size:34px;color:white}
+.cbs-lbl{font-size:11.5px;color:rgba(255,255,255,.38)}
+
+/* ── FOOTER ── */
+footer{background:#060e18;padding:60px 0 30px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:44px}
+.footer-brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.footer-brand-logo img{height:44px;width:auto}
+.footer-brand-text{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:white;line-height:1.3}
+.footer-brand-text span{display:block;font-size:11px;font-weight:400;color:rgba(255,255,255,.4);letter-spacing:.3px}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,.38);line-height:1.7;max-width:270px;margin-bottom:20px}
+.footer-reg-badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.frb{padding:5px 11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:7px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.45);font-family:'Syne',sans-serif;letter-spacing:.5px}
+.footer-by{font-size:11px;color:rgba(255,255,255,.25)}
+.footer-col h4{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:16px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.footer-col li a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.footer-col li a:hover{color:rgba(255,255,255,.8)}
+.footer-bottom{padding-top:26px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.footer-bottom p{font-size:11.5px;color:rgba(255,255,255,.25)}
+.footer-hr-logo{display:flex;align-items:center;gap:8px}
+.footer-hr-logo img{height:28px;width:auto;opacity:.6;filter:brightness(10)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Responsive */
+@media(max-width:900px){
+  .hero-inner,.problem-grid,.compliance-grid,.eis-grid,.invest-grid{grid-template-columns:1fr}
+  .stats-inner,.market-grid,.feature-grid,.testi-grid,.pricing-grid,.workflow-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .dash-full-body{height:auto;flex-direction:column}
+  .full-sidebar{width:100%}
+}
+@media(max-width:600px){
+  .stats-inner,.market-grid,.feature-grid,.testi-grid,.pricing-grid,.workflow-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .cta-form{flex-direction:column}
+  .price-card.featured{transform:none}
+  .mobile-screens-row{gap:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY DISCLAIMER BAR -->
+<div class="disclaimer-bar">
+  <strong>Important:</strong> The information on this website is for experienced investors. It is not a personal recommendation to invest. If you're unsure, please seek advice. Investments are for the long term. They are high risk and illiquid and can fall as well as rise in value: you could lose all the money you invest.
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABeAJYDASIAAhEBAxEB/8QAHQAAAQUBAQEBAAAAAAAAAAAAAAQFBgcIAQMCCf/EAEUQAAEDAwEEBAsFBAkFAAAAAAECAwQFBhEABxIhMRMVQVEICRQiMjZVYXGT0UJ1kbGzI4GCoRYkNURFUmJywWRzhKKy/8QAGwEAAgIDAQAAAAAAAAAAAAAAAAQBBQIDBgf/xAAuEQABBAECBAMIAwEAAAAAAAABAAIDEQQSIQUxMkETUZEGFCJhcYHR8KGx8cH/2gAMAwEAAhEDEQA/ANe9V0wH+zonyU/TXerKZj+zonyU/TSvs0Y0ISPqumezonyU/TXeq6Yf8OifJT9NK+XM6rPaXtjt60ZK6bGBqtUTkLYZWAho9y1dh9wye/Gs2Mc800WtM+RFjs1yGgrB6rpns6J8lP00dV0z2dE+Sn6aza7tjvSsP5akR6c1ngiOyDn4leT+GNSyn3RfUCq0xp6pKnIqUZD7CFMpO9nmngAeBB7e7S+VN7sCXAmvJVUXHceV1MBrzod/urm6rpns6J8lP00dV0z2dE+Sn6aS0GprlMpanORETQPPaadCiPiOw/jpxffaY3elWE76ghI7yeQ0RzskZrB2V0CCLSc0ymezonyU/TR1XTMf2dE+Sn6aWaNbVKR9WUz2dE+Sn6aOq6Z7OifJT9NLdc0ISPqum+zofyU/TQaXTPZ0T5KfppbrmhCR9V0z2dE+Sn6aOq6b7OifJT9NLNc0ISTqumezonyU/TR1XTPZ0T5KfppXo0IWVvGDRY0az7X8njss71Qd3ujQE5w2MZxo16+MO9T7V+8Hv0xo0zH0peTqWpRo0aDy0smFS/hO7UXLOpce3aK8EVuppKi4k8YzA4Ff+5R80fxHs1m60KDXbnnFmj0+RPfA33CgcE+9SjwHxJ197YJ1RvHwiaxCY3n3jUE0yI3ngkIO4EjuG9kn4nV/7RbBrNr7IafQ7IjPy1tPpXVPJh+1lHdOVEA5UN7Hm8cDHdrosdscEbGWA5/c9lyfE4Jc2R7qJawch3Py/KqSs0Gv2eht24KXIgtLVuodIC21HuC05TnhyznWjbLaRNoKaeQ2zW4VNLEZ5QyWVLbSFY+CxqIbFnpdFtN2k37EU0mpPrXBgTUZXuNtlbrikK9FAwOfb8RliiXJJFSXUGpC23luqc30nByTk/nrjvabKOFOwtGoWbruK7evqEcPgiw2iQgjWOR5ivT5EbBSKzGbohVxCqzTJECPEc3pEh4Yb3Qfsq5KzyGM89Ty3567luUy+KYsIZbRntOQCffzP7tROLFn3VRlVarXF5NEbd6JG+2VjewDyBA7dSfZXSYVIFRQxXU1Z+S4lxSkslsNoAwEgEnhz/HVDgxNfM1rBojJ1USLce23l3VxiNcymgkg72SLUa2n7Wp1o3e7RI9MjSEIZQ5vrWoHzhy4akGyG+5V7t1BciEzF8kLYAbUTvb293/DVC+E1ILe12SnP91Zx+B1P/BHd6SLX+PJTH5L16lPhY7eGiYN+Khv6Kjgzsw8Y8Bz/gt223ka7WrkuubOp1Blz6eyy89GbLpbdJAUlIyRkduNVC3tuqazwo0PH/cVq3ru9Vqqf+ie/wDg6xzHkDI87WjhGJDkMeZG3SW9reI5mDJH7tJpBBvl2rzHzV4J2zVJX+DxPmK0oZ2xzQoF6isKT2hDxB/I6ebBsW1qlZtLny6Uh2Q/HC3FlxY3j+46+L22Y0YUeTNowchyI7SnA3vlaHMDJHHiDw7DrTJJgh5Zort+7pZuN7S+AJ25AIIutr8+7aT9Z9/0W4nxER0kWYRwZdx5/Djukc/z1Ljy1khiW5HeQ+ytSHW1BSFA8UkHII1qO1Kguq2zTai7jpJMZDi8cslIJ/npHJiYw2zkrr2b4zNntdHkD429x3H5Tno0aNKrqFlvxh3qfav3g9+mNGu+MO9T7V+8Hv0xo0zH0peTqWpBpFXpnV1DnTzyjRnHj/Ckn/jS0aT1OI1PpsmC8MtSGlNLHuUCD+elxV7reeSxfYMMMeGtJjShwNbmvJ3hz3kOrQf5jUl203jd9nbWq3Dpdamw4zqm3mkJXlBCm0kkJOQPOyP3ajN9orFFuqlbS4rPTVu2pbVPudhHFQda8xt8/wCh5sY3sAZHv1LvCuhx7joVu7TbfcMqmyowjvOIT6AJKmyru4lSTnkQBz10mG9oyGeIAQRp38+f89lz2dE5+O7QSCDe3OuSi9mV6qTaXc151yfImSpKEUeI48veI3z0juO4BKAMD/Pqf2pa9EdsKLdFw1udCZmSFMxxFQlfolQ87KTxyhX8tIaVRNndA2L2fJvCNVnzUQ9KQYTpR+0Xu5KhvDPmhCR/t9+nO56vbMjYlT2bTRObpsGrlhImEFzeKFuHjk5Hn6o+LYvvMzpi22jYbbbbJEsEQLnuBLW3Vm7O9n181K2F0OFswkRaJUpdQZRPSpbslG6reUnlwAGMDTpsXkB6pVADsZT+equotS3NkNUfKuVVZTn+BWpb4NFQM2tVgZyEx0H/ANtcu7CceIRzVQA/Kcw8zxJYgRVj8qpvCue6LbNKGf7mx+R1GLGv65LVTIRQamYaZJSXcNoXvbucekD3nUk8MCm1JO1WTVTHU3AMNlKX3CEpWoA5SnPpK4jgM4zx1IfA4t23rmiXGqu0aDUjHXHDRkspc3N4OZxnvwNenxZMUeC0vGoADZJz4MkuafDOkkndMj+2G+ZcR2NLuEqZeQptaSwyMpIwR6OovGlxRg+UAfvzrVV97ObDi2VW5ce0KIy+zT33G3EQ0BSFBtRBBA4EHWI4swpUDnI1u4dlQztd4TNNfRVfF+ETNLfGkLuf29Vt6zLxt23tnltorFRTGVJhhTWW1K3gDg8gdN187W6EaNKhUJTs2Q+2Ww4WyhCMjBPHBJHw1G5FlS7u2J2rVKUoqqMGn5RHJwHkk5UAexXDh2HkcZyKnjqJBBBCkkpUlQwUkcCCDyI7tcZmSNikc4+Z/tWeZm5uNG2FgAaWgA9+Qv7/AGThSo02q1JinQGFvSH1bqEJH8/gOZOtZ25T+qqDApm8FeSx0NFQ7d0AZ1Atg7tuSaKtUCnMRKq1hMs5KlKHYoE8d093YdWb26jxxM0Eck/wDhbcSMy6rLv4H7zXNd5a5ozrFdEst+MO9T7V+8Hv0xo0eMO9T7V+8Hv0xo0zH0peTqWpRruuDQdLJhU7tssest1RV/2TFYl1RMcxqvSnkbzVVi9qFJ+0sdnaRy5AGnbBuCiNx6hQrdejro9RKkVSzK9K8ncjrPBXkkheASFA4CiDwBODxGwyNV1tN2M2Pfy1SqnTzEqRTgToZDbv8XDC/wCIHTkOQK0v9f3/AFKywEnUz0/f8VcbRbTXddgWxQrYUun9SlbKmK2lUZwghISAop3FnhzSSD2HXhE2R3wNkSrbUxDbqJrnlg/rIKOi6EIzvDtz2aaaj4Mt7UzzbU2iqS0PRbd6WPj96FK/LSIeDttgmZaqm0KMWTwP9eku/wAikfnpsytMejxBV3yNqulwWSPL3RmyK2PZPKbfoVo7Oqlbl+31RKTJcnty9yM75Q8lKUEbvRjCsnPYDpfsj8ufedRsqok5iDLQlMm5a8N1JTnmxHGOk7cE4GeB142p4LSaZITIm3cl13dIUtqmIKxnmUl1Swk/6gnI7MauPZ3s6o1kyJcuDOq0+ZLQlD8ioSy8tYSSR2ADmeQ0nIIG2QbP0/f+rfj4LWFpDKrbnusa+FTClUva2/BlVedVFoiMrU9Kc3iVKTlWAPNQM/ZSABq2/AIWFQrs9zkX8nNW7fWxiwb1uByu3BTH5E5xCW1LRKWgbqRgDAONOuzjZzauz5uY3bEN2MmaUF/feU5vFOcczw9I6YkzWuxvC77Lc3FcJ/E7Jx2i+oFw/dkj9NWvzfZk+/X6a1SCxUqbKp0tJVHlMqZdSDglKgQRns4HVUDwb9lQ5UiYP/Nc+up4dnMxQ4OB3WGfhuyarspPsEVv7HLXV3wU/mdVb4R9pLoFXRe1KYBhy1huospGAHPsue7e5E9+O/V821RYFu0GHRKW2puFDb6NlKlFRCfieevuv0mBXaPJpNTYS/Eko3HEHu7x3EHBB7CNVeSGzF18ja2T4gmxxEeY5fULMGz65VUerxq1AXvoSd11v/Og+kk+/wD5wdakpU6NU6exPhuBxl9AWhQ7jqCQNjVjwHCuNEmIJGCDKUQdS+26DBt+IqJTi8lhSt7cW4VAHtxnlqqwcWfGkc0kFh5eYWODBJA3S5OujRo1ap9Zc8Yf6n2r94PfpjRo8Yf6n2r94PfpjRpmPpS8nUtSa7rg0aWTCh1yXoqkbR7etEU8OistPr8o6THRdGgqxu445x3jTFsm2u0296hOpUiH1XU2FLLDC3N4SW0kgqQcDJBByOz8cK7xtar1LbBaNyxWkKp9LakpkrKwFArbKU4HbxOonRdkVQVs9TFecRSrop9RfmUucysKLZUvISojmlQ4EazptLAl1pfUdtJg2DQ7sct515upVB2K5HZe3ltpQpQKk8POOEk44fHUqqe0GC27aTlJbbqMG45HQtSEOYDY3d7OMcTwIIOCDqC2vs7uiFZ9iU2dGY8po9ccmTgHQQG1KWcg9vpDhr2n7K6tS9ptFqNtOI/owio9YSIKlhIiPYIUWx/lUD6I5Ed2MTTViC5PzO0eu1+qVFmx7S63gU59UZ6dImpjtuOp9JLYIJUBw48Bx/FFI2ytx6S3UJdBeiGHVEU6usuuefTyo4DvAELRwPHhnh36+Lbod87OnanSrdokK4qLKmLlxCucI70Yr9JC8pIUOAwR79KbY2bTZdBu5V4vxl1O6zmS3FGW4oSkhtKCfSKc5z3gc+ZimqfiUkrl5GLf1DtKnwkzH6iw5KkO9LuiMwnGFkYOd45A9400W7tShVjaTKtNMFTUUKeag1Ar8yW8zu9KhIx9nePEEg7p1E7Nsi/qFatxVaUI8u8pUZqm05zphhiM2gJSrePI81EdpSO/XlUNj94U60KXHo93R5UuhPibTmF09DeXt7KgXd7ewrKs54HhnRTUW5Pl27S72tusUunzLDik1ab5HBUKqk9IrPDOE+bzHPTxV78rlCRbjdettmJLrNXTT+ibmBwNJUODm8E8fh/PXjtFtuvXLVbBqTENttVKqjcyoNl0fsk4TvAH7WCDy0p2tWzVrhqtnP0xlDiKXW2pkoqWE7rSQckZ5n3aNlO68ZO0OsVS5alRbJtgVpFKc6GbMfmJjsoe7W05BKiO3u/DPlD2pqVb9zu1GgPU6u24wp6VTXXQQtOCUqQsDikjtx2jnpHTqBeVg3BXHbXpMS4KPWZqp/QOyxHejPrA3+JSQpBwMdox+8ojYF01Kj3tXK35ELiuKCYkeJGWeijNhOEoKz6ROE5PLh79TTVFuTvStrtNquyupXlAhkzKY1vS6a65uuNr4cCceiRxCscfjkCfW/P61oMCp9F0XlcZt/cznd30hWM9vPVObQdktWnWhBl2ytuHcIpLNOqTG/hqa0GwkhR5bySMhXuA7Bi3bRhv0+1aTAlJCX40JllwA5AUlAB4/EaxdXZS273Tpo0aNYrNZc8Yd6n2r94PfpjRrnjDvU+1fvB79MaNMx9KXk6lqXRoGjSyYRoxoOgctCFB9s0irtWyyxSEzELfkpS7IjIeX0KBlXnJZ/aFKikJ8wgje545myqsVqpWWWKlTajCqUJtLIVUEr33yGxhwlSRnJz3kfawcjU4Izoxqb2pRW9qmbRkVxmv0FM2BdcmsOObtYckyJCYzSilW+pKQDHU3nG6EkHiO46S0uHe7d3U+a6itsxHrjlIdleXyHk+Tpec3ELikbqG1JCQHBkAYJxnV4Y1wDU6lGlUlUhcpYqPSqu7+mnlbhg+TF3q/dC/2WMfsOj3cb2/53PPHTndMC/nq9PtelTp0aLWejnIqqCpSYBQg9KylRPDecS3hI+ytfdq2scddxo1I0qt7JiXDdkSp1O601Skh9DMRiE3Icjqa6Hi44CkgjfcKsHmUJT2HGmCHSLjhbIKtUI0m43LgdeW00h+VIcWEJl4QUoJyMtgcQOI46ufGjGjUjSq8pCrzG1iImtKbVTjQ3ifI0uiN03TN7u9vHG/jex24zqwtGO3RqCbUgUjQNGjUKV06NA0HQhZa8Yd6n2r94PfpjRo8Yd6n2r94PfpjRpmPpS8nUv/2Q==" alt="HR Innovation & Growth">
+      <div class="nav-logo-text">HR Innovation & Growth<span>Care Compliance Platform</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="#product" class="nav-link">Platform</a>
+      <a href="#how-it-works" class="nav-link">How It Works</a>
+      <a href="#eis" class="nav-link">EIS Investment</a>
+      <a href="#investors" class="nav-link">Why Invest</a>
+      <a href="#compliance" class="nav-link">Compliance</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+    </div>
+    <div class="nav-actions">
+      <a href="#cta" class="nav-cta">Request Demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><div class="hero-badge-dot"></div>EIS Approved — Enterprise Investment Scheme</div>
+      <h1 class="hero-headline">The future of<br><em>care compliance</em><br>is here.</h1>
+      <p class="hero-sub">An AI-powered SaaS platform transforming how regulated social care providers document, manage, and evidence frontline care — turning voice into structured, inspection-ready records in real time.</p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-primary">Request Demo</a>
+        <a href="#eis" class="btn btn-ghost">EIS Investment Opportunity &rarr;</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-chip"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg><div class="trust-chip-text"><strong>Ofsted & CQC Aligned</strong>Evidence-ready records</div></div>
+        <div class="trust-chip"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div class="trust-chip-text"><strong>GDPR & ISO27001</strong>End-to-end encrypted</div></div>
+        <div class="trust-chip"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><path d="M12 2a3 3 0 00-3 3v4a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v3M8 22h8"/></svg><div class="trust-chip-text"><strong>AI Transcription</strong>Voice to report in 60s</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-visual-img">
+        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=700&h=480&fit=crop&q=80" alt="Care worker using digital tablet in supported accommodation">
+      </div>
+    </div>
+  </div>
+  <div class="stats-band">
+    <div class="stats-inner">
+      <div class="stat-block"><div class="stat-num"><span>&pound;4.2B</span></div><div class="stat-lbl">UK Care Tech Addressable Market</div></div>
+      <div class="stat-block"><div class="stat-num"><span>73%</span></div><div class="stat-lbl">of providers fail Ofsted on documentation</div></div>
+      <div class="stat-block"><div class="stat-num"><span>12hrs</span></div><div class="stat-lbl">saved per staff member each week</div></div>
+      <div class="stat-block"><div class="stat-num"><span>100%</span></div><div class="stat-lbl">audit trail coverage from day one</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM with human background -->
+<section class="section section-human-bg" id="problem" style="padding:100px 0">
+  <div class="bg-image"><img src="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=1400&h=800&fit=crop&q=80" alt="Care staff meeting"></div>
+  <div class="bg-overlay" style="background:rgba(240,245,250,.92)"></div>
+  <div class="container">
+    <div class="problem-grid">
+      <div class="prob-cards">
+        <div class="prob-card reveal"><div class="prob-icon pi-r"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div><div><h3>Manual records still dominate</h3><p>Over 60% of registered care homes rely on handwritten logs and spreadsheets — creating inconsistency, gaps, and inspection failures.</p></div></div>
+        <div class="prob-card reveal d1"><div class="prob-icon pi-a"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div><h3>Documentation takes hours every shift</h3><p>Frontline staff spend 3-4 hours per shift on admin alone — time taken directly away from the young people in their care.</p></div></div>
+        <div class="prob-card reveal d2"><div class="prob-icon pi-b"><svg viewBox="0 0 24 24" fill="none" stroke="#0e6ba8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><div><h3>Inspection failures are costly</h3><p>"Requires Improvement" ratings from inadequate records cost providers thousands in remediation and reputational damage.</p></div></div>
+        <div class="prob-card reveal d3"><div class="prob-icon pi-p"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg></div><div><h3>Safeguarding gaps go undetected</h3><p>Without centralised real-time oversight, risk escalations get missed. Providers can't see patterns across multiple homes.</p></div></div>
+      </div>
+      <div class="reveal">
+        <div class="eyebrow" style="color:var(--teal);margin-bottom:12px">The Challenge</div>
+        <h2 class="section-headline">Social care is drowning in <em>paperwork</em> and missing what matters.</h2>
+        <p style="font-size:15px;color:var(--ink-light);line-height:1.8;margin-bottom:18px">Social care organisations operate in a highly regulated environment where safeguarding, incident reporting, and operational documentation must be maintained to a consistent standard.</p>
+        <p style="font-size:15px;color:var(--ink-light);line-height:1.8">However, many organisations continue to rely on manual reporting systems, inconsistent staff documentation, paper-based or fragmented records, and administrative processes that place additional pressure on frontline staff.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT SECTION (from original with dashboard + mobile) -->
+<section class="product-section" id="product">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow">The Platform</div>
+      <h2 class="section-headline">Two powerful interfaces.<br><em>One closed loop.</em></h2>
+      <p class="section-sub">A web dashboard for providers and managers to govern, and a mobile app for frontline staff to capture — connected by an AI engine that does the hard documentation work automatically.</p>
+    </div>
+
+    <div class="prod-tabs">
+      <button class="p-tab active" onclick="switchTab('web',this)">🖥️ &nbsp;Provider Web Dashboard</button>
+      <button class="p-tab" onclick="switchTab('mobile',this)">📱 &nbsp;Staff Mobile App</button>
+    </div>
+
+    <!-- WEB TAB -->
+    <div class="tab-panel active reveal" id="panel-web">
+      <div class="dash-full-wrap">
+        <div class="browser-bar2">
+          <div class="b-dot" style="background:#ff5f57"></div>
+          <div class="b-dot" style="background:#febc2e"></div>
+          <div class="b-dot" style="background:#28c840"></div>
+          <div class="b-url2">app.hrig-care.co.uk/dashboard — Sunrise Care Group</div>
+        </div>
+        <div class="dash-full-body">
+          <!-- Full sidebar -->
+          <div class="full-sidebar">
+            <div class="fs-logo">
+              <img src="data:image/png;base64,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" alt="HR Innovation & Growth">
+              <div class="fs-logo-txt">HR Innovation & Growth<span>Care Platform</span></div>
+            </div>
+            <div class="fs-org">
+              <div class="fs-org-av">SR</div>
+              <div><div class="fs-org-name">Sunrise Care Group</div><div class="fs-org-plan">Professional Plan</div></div>
+            </div>
+            <div class="fs-section-lbl">Overview</div>
+            <div class="fs-nav active"><span class="fs-nav-icon">⊞</span>Dashboard</div>
+            <div class="fs-nav"><span class="fs-nav-icon">🏠</span>Homes</div>
+            <div class="fs-section-lbl">Records</div>
+            <div class="fs-nav"><span class="fs-nav-icon">📄</span>Session Reports <span class="fs-badge">12</span></div>
+            <div class="fs-nav"><span class="fs-nav-icon">⚠</span>Incidents & Risks <span class="fs-badge warn">5</span></div>
+            <div class="fs-nav"><span class="fs-nav-icon">🛡</span>Safeguarding</div>
+            <div class="fs-nav"><span class="fs-nav-icon">📝</span>Audit Trail</div>
+            <div class="fs-section-lbl">People</div>
+            <div class="fs-nav"><span class="fs-nav-icon">👤</span>Students</div>
+            <div class="fs-nav"><span class="fs-nav-icon">👥</span>Staff</div>
+            <div class="fs-section-lbl">Governance</div>
+            <div class="fs-nav"><span class="fs-nav-icon">📊</span>Compliance <span class="fs-badge ok">87%</span></div>
+            <div class="fs-nav"><span class="fs-nav-icon">📅</span>Inspection Readiness</div>
+            <div class="fs-nav"><span class="fs-nav-icon">⬇</span>Export Reports</div>
+            <div class="fs-footer">
+              <div class="fs-user">
+                <div class="fs-user-av">HR</div>
+                <div><div class="fs-user-name">Hussein Ramadan</div><div class="fs-user-role">Provider Admin</div></div>
+              </div>
+            </div>
+          </div>
+          <!-- Full main -->
+          <div class="full-main">
+            <div class="full-topbar">
+              <div><div class="topbar-title">Dashboard</div><div class="topbar-meta">Monday, 23 Feb 2026 · Sunrise Care Group</div></div>
+              <div class="topbar-actions">
+                <div class="tb-home-sel">🏠 All Homes ▾</div>
+                <div class="tb-notif">🔔<div class="nb-dot"></div></div>
+                <button class="tb-btn">+ Add Record</button>
+              </div>
+            </div>
+            <div class="full-content">
+              <div class="full-kpi-row">
+                <div class="full-kpi"><div class="fk-lbl">Session Reports</div><div class="fk-val">348</div><div class="fk-trend">↑ 14% this month</div><div class="fk-icon fi-b">📄</div></div>
+                <div class="full-kpi"><div class="fk-lbl">Active Students</div><div class="fk-val">42</div><div class="fk-trend">↑ 3 new</div><div class="fk-icon fi-g">👤</div></div>
+                <div class="full-kpi"><div class="fk-lbl">Compliance Score</div><div class="fk-val">87%</div><div class="fk-trend">↑ 4pts this week</div><div class="fk-icon fi-t">📊</div></div>
+                <div class="full-kpi"><div class="fk-lbl">Overdue Reviews</div><div class="fk-val" style="color:#f39c12">7</div><div class="fk-trend r">↑ 2 from yesterday</div><div class="fk-icon fi-w">⚠️</div></div>
+              </div>
+              <div class="full-bottom">
+                <div class="data-table-wrap">
+                  <div class="dt-header"><div class="dt-title">Recent Session Reports</div><div class="dt-link">View all →</div></div>
+                  <div class="dt-filter">
+                    <div class="dt-search">🔍 &nbsp;Search student, staff, session...</div>
+                    <select class="dt-select"><option>All Types</option><option>Keywork</option><option>Incident</option></select>
+                    <select class="dt-select"><option>All Homes</option><option>Sunrise House</option></select>
+                  </div>
+                  <table class="dt-table">
+                    <thead><tr><th>Student</th><th>Type</th><th>Staff Member</th><th>Home</th><th>Date</th><th>Status</th></tr></thead>
+                    <tbody>
+                      <tr><td><div class="stu-cell"><div class="stu-av av1">JM</div><div><div class="stu-name">James Mitchell</div><div class="stu-id">STU-001</div></div></div></td><td><span class="row-tag rt-k">Keywork</span></td><td>Sarah Chen</td><td>Sunrise House</td><td>23 Feb 2026</td><td><span class="row-status"><span class="rs-dot rsd-g"></span>Approved</span></td></tr>
+                      <tr><td><div class="stu-cell"><div class="stu-av av2">LP</div><div><div class="stu-name">Lola Patterson</div><div class="stu-id">STU-007</div></div></div></td><td><span class="row-tag rt-i">Incident</span></td><td>Mark Davies</td><td>Maple Lodge</td><td>23 Feb 2026</td><td><span class="row-status"><span class="rs-dot rsd-y"></span>Pending Review</span></td></tr>
+                      <tr><td><div class="stu-cell"><div class="stu-av av3">AB</div><div><div class="stu-name">Aaron Brooks</div><div class="stu-id">STU-014</div></div></div></td><td><span class="row-tag rt-w">Welfare</span></td><td>Nina Osei</td><td>Riverside</td><td>22 Feb 2026</td><td><span class="row-status"><span class="rs-dot rsd-g"></span>Approved</span></td></tr>
+                      <tr><td><div class="stu-cell"><div class="stu-av av1">ET</div><div><div class="stu-name">Emily Turner</div><div class="stu-id">STU-022</div></div></div></td><td><span class="row-tag rt-r">Risk Update</span></td><td>Tom Willis</td><td>Sunrise House</td><td>22 Feb 2026</td><td><span class="row-status"><span class="rs-dot rsd-y"></span>Pending Review</span></td></tr>
+                      <tr><td><div class="stu-cell"><div class="stu-av av2">RK</div><div><div class="stu-name">Raj Kumar</div><div class="stu-id">STU-031</div></div></div></td><td><span class="row-tag rt-k">Keywork</span></td><td>Sarah Chen</td><td>Maple Lodge</td><td>21 Feb 2026</td><td><span class="row-status"><span class="rs-dot rsd-grey"></span>Draft</span></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="right-panels">
+                  <div class="comp-panel">
+                    <div class="cp-title">Compliance Overview</div>
+                    <div class="cp-ring">
+                      <svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="url(#cpg)" stroke-width="7" stroke-dasharray="201" stroke-dashoffset="26" stroke-linecap="round" transform="rotate(-90 40 40)"/><defs><linearGradient id="cpg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#27ae60"/><stop offset="100%" stop-color="#1abc9c"/></linearGradient></defs></svg>
+                      <div class="cp-ring-inner"><div class="cp-pct">87%</div><div class="cp-pct-lbl">Overall</div></div>
+                    </div>
+                    <div class="cp-list">
+                      <div class="cp-row"><div class="cp-item-l"><div class="cp-dot" style="background:#27ae60"></div>Documentation</div><div class="cp-val">94%</div></div>
+                      <div class="cp-row"><div class="cp-item-l"><div class="cp-dot" style="background:#1f6fa8"></div>Timely Reviews</div><div class="cp-val">81%</div></div>
+                      <div class="cp-row"><div class="cp-item-l"><div class="cp-dot" style="background:#148f8f"></div>Risk Plans</div><div class="cp-val">88%</div></div>
+                      <div class="cp-row"><div class="cp-item-l"><div class="cp-dot" style="background:#f39c12"></div>Overdue</div><div class="cp-val" style="color:#f39c12">7</div></div>
+                    </div>
+                  </div>
+                  <div class="risk-panel">
+                    <div class="rp-head"><div class="rp-title">Active Risks</div><div class="rp-link">View all</div></div>
+                    <div class="risk-item-row"><div class="risk-level rl-h"></div><div><div class="ri-nm">Lola Patterson</div><div class="ri-mt">Self-harm · Maple Lodge</div></div></div>
+                    <div class="risk-item-row"><div class="risk-level rl-h"></div><div><div class="ri-nm">Emily Turner</div><div class="ri-mt">Missing episode · Sunrise</div></div></div>
+                    <div class="risk-item-row"><div class="risk-level rl-m"></div><div><div class="ri-nm">James Mitchell</div><div class="ri-mt">Aggression plan review</div></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE TAB -->
+    <div class="tab-panel" id="panel-mobile">
+      <div class="mobile-section-wrap">
+        <div style="text-align:center;margin-bottom:28px;">
+          <div class="eyebrow" style="color:rgba(255,255,255,.45);margin-bottom:8px;">Staff Mobile App — 3 Key Screens</div>
+          <p style="color:rgba(255,255,255,.4);font-size:13px;">iOS & Android · Offline-capable · Role-based access</p>
+        </div>
+        <div class="mobile-screens-row">
+
+          <!-- Screen 1: Home -->
+          <div class="phone-shell">
+            <div class="phone-device">
+              <div class="ph-status"><span class="ph-time">09:41</span><span class="ph-icons">📶 🔋</span></div>
+              <div class="ph-header">
+                <div class="ph-header-top">
+                  <div class="ph-app-logo"><img src="data:image/png;base64,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" alt="HR IG" style="height:22px"><span class="ph-app-name">HRIG Care</span></div>
+                  <div class="ph-avatar">SC</div>
+                </div>
+                <div class="ph-greeting">Good morning, Sarah 👋</div>
+                <div class="ph-sub">3 sessions to document today</div>
+                <div class="ph-home-chip">🏠 Sunrise House ▾</div>
+              </div>
+              <div class="ph-body">
+                <div class="ph-section-lbl">Start a New Record</div>
+                <div class="ph-action-grid">
+                  <div class="ph-action-tile"><div class="pa-icon pa-b">💙</div><div class="pa-name">Keywork</div><div class="pa-meta">1-to-1 session</div></div>
+                  <div class="ph-action-tile"><div class="pa-icon pa-r">⚠️</div><div class="pa-name">Incident</div><div class="pa-meta">Log critical event</div></div>
+                  <div class="ph-action-tile"><div class="pa-icon pa-g">✅</div><div class="pa-name">Welfare Check</div><div class="pa-meta">Daily wellbeing</div></div>
+                  <div class="ph-action-tile"><div class="pa-icon pa-a">🛡️</div><div class="pa-name">Risk Update</div><div class="pa-meta">Update risk plan</div></div>
+                </div>
+                <div class="ph-section-lbl">My Students</div>
+                <div class="ph-students">
+                  <div class="ph-stu-item"><div class="ph-stu-av psa1">JM</div><div><div class="ph-stu-name">James Mitchell</div><div class="ph-stu-meta">Last: Welfare · Today 08:14</div></div><span class="ph-stu-badge psb-ok">Up to date</span></div>
+                  <div class="ph-stu-item"><div class="ph-stu-av psa2">ET</div><div><div class="ph-stu-name">Emily Turner</div><div class="ph-stu-meta">Last: Keywork · 2 days ago</div></div><span class="ph-stu-badge psb-due">Due today</span></div>
+                  <div class="ph-stu-item"><div class="ph-stu-av psa3">RK</div><div><div class="ph-stu-name">Raj Kumar</div><div class="ph-stu-meta">Last: Incident · Yesterday</div></div><span class="ph-stu-badge psb-risk">⚠ High risk</span></div>
+                </div>
+              </div>
+              <div class="ph-bottom-nav">
+                <div class="pbn-btn active"><div class="pbn-icon">⊞</div><div class="pbn-lbl">Home</div></div>
+                <div class="pbn-btn"><div class="pbn-icon">📄</div><div class="pbn-lbl">Records</div></div>
+                <div class="pbn-center">＋</div>
+                <div class="pbn-btn"><div class="pbn-icon">👤</div><div class="pbn-lbl">Students</div></div>
+                <div class="pbn-btn"><div class="pbn-icon">👤</div><div class="pbn-lbl">Profile</div></div>
+              </div>
+            </div>
+            <div class="phone-label"><span class="phone-label-tag">Home & Student Select</span></div>
+          </div>
+
+          <!-- Screen 2: AI Recording -->
+          <div class="phone-shell">
+            <div class="phone-device ai-active">
+              <div class="ph2-status"><span class="ph-time" style="color:white">09:47</span><div class="ph2-live"><div class="ph2-live-dot"></div><span class="ph2-live-txt">LIVE</span></div></div>
+              <div class="ph2-header">
+                <div class="ph2-back">←</div>
+                <div class="ph2-student"><div class="ph2-stu-av">ET</div><div><div class="ph2-stu-name">Emily Turner</div><div class="ph2-stu-home">STU-022 · Sunrise House</div></div></div>
+                <div class="ph2-type-chips">
+                  <div class="ph2-chip">Keywork</div>
+                  <div class="ph2-chip selected">Incident</div>
+                  <div class="ph2-chip">Risk Update</div>
+                  <div class="ph2-chip">Welfare</div>
+                </div>
+              </div>
+              <div class="ph2-ai-zone">
+                <div class="ph2-ai-badge"><div class="ph2-ai-dot"></div>✦ AI Transcribing</div>
+                <div class="ph2-rings">
+                  <div class="ph2-ring"></div><div class="ph2-ring"></div><div class="ph2-ring"></div>
+                  <div class="ph2-mic">🎙️</div>
+                </div>
+                <div class="ph2-waveform">
+                  <div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div>
+                </div>
+                <div class="ph2-timer">02:34</div>
+                <div class="ph2-rec-lbl">Recording in progress — speak clearly</div>
+              </div>
+              <div class="ph2-transcript">
+                <div class="ph2-tr-lbl">✦ Live Transcript</div>
+                <div class="ph2-tr-txt">Emily presented in an agitated state upon shift handover. She disclosed feeling anxious about her upcoming court date. Staff offered a grounding exercise...<span class="ph2-cursor"></span></div>
+              </div>
+              <div class="ph2-controls">
+                <div class="ph2-ctrl"><div class="ph2-ctrl-circle cc-pause">⏸</div><span class="ph2-ctrl-lbl">Pause</span></div>
+                <div class="ph2-ctrl"><div class="ph2-ctrl-circle cc-stop">⏹</div><span class="ph2-ctrl-lbl">Stop & Review</span></div>
+                <div class="ph2-ctrl"><div class="ph2-ctrl-circle cc-note">✏️</div><span class="ph2-ctrl-lbl">Add Note</span></div>
+              </div>
+            </div>
+            <div class="phone-label"><span class="phone-label-tag" style="color:#9b59b6;background:rgba(155,89,182,.18)">✦ AI Recording Active</span></div>
+          </div>
+
+          <!-- Screen 3: Review & Approve -->
+          <div class="phone-shell">
+            <div class="phone-device">
+              <div class="ph-status" style="background:var(--brand)"><span class="ph-time">10:01</span><span class="ph-icons">📶 🔋</span></div>
+              <div class="ph3-header">
+                <div class="ph3-header-top">
+                  <div class="ph3-back">←</div>
+                  <div><div class="ph3-title">Review Report</div><div class="ph3-sub">Emily Turner · Incident · 23 Feb 2026</div></div>
+                  <div class="ai-gen-badge">⭐ AI Draft</div>
+                </div>
+              </div>
+              <div class="ph3-body" style="display:flex;flex-direction:column;padding:12px">
+                <div class="review-card">
+                  <div class="rc-head"><div class="rc-head-title">Report Content</div><div class="rc-edit">Edit ✏️</div></div>
+                  <div class="rc-text">Emily presented in an agitated state at 09:30. She disclosed not sleeping and feeling anxious about her court date. Staff offered a grounding exercise which she engaged with for ~10 minutes. Mood improved. Breakfast accepted. No physical injuries noted.</div>
+                </div>
+                <div class="review-card">
+                  <div class="rc-head"><div class="rc-head-title">Classification</div></div>
+                  <div class="rc-chips">
+                    <div class="rc-chip sel">Emotional distress</div>
+                    <div class="rc-chip">Sleep disruption</div>
+                    <div class="rc-chip sel">Court anxiety</div>
+                    <div class="rc-chip">Physical health</div>
+                  </div>
+                </div>
+                <div class="review-card">
+                  <div class="rc-head"><div class="rc-head-title">Escalate to Safeguarding?</div></div>
+                  <div style="padding:10px 13px;display:flex;align-items:center;justify-content:space-between;">
+                    <span style="font-size:12px;color:var(--ink-mid)">Flag for manager review</span>
+                    <div style="width:40px;height:22px;background:#dce5ef;border-radius:12px;position:relative;cursor:default;"><div style="position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div></div>
+                  </div>
+                </div>
+                <div class="audit-note">🔒 Approving creates a permanent, timestamped record. This action cannot be undone.</div>
+                <button class="approve-btn">✓ &nbsp;Approve & Submit Record</button>
+              </div>
+            </div>
+            <div class="phone-label"><span class="phone-label-tag">Review, Edit & Approve</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature grid -->
+    <div class="feature-grid">
+      <div class="feat-card reveal"><div class="feat-icon fi-tl">🎙️</div><h3>Voice-to-Report in 60 Seconds</h3><p>Staff speak naturally about a session. The AI transcribes, structures, and generates a compliant draft report — instantly.</p></div>
+      <div class="feat-card reveal d1"><div class="feat-icon fi-bl">📊</div><h3>Real-Time Provider Dashboard</h3><p>Managers and providers see every record, risk flag, and compliance indicator across all homes — live, from any device.</p></div>
+      <div class="feat-card reveal d2"><div class="feat-icon fi-gr">✅</div><h3>Human Review & Approval Flow</h3><p>AI drafts are always reviewed by a qualified staff member before becoming permanent — keeping humans in control.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon fi-gd">📁</div><h3>One-Click Inspection Bundles</h3><p>Export CQC or Ofsted inspection-ready report packs for any home, date range, or student — in minutes, not days.</p></div>
+      <div class="feat-card reveal d1"><div class="feat-icon fi-nv">🔒</div><h3>Immutable Audit Trails</h3><p>Every action, edit, and approval is timestamped and permanently logged. Tamper-proof evidence for regulatory review.</p></div>
+      <div class="feat-card reveal d2"><div class="feat-icon fi-pu">🛡️</div><h3>Safeguarding Escalation Engine</h3><p>Pattern detection across sessions flags risk escalations to managers before they become safeguarding incidents.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- AI SECTION (from original) -->
+<!-- AI SECTION -->
+<section class="ai-section" id="ai">
+  <div class="container">
+    <div class="ai-inner">
+      <div class="ai-text">
+        <div class="eyebrow">The AI Engine</div>
+        <h2 class="ai-headline">From voice to<br><em>verified record</em><br>in real time.</h2>
+        <p class="ai-body">Purpose-built for the language and structure of social care. The AI understands keywork terminology, risk frameworks, and compliance requirements — generating structured, auditable reports that regulators trust.</p>
+        <div class="ai-steps">
+          <div class="ai-step reveal"><div class="ai-step-num">1</div><div><h4>Staff selects student & session type</h4><p>Keywork, incident, welfare, risk update — context primes the AI for accurate structuring.</p></div></div>
+          <div class="ai-step reveal d1"><div class="ai-step-num">2</div><div><h4>Voice captured & transcribed live</h4><p>Real-time transcription with visual waveform feedback. Staff speak naturally.</p></div></div>
+          <div class="ai-step reveal d2"><div class="ai-step-num">3</div><div><h4>Structured report generated instantly</h4><p>AI formats content into compliant report sections, adds timestamps, flags risk classifications.</p></div></div>
+          <div class="ai-step reveal d3"><div class="ai-step-num">4</div><div><h4>Human review & one-tap approval</h4><p>Staff reviews, edits if needed, approves — creating a permanent timestamped auditable record.</p></div></div>
+        </div>
+      </div>
+      <!-- AI phone visual -->
+      <div class="ai-phone-wrap reveal-right">
+        <div class="ai-float-badge">✦ AI-Powered Transcription</div>
+        <div class="ai-phone">
+          <div class="ph2-status"><span class="ph-time" style="color:white">09:47</span><div class="ph2-live"><div class="ph2-live-dot"></div><span class="ph2-live-txt">LIVE</span></div></div>
+          <div class="ph2-header">
+            <div class="ph2-student"><div class="ph2-stu-av">ET</div><div><div class="ph2-stu-name">Emily Turner</div><div class="ph2-stu-home">Incident Report · Sunrise House</div></div></div>
+          </div>
+          <div class="ph2-ai-zone">
+            <div class="ph2-ai-badge"><div class="ph2-ai-dot"></div>✦ AI Transcribing</div>
+            <div class="ph2-rings">
+              <div class="ph2-ring"></div><div class="ph2-ring"></div><div class="ph2-ring"></div>
+              <div class="ph2-mic">🎙️</div>
+            </div>
+            <div class="ph2-waveform">
+              <div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div><div class="ph2-wbar"></div>
+            </div>
+            <div class="ph2-timer">02:34</div>
+            <div class="ph2-rec-lbl">Recording in progress</div>
+          </div>
+          <div class="ph2-transcript">
+            <div class="ph2-tr-lbl">✦ Live Transcript</div>
+            <div class="ph2-tr-txt">Emily presented in an agitated state. She disclosed feeling anxious about her upcoming court date. Staff offered a grounding exercise...<span class="ph2-cursor"></span></div>
+          </div>
+          <div class="ph2-controls">
+            <div class="ph2-ctrl"><div class="ph2-ctrl-circle cc-pause">⏸</div><span class="ph2-ctrl-lbl">Pause</span></div>
+            <div class="ph2-ctrl"><div class="ph2-ctrl-circle cc-stop">⏹</div><span class="ph2-ctrl-lbl">Stop & Review</span></div>
+            <div class="ph2-ctrl"><div class="ph2-ctrl-circle cc-note">✏️</div><span class="ph2-ctrl-lbl">Note</span></div>
+          </div>
+        </div>
+        <div class="ai-float-tag">✅ Report generated in &lt;60s</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- FEATURES SECTION -->
+<section class="section section-white" id="features-detail">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow" style="color:var(--blue);margin-bottom:12px">Document Generation</div>
+      <h2 class="section-headline">One recorded session. <em>Multiple care documents.</em></h2>
+      <p class="section-sub" style="margin:0 auto">A 12-minute keywork chat about college attendance, late nights, and budgeting could automatically draft a keywork session report, updated action plan, risk note, and weekly summary.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feat-card reveal"><div class="feat-icon fi-blue"><svg viewBox="0 0 24 24" fill="none" stroke="#0e6ba8" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><h3>Young Person Records</h3><p>Keywork session notes, daily/weekly contact sheets, independence skills sessions, education engagement notes, appointment records.</p></div>
+      <div class="feat-card reveal d1"><div class="feat-icon fi-teal"><svg viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Safeguarding & Risk</h3><p>Incident reports with chronology, safeguarding concern forms, risk assessment updates, behavioural observation notes, escalation prompts.</p></div>
+      <div class="feat-card reveal d2"><div class="feat-icon fi-green"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></div><h3>Placement & Outcomes</h3><p>Care plan action mapping, SMART action plans, progress summaries for local authorities, weekly or monthly outcome reports.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon fi-gold"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a017" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><h3>Service Governance</h3><p>House meeting minutes, room inspection reports, health & safety checklists, maintenance issue logs with completion tracking.</p></div>
+      <div class="feat-card reveal d1"><div class="feat-icon fi-navy"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1e2d" stroke-width="2"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg></div><h3>Quality Assurance</h3><p>Manager review workflows, compliance dashboards, record completeness monitoring, thematic risk trend analysis.</p></div>
+      <div class="feat-card reveal d2"><div class="feat-icon fi-purple"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><h3>Compliance-by-Design</h3><p>Role-based access, consent capture, encrypted storage, configurable retention, redaction tools, inspection export packs.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS with human background -->
+<section class="section section-human-bg" id="how-it-works">
+  <div class="bg-image"><img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1400&h=700&fit=crop&q=80" alt="Team working together"></div>
+  <div class="bg-overlay" style="background:rgba(240,245,250,.9)"></div>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow" style="color:var(--teal);margin-bottom:12px">How It Works</div>
+      <h2 class="section-headline">From voice to <em>verified record</em> in four steps.</h2>
+    </div>
+    <div class="workflow-grid">
+      <div class="wf-step reveal"><div class="wf-num">1</div><h3>Capture</h3><p>Staff record notes using voice input or written text. Select student and session type — context primes the AI for accurate structuring.</p></div>
+      <div class="wf-step reveal d1"><div class="wf-num">2</div><h3>AI Processing</h3><p>AI transcribes in real time, identifies care themes — safeguarding, wellbeing, education, risks, actions, outcomes.</p></div>
+      <div class="wf-step reveal d2"><div class="wf-num">3</div><h3>Structured Reports</h3><p>System drafts templates for the event type — keywork reports, incident logs, risk assessments, SMART action plans.</p></div>
+      <div class="wf-step reveal d3"><div class="wf-num">4</div><h3>Review & Approve</h3><p>Staff review, edit, approve. Records stored with timestamped audit trail. Inspection export packs available any time.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EIS SECTION -->
+<section class="section section-light" id="eis">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow" style="color:var(--gold);margin-bottom:12px">Enterprise Investment Scheme</div>
+      <h2 class="section-headline">Invest in innovation. <em>Benefit from EIS tax relief.</em></h2>
+      <p class="section-sub" style="margin:0 auto">HR Innovation & Growth Ltd is approved under the UK Government's Enterprise Investment Scheme (EIS), offering tax incentives to qualifying UK investors.</p>
+    </div>
+    <div class="eis-grid">
+      <div class="eis-benefits">
+        <div class="eis-benefit reveal"><div class="eis-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a017" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 010 7H6"/></svg></div><div><h3>30% Income Tax Relief</h3><p>A &pound;10,000 investment may generate &pound;3,000 in relief, reducing the net cost to &pound;7,000. Maximum &pound;1 million per tax year, or &pound;2 million for knowledge-intensive companies.</p></div></div>
+        <div class="eis-benefit reveal d1"><div class="eis-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a017" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div><div><h3>Capital Gains Tax Exemption</h3><p>If EIS shares are held for at least three years, any gain on disposal may be free from capital gains tax entirely.</p></div></div>
+        <div class="eis-benefit reveal d2"><div class="eis-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a017" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><div><h3>Capital Gains Tax Deferral</h3><p>Defer capital gains from other assets by reinvesting into EIS qualifying shares, potentially indefinitely.</p></div></div>
+        <div class="eis-benefit reveal d3"><div class="eis-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a017" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h3>Loss Relief</h3><p>Offset any EIS investment loss against your income tax or capital gains tax bill, reducing overall financial exposure.</p></div></div>
+        <div class="eis-benefit reveal d4"><div class="eis-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#d4a017" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div><h3>Inheritance Tax Relief</h3><p>EIS shares may qualify for Business Property Relief — potentially exempt from IHT after two years of holding.</p></div></div>
+      </div>
+      <div class="eis-example reveal">
+        <div class="eyebrow" style="color:var(--gold-light);margin-bottom:14px">EIS Example</div>
+        <div class="eis-headline">&pound;10,000 EIS Investment</div>
+        <div class="eis-item"><div class="eis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 010 7H6"/></svg></div><div><div class="eis-item-val">&pound;3,000</div><div class="eis-item-lbl">Income Tax Relief (30%)</div></div></div>
+        <div class="eis-item"><div class="eis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg></div><div><div class="eis-item-val">&pound;7,000</div><div class="eis-item-lbl">Effective Net Investment Cost</div></div></div>
+        <div class="eis-item"><div class="eis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg></div><div><div class="eis-item-val">&pound;0</div><div class="eis-item-lbl">CGT on gains (after 3 years)</div></div></div>
+        <div class="eis-item"><div class="eis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div><div><div class="eis-item-val">IHT Free</div><div class="eis-item-lbl">After 2 years (BPR qualifying)</div></div></div>
+        <div style="margin-top:20px;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">
+          Tax treatment depends on individual circumstances and may change. EIS tax reliefs are not guaranteed. Prospective investors should seek independent professional advice.
+        </div>
+        <a href="#cta" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px">Enquire About EIS Investment &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RISK WARNINGS -->
+<section class="risk-section" id="risks">
+  <div class="container">
+    <div class="risk-inner">
+      <div class="eyebrow" style="color:var(--gold);margin-bottom:10px">Important Risk Information</div>
+      <h2 class="risk-title">Key risks you should understand</h2>
+      <p style="font-size:13.5px;color:var(--ink-mid);line-height:1.7;margin-bottom:24px">Due to the potential for losses, the Financial Conduct Authority (FCA) considers this investment to be high risk.</p>
+      <div class="risk-list">
+        <div class="risk-item"><div class="risk-num">1</div><div><h3>You could lose all the money you invest</h3><p>If the business fails, you are likely to lose 100% of the money you invested. Most start-up businesses fail.</p></div></div>
+        <div class="risk-item"><div class="risk-num">2</div><div><h3>You are unlikely to be protected if something goes wrong</h3><p>Protection from the FSCS does not cover poor investment performance. Protection from the FOS does not cover poor investment performance.</p></div></div>
+        <div class="risk-item"><div class="risk-num">3</div><div><h3>You won't get your money back quickly</h3><p>Even if successful, it may take several years to get your money back. You are unlikely to be able to sell your investment early.</p></div></div>
+        <div class="risk-item"><div class="risk-num">4</div><div><h3>Don't put all your eggs in one basket</h3><p>A good rule of thumb is not to invest more than 10% of your money in high-risk investments.</p></div></div>
+        <div class="risk-item"><div class="risk-num">5</div><div><h3>The value of your investment can be reduced</h3><p>Your ownership percentage will decrease if the business issues more shares. Most start-ups issue multiple rounds.</p></div></div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-light);margin-top:20px;line-height:1.6">If you are interested in learning more about how to protect yourself, visit the FCA's website at <a href="https://www.fca.org.uk/investsmart" style="color:var(--blue);text-decoration:underline" target="_blank">fca.org.uk/investsmart</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY INVEST / MARKET with human background -->
+<section class="section section-human-bg" id="investors">
+  <div class="bg-image"><img src="https://images.unsplash.com/photo-1560472355-536de3962603?w=1400&h=900&fit=crop&q=80" alt="Business meeting investors"></div>
+  <div class="bg-overlay" style="background:rgba(255,255,255,.92)"></div>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow" style="color:var(--gold);margin-bottom:12px">For Investors</div>
+      <h2 class="section-headline">A proven market. <em>An untapped opportunity.</em></h2>
+      <p class="section-sub" style="margin:0 auto">The regulated social care sector is a &pound;23B market operating with technology built for another era.</p>
+    </div>
+    <div class="market-grid">
+      <div class="market-card reveal"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5" style="width:30px;height:30px;margin:0 auto 12px;display:block"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><div class="mc-num"><span>12,000</span>+</div><div class="mc-lbl"><strong>Regulated Care Homes in UK</strong>Less than 8% currently use purpose-built software.</div></div>
+      <div class="market-card reveal d1"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5" style="width:30px;height:30px;margin:0 auto 12px;display:block"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 010 7H6"/></svg><div class="mc-num">&pound;<span>23B</span></div><div class="mc-lbl"><strong>UK Social Care Market Size</strong>Growing at 6.2% CAGR driven by regulation.</div></div>
+      <div class="market-card reveal d2"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5" style="width:30px;height:30px;margin:0 auto 12px;display:block"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg><div class="mc-num"><span>&pound;4.2B</span></div><div class="mc-lbl"><strong>Care Tech Addressable Market</strong>The highest-value, highest-urgency segment.</div></div>
+    </div>
+    <div class="invest-grid">
+      <div>
+        <div class="eyebrow" style="color:var(--gold);margin-bottom:18px">Why HR Innovation & Growth Wins</div>
+        <div class="invest-points">
+          <div class="invest-point reveal"><div class="ip-num">1</div><div><h3>Regulatory tailwind, not headwind</h3><p>Increasing Ofsted & CQC enforcement creates urgent demand. Regulation is our sales team.</p></div></div>
+          <div class="invest-point reveal d1"><div class="ip-num">2</div><div><h3>High switching costs, sticky SaaS revenue</h3><p>Once a provider's audit trail is in our platform, switching cost is enormous. 95%+ expected annual retention.</p></div></div>
+          <div class="invest-point reveal d2"><div class="ip-num">3</div><div><h3>Founder domain expertise is the moat</h3><p>Built by practitioners who have worked in regulated care. Cannot be replicated by generic AI tools.</p></div></div>
+          <div class="invest-point reveal d3"><div class="ip-num">4</div><div><h3>Land & expand model</h3><p>Enter via a single home and expand across all homes within a provider group. One sale unlocks 5-30 homes.</p></div></div>
+          <div class="invest-point reveal d4"><div class="ip-num">5</div><div><h3>AI creates defensible data network effects</h3><p>Every session processed improves care-specific language models. The more homes, the smarter the AI.</p></div></div>
+        </div>
+      </div>
+      <div class="traction-card reveal">
+        <div class="eyebrow">Early Traction</div>
+        <div style="font-family:var(--serif);font-size:22px;line-height:1.25;margin-bottom:22px">Building momentum before launch.</div>
+        <div class="eis-item"><div class="eis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div><div><div class="eis-item-val">4</div><div class="eis-item-lbl">Beta provider partnerships confirmed</div></div></div>
+        <div class="eis-item"><div class="eis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="eis-item-val">47</div><div class="eis-item-lbl">Staff & managers on beta waitlist</div></div></div>
+        <div class="eis-item"><div class="eis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="eis-item-val">2,800+</div><div class="eis-item-lbl">Test sessions processed in pilot</div></div></div>
+        <div class="eis-item"><div class="eis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div><div class="eis-item-val">4.8/5</div><div class="eis-item-lbl">Staff usability score in pilot</div></div></div>
+        <a href="#cta" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:18px">Book Investor Meeting &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPLIANCE -->
+<section class="section section-light" id="compliance">
+  <div class="container">
+    <div class="compliance-grid">
+      <div class="reveal">
+        <div class="comp-cards-stack">
+          <div class="c-card"><div class="c-card-header"><div class="c-card-icon" style="background:rgba(14,107,168,.08)"><svg viewBox="0 0 24 24" fill="none" stroke="#0e6ba8" stroke-width="2" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div><div class="c-card-title">Session Documentation</div><div class="c-card-sub">Ofsted Standard 3.7</div></div><div class="c-pct">94%</div></div><div class="c-progress"><div class="c-progress-fill cpf-g" style="width:94%"></div></div><div class="c-prog-lbl"><span>Compliance across all homes</span><span>Target: 90%</span></div></div>
+          <div class="c-card"><div class="c-card-header"><div class="c-card-icon" style="background:rgba(22,163,74,.08)"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:16px;height:16px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="c-card-title">Safeguarding Records</div><div class="c-card-sub">KCSIE & Working Together 2023</div></div><div class="c-pct">97%</div></div><div class="c-progress"><div class="c-progress-fill cpf-t" style="width:97%"></div></div><div class="c-prog-lbl"><span>Full audit trail coverage</span><span>Target: 100%</span></div></div>
+          <div class="c-card"><div class="c-card-header"><div class="c-card-icon" style="background:rgba(13,148,136,.08)"><svg viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" style="width:16px;height:16px"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div><div><div class="c-card-title">Risk Assessment Plans</div><div class="c-card-sub">Children's Homes Regs 2015</div></div><div class="c-pct">88%</div></div><div class="c-progress"><div class="c-progress-fill cpf-b" style="width:88%"></div></div><div class="c-prog-lbl"><span>Plans reviewed within 30 days</span><span>Target: 95%</span></div></div>
+        </div>
+        <div class="reg-badges">
+          <div class="reg-badge"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-mid)" stroke-width="2" style="width:14px;height:14px"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg> Ofsted Aligned</div>
+          <div class="reg-badge"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-mid)" stroke-width="2" style="width:14px;height:14px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> CQC Ready</div>
+          <div class="reg-badge"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-mid)" stroke-width="2" style="width:14px;height:14px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> GDPR Compliant</div>
+          <div class="reg-badge"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-mid)" stroke-width="2" style="width:14px;height:14px"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg> CHR 2015</div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="eyebrow" style="color:var(--teal);margin-bottom:12px">Built for Regulation</div>
+        <h2 class="section-headline" style="font-size:clamp(26px,3.2vw,40px)">Inspection-ready<br><em>on any given day.</em></h2>
+        <p style="font-size:14.5px;color:var(--ink-light);line-height:1.8;margin-bottom:24px">Built around the specific frameworks that Ofsted and CQC inspectors use. Every feature maps to a regulatory standard.</p>
+        <div class="comp-checklist">
+          <div class="cc-item"><div class="cc-check"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg></div>Keystage documentation mapped to Ofsted standards 3.2, 3.7</div>
+          <div class="cc-item"><div class="cc-check"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg></div>Safeguarding logs meeting Working Together 2023</div>
+          <div class="cc-item"><div class="cc-check"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg></div>Children's Homes Regulations 2015 — all 9 quality standards</div>
+          <div class="cc-item"><div class="cc-check"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg></div>GDPR Article 30 processing records built in</div>
+          <div class="cc-item"><div class="cc-check"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg></div>One-click inspection bundle export</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-white">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow" style="color:var(--teal);margin-bottom:12px">Beta Feedback</div>
+      <h2 class="section-headline">Trusted by the people <em>who matter most.</em></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="testi-text">"I spoke for two minutes about a session and had a full, structured keywork record ready to approve. We used to spend an hour on something like that."</p><div class="testi-author"><div class="testi-avatar ta-1">SC</div><div><div class="testi-name">Sarah C.</div><div class="testi-role">Senior Keyworker, Birmingham</div></div></div></div>
+      <div class="testi-card reveal d1"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="testi-text">"The compliance dashboard is exactly what I've needed for years. I can see every home's status at a glance, spot the gaps, and act."</p><div class="testi-author"><div class="testi-avatar ta-2">RM</div><div><div class="testi-name">Rachel M.</div><div class="testi-role">Registered Manager, Manchester</div></div></div></div>
+      <div class="testi-card reveal d2"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="testi-text">"Our last Ofsted inspection was a nightmare because records were all over the place. This platform would have saved us — everything in one place, instantly."</p><div class="testi-author"><div class="testi-avatar ta-3">DJ</div><div><div class="testi-name">David J.</div><div class="testi-role">Director, Supported Living Group, London</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section section-light" id="pricing">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow" style="color:var(--blue);margin-bottom:12px">Transparent Pricing</div>
+      <h2 class="section-headline">Simple SaaS. <em>No hidden costs.</em></h2>
+      <p style="font-size:14.5px;color:var(--ink-light)">Per home, per month. Cancel anytime during your first 90 days.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal"><div class="price-tier">Starter</div><div class="price-amount">&pound;149</div><div class="price-period">per home / month</div><ul class="price-features"><li><span class="price-check">&#10003;</span>Up to 15 students</li><li><span class="price-check">&#10003;</span>10 staff accounts</li><li><span class="price-check">&#10003;</span>AI transcription & reports</li><li><span class="price-check">&#10003;</span>Full audit trail</li><li><span class="price-check">&#10003;</span>Inspection export</li><li><span class="price-check">&#10003;</span>Email support</li></ul><button class="price-btn">Start Free Trial</button></div>
+      <div class="price-card featured reveal d1"><div class="price-badge">Most Popular</div><div class="price-tier">Professional</div><div class="price-amount">&pound;299</div><div class="price-period">per home / month</div><ul class="price-features"><li><span class="price-check">&#10003;</span>Unlimited students</li><li><span class="price-check">&#10003;</span>Unlimited staff</li><li><span class="price-check">&#10003;</span>AI transcription & reports</li><li><span class="price-check">&#10003;</span>Risk escalation alerts</li><li><span class="price-check">&#10003;</span>Multi-home dashboard</li><li><span class="price-check">&#10003;</span>Priority support</li><li><span class="price-check">&#10003;</span>Custom report templates</li></ul><button class="price-btn">Start Free Trial</button></div>
+      <div class="price-card reveal d2"><div class="price-tier">Enterprise</div><div class="price-amount">Custom</div><div class="price-period">for 5+ homes</div><ul class="price-features"><li><span class="price-check">&#10003;</span>Everything in Professional</li><li><span class="price-check">&#10003;</span>Group-level analytics</li><li><span class="price-check">&#10003;</span>SSO & custom integrations</li><li><span class="price-check">&#10003;</span>Dedicated success manager</li><li><span class="price-check">&#10003;</span>On-site training</li><li><span class="price-check">&#10003;</span>SLA guarantee</li></ul><button class="price-btn">Talk to Sales</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-inner">
+    <div class="eyebrow" style="color:var(--teal-light)">Get Started</div>
+    <h2 class="cta-headline">Ready to transform<br><em>your compliance?</em></h2>
+    <p class="cta-sub">Whether you're a care provider tired of paperwork, or an investor looking for your next high-growth EIS opportunity — we'd love to hear from you.</p>
+    <div class="cta-form">
+      <input class="cta-input" type="email" placeholder="Your work email address...">
+      <a href="#" class="btn btn-primary">Request Access</a>
+    </div>
+    <p style="font-size:11.5px;color:rgba(255,255,255,.25);margin-bottom:36px">No commitment required. Free 30-day trial for care providers. Investor deck available on request.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-brand-logo">
+          <img src="data:image/png;base64,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" alt="HR Innovation & Growth">
+          <div class="footer-brand-text">HR Innovation & Growth<span>Care Compliance Platform</span></div>
+        </div>
+        <p>AI-powered care compliance and documentation platform for regulated social care providers.</p>
+        <div class="footer-reg-badges"><div class="frb">OFSTED ALIGNED</div><div class="frb">CQC READY</div><div class="frb">GDPR</div><div class="frb">EIS APPROVED</div></div>
+        <div style="font-size:10.5px;color:rgba(255,255,255,.22)">HR Innovation & Growth Ltd. · Registered in England & Wales</div>
+      </div>
+      <div class="footer-col"><h4>Platform</h4><ul><li><a href="#product">Provider Dashboard</a></li><li><a href="#product">Staff Mobile App</a></li><li><a href="#product">AI Transcription</a></li><li><a href="#compliance">Compliance Tools</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
+      <div class="footer-col"><h4>Investors</h4><ul><li><a href="#eis">EIS Tax Relief</a></li><li><a href="#investors">Why Invest</a></li><li><a href="#risks">Risk Information</a></li><li><a href="#cta">Investor Deck</a></li><li><a href="#cta">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Resources</h4><ul><li><a href="#">Documentation</a></li><li><a href="#">Compliance Guide</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+    </div>
+    <div class="footer-disclaimer">
+      <strong>Investment Disclaimer:</strong> Investments in early-stage companies carry a high level of risk. Capital is at risk and returns are not guaranteed. Shares in private companies are illiquid and cannot easily be sold. EIS tax reliefs depend on individual circumstances and may change in the future. Nothing on this website should be interpreted as financial, investment or tax advice. Prospective investors should seek independent advice from a qualified financial adviser, accountant, or tax professional before making any investment decision. The information provided is for general informational purposes only. The value of shares and income from them may go down as well as up, and despite the tax relief you may not recover the amount originally invested. HR Innovation & Growth Ltd operates under the UK Government's Enterprise Investment Scheme. EIS qualification has been received from HM Revenue and Customs; however, the availability of EIS tax reliefs depends on individual tax positions and continued compliance with HMRC rules.
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 HR Innovation & Growth Ltd. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<div style="height:44px"></div>
+
+<script>
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>20)});
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});},{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>io.observe(el));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const id=a.getAttribute('href');if(id==='#')return;const el=document.querySelector(id);if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'})}});});
+function switchTab(name,btn){document.querySelectorAll('.p-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('panel-'+name).classList.add('active')}
+</script>
+</body>
+</html>
