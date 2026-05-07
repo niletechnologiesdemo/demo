@@ -1120,6 +1120,129 @@ img{display:block;max-width:100%}
   .brand-snapshot-inner{grid-template-columns:1fr;gap:32px}
 }
 
+/* ============================================
+   HOME — WHAT OMNIRIS IS (Who / What / Why)
+   ============================================ */
+.what-omniris{
+  background:var(--off-white);
+  padding:clamp(72px,8vw,112px) clamp(32px,6vw,96px);
+}
+.what-omniris-head{
+  max-width:1320px;margin:0 auto 56px;text-align:left;
+}
+.what-omniris-head .section-idx{margin-bottom:18px}
+.what-omniris-h2{
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:clamp(2.4rem,5vw,4rem);color:var(--dark-text);
+  line-height:1.05;margin-bottom:16px;max-width:780px;
+}
+.what-omniris-h2 em{font-style:italic;color:var(--gold);font-weight:600}
+.what-omniris-lede{
+  font-family:'DM Sans',sans-serif;font-weight:400;
+  font-size:1.05rem;color:var(--mid-text);line-height:1.85;
+  max-width:680px;
+}
+.what-omniris-grid{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:28px;
+}
+.qa-card{
+  background:var(--white);
+  border:1px solid rgba(0,0,0,0.06);
+  border-radius:14px;
+  padding:36px 32px 32px;
+  position:relative;overflow:hidden;
+  transition:transform 380ms ease,box-shadow 380ms ease,border-color 380ms ease;
+}
+.qa-card::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(180deg,var(--gold),var(--gold-light));
+  opacity:0.65;
+}
+.qa-card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(201,168,76,0.30);
+  box-shadow:0 18px 40px rgba(0,0,0,0.06);
+}
+.qa-card-q{
+  display:inline-block;
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:0.72rem;color:var(--gold);
+  text-transform:uppercase;letter-spacing:0.22em;
+  margin-bottom:14px;
+}
+.qa-card-h{
+  font-family:'Playfair Display',serif;font-weight:500;
+  font-size:1.35rem;color:var(--dark-text);
+  line-height:1.25;margin-bottom:14px;
+}
+.qa-card-h em{font-style:italic;color:var(--gold);font-weight:500}
+.qa-card-p{
+  font-family:'DM Sans',sans-serif;font-weight:400;
+  font-size:0.93rem;color:var(--mid-text);line-height:1.75;
+}
+@media(max-width:768px){
+  .what-omniris-grid{grid-template-columns:1fr;gap:20px}
+}
+
+/* ============================================
+   HOME — HOW OMNIRIS OPERATES (4 pillars)
+   ============================================ */
+.how-omniris{
+  background:var(--bg);
+  padding:clamp(72px,8vw,112px) clamp(32px,6vw,96px);
+  border-top:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;
+}
+.how-omniris-head{
+  max-width:1320px;margin:0 auto 56px;
+  display:grid;grid-template-columns:5fr 7fr;gap:60px;align-items:end;
+}
+.how-omniris-head .section-idx{color:var(--gold);margin-bottom:14px}
+.how-omniris-h2{
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:clamp(2.4rem,5vw,4rem);color:var(--white);
+  line-height:1.05;letter-spacing:-0.01em;
+}
+.how-omniris-h2 em{font-style:italic;color:var(--gold);font-weight:600}
+.how-omniris-lede{
+  font-family:'DM Sans',sans-serif;font-weight:400;
+  font-size:1.0rem;color:rgba(255,255,255,0.55);line-height:1.85;
+}
+.how-omniris-grid{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:0;
+  border-top:1px solid rgba(201,168,76,0.18);
+  border-left:1px solid rgba(201,168,76,0.18);
+}
+.pillar{
+  padding:38px 36px 36px;
+  border-right:1px solid rgba(201,168,76,0.18);
+  border-bottom:1px solid rgba(201,168,76,0.18);
+  position:relative;transition:background 320ms ease;
+  display:flex;flex-direction:column;gap:10px;min-height:200px;
+}
+.pillar:hover{background:rgba(201,168,76,0.04)}
+.pillar-num{
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:0.78rem;color:var(--gold);
+  letter-spacing:0.22em;
+}
+.pillar-h{
+  font-family:'Playfair Display',serif;font-weight:500;
+  font-size:1.4rem;color:var(--white);line-height:1.2;
+  margin-top:4px;
+}
+.pillar-p{
+  font-family:'DM Sans',sans-serif;font-weight:400;
+  font-size:0.93rem;color:rgba(255,255,255,0.55);line-height:1.75;
+  margin-top:4px;
+}
+@media(max-width:768px){
+  .how-omniris-head{grid-template-columns:1fr;gap:24px}
+  .how-omniris-grid{grid-template-columns:1fr}
+}
+
 .sub-services{
   background:var(--off-white);
   padding:clamp(60px,8vw,100px) clamp(32px,6vw,96px);
@@ -1376,157 +1499,78 @@ img{display:block;max-width:100%}
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-track">
-    <span class="ticker-item">Echo Safe Shredding Pro</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">Document Security</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">VitalBiz Broker Partners</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">Insurance &amp; Benefits</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">LegalMed Liaison Network</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">Legal-Medical Services</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">Echo Safe Shredding Pro</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">Document Security</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">VitalBiz Broker Partners</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">Insurance &amp; Benefits</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">LegalMed Liaison Network</span><span class="ticker-diamond">&#9670;</span>
-    <span class="ticker-item">Legal-Medical Services</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Compliance</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Structure</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Scalability</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Legal</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Healthcare</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Insurance</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Data Protection</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Compliance</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Structure</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Scalability</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Legal</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Healthcare</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Insurance</span><span class="ticker-diamond">&#9670;</span>
+    <span class="ticker-item">Data Protection</span><span class="ticker-diamond">&#9670;</span>
   </div>
 </div>
 
-<!-- WHO WE ARE — text left, image blends from right -->
-<section class="who-we-are" id="about">
-  <div class="who-grid">
-    <div class="who-img"></div>
-    <div class="who-text sa">
-      <div class="section-idx">01</div>
-      <h2 class="who-h2">Who We Are</h2>
-      <p class="who-body">Omniris Holdings is a multi-industry parent company focused on building and managing scalable, compliance-driven businesses. Through a portfolio of specialized companies, we deliver essential services across document security, insurance solutions, and legal-medical coordination &mdash; ensuring efficiency, compliance, and long-term value.</p>
+<!-- WHAT OMNIRIS IS — Who / What / Why -->
+<section class="what-omniris" id="about">
+  <div class="what-omniris-head sa">
+    <div class="section-idx">01 &middot; What Omniris Is</div>
+    <h2 class="what-omniris-h2">A management &amp; oversight company &mdash; <em>by design.</em></h2>
+    <p class="what-omniris-lede">Omniris Holdings doesn&rsquo;t just operate businesses. We structure them, oversee them, and scale them &mdash; with compliance and operating discipline at the core of every decision.</p>
+  </div>
+  <div class="what-omniris-grid">
+    <div class="qa-card sa">
+      <span class="qa-card-q">Who</span>
+      <h3 class="qa-card-h">A management &amp; oversight company.</h3>
+      <p class="qa-card-p">We sit above the businesses we own &mdash; setting standards, aligning operations, and protecting long-term value.</p>
+    </div>
+    <div class="qa-card sa sa-d1">
+      <span class="qa-card-q">What we manage</span>
+      <h3 class="qa-card-h">Compliance-driven portfolios across <em>legal, healthcare, insurance,</em> and <em>data protection.</em></h3>
+      <p class="qa-card-p">Sectors where regulation is non-negotiable and operating discipline is the difference between scale and exposure.</p>
+    </div>
+    <div class="qa-card sa sa-d2">
+      <span class="qa-card-q">Why it matters</span>
+      <h3 class="qa-card-h">Compliance. Structure. Scalability.</h3>
+      <p class="qa-card-p">Regulated industries reward repeatable systems &mdash; not improvisation. Our oversight is what makes growth durable.</p>
     </div>
   </div>
 </section>
 
-<!-- PORTFOLIO — V5 exact -->
-<section class="portfolio" id="portfolio">
-  <div class="portfolio-header">
-    <div class="portfolio-header-left">
-      <div class="section-idx">02</div>
-      <h2 class="portfolio-h2">Our Companies</h2>
+<!-- HOW OMNIRIS OPERATES — 4 corporate pillars -->
+<section class="how-omniris" id="how">
+  <div class="how-omniris-head">
+    <div class="sa">
+      <div class="section-idx">02 &middot; Our Operating Edge</div>
+      <h2 class="how-omniris-h2">How Omniris <em>operates.</em></h2>
     </div>
-    <p class="portfolio-sub">Three companies. One management philosophy.</p>
+    <p class="how-omniris-lede sa sa-d2">This is the corporate edge that makes us different &mdash; and the reason every business under our oversight runs to a higher standard.</p>
   </div>
-  <div class="company-row sa" onclick="showPage('echo')">
-    <div class="company-num">01</div>
-    <div class="company-info">
-      <div class="company-cat">Document Security</div>
-      <div class="company-name">Echo Safe Shredding Pro</div>
-      <div class="company-desc">Secure document destruction and compliance-focused shredding services for healthcare, legal, financial, and education sectors.</div>
+  <div class="how-omniris-grid">
+    <div class="pillar sa">
+      <span class="pillar-num">01</span>
+      <h3 class="pillar-h">Centralised compliance oversight</h3>
+      <p class="pillar-p">One standard for risk, regulation, and reporting across every portfolio company &mdash; not five different playbooks.</p>
     </div>
-    <div class="company-cta">Explore <span class="arrow">&rarr;</span></div>
-  </div>
-  <div class="company-row sa sa-d1" onclick="showPage('vitalbiz')">
-    <div class="company-num">02</div>
-    <div class="company-info">
-      <div class="company-cat">Insurance &amp; Benefits</div>
-      <div class="company-name">VitalBiz Broker Partners</div>
-      <div class="company-desc">Comprehensive insurance solutions including health, life, dental, vision, Medicare/Medicaid, and employer/employee group coverage.</div>
+    <div class="pillar sa sa-d1">
+      <span class="pillar-num">02</span>
+      <h3 class="pillar-h">Operational systems development</h3>
+      <p class="pillar-p">We design the back-office systems and process discipline that make a small company run with enterprise rigour.</p>
     </div>
-    <div class="company-cta">Explore <span class="arrow">&rarr;</span></div>
-  </div>
-  <div class="company-row sa sa-d2" onclick="showPage('legalmed')">
-    <div class="company-num">03</div>
-    <div class="company-info">
-      <div class="company-cat">Legal-Medical Services</div>
-      <div class="company-name">LegalMed Liaison Network</div>
-      <div class="company-desc">Connecting injured clients with top doctors and lawyers across South Florida with comprehensive case management and legal support.</div>
+    <div class="pillar sa sa-d2">
+      <span class="pillar-num">03</span>
+      <h3 class="pillar-h">Brand-specific growth strategies</h3>
+      <p class="pillar-p">Each company gets a go-to-market plan tailored to its sector, customers, and competitive position &mdash; not a corporate template.</p>
     </div>
-    <div class="company-cta">Explore <span class="arrow">&rarr;</span></div>
-  </div>
-</section>
-
-<!-- SERVICES — Interactive with image cycling -->
-<section class="services" id="services">
-  <div class="services-grid">
-    <div class="sa" style="padding-right:48px">
-      <div class="section-idx">03</div>
-      <h2 class="services-h2">Group Services</h2>
-      <p class="services-sub">Omniris Holdings provides integrated support across key operational areas.</p>
-
-      <div class="svc-item active" data-svc="0" onclick="selectService(0)">
-        <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <div class="svc-content">
-          <div class="svc-title">Compliance &amp; Risk Management</div>
-          <div class="svc-desc">Secure handling of sensitive information and regulatory alignment across all portfolio companies.</div>
-          <div class="svc-progress"><div class="svc-progress-bar"></div></div>
-        </div>
-      </div>
-
-      <div class="svc-item" data-svc="1" onclick="selectService(1)">
-        <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 016 6c0 5-6 12-6 12S6 14 6 9a6 6 0 016-6z"/><circle cx="12" cy="9" r="2"/></svg></div>
-        <div class="svc-content">
-          <div class="svc-title">Healthcare &amp; Legal Coordination</div>
-          <div class="svc-desc">Efficient case support and medical record management bridging legal and healthcare systems.</div>
-          <div class="svc-progress"><div class="svc-progress-bar"></div></div>
-        </div>
-      </div>
-
-      <div class="svc-item" data-svc="2" onclick="selectService(2)">
-        <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-        <div class="svc-content">
-          <div class="svc-title">Financial Protection Solutions</div>
-          <div class="svc-desc">Insurance and benefits planning tailored for individuals, families, and businesses.</div>
-          <div class="svc-progress"><div class="svc-progress-bar"></div></div>
-        </div>
-      </div>
-
-      <div class="svc-item" data-svc="3" onclick="selectService(3)">
-        <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18l6-6 3 3 9-9"/><path d="M15 6h6v6"/></svg></div>
-        <div class="svc-content">
-          <div class="svc-title">Operational Support &amp; Consulting</div>
-          <div class="svc-desc">Strategic guidance to improve efficiency and scalability across operations.</div>
-          <div class="svc-progress"><div class="svc-progress-bar"></div></div>
-        </div>
-      </div>
-
-      <div class="svc-item" data-svc="4" onclick="selectService(4)">
-        <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><path d="M13 17l2 2 0-2-2 2"/></svg></div>
-        <div class="svc-content">
-          <div class="svc-title">Document Security &amp; Destruction</div>
-          <div class="svc-desc">HIPAA-compliant document shredding and secure data destruction services.</div>
-          <div class="svc-progress"><div class="svc-progress-bar"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right side - cycling images (B&W to color on active) -->
-    <div class="sa sa-d2">
-      <div class="svc-image-wrap">
-        <img class="svc-image active" data-svc-img="0" src="images/Compliance.png" alt="Compliance & Risk Management">
-        <img class="svc-image" data-svc-img="1" src="images/Healthcare.png" alt="Healthcare & Legal Coordination">
-        <img class="svc-image" data-svc-img="2" src="images/FinancialProtection.png" alt="Financial Protection Solutions">
-        <img class="svc-image" data-svc-img="3" src="images/Support.png" alt="Operational Support & Consulting">
-        <img class="svc-image" data-svc-img="4" src="images/Shredding.png" alt="Document Security & Destruction">
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOUNDER — V5 format -->
-<section class="founder" id="founder">
-  <div class="founder-grid">
-    <div class="founder-photo-col sa">
-      <img src="images/Founder.jpg" alt="Landy D. Barthelemy, MBA, MHA">
-      <div class="founder-photo-name">Landy D. Barthelemy</div>
-      <div class="founder-photo-title">MBA, MHA &middot; Founder &amp; Managing Director</div>
-    </div>
-    <div class="founder-bio-col sa sa-d2">
-      <div class="section-idx">Founder</div>
-      <h2 class="founder-name">Landy D. Barthelemy, MBA, MHA</h2>
-      <span class="founder-badge">Founder &amp; Managing Director</span>
-      <p class="founder-para">Landy D. Barthelemy, MBA, MHA, is the Founder and Managing Director of Omniris Holdings, a multi-industry organization focused on building and managing scalable, compliance-driven businesses.</p>
-      <p class="founder-para">With over 15 years of experience in the legal field, Landy has developed deep expertise in litigation support, case management, and operational systems. Her work has consistently centered on improving efficiency, ensuring regulatory compliance, and delivering structured solutions within complex environments.</p>
-      <p class="founder-para">She holds a Bachelor in Legal Studies, a Master of Business Administration (MBA) and a Master of Healthcare Administration (MHA), allowing her to bridge the gap between legal, healthcare, and business operations with a strategic and results-oriented approach.</p>
-      <div class="founder-divider"></div>
-      <div class="founder-quote">
-        <p>&ldquo;Omniris Holdings reflects her vision of creating a unified platform that delivers clarity, efficiency, and growth across multiple industries.&rdquo;</p>
-      </div>
+    <div class="pillar sa sa-d2">
+      <span class="pillar-num">04</span>
+      <h3 class="pillar-h">Risk management &amp; regulatory alignment</h3>
+      <p class="pillar-p">Continuous monitoring of regulatory change so the businesses we manage stay ahead of it rather than reacting to it.</p>
     </div>
   </div>
 </section>
