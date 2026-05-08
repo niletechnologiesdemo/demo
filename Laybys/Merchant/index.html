@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sign In · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+body{
+  background:var(--background);
+  min-height:100vh;
+  margin:0;
+}
+.login-shell{
+  display:grid;
+  grid-template-columns:1.1fr 1fr;
+  min-height:100vh;
+}
+@media(max-width:960px){
+  .login-shell{grid-template-columns:1fr}
+  .login-left{display:none}
+}
+.login-left{
+  position:relative;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(240,191,65,.22) 0%, transparent 48%),
+    radial-gradient(circle at 8% 92%, rgba(157,92,223,.18) 0%, transparent 48%),
+    linear-gradient(135deg, #001b3d 0%, #0a2540 35%, #0f3460 70%, #1c5fb8 100%);
+  color:#fff;
+  padding:48px 56px;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.login-left::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size:32px 32px;pointer-events:none;opacity:.5;
+}
+.login-left > *{position:relative;z-index:1}
+.login-brand{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:auto}
+.login-brand-logo{
+  height:42px;width:auto;display:block;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.3));
+}
+.login-brand-text{
+  font-family:var(--font-display);
+  font-size:18px;font-weight:600;color:#fff;
+  letter-spacing:-.2px;line-height:1.2;
+}
+.login-brand-text small{
+  display:block;font-size:12.5px;
+  color:rgba(255,255,255,.6);font-weight:400;
+  letter-spacing:.3px;
+}
+.login-app-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:6px;padding:3px 10px;
+  background:rgba(240,191,65,.18);
+  border:1px solid rgba(240,191,65,.35);
+  color:#f0bf41;
+  font-size:10.5px;font-weight:700;letter-spacing:.7px;
+  text-transform:uppercase;border-radius:99px;
+  width:fit-content;
+}
+.login-app-badge::before{
+  content:'';width:5px;height:5px;border-radius:50%;background:#f0bf41;
+}
+.login-pitch{margin:auto 0}
+.login-pitch h1{
+  font-family:var(--font-display);
+  font-size:42px;font-weight:500;
+  letter-spacing:-1px;line-height:1.15;
+  margin:0 0 18px;color:#fff;
+  max-width:520px;
+}
+.login-pitch h1 em{
+  font-style:normal;font-weight:600;
+  background:linear-gradient(135deg, #ffdf99, #f0bf41);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.login-pitch p{
+  font-size:16px;line-height:1.6;
+  color:rgba(255,255,255,.78);
+  margin:0 0 36px;letter-spacing:.1px;
+  max-width:520px;
+}
+.login-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:520px}
+.login-stat{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  padding:16px 18px;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  transition:.2s var(--easing);
+}
+.login-stat:hover{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.18);
+  transform:translateY(-2px);
+}
+.login-stat b{
+  display:block;font-family:var(--font-display);
+  font-size:24px;font-weight:600;
+  color:#fff;letter-spacing:-.5px;line-height:1.1;margin-bottom:4px;
+}
+.login-stat span{
+  font-size:11.5px;color:rgba(255,255,255,.6);
+  text-transform:uppercase;letter-spacing:.6px;font-weight:500;
+}
+.login-foot{
+  margin-top:auto;padding-top:32px;
+  font-size:12.5px;color:rgba(255,255,255,.45);letter-spacing:.2px;
+}
+.login-right{
+  display:flex;align-items:center;justify-content:center;
+  padding:48px 32px;background:var(--background);
+}
+.login-card{
+  width:100%;max-width:420px;
+  background:var(--surface);
+  border:1px solid var(--outline-variant);
+  border-radius:var(--r-xl);
+  padding:40px 36px;
+  box-shadow:var(--elev-2);
+}
+.login-card h2{
+  font-family:var(--font-display);
+  font-size:28px;font-weight:500;
+  color:var(--on-surface);
+  margin:0 0 6px;letter-spacing:-.5px;line-height:1.2;
+}
+.login-card .sub{
+  font-size:14px;color:var(--on-surface-variant);
+  margin:0 0 28px;letter-spacing:.1px;line-height:1.5;
+}
+.login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.login-field label{
+  font-size:13px;font-weight:500;
+  color:var(--on-surface);letter-spacing:.1px;
+}
+.login-field input{
+  height:48px;padding:0 16px;
+  background:var(--surface);
+  border:1px solid var(--outline);
+  border-radius:var(--r-sm);
+  font-size:14px;color:var(--on-surface);
+  letter-spacing:.1px;transition:.15s var(--easing);
+  font-family:var(--font);outline:none;width:100%;box-sizing:border-box;
+}
+.login-field input:hover{border-color:var(--on-surface)}
+.login-field input:focus{
+  border:2px solid var(--primary);padding:0 15px;
+  box-shadow:0 0 0 4px rgba(28,95,184,.12);
+}
+.login-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin:18px 0 24px;font-size:13px;
+}
+.login-check{
+  display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  color:var(--on-surface-variant);letter-spacing:.1px;
+}
+.login-check input{width:16px;height:16px;accent-color:var(--primary);cursor:pointer}
+.login-row a{color:var(--primary);font-weight:500;letter-spacing:.05px}
+.login-row a:hover{text-decoration:underline;text-underline-offset:2px}
+.login-submit{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;height:48px;border-radius:var(--r-pill);
+  background:linear-gradient(135deg, var(--p-40), var(--p-30));
+  color:#fff;border:0;
+  font-size:14.5px;font-weight:600;letter-spacing:.1px;
+  cursor:pointer;transition:all .18s var(--easing);
+  box-shadow:0 4px 12px rgba(28,95,184,.3);
+  text-decoration:none;font-family:var(--font);
+}
+.login-submit:hover{
+  background:linear-gradient(135deg, var(--p-30), var(--p-20));
+  box-shadow:0 6px 18px rgba(28,95,184,.4);
+  transform:translateY(-1px);
+}
+.login-submit:active{transform:translateY(0)}
+.login-submit svg{width:18px;height:18px}
+.login-divider{
+  display:flex;align-items:center;gap:14px;
+  margin:24px 0;
+  font-size:12px;color:var(--on-surface-variant);letter-spacing:.5px;
+  text-transform:uppercase;font-weight:600;
+}
+.login-divider::before, .login-divider::after{
+  content:'';flex:1;height:1px;background:var(--outline-variant);
+}
+.login-apply{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;height:48px;border-radius:var(--r-pill);
+  background:var(--surface);
+  color:var(--primary);
+  border:1px solid var(--outline);
+  font-size:14.5px;font-weight:500;letter-spacing:.1px;
+  cursor:pointer;transition:all .18s var(--easing);
+  text-decoration:none;font-family:var(--font);
+}
+.login-apply:hover{
+  background:var(--primary-container);border-color:var(--primary);
+  box-shadow:var(--elev-1);
+}
+.login-alt{
+  margin-top:24px;padding-top:24px;
+  border-top:1px solid var(--outline-variant);
+  font-size:13px;color:var(--on-surface-variant);
+  text-align:center;letter-spacing:.1px;
+}
+.login-alt a{color:var(--primary);font-weight:500}
+.login-alt a:hover{text-decoration:underline;text-underline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="login-shell">
+
+  <div class="login-left">
+    <div class="login-brand">
+      <svg class="login-brand-logo" viewBox="0 0 132 38" xmlns="http://www.w3.org/2000/svg" aria-label="LayBys">
+        <defs>
+          <linearGradient id="login-lb-bys" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#5fa6ff"/>
+            <stop offset="1" stop-color="#8fc8ff"/>
+          </linearGradient>
+        </defs>
+        <text x="0" y="29" font-family="'Inter','Segoe UI',-apple-system,Roboto,sans-serif" font-weight="800" font-size="30" letter-spacing="-1.4">
+          <tspan fill="#ffffff">Lay</tspan><tspan fill="url(#login-lb-bys)">Bys</tspan><tspan fill="#f0bf41">.</tspan>
+        </text>
+      </svg>
+      <div class="login-brand-text">
+        <small>Merchant Console</small>
+        <span class="login-app-badge">Merchant Portal</span>
+      </div>
+    </div>
+
+    <div class="login-pitch">
+      <h1>Sell more, get paid <em>weekly</em>, zero risk.</h1>
+      <p>Manage your products, monitor every lay-by, track payouts, and respond to customer queries — all from one place. No interest fees, no chargebacks on completed lay-bys, just clean retail.</p>
+
+      <div class="login-stats">
+        <div class="login-stat"><b>5%</b><span>Flat commission</span></div>
+        <div class="login-stat"><b>Weekly</b><span>Payouts to your bank</span></div>
+        <div class="login-stat"><b>$0</b><span>Setup or monthly fees</span></div>
+      </div>
+    </div>
+
+    <div class="login-foot">© 2026 LayBys.com — Rogers Digital. All rights reserved.</div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-card">
+      <h2>Welcome back</h2>
+      <p class="sub">Sign in to your merchant account to manage your store.</p>
+
+      <div class="login-field">
+        <label>Email address</label>
+        <input type="email" value="marcus@techzone.com.au">
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" value="••••••••••••">
+      </div>
+
+      <div class="login-row">
+        <label class="login-check"><input type="checkbox" checked> Keep me signed in</label>
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <a href="dashboard.html" class="login-submit">
+        Sign in to Merchant Console
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+
+      <div class="login-divider">New to LayBys?</div>
+
+      <a href="#" class="login-apply">
+        Apply to become a merchant
+      </a>
+
+      <div class="login-alt">
+        Need help signing in? Contact <a href="#">merchants@laybys.com</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
