@@ -1493,6 +1493,19 @@ img{display:block;max-width:100%}
   transition:all 300ms ease;
 }
 .sub-cta-btn:hover{background:var(--gold-light);transform:translateY(-1px)}
+/* Companies page: thin inline CTA */
+#page-companies .sub-cta{
+  padding:22px clamp(32px,6vw,96px);
+  display:flex;align-items:center;justify-content:center;
+  gap:24px;flex-wrap:wrap;
+  border-top:1px solid rgba(201,168,76,0.14);
+}
+#page-companies .sub-cta-rule{display:none}
+#page-companies .sub-cta-text{margin-bottom:0;font-size:0.92rem}
+#page-companies .sub-cta-btn{padding:10px 22px;font-size:0.8rem}
+@media(max-width:600px){
+  #page-companies .sub-cta{padding:18px clamp(24px,5vw,32px);gap:14px}
+}
 
 /* ============================================
    MOBILE RESPONSIVE
