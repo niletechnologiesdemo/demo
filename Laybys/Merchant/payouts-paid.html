@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Paid Payouts · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Payouts</h1>
+          <p class="page-sub">Settled payouts that have landed in your bank account</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Download statements</button>
+          <button class="btn">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-success"><div class="kpi-label">Paid Out (YTD)</div><div class="kpi-value">$189,420</div><div class="kpi-meta">42 settlements</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Last 30 Days</div><div class="kpi-value">$32,481</div><div class="kpi-meta">4 payouts · ▲ 12% MoM</div></div>
+        <div class="kpi kpi-gold"><div class="kpi-label">Avg Settlement Time</div><div class="kpi-value">1.2 days</div><div class="kpi-meta">From initiation to bank</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Commission Paid</div><div class="kpi-value">$9,964</div><div class="kpi-meta">5% of $189,420</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="payouts.html">All <span class="count">43</span></a>
+        <a class="tab" href="payouts-scheduled.html">Scheduled <span class="count">1</span></a>
+        <a class="tab active" href="payouts-paid.html">Paid <span class="count">42</span></a>
+        <a class="tab" href="payouts-onhold.html">On hold <span class="count">0</span></a>
+      </div>
+
+      <!-- Payout volume chart -->
+      <div class="card" style="margin-top:18px">
+        <div class="card-head">
+          <div>
+            <h3 class="card-title">Payout Volume — Last 12 Weeks</h3>
+            <div class="card-sub">Net amount paid each week (USD)</div>
+          </div>
+          <div class="card-actions">
+            <select class="select select-sm"><option>Last 12 weeks</option><option>Last 6 months</option><option>YTD</option></select>
+          </div>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-bar" style="height:38%"><span class="val">$5.8k</span><span class="lab">W4 Feb</span></div>
+          <div class="chart-bar" style="height:48%"><span class="val">$7.2k</span><span class="lab">W1 Mar</span></div>
+          <div class="chart-bar" style="height:54%"><span class="val">$8.1k</span><span class="lab">W2 Mar</span></div>
+          <div class="chart-bar" style="height:48%"><span class="val">$7.3k</span><span class="lab">W3 Mar</span></div>
+          <div class="chart-bar" style="height:62%"><span class="val">$9.2k</span><span class="lab">W4 Mar</span></div>
+          <div class="chart-bar" style="height:58%"><span class="val">$8.7k</span><span class="lab">W1 Apr</span></div>
+          <div class="chart-bar" style="height:52%"><span class="val">$7.7k</span><span class="lab">W2 Apr</span></div>
+          <div class="chart-bar" style="height:54%"><span class="val">$8.1k</span><span class="lab">W3 Apr</span></div>
+          <div class="chart-bar" style="height:48%"><span class="val">$7.1k</span><span class="lab">W4 Apr</span></div>
+          <div class="chart-bar" style="height:60%"><span class="val">$8.9k</span><span class="lab">W1 May</span></div>
+          <div class="chart-bar bar-current" style="height:62%"><span class="val">$8.9k</span><span class="lab">W2 May</span></div>
+          <div class="chart-bar" style="height:0%"><span class="val">—</span><span class="lab">This wk</span></div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search by payout ID, date, or amount…" />
+          </div>
+          <select class="select select-sm"><option>This year</option><option>Last 90 days</option><option>Last 30 days</option><option>All time</option></select>
+          <select class="select select-sm"><option>Sort: Most recent</option><option>Highest amount</option><option>Lowest amount</option></select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr><th>Payout ID</th><th>Settled</th><th>Lay-bys</th><th>Gross</th><th>Commission</th><th>Net</th><th>Method</th><th>Reference</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="payout-detail.html" class="cell-id">PO-2026-0018</a></td>
+              <td>Tue 04 May 2026<div class="cell-muted">2 days ago</div></td>
+              <td>52</td>
+              <td><span class="cell-amount">$9,418.00</span></td>
+              <td><span class="cell-amount">$470.90</span></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$8,947.10</span></td>
+              <td>Westpac ··8421</td>
+              <td><span class="mono cell-muted">LBPO-26-0018</span></td>
+              <td><a href="payout-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="payout-detail.html" class="cell-id">PO-2026-0017</a></td>
+              <td>Tue 27 Apr 2026<div class="cell-muted">9 days ago</div></td>
+              <td>49</td>
+              <td><span class="cell-amount">$8,742.30</span></td>
+              <td><span class="cell-amount">$437.12</span></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$8,305.18</span></td>
+              <td>Westpac ··8421</td>
+              <td><span class="mono cell-muted">LBPO-26-0017</span></td>
+              <td><a href="payout-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="payout-detail.html" class="cell-id">PO-2026-0016</a></td>
+              <td>Tue 20 Apr 2026<div class="cell-muted">16 days ago</div></td>
+              <td>44</td>
+              <td><span class="cell-amount">$7,964.40</span></td>
+              <td><span class="cell-amount">$398.22</span></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$7,566.18</span></td>
+              <td>Westpac ··8421</td>
+              <td><span class="mono cell-muted">LBPO-26-0016</span></td>
+              <td><a href="payout-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="payout-detail.html" class="cell-id">PO-2026-0015</a></td>
+              <td>Tue 13 Apr 2026<div class="cell-muted">23 days ago</div></td>
+              <td>46</td>
+              <td><span class="cell-amount">$8,108.20</span></td>
+              <td><span class="cell-amount">$405.41</span></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$7,702.79</span></td>
+              <td>Westpac ··8421</td>
+              <td><span class="mono cell-muted">LBPO-26-0015</span></td>
+              <td><a href="payout-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="payout-detail.html" class="cell-id">PO-2026-0014</a></td>
+              <td>Tue 06 Apr 2026<div class="cell-muted">30 days ago</div></td>
+              <td>41</td>
+              <td><span class="cell-amount">$7,432.00</span></td>
+              <td><span class="cell-amount">$371.60</span></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$7,060.40</span></td>
+              <td>Westpac ··8421</td>
+              <td><span class="mono cell-muted">LBPO-26-0014</span></td>
+              <td><a href="payout-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="payout-detail.html" class="cell-id">PO-2026-0013</a></td>
+              <td>Tue 30 Mar 2026<div class="cell-muted">37 days ago</div></td>
+              <td>43</td>
+              <td><span class="cell-amount">$7,654.10</span></td>
+              <td><span class="cell-amount">$382.71</span></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$7,271.39</span></td>
+              <td>Westpac ··8421</td>
+              <td><span class="mono cell-muted">LBPO-26-0013</span></td>
+              <td><a href="payout-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="payout-detail.html" class="cell-id">PO-2026-0012</a></td>
+              <td>Tue 23 Mar 2026<div class="cell-muted">44 days ago</div></td>
+              <td>48</td>
+              <td><span class="cell-amount">$8,492.50</span></td>
+              <td><span class="cell-amount">$424.63</span></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$8,067.87</span></td>
+              <td>Westpac ··8421</td>
+              <td><span class="mono cell-muted">LBPO-26-0012</span></td>
+              <td><a href="payout-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="payout-detail.html" class="cell-id">PO-2026-0011</a></td>
+              <td>Tue 16 Mar 2026<div class="cell-muted">51 days ago</div></td>
+              <td>45</td>
+              <td><span class="cell-amount">$7,938.00</span></td>
+              <td><span class="cell-amount">$396.90</span></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$7,541.10</span></td>
+              <td>Westpac ··8421</td>
+              <td><span class="mono cell-muted">LBPO-26-0011</span></td>
+              <td><a href="payout-detail.html" class="link">View →</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pager"><div class="pager-info">Showing 1–8 of 42 paid payouts</div><div class="pagination"><button class="btn btn-sm">←</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm">2</button><button class="btn btn-sm">3</button><button class="btn btn-sm">…</button><button class="btn btn-sm">6</button><button class="btn btn-sm">→</button></div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("payouts","Paid Payouts","42 settlements · $189,420 paid out");</script>
+</body>
+</html>

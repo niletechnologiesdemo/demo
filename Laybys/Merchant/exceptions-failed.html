@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Failed Payments · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Exceptions</h1>
+          <p class="page-sub">Payment failures requiring action — auto-retries exhausted</p>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-warn"><div class="kpi-label">Failed Payments</div><div class="kpi-value">2</div><div class="kpi-meta">Both P2 · High priority</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">At Risk Value</div><div class="kpi-value">$948</div><div class="kpi-meta">Combined open balance</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Recovery Rate (30d)</div><div class="kpi-value">71%</div><div class="kpi-meta">5 of 7 recovered</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Avg Resolution</div><div class="kpi-value">2.4 days</div><div class="kpi-meta">From flag to resolved</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="exceptions.html">All open <span class="count">3</span></a>
+        <a class="tab active" href="exceptions-failed.html">Failed payments <span class="count">2</span></a>
+        <a class="tab" href="exceptions-overdue.html">Overdue <span class="count">1</span></a>
+        <a class="tab" href="exceptions-disputes.html">Disputes <span class="count">0</span></a>
+        <a class="tab" href="exceptions-resolved.html">Resolved (30d) <span class="count">8</span></a>
+      </div>
+
+      <div class="alert alert-warn" style="margin-top:18px">
+        <div class="alert-icon">!</div>
+        <div class="alert-body">
+          <div class="alert-title">2 instalment payments failed after 3 retries</div>
+          <div class="alert-text">LayBys.com automatically retries failed instalments three times over 7 days. Once exhausted, they appear here for your action. The fastest recovery is to send the customer a "Update card" link — 71% recovery rate when sent within 48 hours.</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="exceptions-list">
+
+          <div class="exception-row exception-warn">
+            <div class="exception-pri"><span class="pill pill-pending">P2 · High</span></div>
+            <div class="exception-main">
+              <div class="exception-head">
+                <a href="exception-detail.html" class="cell-id">EX-2026-00038</a>
+                <span class="exception-type">Payment Failed × 3 (Retry Exhausted)</span>
+              </div>
+              <div class="exception-title">LB-2026-04188 — Tom Whitfield · Bose QuietComfort Ultra</div>
+              <div class="exception-meta"><span><b>$45.00</b> instalment 11 of 16</span><span class="dot-sep">·</span><span>Card declined "insufficient funds"</span><span class="dot-sep">·</span><span>Retried 04 May 22:00</span><span class="dot-sep">·</span><span style="color:var(--warn-30)"><b>SLA in 1d 4h</b></span></div>
+            </div>
+            <div class="exception-actions">
+              <button class="btn btn-ghost btn-sm">Update Card</button>
+              <a href="exception-detail.html" class="btn btn-sm btn-primary">Manual Retry</a>
+            </div>
+          </div>
+
+          <div class="exception-row exception-warn">
+            <div class="exception-pri"><span class="pill pill-pending">P2 · High</span></div>
+            <div class="exception-main">
+              <div class="exception-head">
+                <a href="exception-detail.html" class="cell-id">EX-2026-00037</a>
+                <span class="exception-type">Direct Debit Dishonour</span>
+              </div>
+              <div class="exception-title">LB-2026-03917 — Daniel Kovac · Sony WH-1000XM6</div>
+              <div class="exception-meta"><span><b>$62.20</b> instalment 9 of 16</span><span class="dot-sep">·</span><span>Bank reason "account closed"</span><span class="dot-sep">·</span><span>SMS sent 03 May 09:00</span><span class="dot-sep">·</span><span style="color:var(--warn-30)"><b>SLA in 1d 4h</b></span></div>
+            </div>
+            <div class="exception-actions">
+              <button class="btn btn-ghost btn-sm">Send Email</button>
+              <a href="exception-detail.html" class="btn btn-sm btn-primary">Reach Out</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Failure reasons (last 90 days)</h3></div>
+          <div style="padding:14px 22px 18px">
+            <div class="reason-row"><span class="reason-name">Insufficient funds</span><span class="reason-bar"><span class="reason-fill" style="width:62%"></span></span><span class="reason-val">8</span></div>
+            <div class="reason-row"><span class="reason-name">Card declined / do not honour</span><span class="reason-bar"><span class="reason-fill" style="width:32%"></span></span><span class="reason-val">4</span></div>
+            <div class="reason-row"><span class="reason-name">Account closed</span><span class="reason-bar"><span class="reason-fill" style="width:18%"></span></span><span class="reason-val">2</span></div>
+            <div class="reason-row"><span class="reason-name">Card expired</span><span class="reason-bar"><span class="reason-fill" style="width:12%"></span></span><span class="reason-val">1</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Recovery playbook</h3></div>
+          <div style="padding:8px 22px 18px;font-size:13.5px;line-height:1.65;color:var(--on-surface)">
+            <ol style="padding-left:20px;margin:0">
+              <li><b>Send "Update card" link first</b> — fixes 71% of failures within 48 hours.</li>
+              <li><b>If no response in 3 days</b>, follow up with a personal email or SMS using the customer's preferred contact.</li>
+              <li><b>Try a manual retry</b> on the original card after 5 days — sometimes funds clear naturally.</li>
+              <li><b>If still failing at 7 days</b>, escalate to a phone call or hardship plan offer.</li>
+              <li><b>If unresolved at 14 days</b>, the lay-by becomes overdue and may need cancelling.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("exceptions","Failed Payments","2 P2 high · auto-retries exhausted");</script>
+</body>
+</html>

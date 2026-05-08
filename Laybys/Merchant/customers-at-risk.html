@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>At-Risk Customers · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.risk-card{background:var(--surface);border:1px solid var(--outline-variant);border-radius:var(--r-lg);overflow:hidden;margin-bottom:14px;transition:.18s var(--easing)}
+.risk-card:hover{box-shadow:var(--elev-2)}
+.risk-card-critical{border-left:4px solid var(--error-40)}
+.risk-card-watch{border-left:4px solid var(--s-50)}
+.risk-card-head{padding:18px 22px;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg, var(--surface) 0%, var(--surface-1) 100%)}
+.risk-card-head-critical{background:linear-gradient(135deg, var(--error-95) 0%, #fff5f5 100%)}
+.risk-card-head-watch{background:linear-gradient(135deg, var(--warn-95) 0%, #fff9ed 100%)}
+.risk-card-info{flex:1;min-width:200px}
+.risk-card-title{font-family:var(--font-display);font-size:17px;font-weight:500;color:var(--on-surface);margin:0 0 4px;letter-spacing:-.1px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.risk-card-meta{font-size:13px;color:var(--on-surface-variant);letter-spacing:.05px;line-height:1.5}
+.risk-card-actions{display:flex;flex-direction:column;gap:8px;flex:none;align-items:flex-end;min-width:160px}
+.risk-card-body{padding:16px 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;border-top:1px solid var(--outline-variant)}
+@media(max-width:680px){.risk-card-body{grid-template-columns:repeat(2,1fr)}}
+.risk-stat{padding:10px 14px;background:var(--surface-1);border-radius:var(--r-sm)}
+.risk-stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--on-surface-variant);margin-bottom:3px}
+.risk-stat-val{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--on-surface);letter-spacing:-.2px;font-variant-numeric:tabular-nums}
+.risk-stat-val-bad{color:var(--error-30)}
+.risk-stat-val-warn{color:var(--warn-30)}
+.risk-card-foot{padding:12px 22px;background:var(--surface-1);border-top:1px solid var(--outline-variant);font-size:13px;color:var(--on-surface);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.signals{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.signal-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:500;letter-spacing:.2px}
+.signal-bad{background:var(--error-95);color:var(--error-30);border:1px solid var(--error-90)}
+.signal-warn{background:var(--warn-95);color:var(--warn-30);border:1px solid #f9e2a4}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Customers</h1>
+          <p class="page-sub">Customers showing payment risk signals · proactive engagement recommended</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="alert alert-warn" style="margin-bottom:18px">
+        <div class="alert-icon">!</div>
+        <div class="alert-body">
+          <div class="alert-title">2 customers showing risk signals</div>
+          <div class="alert-text">These customers have failed payments, missed instalments, or other risk indicators. Reaching out within 48 hours of the first signal recovers <b>71% of cases</b>. Most prefer a friendly check-in over a payment demand.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-danger"><div class="kpi-label">At-Risk Customers</div><div class="kpi-value">2</div><div class="kpi-meta">0.7% of total · industry 2.1%</div></div>
+        <div class="kpi kpi-warn"><div class="kpi-label">At-Risk Value</div><div class="kpi-value">$444</div><div class="kpi-meta">Combined unpaid balance</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Avg Recovery Rate</div><div class="kpi-value">71%</div><div class="kpi-meta">When contacted within 48h</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Recovered (90d)</div><div class="kpi-value">5 of 7</div><div class="kpi-meta">Strong track record</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="customers.html">All <span class="count">284</span></a>
+        <a class="tab" href="customers-active.html">Active <span class="count">42</span></a>
+        <a class="tab" href="customers-repeat.html">Repeat <span class="count">86</span></a>
+        <a class="tab active" href="customers-at-risk.html">At risk <span class="count">2</span></a>
+      </div>
+
+      <div style="margin-top:18px">
+
+        <div class="risk-card risk-card-critical">
+          <div class="risk-card-head risk-card-head-critical">
+            <div class="avatar avatar-lg">LB</div>
+            <div class="risk-card-info">
+              <h3 class="risk-card-title">Liam Bennett <span class="pill pill-overdue">High risk</span> <span class="pill pill-tertiary">Repeat customer · 2 lay-bys</span></h3>
+              <div class="risk-card-meta">liam.b@hotmail.com · +61 423 119 728 · Adelaide SA · Customer since Sep 2025</div>
+              <div class="signals">
+                <span class="signal-pill signal-bad">8 days overdue</span>
+                <span class="signal-pill signal-bad">3 retries failed</span>
+                <span class="signal-pill signal-warn">Last login 5 days ago</span>
+                <span class="signal-pill signal-warn">No SMS reply</span>
+              </div>
+            </div>
+            <div class="risk-card-actions">
+              <a href="exception-detail.html" class="btn btn-primary">Open exception</a>
+              <button class="btn btn-ghost btn-sm">Send hardship offer</button>
+              <button class="btn btn-ghost btn-sm">Call customer</button>
+            </div>
+          </div>
+          <div class="risk-card-body">
+            <div class="risk-stat"><div class="risk-stat-label">Active lay-by</div><div class="risk-stat-val">$301</div></div>
+            <div class="risk-stat"><div class="risk-stat-label">Days overdue</div><div class="risk-stat-val risk-stat-val-bad">8 d</div></div>
+            <div class="risk-stat"><div class="risk-stat-label">Payment score</div><div class="risk-stat-val risk-stat-val-bad">B−</div></div>
+            <div class="risk-stat"><div class="risk-stat-label">Lifetime value</div><div class="risk-stat-val">$847</div></div>
+          </div>
+          <div class="risk-card-foot">
+            <span><b>Recommended action:</b> Send hardship offer email — 68% recovery rate for similar repeat customers.</span>
+            <a href="customer-detail.html" class="link">View profile →</a>
+          </div>
+        </div>
+
+        <div class="risk-card risk-card-watch">
+          <div class="risk-card-head risk-card-head-watch">
+            <div class="avatar avatar-lg">DK</div>
+            <div class="risk-card-info">
+              <h3 class="risk-card-title">Daniel Kovac <span class="pill pill-pending">Watch</span> <span class="pill pill-tertiary">Repeat customer · 2 lay-bys</span></h3>
+              <div class="risk-card-meta">daniel.k@gmail.com · +61 437 882 419 · Canberra ACT · Customer since Nov 2025</div>
+              <div class="signals">
+                <span class="signal-pill signal-bad">DD dishonour · "account closed"</span>
+                <span class="signal-pill signal-warn">SMS sent · no reply yet</span>
+                <span class="signal-pill signal-warn">Retry pending 06 May</span>
+              </div>
+            </div>
+            <div class="risk-card-actions">
+              <a href="exception-detail.html" class="btn btn-primary">Open exception</a>
+              <button class="btn btn-ghost btn-sm">Send card update link</button>
+              <button class="btn btn-ghost btn-sm">Email customer</button>
+            </div>
+          </div>
+          <div class="risk-card-body">
+            <div class="risk-stat"><div class="risk-stat-label">Active lay-by</div><div class="risk-stat-val">$242</div></div>
+            <div class="risk-stat"><div class="risk-stat-label">Failed payment</div><div class="risk-stat-val risk-stat-val-warn">$62.20</div></div>
+            <div class="risk-stat"><div class="risk-stat-label">Payment score</div><div class="risk-stat-val risk-stat-val-warn">B</div></div>
+            <div class="risk-stat"><div class="risk-stat-label">Lifetime value</div><div class="risk-stat-val">$1,098</div></div>
+          </div>
+          <div class="risk-card-foot">
+            <span><b>Recommended action:</b> Send card update link — fastest path. Bank account closed means existing DD won't work.</span>
+            <a href="customer-detail.html" class="link">View profile →</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Risk signals — what we look for</h3></div>
+          <div style="padding:8px 22px 18px;font-size:13.5px;line-height:1.65;color:var(--on-surface)">
+            <p style="margin:0 0 12px">A customer is flagged as at-risk if they show any of these patterns:</p>
+            <ul style="padding-left:20px;margin:0">
+              <li><b>3 or more failed payments</b> within 30 days</li>
+              <li><b>Direct debit dishonour</b> (account closed, frozen, or invalid)</li>
+              <li><b>Lay-by overdue 7+ days</b> with no customer response</li>
+              <li><b>Payment score drops to B or below</b> based on rolling 90-day history</li>
+              <li><b>Customer has stopped logging in</b> while a lay-by is overdue</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Outreach playbook</h3></div>
+          <div style="padding:8px 22px 18px;font-size:13.5px;line-height:1.65;color:var(--on-surface)">
+            <p style="margin:0 0 12px">Highest-recovery sequence for repeat customers:</p>
+            <ol style="padding-left:20px;margin:0">
+              <li><b>Day 1</b> — Friendly check-in email ("just letting you know your payment didn't go through")</li>
+              <li><b>Day 3</b> — SMS with one-tap card update link</li>
+              <li><b>Day 5</b> — Personal email offering hardship terms (extension, smaller instalments)</li>
+              <li><b>Day 7</b> — Phone call from a real person — best for repeat customers, often resolves in 5 minutes</li>
+              <li><b>Day 10+</b> — Mutual cancellation conversation if no resolution path is workable</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("customers","At-Risk Customers","2 customers showing risk signals");</script>
+</body>
+</html>

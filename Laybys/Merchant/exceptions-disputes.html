@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Disputes · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.clean-illustration{width:120px;height:120px;margin:0 auto 20px;border-radius:32px;background:radial-gradient(circle at 30% 30%, rgba(31,157,90,.18) 0%, transparent 50%),linear-gradient(135deg, var(--success-95) 0%, #f0fde6 100%);display:grid;place-items:center;box-shadow:var(--elev-2);position:relative}
+.clean-illustration::after{content:'';position:absolute;inset:-2px;border-radius:34px;background:linear-gradient(135deg, var(--success-40), var(--success-30));z-index:-1;opacity:.18}
+.clean-state-card{background:var(--surface);border:1px solid var(--outline-variant);border-radius:var(--r-xl);padding:48px 32px 40px;text-align:center;box-shadow:var(--elev-1)}
+.clean-title{font-family:var(--font-display);font-size:24px;font-weight:500;color:var(--on-surface);letter-spacing:-.4px;margin:0 0 8px}
+.clean-sub{font-size:14.5px;color:var(--on-surface-variant);margin:0 0 28px;line-height:1.6;max-width:520px;margin-left:auto;margin-right:auto}
+.dispute-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:760px;margin:0 auto;text-align:left}
+@media(max-width:680px){.dispute-info-grid{grid-template-columns:1fr}}
+.dispute-info{padding:18px 20px;background:linear-gradient(135deg, var(--p-99) 0%, var(--surface) 100%);border:1px solid var(--outline-variant);border-radius:var(--r);transition:.18s var(--easing)}
+.dispute-info:hover{transform:translateY(-2px);box-shadow:var(--elev-2)}
+.dispute-info-icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;margin-bottom:12px;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.1)}
+.di-1 .dispute-info-icon{background:linear-gradient(135deg, var(--info-40), var(--info-30))}
+.di-2 .dispute-info-icon{background:linear-gradient(135deg, var(--warn-40), var(--s-50))}
+.di-3 .dispute-info-icon{background:linear-gradient(135deg, var(--success-40), var(--success-30))}
+.dispute-info-title{font-size:14px;font-weight:600;color:var(--on-surface);margin-bottom:4px;letter-spacing:.05px}
+.dispute-info-text{font-size:13px;color:var(--on-surface-variant);line-height:1.55;letter-spacing:.05px}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Exceptions</h1>
+          <p class="page-sub">Customer disputes and chargebacks</p>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-success"><div class="kpi-label">Open Disputes</div><div class="kpi-value">0</div><div class="kpi-meta">Clean record</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Disputes (YTD)</div><div class="kpi-value">2</div><div class="kpi-meta">Both resolved in your favour</div></div>
+        <div class="kpi kpi-gold"><div class="kpi-label">Win Rate</div><div class="kpi-value">100%</div><div class="kpi-meta">Of disputes raised against you</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Industry Average</div><div class="kpi-value">0.4%</div><div class="kpi-meta">Of all lay-bys disputed</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="exceptions.html">All open <span class="count">3</span></a>
+        <a class="tab" href="exceptions-failed.html">Failed payments <span class="count">2</span></a>
+        <a class="tab" href="exceptions-overdue.html">Overdue <span class="count">1</span></a>
+        <a class="tab active" href="exceptions-disputes.html">Disputes <span class="count">0</span></a>
+        <a class="tab" href="exceptions-resolved.html">Resolved (30d) <span class="count">8</span></a>
+      </div>
+
+      <div style="margin-top:18px">
+        <div class="clean-state-card">
+          <div class="clean-illustration">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#dg)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <defs><linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1f9d5a"/><stop offset="100%" stop-color="#005232"/></linearGradient></defs>
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <h2 class="clean-title">No open disputes</h2>
+          <p class="clean-sub">Customers can dispute a lay-by if a product wasn't delivered, was different than described, or was faulty. You currently have zero open disputes — and across the year you've won 100% of the 2 disputes raised. That's a strong signal of trust.</p>
+
+          <div class="dispute-info-grid">
+            <div class="dispute-info di-1">
+              <div class="dispute-info-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="dispute-info-title">How disputes start</div>
+              <div class="dispute-info-text">A customer files a dispute via the LayBys.com app. You'll get notified within minutes and have 7 days to respond with evidence (proof of dispatch, condition photos, communication logs).</div>
+            </div>
+            <div class="dispute-info di-2">
+              <div class="dispute-info-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="dispute-info-title">Evidence that wins</div>
+              <div class="dispute-info-text">Tracking number with proof-of-delivery, photos taken at dispatch, and your reply timestamps in the customer's chat thread. The platform stores all of this automatically.</div>
+            </div>
+            <div class="dispute-info di-3">
+              <div class="dispute-info-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="dispute-info-title">Resolution timeline</div>
+              <div class="dispute-info-text">Most disputes resolve in 5–10 business days. The LayBys.com team reviews evidence from both sides and decides. Funds remain in escrow until resolution.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="card-head"><h3 class="card-title">Past disputes — your record</h3><div class="card-actions"><span class="cell-muted" style="font-size:12px">Both resolved in your favour</span></div></div>
+        <div class="table-wrap">
+          <table class="data table-tight">
+            <thead><tr><th>Dispute</th><th>Customer</th><th>Lay-by</th><th>Reason</th><th>Outcome</th><th>Resolved</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="cell-id">DS-2026-008</span></td>
+                <td><div class="cell-thumb"><div class="avatar avatar-sm">NB</div><div><div class="cell-strong">Nathan Briggs</div></div></div></td>
+                <td><a href="layby-detail.html" class="cell-id">LB-2025-19887</a></td>
+                <td>Item not delivered</td>
+                <td><span class="pill pill-active">Found in your favour</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">AusPost POD attached</div></td>
+                <td>14 Mar 2026<div class="cell-muted">7 days to resolve</div></td>
+              </tr>
+              <tr>
+                <td><span class="cell-id">DS-2025-022</span></td>
+                <td><div class="cell-thumb"><div class="avatar avatar-sm">MC</div><div><div class="cell-strong">Maya Chen</div></div></div></td>
+                <td><a href="layby-detail.html" class="cell-id">LB-2025-15441</a></td>
+                <td>Item not as described</td>
+                <td><span class="pill pill-active">Found in your favour</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">Listing photos matched</div></td>
+                <td>18 Nov 2025<div class="cell-muted">9 days to resolve</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("exceptions","Disputes","No open disputes · 100% historical win rate");</script>
+</body>
+</html>

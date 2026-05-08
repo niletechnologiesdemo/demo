@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Resolved Exceptions · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Exceptions</h1>
+          <p class="page-sub">Issues you've resolved over the last 30 days</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-success"><div class="kpi-label">Resolved (30d)</div><div class="kpi-value">8</div><div class="kpi-meta">▲ 2 vs prev 30 days</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Avg Resolution Time</div><div class="kpi-value">2.4 days</div><div class="kpi-meta">Industry: 4.1 days</div></div>
+        <div class="kpi kpi-gold"><div class="kpi-label">Recovery Rate</div><div class="kpi-value">71%</div><div class="kpi-meta">5 of 7 lay-bys recovered</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Value Recovered</div><div class="kpi-value">$2,184</div><div class="kpi-meta">Customers paid up</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="exceptions.html">All open <span class="count">3</span></a>
+        <a class="tab" href="exceptions-failed.html">Failed payments <span class="count">2</span></a>
+        <a class="tab" href="exceptions-overdue.html">Overdue <span class="count">1</span></a>
+        <a class="tab" href="exceptions-disputes.html">Disputes <span class="count">0</span></a>
+        <a class="tab active" href="exceptions-resolved.html">Resolved (30d) <span class="count">8</span></a>
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <div>
+          <div class="table-wrap">
+            <div class="table-toolbar">
+              <div class="topbar-search" style="flex:1;max-width:340px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" placeholder="Search resolved exceptions…" />
+              </div>
+              <select class="select select-sm"><option>All types</option><option>Failed payments</option><option>Overdue</option><option>Disputes</option></select>
+              <select class="select select-sm"><option>All outcomes</option><option>Recovered</option><option>Cancelled</option><option>Manual payment</option></select>
+              <select class="select select-sm"><option>Last 30 days</option><option>Last 7 days</option><option>This month</option></select>
+              <div class="grow"></div>
+              <button class="btn btn-ghost btn-sm">More filters</button>
+            </div>
+
+            <table class="data">
+              <thead><tr><th>Exception</th><th>Type</th><th>Customer / Lay-by</th><th>Amount</th><th>Resolution</th><th>Outcome</th><th>Time</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><a href="exception-detail.html" class="cell-id">EX-2026-00040</a><div class="cell-muted" style="font-size:11.5px">Resolved today · 09:32</div></td>
+                  <td><span class="pill pill-pending">Failed payment</span></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">SM</div><div><div class="cell-strong">Sarah Mitchell</div><div class="cell-muted"><a href="layby-detail.html" class="cell-id" style="font-size:11.5px">LB-2026-00891</a> · Galaxy S25 Ultra</div></div></div></td>
+                  <td><span class="cell-amount">$47.47</span></td>
+                  <td>Card updated by customer<div class="cell-muted">Visa ··4242 → ··8810</div></td>
+                  <td><span class="pill pill-active">Recovered</span></td>
+                  <td>0.5 days</td>
+                  <td><a href="exception-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="exception-detail.html" class="cell-id">EX-2026-00039</a><div class="cell-muted" style="font-size:11.5px">Resolved 03 May</div></td>
+                  <td><span class="pill pill-pending">Failed payment</span></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">JO</div><div><div class="cell-strong">James O'Connor</div><div class="cell-muted"><a href="layby-detail.html" class="cell-id" style="font-size:11.5px">LB-2026-00871</a> · Apple Watch Ultra 3</div></div></div></td>
+                  <td><span class="cell-amount">$32.47</span></td>
+                  <td>Manual retry succeeded<div class="cell-muted">After funds cleared</div></td>
+                  <td><span class="pill pill-active">Recovered</span></td>
+                  <td>1.2 days</td>
+                  <td><a href="exception-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="exception-detail.html" class="cell-id">EX-2026-00036</a><div class="cell-muted" style="font-size:11.5px">Resolved 28 Apr</div></td>
+                  <td><span class="pill pill-overdue">Overdue</span></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">EW</div><div><div class="cell-strong">Emma Wilson</div><div class="cell-muted"><a href="layby-detail.html" class="cell-id" style="font-size:11.5px">LB-2026-00852</a> · MacBook Pro M4</div></div></div></td>
+                  <td><span class="cell-amount">$62.47</span></td>
+                  <td>Phone call → manual transfer<div class="cell-muted">Customer paid via bank deposit</div></td>
+                  <td><span class="pill pill-active">Manual payment</span></td>
+                  <td>2.8 days</td>
+                  <td><a href="exception-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="exception-detail.html" class="cell-id">EX-2026-00034</a><div class="cell-muted" style="font-size:11.5px">Resolved 24 Apr</div></td>
+                  <td><span class="pill pill-pending">Failed payment</span></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">CH</div><div><div class="cell-strong">Chloe Harper</div><div class="cell-muted"><a href="layby-detail.html" class="cell-id" style="font-size:11.5px">LB-2026-00786</a> · iPhone 16 Pro Max</div></div></div></td>
+                  <td><span class="cell-amount">$54.97</span></td>
+                  <td>Card updated by customer<div class="cell-muted">Mastercard ··2241</div></td>
+                  <td><span class="pill pill-active">Recovered</span></td>
+                  <td>1.7 days</td>
+                  <td><a href="exception-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="exception-detail.html" class="cell-id">EX-2026-00033</a><div class="cell-muted" style="font-size:11.5px">Resolved 22 Apr</div></td>
+                  <td><span class="pill pill-pending">Failed payment</span></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">RK</div><div><div class="cell-strong">Ravi Krishnan</div><div class="cell-muted"><a href="layby-detail.html" class="cell-id" style="font-size:11.5px">LB-2026-00819</a> · iPad Air 13"</div></div></div></td>
+                  <td><span class="cell-amount">$22.47</span></td>
+                  <td>Auto-retry succeeded<div class="cell-muted">2nd retry · funds cleared</div></td>
+                  <td><span class="pill pill-active">Recovered</span></td>
+                  <td>0.8 days</td>
+                  <td><a href="exception-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="exception-detail.html" class="cell-id">EX-2026-00031</a><div class="cell-muted" style="font-size:11.5px">Resolved 18 Apr</div></td>
+                  <td><span class="pill pill-overdue">Overdue</span></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">ZP</div><div><div class="cell-strong">Zoe Park</div><div class="cell-muted"><a href="layby-detail.html" class="cell-id" style="font-size:11.5px">LB-2026-00614</a> · Sony WH-1000XM6</div></div></div></td>
+                  <td><span class="cell-amount">$78.59</span></td>
+                  <td>Customer requested cancellation<div class="cell-muted">Hardship · 3 failures total</div></td>
+                  <td><span class="pill pill-overdue">Cancelled</span></td>
+                  <td>4.3 days</td>
+                  <td><a href="exception-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="exception-detail.html" class="cell-id">EX-2026-00029</a><div class="cell-muted" style="font-size:11.5px">Resolved 15 Apr</div></td>
+                  <td><span class="pill pill-pending">Failed payment</span></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">ML</div><div><div class="cell-strong">Marcus Lee</div><div class="cell-muted"><a href="layby-detail.html" class="cell-id" style="font-size:11.5px">LB-2026-00803</a> · Galaxy S25 Ultra</div></div></div></td>
+                  <td><span class="cell-amount">$47.47</span></td>
+                  <td>Card updated by customer<div class="cell-muted">Visa ··6612</div></td>
+                  <td><span class="pill pill-active">Recovered</span></td>
+                  <td>1.4 days</td>
+                  <td><a href="exception-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="exception-detail.html" class="cell-id">EX-2026-00027</a><div class="cell-muted" style="font-size:11.5px">Resolved 10 Apr</div></td>
+                  <td><span class="pill pill-overdue">Overdue</span></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">DP</div><div><div class="cell-strong">Damian Park</div><div class="cell-muted"><a href="layby-detail.html" class="cell-id" style="font-size:11.5px">LB-2025-19402</a> · iPhone 16 Pro Max</div></div></div></td>
+                  <td><span class="cell-amount">$549.75</span></td>
+                  <td>Final cancellation<div class="cell-muted">3 retries failed · auto-cancelled</div></td>
+                  <td><span class="pill pill-overdue">Cancelled</span></td>
+                  <td>6.1 days</td>
+                  <td><a href="exception-detail.html" class="link">View →</a></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pager"><div class="pager-info">Showing 1–8 of 8 resolved (last 30 days)</div></div>
+          </div>
+        </div>
+
+        <aside class="side-col">
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Outcomes (30d)</h3></div>
+            <div style="padding:14px 22px 18px">
+              <div class="reason-row"><span class="reason-name">Recovered</span><span class="reason-bar"><span class="reason-fill" style="width:62%"></span></span><span class="reason-val">5</span></div>
+              <div class="reason-row"><span class="reason-name">Manual payment</span><span class="reason-bar"><span class="reason-fill" style="width:13%"></span></span><span class="reason-val">1</span></div>
+              <div class="reason-row"><span class="reason-name">Cancelled</span><span class="reason-bar"><span class="reason-fill" style="width:25%"></span></span><span class="reason-val">2</span></div>
+            </div>
+            <div class="card-foot">
+              <span class="cell-muted" style="font-size:12px">75% recovery rate is above industry avg (62%)</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Resolution method</h3></div>
+            <div style="padding:14px 22px 18px">
+              <div class="reason-row"><span class="reason-name">Card updated</span><span class="reason-bar"><span class="reason-fill" style="width:50%"></span></span><span class="reason-val">3</span></div>
+              <div class="reason-row"><span class="reason-name">Manual retry / auto</span><span class="reason-bar"><span class="reason-fill" style="width:33%"></span></span><span class="reason-val">2</span></div>
+              <div class="reason-row"><span class="reason-name">Phone call</span><span class="reason-bar"><span class="reason-fill" style="width:17%"></span></span><span class="reason-val">1</span></div>
+              <div class="reason-row"><span class="reason-name">Auto-cancelled</span><span class="reason-bar"><span class="reason-fill" style="width:33%"></span></span><span class="reason-val">2</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Performance</h3></div>
+            <div class="kv"><span>Avg time to resolve</span><b style="color:var(--success-30)">2.4 days</b></div>
+            <div class="kv"><span>Industry avg</span><b>4.1 days</b></div>
+            <div class="kv"><span>Fastest resolution</span><b>0.5 days</b></div>
+            <div class="kv"><span>Slowest resolution</span><b>6.1 days</b></div>
+            <div class="kv"><span>Within SLA</span><b style="color:var(--success-30)">8 of 8</b></div>
+            <div class="card-foot">
+              <span class="cell-muted" style="font-size:12px">All resolved before SLA breach — strong record</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("exceptions","Resolved (30d)","8 exceptions resolved · 71% recovery");</script>
+</body>
+</html>

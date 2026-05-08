@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Active Customers · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Customers</h1>
+          <p class="page-sub">Customers with at least one lay-by currently being paid off</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Export CSV</button>
+          <button class="btn btn-primary">Send broadcast</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-info"><div class="kpi-label">Active Customers</div><div class="kpi-value">42</div><div class="kpi-meta">14.8% of total customer base</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Active Lay-Bys</div><div class="kpi-value">47</div><div class="kpi-meta">$84,290 in flight</div></div>
+        <div class="kpi kpi-gold"><div class="kpi-label">Avg Lay-Bys per Active</div><div class="kpi-value">1.12</div><div class="kpi-meta">5 customers have 2+ active</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Avg Active Value</div><div class="kpi-value">$2,007</div><div class="kpi-meta">Combined balance per customer</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="customers.html">All <span class="count">284</span></a>
+        <a class="tab active" href="customers-active.html">Active <span class="count">42</span></a>
+        <a class="tab" href="customers-repeat.html">Repeat <span class="count">86</span></a>
+        <a class="tab" href="customers-at-risk.html">At risk <span class="count">2</span></a>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search active customers…" />
+          </div>
+          <select class="select select-sm"><option>All payment scores</option><option>A+ · Excellent</option><option>A · Good</option><option>B · Some misses</option></select>
+          <select class="select select-sm"><option>All locations</option><option>NSW</option><option>VIC</option><option>QLD</option><option>WA</option></select>
+          <select class="select select-sm"><option>Sort: Highest LTV</option><option>Most active lay-bys</option><option>Newest</option><option>Most progress</option></select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr>
+            <th>Customer</th><th>Active lay-bys</th><th>Active balance</th><th>Next payment</th><th>Payment score</th><th>Lifetime spend</th><th></th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">SM</div><div><div class="cell-strong">Sarah Mitchell <span class="pill pill-gold">VIP</span></div><div class="cell-muted">sarah.m@gmail.com · Byron Bay NSW</div></div></div></td>
+              <td><b>2</b><div class="cell-muted" style="font-size:11.5px">Galaxy S25 + iPad Air</div></td>
+              <td><span class="cell-amount">$1,567</span><div class="cell-muted" style="font-size:11.5px">remaining</div></td>
+              <td><span class="cell-amount">$70</span><div class="cell-muted" style="font-size:11.5px">11 May 2026</div></td>
+              <td><b style="color:var(--success-30)">A+</b><div class="cell-muted" style="font-size:11.5px">100% on time</div></td>
+              <td><span class="cell-amount">$5,847</span></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">EW</div><div><div class="cell-strong">Emma Wilson</div><div class="cell-muted">emma.w@yahoo.com · Brisbane QLD</div></div></div></td>
+              <td><b>1</b><div class="cell-muted" style="font-size:11.5px">MacBook Pro M4</div></td>
+              <td><span class="cell-amount">$1,265</span><div class="cell-muted" style="font-size:11.5px">remaining</div></td>
+              <td><span class="cell-amount">$62.47</span><div class="cell-muted" style="font-size:11.5px">12 May 2026</div></td>
+              <td><b style="color:var(--success-30)">A+</b><div class="cell-muted" style="font-size:11.5px">100% on time</div></td>
+              <td><span class="cell-amount">$2,499</span></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">RK</div><div><div class="cell-strong">Ravi Krishnan</div><div class="cell-muted">ravi.k@gmail.com · Perth WA</div></div></div></td>
+              <td><b>1</b><div class="cell-muted" style="font-size:11.5px">iPad Air 13"</div></td>
+              <td><span class="cell-amount">$427</span><div class="cell-muted" style="font-size:11.5px">remaining</div></td>
+              <td><span class="cell-amount">$22.47</span><div class="cell-muted" style="font-size:11.5px">13 May 2026</div></td>
+              <td><b style="color:var(--success-30)">A+</b><div class="cell-muted" style="font-size:11.5px">100% on time</div></td>
+              <td><span class="cell-amount">$3,194</span></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">CH</div><div><div class="cell-strong">Chloe Harper</div><div class="cell-muted">chloe.h@gmail.com · Sydney NSW</div></div></div></td>
+              <td><b>1</b><div class="cell-muted" style="font-size:11.5px">iPhone 16 Pro Max</div></td>
+              <td><span class="cell-amount">$549</span><div class="cell-muted" style="font-size:11.5px">remaining · 75% paid</div></td>
+              <td><span class="cell-amount">$54.97</span><div class="cell-muted" style="font-size:11.5px">14 May 2026</div></td>
+              <td><b style="color:var(--success-30)">A</b><div class="cell-muted" style="font-size:11.5px">96% on time</div></td>
+              <td><span class="cell-amount">$3,597</span></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">TW</div><div><div class="cell-strong">Tom Whitfield</div><div class="cell-muted">tom.w@gmail.com · Melbourne VIC</div></div></div></td>
+              <td><b>1</b><div class="cell-muted" style="font-size:11.5px">Bose QC Ultra</div></td>
+              <td><span class="cell-amount">$202</span><div class="cell-muted" style="font-size:11.5px">remaining</div></td>
+              <td><span class="cell-amount" style="color:var(--warn-30)">$45.00</span><div class="cell-muted" style="color:var(--warn-30);font-size:11.5px">Retry 06 May</div></td>
+              <td><b style="color:var(--warn-30)">B</b><div class="cell-muted" style="font-size:11.5px">1 recent failure</div></td>
+              <td><span class="cell-amount">$649</span></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">DK</div><div><div class="cell-strong">Daniel Kovac</div><div class="cell-muted">daniel.k@gmail.com · Canberra ACT</div></div></div></td>
+              <td><b>1</b><div class="cell-muted" style="font-size:11.5px">Sony WH-1000XM6</div></td>
+              <td><span class="cell-amount">$242</span><div class="cell-muted" style="font-size:11.5px">remaining</div></td>
+              <td><span class="cell-amount" style="color:var(--warn-30)">$62.20</span><div class="cell-muted" style="color:var(--warn-30);font-size:11.5px">Retry 06 May</div></td>
+              <td><b style="color:var(--warn-30)">B</b><div class="cell-muted" style="font-size:11.5px">DD dishonour</div></td>
+              <td><span class="cell-amount">$1,098</span></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">JK</div><div><div class="cell-strong">Jamie Kim</div><div class="cell-muted">jamie.k@gmail.com · Sydney NSW</div></div></div></td>
+              <td><b>1</b><div class="cell-muted" style="font-size:11.5px">Pixel 9 Pro XL</div></td>
+              <td><span class="cell-amount">$1,279</span><div class="cell-muted" style="font-size:11.5px">remaining</div></td>
+              <td><span class="cell-amount">$39.97</span><div class="cell-muted" style="font-size:11.5px">15 May 2026</div></td>
+              <td><b style="color:var(--success-30)">A</b><div class="cell-muted" style="font-size:11.5px">98% on time</div></td>
+              <td><span class="cell-amount">$1,599</span></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">AS</div><div><div class="cell-strong">Aaron Singh</div><div class="cell-muted">aaron.s@hotmail.com · Adelaide SA</div></div></div></td>
+              <td><b>1</b><div class="cell-muted" style="font-size:11.5px">Galaxy Buds 3 Pro</div></td>
+              <td><span class="cell-amount">$165</span><div class="cell-muted" style="font-size:11.5px">remaining · 50% paid</div></td>
+              <td><span class="cell-amount">$10.28</span><div class="cell-muted" style="font-size:11.5px">15 May 2026</div></td>
+              <td><b style="color:var(--success-30)">A+</b><div class="cell-muted" style="font-size:11.5px">100% on time</div></td>
+              <td><span class="cell-amount">$329</span></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pager"><div class="pager-info">Showing 1–8 of 42 active customers</div><div class="pagination"><button class="btn btn-sm">←</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm">2</button><button class="btn btn-sm">3</button><button class="btn btn-sm">→</button></div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("customers","Active Customers","42 customers · 47 lay-bys in flight");</script>
+</body>
+</html>

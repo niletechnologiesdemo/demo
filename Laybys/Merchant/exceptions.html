@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Exceptions · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Exceptions</h1>
+          <p class="page-sub">Failed payments, disputes and at-risk lay-bys requiring attention</p>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-danger"><div class="kpi-label">Open</div><div class="kpi-value">3</div><div class="kpi-meta">1 critical · 2 high</div></div>
+        <div class="kpi kpi-warn"><div class="kpi-label">Failed Payments</div><div class="kpi-value">2</div><div class="kpi-meta">Auto-retry in progress</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Disputes</div><div class="kpi-value">0</div><div class="kpi-meta">Clean track record</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Resolved (30d)</div><div class="kpi-value">8</div><div class="kpi-meta">All recovered</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab active" href="exceptions.html">All open <span class="count">3</span></a>
+        <a class="tab" href="exceptions-failed.html">Failed payments <span class="count">2</span></a>
+        <a class="tab" href="exceptions-overdue.html">Overdue <span class="count">1</span></a>
+        <a class="tab" href="exceptions-disputes.html">Disputes <span class="count">0</span></a>
+        <a class="tab" href="exceptions-resolved.html">Resolved (30d) <span class="count">8</span></a>
+      </div>
+
+      <div class="card">
+        <div class="exceptions-list">
+          <div class="exception-row exception-danger">
+            <div class="exception-pri"><span class="pill pill-overdue">P1 · Critical</span></div>
+            <div class="exception-main">
+              <div class="exception-head">
+                <a href="exception-detail.html" class="cell-id">EX-2026-00041</a>
+                <span class="exception-type">Lay-By Overdue 8 days</span>
+              </div>
+              <div class="exception-title">LB-2026-00827 — Liam Bennett · AirPods Pro 2</div>
+              <div class="exception-meta">$24.50 instalment · Card declined "do not honour" · 3 retries exhausted · Customer notified by SMS 03 May</div>
+            </div>
+            <div class="exception-actions">
+              <button class="btn btn-ghost btn-sm">Send Email</button>
+              <a href="exception-detail.html" class="btn btn-sm btn-primary">Resolve</a>
+            </div>
+          </div>
+
+          <div class="exception-row exception-warn">
+            <div class="exception-pri"><span class="pill pill-pending">P2 · High</span></div>
+            <div class="exception-main">
+              <div class="exception-head">
+                <a href="exception-detail.html" class="cell-id">EX-2026-00038</a>
+                <span class="exception-type">Payment Failed × 3 (Retry Exhausted)</span>
+              </div>
+              <div class="exception-title">LB-2026-04188 — Tom Whitfield · Bose QuietComfort Ultra</div>
+              <div class="exception-meta">$45.00 instalment · Card declined "insufficient funds" · Auto-retried 04 May 22:00 · Wed 06 May 17:00</div>
+            </div>
+            <div class="exception-actions">
+              <button class="btn btn-ghost btn-sm">Update Card</button>
+              <a href="exception-detail.html" class="btn btn-sm btn-primary">Manual Retry</a>
+            </div>
+          </div>
+
+          <div class="exception-row exception-warn">
+            <div class="exception-pri"><span class="pill pill-pending">P2 · High</span></div>
+            <div class="exception-main">
+              <div class="exception-head">
+                <a href="exception-detail.html" class="cell-id">EX-2026-00037</a>
+                <span class="exception-type">Direct Debit Dishonour</span>
+              </div>
+              <div class="exception-title">LB-2026-03917 — Daniel Kovac · Sony WH-1000XM6</div>
+              <div class="exception-meta">$62.20 instalment · Bank reason "account closed" · Customer notified by SMS 03 May 09:00 · Wed 06 May 17:00</div>
+            </div>
+            <div class="exception-actions">
+              <button class="btn btn-ghost btn-sm">Send Email</button>
+              <a href="exception-detail.html" class="btn btn-sm btn-primary">Reach Out</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("exceptions","Exceptions","Issues requiring your attention");</script>
+</body>
+</html>

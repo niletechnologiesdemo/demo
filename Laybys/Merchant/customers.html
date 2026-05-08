@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Customers · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Customers</h1>
+          <p class="page-sub">People who have purchased from TechZone Australia</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Export CSV</button>
+          <button class="btn btn-primary">Send broadcast email</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-info"><div class="kpi-label">Total Customers</div><div class="kpi-value">284</div><div class="kpi-meta">Lifetime</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Active (Lay-by)</div><div class="kpi-value">42</div><div class="kpi-meta">Currently paying</div></div>
+        <div class="kpi kpi-gold"><div class="kpi-label">Repeat Customers</div><div class="kpi-value">86</div><div class="kpi-meta">30% repeat rate</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Avg Lifetime Value</div><div class="kpi-value">$1,732</div><div class="kpi-meta">Across 284 customers</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab active" href="customers.html">All <span class="count">284</span></a>
+        <a class="tab" href="customers-active.html">Active <span class="count">42</span></a>
+        <a class="tab" href="customers-repeat.html">Repeat <span class="count">86</span></a>
+        <a class="tab" href="customers-at-risk.html">At risk <span class="count">2</span></a>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search by name, email, or customer ID…" />
+          </div>
+          <select class="select select-sm"><option>All status</option><option>Active</option><option>Completed</option><option>At risk</option></select>
+          <select class="select select-sm"><option>Sort: Highest LTV</option><option>Newest</option><option>Most lay-bys</option></select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr><th>Customer</th><th>Lay-bys</th><th>Lifetime spend</th><th>Last purchase</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="cell-thumb"><div class="avatar avatar-sm">SM</div><div><div class="cell-strong">Sarah Mitchell</div><div class="cell-muted">sarah.m@gmail.com · Byron Bay</div></div></div></td><td><b>4</b><div class="cell-muted" style="font-size:11.5px">2 active · 2 done</div></td><td><span class="cell-amount">$5,847</span></td><td>Today<div class="cell-muted">Galaxy S25 Ultra</div></td><td><span class="pill pill-active">Active</span></td><td><a href="customer-detail.html" class="link">View →</a></td></tr>
+            <tr><td><div class="cell-thumb"><div class="avatar avatar-sm">PN</div><div><div class="cell-strong">Priya Nair</div><div class="cell-muted">priya.n@gmail.com · Sydney</div></div></div></td><td><b>3</b><div class="cell-muted" style="font-size:11.5px">0 active · 3 done</div></td><td><span class="cell-amount">$2,247</span></td><td>Today<div class="cell-muted">Sony WH-1000XM6</div></td><td><span class="pill pill-completed">Completed</span></td><td><a href="customer-detail.html" class="link">View →</a></td></tr>
+            <tr><td><div class="cell-thumb"><div class="avatar avatar-sm">JO</div><div><div class="cell-strong">James O'Connor</div><div class="cell-muted">james.oc@outlook.com · Melbourne</div></div></div></td><td><b>2</b><div class="cell-muted" style="font-size:11.5px">0 active · 2 done</div></td><td><span class="cell-amount">$2,748</span></td><td>Yesterday<div class="cell-muted">Apple Watch Ultra 3</div></td><td><span class="pill pill-completed">Completed</span></td><td><a href="customer-detail.html" class="link">View →</a></td></tr>
+            <tr><td><div class="cell-thumb"><div class="avatar avatar-sm">EW</div><div><div class="cell-strong">Emma Wilson</div><div class="cell-muted">emma.w@yahoo.com · Brisbane</div></div></div></td><td><b>1</b><div class="cell-muted" style="font-size:11.5px">1 active</div></td><td><span class="cell-amount">$2,499</span></td><td>15 Mar 2026<div class="cell-muted">MacBook Pro M4</div></td><td><span class="pill pill-active">Active</span></td><td><a href="customer-detail.html" class="link">View →</a></td></tr>
+            <tr><td><div class="cell-thumb"><div class="avatar avatar-sm">LB</div><div><div class="cell-strong">Liam Bennett</div><div class="cell-muted">liam.b@hotmail.com · Adelaide</div></div></div></td><td><b>2</b><div class="cell-muted" style="font-size:11.5px">1 overdue · 1 done</div></td><td><span class="cell-amount">$847</span></td><td>28 Feb 2026<div class="cell-muted">AirPods Pro 2</div></td><td><span class="pill pill-overdue">At risk</span></td><td><a href="customer-detail.html" class="link">View →</a></td></tr>
+            <tr><td><div class="cell-thumb"><div class="avatar avatar-sm">RK</div><div><div class="cell-strong">Ravi Krishnan</div><div class="cell-muted">ravi.k@gmail.com · Perth</div></div></div></td><td><b>3</b><div class="cell-muted" style="font-size:11.5px">1 active · 2 done</div></td><td><span class="cell-amount">$3,194</span></td><td>22 Feb 2026<div class="cell-muted">iPad Air 13"</div></td><td><span class="pill pill-active">Active</span></td><td><a href="customer-detail.html" class="link">View →</a></td></tr>
+            <tr><td><div class="cell-thumb"><div class="avatar avatar-sm">CH</div><div><div class="cell-strong">Chloe Harper</div><div class="cell-muted">chloe.h@gmail.com · Sydney</div></div></div></td><td><b>2</b><div class="cell-muted" style="font-size:11.5px">1 active · 1 done</div></td><td><span class="cell-amount">$3,597</span></td><td>10 Feb 2026<div class="cell-muted">iPhone 16 Pro Max</div></td><td><span class="pill pill-active">Active</span></td><td><a href="customer-detail.html" class="link">View →</a></td></tr>
+            <tr><td><div class="cell-thumb"><div class="avatar avatar-sm">DK</div><div><div class="cell-strong">Daniel Kovac</div><div class="cell-muted">daniel.k@gmail.com · Canberra</div></div></div></td><td><b>1</b><div class="cell-muted" style="font-size:11.5px">1 done</div></td><td><span class="cell-amount">$549</span></td><td>05 Feb 2026<div class="cell-muted">Sony WH-1000XM6</div></td><td><span class="pill pill-completed">Completed</span></td><td><a href="customer-detail.html" class="link">View →</a></td></tr>
+          </tbody>
+        </table>
+        <div class="pager"><div class="pager-info">Showing 1–8 of 284 customers</div><div class="pagination"><button class="btn btn-sm">←</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm">2</button><button class="btn btn-sm">3</button><button class="btn btn-sm">…</button><button class="btn btn-sm">→</button></div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("customers","Customers","Your customer base");</script>
+</body>
+</html>

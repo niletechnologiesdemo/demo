@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Repeat Customers · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.tier-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.tier-platinum{background:linear-gradient(135deg, #e8d5ff, #f5ebff);color:#4d1d99;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+.tier-gold{background:linear-gradient(135deg, #fff0c7, #fff7d6);color:#854d0e;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+.tier-silver{background:linear-gradient(135deg, #e5e7eb, #f1f3f5);color:#374151;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Customers</h1>
+          <p class="page-sub">Customers who have purchased from you 2 or more times</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Export CSV</button>
+          <button class="btn btn-primary">Send loyalty offer</button>
+        </div>
+      </div>
+
+      <div class="alert alert-success" style="margin-bottom:18px">
+        <div class="alert-icon">✓</div>
+        <div class="alert-body">
+          <div class="alert-title">86 customers have come back to TechZone</div>
+          <div class="alert-text">Your repeat rate is <b>30%</b> — well above the marketplace average of 18%. Repeat customers spend on average <b>2.4×</b> more than first-time buyers and have a 98% on-time payment record. Consider rewarding them with a loyalty discount or early access to new products.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-gold"><div class="kpi-label">Repeat Customers</div><div class="kpi-value">86</div><div class="kpi-meta">30% of total · ▲ 4 pts YoY</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Avg Lay-bys per Repeat</div><div class="kpi-value">2.7</div><div class="kpi-meta">vs 1.0 for first-timers</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Repeat LTV</div><div class="kpi-value">$3,847</div><div class="kpi-meta">2.4× higher than avg</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Repeat Revenue (YTD)</div><div class="kpi-value">$330,840</div><div class="kpi-meta">68% of total volume</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="customers.html">All <span class="count">284</span></a>
+        <a class="tab" href="customers-active.html">Active <span class="count">42</span></a>
+        <a class="tab active" href="customers-repeat.html">Repeat <span class="count">86</span></a>
+        <a class="tab" href="customers-at-risk.html">At risk <span class="count">2</span></a>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search repeat customers…" />
+          </div>
+          <select class="select select-sm"><option>All tiers</option><option>Platinum (5+ lay-bys)</option><option>Gold (3-4)</option><option>Silver (2)</option></select>
+          <select class="select select-sm"><option>Sort: Highest LTV</option><option>Most lay-bys</option><option>Most recent</option><option>Longest customer</option></select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr>
+            <th>Customer</th><th>Tier</th><th>Lay-bys</th><th>Lifetime spend</th><th>Avg ticket</th><th>Customer since</th><th>Last purchase</th><th></th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">SM</div><div><div class="cell-strong">Sarah Mitchell</div><div class="cell-muted">sarah.m@gmail.com · Byron Bay NSW</div></div></div></td>
+              <td><span class="tier-badge tier-platinum">⬢ Platinum</span></td>
+              <td><b>4</b><div class="cell-muted" style="font-size:11.5px">2 active · 2 done</div></td>
+              <td><span class="cell-amount">$5,847</span></td>
+              <td>$1,462</td>
+              <td>Aug 2024<div class="cell-muted">22 months</div></td>
+              <td>Today<div class="cell-muted">Galaxy S25 Ultra</div></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">RK</div><div><div class="cell-strong">Ravi Krishnan</div><div class="cell-muted">ravi.k@gmail.com · Perth WA</div></div></div></td>
+              <td><span class="tier-badge tier-gold">★ Gold</span></td>
+              <td><b>3</b><div class="cell-muted" style="font-size:11.5px">1 active · 2 done</div></td>
+              <td><span class="cell-amount">$3,194</span></td>
+              <td>$1,065</td>
+              <td>Mar 2025<div class="cell-muted">14 months</div></td>
+              <td>22 Feb 2026<div class="cell-muted">iPad Air 13"</div></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">PN</div><div><div class="cell-strong">Priya Nair</div><div class="cell-muted">priya.n@gmail.com · Sydney NSW</div></div></div></td>
+              <td><span class="tier-badge tier-gold">★ Gold</span></td>
+              <td><b>3</b><div class="cell-muted" style="font-size:11.5px">0 active · 3 done</div></td>
+              <td><span class="cell-amount">$2,247</span></td>
+              <td>$749</td>
+              <td>Jun 2025<div class="cell-muted">11 months</div></td>
+              <td>Today<div class="cell-muted">Sony WH-1000XM6</div></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">JO</div><div><div class="cell-strong">James O'Connor</div><div class="cell-muted">james.oc@outlook.com · Melbourne VIC</div></div></div></td>
+              <td><span class="tier-badge tier-silver">◆ Silver</span></td>
+              <td><b>2</b><div class="cell-muted" style="font-size:11.5px">0 active · 2 done</div></td>
+              <td><span class="cell-amount">$2,748</span></td>
+              <td>$1,374</td>
+              <td>Jul 2025<div class="cell-muted">10 months</div></td>
+              <td>Yesterday<div class="cell-muted">Apple Watch Ultra 3</div></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">LB</div><div><div class="cell-strong">Liam Bennett</div><div class="cell-muted">liam.b@hotmail.com · Adelaide SA</div></div></div></td>
+              <td><span class="tier-badge tier-silver">◆ Silver</span></td>
+              <td><b>2</b><div class="cell-muted" style="font-size:11.5px">1 overdue · 1 done</div></td>
+              <td><span class="cell-amount">$847</span></td>
+              <td>$424</td>
+              <td>Sep 2025<div class="cell-muted">8 months</div></td>
+              <td>28 Feb 2026<div class="cell-muted">AirPods Pro 2</div></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">CH</div><div><div class="cell-strong">Chloe Harper</div><div class="cell-muted">chloe.h@gmail.com · Sydney NSW</div></div></div></td>
+              <td><span class="tier-badge tier-silver">◆ Silver</span></td>
+              <td><b>2</b><div class="cell-muted" style="font-size:11.5px">1 active · 1 done</div></td>
+              <td><span class="cell-amount">$3,597</span></td>
+              <td>$1,799</td>
+              <td>Oct 2025<div class="cell-muted">7 months</div></td>
+              <td>10 Feb 2026<div class="cell-muted">iPhone 16 Pro Max</div></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">DK</div><div><div class="cell-strong">Daniel Kovac</div><div class="cell-muted">daniel.k@gmail.com · Canberra ACT</div></div></div></td>
+              <td><span class="tier-badge tier-silver">◆ Silver</span></td>
+              <td><b>2</b><div class="cell-muted" style="font-size:11.5px">1 active · 1 done</div></td>
+              <td><span class="cell-amount">$1,098</span></td>
+              <td>$549</td>
+              <td>Nov 2025<div class="cell-muted">6 months</div></td>
+              <td>28 Feb 2026<div class="cell-muted">Sony WH-1000XM6</div></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">EW</div><div><div class="cell-strong">Emma Wilson</div><div class="cell-muted">emma.w@yahoo.com · Brisbane QLD</div></div></div></td>
+              <td><span class="tier-badge tier-silver">◆ Silver</span></td>
+              <td><b>2</b><div class="cell-muted" style="font-size:11.5px">1 active · 1 done</div></td>
+              <td><span class="cell-amount">$3,798</span></td>
+              <td>$1,899</td>
+              <td>Jul 2025<div class="cell-muted">10 months</div></td>
+              <td>15 Mar 2026<div class="cell-muted">MacBook Pro M4</div></td>
+              <td><a href="customer-detail.html" class="link">View →</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pager"><div class="pager-info">Showing 1–8 of 86 repeat customers</div><div class="pagination"><button class="btn btn-sm">←</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm">2</button><button class="btn btn-sm">3</button><button class="btn btn-sm">…</button><button class="btn btn-sm">→</button></div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("customers","Repeat Customers","86 customers · 30% repeat rate");</script>
+</body>
+</html>

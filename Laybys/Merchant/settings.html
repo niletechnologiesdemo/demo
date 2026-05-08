@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Settings · Business Profile · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Settings</h1>
+          <p class="page-sub">Manage your business profile, banking, and notifications</p>
+        </div>
+      </div>
+
+      <div class="detail-grid" style="grid-template-columns:240px minmax(0,1fr)">
+        <aside class="settings-nav">
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Profile</div>
+            <a href="settings.html" class="settings-nav-link active">Business profile</a>
+          </div>
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Money</div>
+            <a href="settings-banking.html" class="settings-nav-link">Banking &amp; tax</a>
+          </div>
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Account</div>
+            <a href="settings-notifications.html" class="settings-nav-link">Notifications</a>
+          </div>
+        </aside>
+
+        <div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Business profile</h3><div class="card-actions"><button class="btn btn-primary btn-sm">Save changes</button></div></div>
+            <div class="card-body">
+              <div class="profile-head" style="margin-bottom:18px">
+                <div class="avatar avatar-xl">TZ</div>
+                <div>
+                  <div style="font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--on-surface)">TechZone Australia Pty Ltd</div>
+                  <div class="cell-muted" style="font-size:13px">Merchant since 14 Jan 2024 · Active</div>
+                  <button class="btn btn-ghost btn-sm" style="margin-top:8px">Upload logo</button>
+                </div>
+              </div>
+              <div class="form-grid form-grid-2">
+                <div class="field"><label class="field-label">Trading name</label><input class="input" value="TechZone Australia"></div>
+                <div class="field"><label class="field-label">Legal entity</label><input class="input" value="TechZone Australia Pty Ltd"></div>
+                <div class="field"><label class="field-label">ABN</label><input class="input mono" value="47 612 938 401" disabled></div>
+                <div class="field"><label class="field-label">ACN</label><input class="input mono" value="612 938 401" disabled></div>
+                <div class="field"><label class="field-label">Industry</label><select class="select"><option>Consumer Electronics</option><option>Home &amp; Lifestyle</option></select></div>
+                <div class="field"><label class="field-label">Year established</label><input class="input" value="2019"></div>
+                <div class="field" style="grid-column:1/-1"><label class="field-label">Description</label><textarea class="input" rows="3">Premium consumer electronics retailer specialising in smartphones, laptops, audio and wearables. Authorised dealer for Samsung, Apple, Sony, and Bose.</textarea></div>
+                <div class="field" style="grid-column:1/-1"><label class="field-label">Website</label><input class="input" value="https://techzone.com.au"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Contact &amp; address</h3></div>
+            <div class="card-body">
+              <div class="form-grid form-grid-2">
+                <div class="field"><label class="field-label">Primary email</label><input class="input" value="hello@techzone.com.au"></div>
+                <div class="field"><label class="field-label">Phone</label><input class="input" value="+61 2 8331 4200"></div>
+                <div class="field" style="grid-column:1/-1"><label class="field-label">Street address</label><input class="input" value="Unit 14, 22 Wilson Street"></div>
+                <div class="field"><label class="field-label">Suburb / city</label><input class="input" value="Alexandria"></div>
+                <div class="field"><label class="field-label">State</label><select class="select"><option>NSW</option><option>VIC</option></select></div>
+                <div class="field"><label class="field-label">Postcode</label><input class="input" value="2015"></div>
+                <div class="field"><label class="field-label">Country</label><select class="select"><option>Australia</option></select></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Public profile preview</h3><div class="card-actions"><span class="cell-muted" style="font-size:12px">How customers see you on the marketplace</span></div></div>
+            <div class="card-body">
+              <div style="display:flex;gap:14px;align-items:center;padding:14px;background:var(--surface-1);border:1px solid var(--outline-variant);border-radius:var(--r)">
+                <div class="avatar avatar-xl">TZ</div>
+                <div style="flex:1">
+                  <div style="font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--on-surface)">TechZone Australia <span class="pill pill-active">Verified merchant</span></div>
+                  <div class="cell-muted" style="font-size:13px;margin-top:3px">⭐ 4.8 / 5 · 142 reviews · Australia-wide shipping · 12-month warranty</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("settings","Settings","Business profile");</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Completed Lay-Bys · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Orders &amp; Lay-Bys</h1>
+          <p class="page-sub">Lay-bys that have been paid in full and shipped</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-success"><div class="kpi-label">Completed YTD</div><div class="kpi-value">312</div><div class="kpi-meta">$487,290 total volume</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">This Month</div><div class="kpi-value">18</div><div class="kpi-meta">$28,460 · ▲ 12% MoM</div></div>
+        <div class="kpi kpi-gold"><div class="kpi-label">Avg Term</div><div class="kpi-value">31.4 wk</div><div class="kpi-meta">Customers stay engaged</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Repeat Rate</div><div class="kpi-value">28%</div><div class="kpi-meta">86 customers came back</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="laybys.html">All <span class="count">371</span></a>
+        <a class="tab" href="laybys-active.html">Active <span class="count">47</span></a>
+        <a class="tab" href="laybys-ready.html">Ready to ship <span class="count">3</span></a>
+        <a class="tab active" href="laybys-completed.html">Completed <span class="count">312</span></a>
+        <a class="tab" href="laybys-cancelled.html">Cancelled <span class="count">9</span></a>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search completed lay-bys…" />
+          </div>
+          <select class="select select-sm"><option>All products</option><option>Galaxy S25 Ultra</option><option>Sony WH-1000XM6</option></select>
+          <select class="select select-sm"><option>This year</option><option>Last 90 days</option><option>Last 30 days</option><option>All time</option></select>
+          <select class="select select-sm"><option>Sort: Most recent</option><option>Highest value</option><option>Customer A→Z</option></select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr><th>Agreement</th><th>Customer</th><th>Product</th><th>Total</th><th>Term</th><th>Shipped</th><th>Net to you</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2025-15188</a><div class="cell-muted" style="font-size:11.5px">Started 02 Sep 2025</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">SM</div><div><div class="cell-strong">Sarah Mitchell</div><div class="cell-muted">Repeat customer · 4 lay-bys</div></div></div></td>
+              <td><span class="cell-strong">AirPods Pro 2</span><div class="cell-muted">USB-C</div></td>
+              <td><span class="cell-amount">$399.00</span></td>
+              <td>32 weeks</td>
+              <td>15 Apr 2026<div class="cell-muted">AusPost · delivered</div></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$379.05</span></td>
+              <td><span class="pill pill-completed">Delivered</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2025-14092</a><div class="cell-muted" style="font-size:11.5px">Started 18 Aug 2025</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">PN</div><div><div class="cell-strong">Priya Nair</div><div class="cell-muted">Repeat customer · 3 lay-bys</div></div></div></td>
+              <td><span class="cell-strong">iPad Air 13"</span><div class="cell-muted">256GB Space Grey</div></td>
+              <td><span class="cell-amount">$899.00</span></td>
+              <td>32 weeks</td>
+              <td>02 Apr 2026<div class="cell-muted">AusPost · delivered</div></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$854.05</span></td>
+              <td><span class="pill pill-completed">Delivered</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2025-13885</a><div class="cell-muted" style="font-size:11.5px">Started 10 Aug 2025</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">DK</div><div><div class="cell-strong">Daniel Kovac</div><div class="cell-muted">First-time customer</div></div></div></td>
+              <td><span class="cell-strong">Sony WH-1000XM6</span><div class="cell-muted">Black</div></td>
+              <td><span class="cell-amount">$549.00</span></td>
+              <td>32 weeks</td>
+              <td>22 Mar 2026<div class="cell-muted">AusPost · delivered</div></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$521.55</span></td>
+              <td><span class="pill pill-completed">Delivered</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2025-13441</a><div class="cell-muted" style="font-size:11.5px">Started 28 Jul 2025</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">JO</div><div><div class="cell-strong">James O'Connor</div><div class="cell-muted">Repeat customer · 2 lay-bys</div></div></div></td>
+              <td><span class="cell-strong">MacBook Pro M4 14"</span><div class="cell-muted">256GB Silver</div></td>
+              <td><span class="cell-amount">$1,449.00</span></td>
+              <td>32 weeks</td>
+              <td>10 Mar 2026<div class="cell-muted">StarTrack · delivered</div></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$1,376.55</span></td>
+              <td><span class="pill pill-completed">Delivered</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2025-12998</a><div class="cell-muted" style="font-size:11.5px">Started 14 Jul 2025</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">EW</div><div><div class="cell-strong">Emma Wilson</div><div class="cell-muted">First-time customer</div></div></div></td>
+              <td><span class="cell-strong">Apple Watch Ultra 3</span><div class="cell-muted">49mm Titanium</div></td>
+              <td><span class="cell-amount">$1,299.00</span></td>
+              <td>32 weeks</td>
+              <td>24 Feb 2026<div class="cell-muted">AusPost · delivered</div></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$1,234.05</span></td>
+              <td><span class="pill pill-completed">Delivered</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2025-12554</a><div class="cell-muted" style="font-size:11.5px">Started 02 Jul 2025</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">RK</div><div><div class="cell-strong">Ravi Krishnan</div><div class="cell-muted">Repeat customer · 3 lay-bys</div></div></div></td>
+              <td><span class="cell-strong">iPhone 16 Pro Max</span><div class="cell-muted">256GB Titanium Black</div></td>
+              <td><span class="cell-amount">$1,899.00</span></td>
+              <td>32 weeks</td>
+              <td>14 Feb 2026<div class="cell-muted">StarTrack · delivered</div></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$1,804.05</span></td>
+              <td><span class="pill pill-completed">Delivered</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2025-12087</a><div class="cell-muted" style="font-size:11.5px">Started 18 Jun 2025</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">CH</div><div><div class="cell-strong">Chloe Harper</div><div class="cell-muted">Repeat customer · 2 lay-bys</div></div></div></td>
+              <td><span class="cell-strong">Bose QuietComfort Ultra</span><div class="cell-muted">Black</div></td>
+              <td><span class="cell-amount">$649.00</span></td>
+              <td>16 weeks</td>
+              <td>06 Feb 2026<div class="cell-muted">AusPost · delivered</div></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$616.55</span></td>
+              <td><span class="pill pill-completed">Delivered</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2025-11876</a><div class="cell-muted" style="font-size:11.5px">Started 12 Jun 2025</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">ML</div><div><div class="cell-strong">Marcus Lee</div><div class="cell-muted">First-time customer</div></div></div></td>
+              <td><span class="cell-strong">AirPods Pro 2</span><div class="cell-muted">USB-C</div></td>
+              <td><span class="cell-amount">$399.00</span></td>
+              <td>16 weeks</td>
+              <td>02 Feb 2026<div class="cell-muted">AusPost · delivered</div></td>
+              <td><span class="cell-amount" style="color:var(--success-30)">$379.05</span></td>
+              <td><span class="pill pill-completed">Delivered</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pager"><div class="pager-info">Showing 1–8 of 312 completed lay-bys</div><div class="pagination"><button class="btn btn-sm">←</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm">2</button><button class="btn btn-sm">3</button><button class="btn btn-sm">…</button><button class="btn btn-sm">39</button><button class="btn btn-sm">→</button></div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("laybys","Completed Lay-Bys","312 lay-bys delivered");</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Add Product · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.pn-shell{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:flex-start}
+@media(max-width:1100px){.pn-shell{grid-template-columns:1fr}}
+.pn-section{background:var(--surface);border:1px solid var(--outline-variant);border-radius:var(--r-lg);margin-bottom:18px;overflow:hidden;transition:box-shadow .2s var(--easing)}
+.pn-section:hover{box-shadow:var(--elev-1)}
+.pn-section-head{display:flex;align-items:center;gap:12px;padding:18px 22px 14px}
+.pn-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, var(--p-50), var(--p-40));color:#fff;display:grid;place-items:center;flex:none;font-family:var(--font-display);font-weight:600;font-size:14px;box-shadow:0 3px 8px rgba(28,95,184,.3)}
+.pn-title-block{flex:1;min-width:0}
+.pn-title-block h3{font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--on-surface);margin:0;letter-spacing:-.1px;line-height:1.3}
+.pn-title-block p{margin:2px 0 0;font-size:13px;color:var(--on-surface-variant);letter-spacing:.1px}
+.pn-section-body{padding:8px 22px 22px}
+.pn-drop{border:2px dashed var(--outline);background:linear-gradient(135deg, var(--p-95) 0%, var(--surface) 100%);border-radius:var(--r);padding:32px 20px;text-align:center;cursor:pointer;transition:.18s var(--easing)}
+.pn-drop:hover{border-color:var(--primary);background:linear-gradient(135deg, var(--p-90) 0%, var(--p-95) 100%)}
+.pn-drop-icon{width:52px;height:52px;border-radius:14px;margin:0 auto 12px;background:linear-gradient(135deg, var(--p-50), var(--t-40));color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(28,95,184,.25)}
+.pn-drop-title{font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--on-surface);margin-bottom:4px}
+.pn-drop-title b{color:var(--primary);font-weight:600}
+.pn-drop-sub{font-size:12.5px;color:var(--on-surface-variant)}
+.pn-imgs{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+.pn-img{aspect-ratio:1;border-radius:10px;overflow:hidden;position:relative;background:var(--surface-2);border:1px solid var(--outline-variant)}
+.pn-img img{width:100%;height:100%;object-fit:cover}
+.pn-img-primary::before{content:'Primary';position:absolute;top:6px;left:6px;background:linear-gradient(135deg, var(--p-50), var(--p-40));color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px;letter-spacing:.3px;box-shadow:var(--elev-1)}
+.pn-img-add{display:grid;place-items:center;border:2px dashed var(--outline-variant);background:transparent;color:var(--on-surface-variant);font-size:24px;cursor:pointer}
+.pn-img-add:hover{border-color:var(--primary);color:var(--primary);background:var(--p-95)}
+.pn-layby-preview{background:linear-gradient(135deg, var(--warn-95) 0%, var(--s-95) 100%);border:1px solid var(--s-90);border-radius:var(--r);padding:16px 20px;margin-top:16px}
+.pn-layby-preview-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--s-30);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.pn-layby-preview-title::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--s-50)}
+.pn-layby-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;font-size:13.5px;color:var(--s-30)}
+.pn-layby-row b{color:var(--s-10);font-weight:600;font-variant-numeric:tabular-nums}
+.pn-layby-foot{border-top:1px solid var(--s-90);margin-top:5px;padding-top:10px;font-size:14.5px;font-weight:600}
+.pn-layby-foot b{font-size:16px;color:var(--success-30)}
+.pn-rail{position:sticky;top:calc(var(--topbar-h) + 16px);display:flex;flex-direction:column;gap:16px}
+@media(max-width:1100px){.pn-rail{position:static}}
+.pn-publish-card{background:var(--surface);border:1px solid var(--outline-variant);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--elev-1)}
+.pn-publish-head{background:linear-gradient(135deg, var(--p-20) 0%, var(--p-40) 100%);color:#fff;padding:20px 22px}
+.pn-publish-head h3{font-family:var(--font-display);font-size:17px;font-weight:500;margin:0;letter-spacing:-.2px}
+.pn-publish-head p{margin:3px 0 0;font-size:13px;color:rgba(255,255,255,.78)}
+.pn-publish-body{padding:18px 22px 22px}
+.pn-status-pick{display:flex;flex-direction:column;gap:6px}
+.pn-status-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--outline-variant);background:var(--surface);transition:.15s var(--easing)}
+.pn-status-opt:hover{background:var(--surface-1)}
+.pn-status-opt input{margin-top:3px;accent-color:var(--primary)}
+.pn-status-opt-active{background:linear-gradient(135deg, var(--p-95), var(--p-90));border:2px solid var(--primary);padding:10px 13px}
+.pn-status-opt-name{font-size:13.5px;font-weight:500;color:var(--on-surface)}
+.pn-status-opt-sub{font-size:12px;color:var(--on-surface-variant);margin-top:2px;line-height:1.4}
+.pn-checks{margin-top:18px;padding-top:18px;border-top:1px solid var(--outline-variant)}
+.pn-checks-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--on-surface-variant);margin-bottom:10px}
+.pn-check{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:13px;color:var(--on-surface)}
+.pn-check-dot{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:10px;font-weight:700}
+.pn-check-done{background:var(--success-40);color:#fff;box-shadow:0 1px 3px rgba(0,109,68,.3)}
+.pn-check-todo{background:var(--surface-2);color:var(--on-surface-variant);border:1px solid var(--outline-variant)}
+.pn-savebar{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.pn-savebar small{text-align:center;font-size:11.5px;color:var(--on-surface-variant);margin-top:4px}
+.pn-variants table{width:100%;border-collapse:collapse}
+.pn-variants{border:1px solid var(--outline-variant);border-radius:var(--r);overflow:hidden}
+.pn-variants th{text-align:left;padding:11px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--on-surface-variant);background:var(--surface-1);border-bottom:1px solid var(--outline-variant)}
+.pn-variants td{padding:8px;border-bottom:1px solid var(--outline-variant)}
+.pn-variants tr:last-child td{border-bottom:0}
+.pn-variants .input{height:38px;font-size:13px;padding:0 10px}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="breadcrumb"><a href="products.html">Products</a> <span>/</span> <span>Add product</span></div>
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Add a new product</h1>
+          <p class="page-sub">List a new product for sale on the LayBys.com marketplace</p>
+        </div>
+        <div class="filter-row">
+          <a href="products.html" class="btn">Cancel</a>
+          <button class="btn">Save draft</button>
+          <button class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+            Publish
+          </button>
+        </div>
+      </div>
+
+      <div class="pn-shell">
+        <div>
+          <div class="pn-section">
+            <div class="pn-section-head"><div class="pn-num">1</div><div class="pn-title-block"><h3>Product images</h3><p>Up to 8 photos · first image is the primary</p></div></div>
+            <div class="pn-section-body">
+              <div class="pn-drop">
+                <div class="pn-drop-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+                <div class="pn-drop-title">Drop images here, or <b>browse</b></div>
+                <div class="pn-drop-sub">JPG, PNG, or WebP · max 5 MB each · 1200×1200 recommended</div>
+              </div>
+              <div class="pn-imgs">
+                <div class="pn-img pn-img-primary"><img src="https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&amp;w=400" alt=""></div>
+                <div class="pn-img"><img src="https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&amp;w=400" alt=""></div>
+                <div class="pn-img"><img src="https://images.pexels.com/photos/1841841/pexels-photo-1841841.jpeg?auto=compress&amp;w=400" alt=""></div>
+                <div class="pn-img"><img src="https://images.pexels.com/photos/4348404/pexels-photo-4348404.jpeg?auto=compress&amp;w=400" alt=""></div>
+                <div class="pn-img pn-img-add">+</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pn-section">
+            <div class="pn-section-head"><div class="pn-num">2</div><div class="pn-title-block"><h3>Basic information</h3><p>Title, brand, category and description</p></div></div>
+            <div class="pn-section-body">
+              <div class="form-grid form-grid-2">
+                <div class="field" style="grid-column:1/-1"><label class="field-label">Product title *</label><input class="input" value="Samsung Galaxy S25 Ultra 512GB Titanium Black"><div class="field-hint">62 characters · helps SEO when between 40 and 70</div></div>
+                <div class="field"><label class="field-label">SKU *</label><input class="input mono" value="TZ-SGS25U-512-TI"></div>
+                <div class="field"><label class="field-label">Brand</label><input class="input" value="Samsung"></div>
+                <div class="field"><label class="field-label">Condition</label><select class="select"><option>Brand new — sealed</option><option>Refurbished</option><option>Open box</option></select></div>
+                <div class="field"><label class="field-label">Category *</label><select class="select"><option>Smartphones</option><option>Laptops &amp; Tablets</option><option>Audio</option><option>Wearables</option></select></div>
+                <div class="field" style="grid-column:1/-1"><label class="field-label">Short description</label><input class="input" value="Flagship Samsung phone with 200MP camera, S Pen, and 7-year software support"></div>
+                <div class="field" style="grid-column:1/-1"><label class="field-label">Full description</label><textarea class="input" rows="4">The Samsung Galaxy S25 Ultra is built for power users. With its 200MP camera system, integrated S Pen, and titanium frame, it&apos;s the most advanced Galaxy yet. Features 7-year OS &amp; security updates, 5,000mAh battery, and a 6.9&quot; QHD+ Dynamic AMOLED 2X display.</textarea></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pn-section">
+            <div class="pn-section-head"><div class="pn-num">3</div><div class="pn-title-block"><h3>Pricing</h3><p>RRP, sale price and your cost</p></div></div>
+            <div class="pn-section-body">
+              <div class="form-grid form-grid-3">
+                <div class="field"><label class="field-label">RRP</label><div class="input-row"><span class="input-prefix">$</span><input class="input" value="2,099.00"></div></div>
+                <div class="field"><label class="field-label">Sale price *</label><div class="input-row"><span class="input-prefix">$</span><input class="input" value="1,899.00"></div><div class="field-hint" style="color:var(--success-30);font-weight:500">Customer pays this</div></div>
+                <div class="field"><label class="field-label">Your cost</label><div class="input-row"><span class="input-prefix">$</span><input class="input" value="1,420.00"></div><div class="field-hint">Internal — for margin tracking</div></div>
+              </div>
+              <div class="alert alert-info" style="margin-top:14px"><div class="alert-icon">i</div><div class="alert-body"><div class="alert-text">LayBys.com commission on this product is <b>5%</b> ($94.95). Net to you on each sale: <b style="color:var(--success-30)">$1,804.05</b>. No other fees apply.</div></div></div>
+            </div>
+          </div>
+
+          <div class="pn-section">
+            <div class="pn-section-head"><div class="pn-num">4</div><div class="pn-title-block"><h3>Lay-by plan</h3><p>Deposit and instalment terms</p></div></div>
+            <div class="pn-section-body">
+              <div class="form-grid form-grid-2">
+                <div class="field"><label class="field-label">Default deposit</label><div class="input-row"><input class="input" value="20"><span class="input-suffix">%</span></div></div>
+                <div class="field"><label class="field-label">Instalment frequency</label><select class="select"><option>Weekly</option><option>Fortnightly</option><option>Monthly</option></select></div>
+                <div class="field"><label class="field-label">Term length</label><select class="select"><option>32 weeks</option><option>24 weeks</option><option>16 weeks</option><option>52 weeks</option></select></div>
+                <div class="field"><label class="field-label">Min order eligible</label><div class="input-row"><span class="input-prefix">$</span><input class="input" value="100.00"></div></div>
+              </div>
+              <div class="pn-layby-preview">
+                <div class="pn-layby-preview-title">Customer-facing preview</div>
+                <div class="pn-layby-row"><span>Deposit due today (20%)</span><b>$379.80</b></div>
+                <div class="pn-layby-row"><span>Remaining balance</span><b>$1,519.20</b></div>
+                <div class="pn-layby-row"><span>Then 32 weekly instalments of</span><b>$47.48</b></div>
+                <div class="pn-layby-row pn-layby-foot"><span>Total payable</span><b>$1,899.00 · zero interest</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pn-section">
+            <div class="pn-section-head"><div class="pn-num">5</div><div class="pn-title-block"><h3>Variants &amp; stock</h3><p>Colour, storage, size variants</p></div><button class="btn btn-sm" style="flex:none">+ Add variant</button></div>
+            <div class="pn-section-body">
+              <div class="pn-variants">
+                <table>
+                  <thead><tr><th>Variant</th><th style="width:200px">SKU</th><th style="width:80px">Stock</th><th style="width:130px">Price ($)</th><th style="width:50px"></th></tr></thead>
+                  <tbody>
+                    <tr><td><input class="input" value="512GB · Titanium Black"></td><td><input class="input mono" value="TZ-SGS25U-512-TI"></td><td><input class="input" value="142"></td><td><input class="input" value="1,899.00"></td><td><button class="btn-icon">×</button></td></tr>
+                    <tr><td><input class="input" value="512GB · Titanium Grey"></td><td><input class="input mono" value="TZ-SGS25U-512-TG"></td><td><input class="input" value="86"></td><td><input class="input" value="1,899.00"></td><td><button class="btn-icon">×</button></td></tr>
+                    <tr><td><input class="input" value="1TB · Titanium Black"></td><td><input class="input mono" value="TZ-SGS25U-1T-TI"></td><td><input class="input" value="0"></td><td><input class="input" value="2,299.00"></td><td><button class="btn-icon">×</button></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="pn-section">
+            <div class="pn-section-head"><div class="pn-num">6</div><div class="pn-title-block"><h3>SEO &amp; URL</h3><p>How this product appears in Google search</p></div></div>
+            <div class="pn-section-body">
+              <div class="form-grid">
+                <div class="field"><label class="field-label">URL slug</label><div class="input-row"><span class="input-prefix">laybys.com/p/</span><input class="input mono" value="samsung-galaxy-s25-ultra-512gb-titanium"></div></div>
+                <div class="field"><label class="field-label">Meta title</label><input class="input" value="Samsung Galaxy S25 Ultra 512GB Titanium — Lay-By From $47/wk"></div>
+                <div class="field"><label class="field-label">Meta description</label><textarea class="input" rows="2">Get the new Samsung Galaxy S25 Ultra 512GB on lay-by from just $47.48/week. 20% deposit, zero interest.</textarea></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="pn-rail">
+            <div class="pn-publish-card">
+              <div class="pn-publish-head"><h3>Publish</h3><p>Choose visibility</p></div>
+              <div class="pn-publish-body">
+                <div class="pn-status-pick">
+                  <label class="pn-status-opt pn-status-opt-active"><input type="radio" name="vis" checked><div><div class="pn-status-opt-name">Live · publish immediately</div><div class="pn-status-opt-sub">Visible on the marketplace right away</div></div></label>
+                  <label class="pn-status-opt"><input type="radio" name="vis"><div><div class="pn-status-opt-name">Save as draft</div><div class="pn-status-opt-sub">Only you can see it</div></div></label>
+                  <label class="pn-status-opt"><input type="radio" name="vis"><div><div class="pn-status-opt-name">Hidden</div><div class="pn-status-opt-sub">Off-store but keeps existing lay-bys</div></div></label>
+                </div>
+                <div class="pn-checks">
+                  <div class="pn-checks-title">Pre-publish checklist</div>
+                  <div class="pn-check"><div class="pn-check-dot pn-check-done">✓</div>Images (4)</div>
+                  <div class="pn-check"><div class="pn-check-dot pn-check-done">✓</div>Title and description</div>
+                  <div class="pn-check"><div class="pn-check-dot pn-check-done">✓</div>Sale price set</div>
+                  <div class="pn-check"><div class="pn-check-dot pn-check-done">✓</div>Lay-by plan configured</div>
+                  <div class="pn-check"><div class="pn-check-dot pn-check-done">✓</div>Variants &amp; stock</div>
+                </div>
+                <div class="pn-savebar">
+                  <button class="btn btn-block btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>Publish product</button>
+                  <button class="btn btn-block">Save draft</button>
+                  <small>Auto-saved 14s ago</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("products","Add product","Create a new marketplace listing");</script>
+</body>
+</html>

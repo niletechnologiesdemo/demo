@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dashboard · TechZone Australia · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.welcome-banner{
+  display:flex;align-items:center;gap:18px;
+  padding:20px 24px;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(240,191,65,.18) 0%, transparent 50%),
+    linear-gradient(135deg, var(--p-30) 0%, var(--p-40) 100%);
+  color:#fff;
+  border-radius:var(--r-xl);
+  margin-bottom:22px;
+  box-shadow:var(--elev-2);
+}
+.welcome-icon{
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(135deg, #ffdf99, #f0bf41);
+  color:#3f2e00;
+  display:grid;place-items:center;flex:none;
+  font-size:28px;
+  box-shadow:0 6px 16px rgba(212,164,37,.4), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.welcome-text{flex:1;min-width:0}
+.welcome-title{
+  font-family:var(--font-display);
+  font-size:22px;font-weight:500;
+  margin:0 0 4px;letter-spacing:-.3px;color:#fff;
+}
+.welcome-sub{
+  font-size:14px;color:rgba(255,255,255,.78);
+  margin:0;letter-spacing:.05px;line-height:1.5;
+}
+.welcome-action{
+  flex:none;
+}
+.welcome-action .btn-gold{
+  background:linear-gradient(135deg, #ffdf99, #f0bf41);
+  color:#3f2e00;
+  height:42px;
+  box-shadow:0 4px 12px rgba(212,164,37,.4), inset 0 1px 0 rgba(255,255,255,.5);
+}
+
+.payout-card{
+  background:linear-gradient(135deg, var(--success-95) 0%, #f0fde6 100%);
+  border:1px solid var(--success-90);
+  border-radius:var(--r-lg);
+  padding:18px 20px;
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:22px;
+  box-shadow:0 2px 8px -2px rgba(31,157,90,.15);
+}
+.payout-icon{
+  width:48px;height:48px;border-radius:14px;flex:none;
+  background:linear-gradient(135deg, var(--success-40), var(--success-30));
+  color:#fff;display:grid;place-items:center;
+  box-shadow:0 4px 10px rgba(31,157,90,.35);
+}
+.payout-text{flex:1;min-width:0}
+.payout-label{
+  font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.6px;
+  color:var(--success-30);margin-bottom:3px;
+}
+.payout-amount{
+  font-family:var(--font-display);
+  font-size:26px;font-weight:600;
+  color:var(--success-10);letter-spacing:-.5px;line-height:1.1;
+  background:linear-gradient(135deg, var(--success-30), var(--success-40));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.payout-meta{
+  font-size:13px;color:var(--success-10);margin-top:3px;letter-spacing:.05px;
+}
+
+.qa-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  margin-bottom:22px;
+}
+@media(max-width:900px){.qa-grid{grid-template-columns:repeat(2,1fr)}}
+.qa-card{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  background:var(--surface);
+  border:1px solid var(--outline-variant);
+  border-radius:var(--r-lg);
+  cursor:pointer;
+  transition:all .2s var(--easing);
+  text-decoration:none;
+  color:var(--on-surface);
+}
+.qa-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--elev-2);
+  border-color:var(--primary);
+}
+.qa-icon{
+  width:40px;height:40px;border-radius:12px;flex:none;
+  display:grid;place-items:center;color:#fff;
+  box-shadow:0 3px 8px rgba(0,0,0,.1);
+}
+.qa-1 .qa-icon{background:linear-gradient(135deg, var(--p-50), var(--p-40))}
+.qa-2 .qa-icon{background:linear-gradient(135deg, var(--success-40), var(--success-30))}
+.qa-3 .qa-icon{background:linear-gradient(135deg, var(--s-70), var(--s-50))}
+.qa-4 .qa-icon{background:linear-gradient(135deg, var(--t-50), var(--t-40))}
+.qa-name{font-size:13.5px;font-weight:500;color:var(--on-surface);line-height:1.3;letter-spacing:0}
+.qa-sub{font-size:11.5px;color:var(--on-surface-variant);margin-top:2px;letter-spacing:.05px}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Good afternoon, Marcus</h1>
+          <p class="page-sub">Tuesday, 5 May 2026 · Here's what's happening with TechZone Australia today</p>
+        </div>
+        <div class="filter-row">
+          <a href="product-new.html" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Add product
+          </a>
+        </div>
+      </div>
+
+      <!-- Welcome / call to action -->
+      <div class="welcome-banner">
+        <div class="welcome-icon">🎯</div>
+        <div class="welcome-text">
+          <h2 class="welcome-title">3 customers completed lay-bys overnight — ready to ship</h2>
+          <p class="welcome-sub">Sarah Mitchell, Priya Nair, and James O'Connor have all paid their final instalments. Check the orders tab to mark them dispatched.</p>
+        </div>
+        <div class="welcome-action">
+          <a href="laybys.html" class="btn btn-gold">View ready orders →</a>
+        </div>
+      </div>
+
+      <!-- Next Payout -->
+      <div class="payout-card">
+        <div class="payout-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="payout-text">
+          <div class="payout-label">Next payout · in 6 days</div>
+          <div class="payout-amount">$8,427.50</div>
+          <div class="payout-meta">Tuesday, 11 May 2026 · 47 lay-bys contributing · Westpac ··8421</div>
+        </div>
+        <a href="payouts.html" class="btn">View payout calendar →</a>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi kpi-info">
+          <div class="kpi-label">Active Lay-Bys</div>
+          <div class="kpi-value">47</div>
+          <div class="kpi-meta"><span class="delta up">▲ 5</span> this week</div>
+        </div>
+        <div class="kpi kpi-success">
+          <div class="kpi-label">YTD Volume</div>
+          <div class="kpi-value">$487,290</div>
+          <div class="kpi-meta"><span class="delta up">▲ 18.4%</span> vs same period 2025</div>
+        </div>
+        <div class="kpi kpi-gold">
+          <div class="kpi-label">Completed (YTD)</div>
+          <div class="kpi-value">312</div>
+          <div class="kpi-meta">Avg lay-by value $1,562</div>
+        </div>
+        <div class="kpi kpi-danger">
+          <div class="kpi-label">Exceptions</div>
+          <div class="kpi-value">3</div>
+          <div class="kpi-meta">Requires action — 1 P1 critical</div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="qa-grid">
+        <a href="product-new.html" class="qa-card qa-1">
+          <div class="qa-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          </div>
+          <div>
+            <div class="qa-name">Add a product</div>
+            <div class="qa-sub">List a new SKU</div>
+          </div>
+        </a>
+        <a href="laybys.html" class="qa-card qa-2">
+          <div class="qa-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <div>
+            <div class="qa-name">Ready to ship</div>
+            <div class="qa-sub">3 orders · dispatch now</div>
+          </div>
+        </a>
+        <a href="exceptions.html" class="qa-card qa-3">
+          <div class="qa-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <div class="qa-name">Resolve exception</div>
+            <div class="qa-sub">3 need attention</div>
+          </div>
+        </a>
+        <a href="payouts.html" class="qa-card qa-4">
+          <div class="qa-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          </div>
+          <div>
+            <div class="qa-name">Payout history</div>
+            <div class="qa-sub">42 payouts · $189k</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Sales chart + Status mix -->
+      <div class="detail-grid">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Sales Volume — Last 12 Weeks</h3>
+              <p class="card-sub">Deposits + instalments collected each week (USD)</p>
+            </div>
+            <div class="card-actions">
+              <select class="select select-sm">
+                <option>Last 12 weeks</option>
+                <option>Last 6 months</option>
+                <option>YTD</option>
+              </select>
+            </div>
+          </div>
+          <div class="chart-bars">
+            <div class="chart-bar" style="height:32%"><span class="val">$8.4k</span><span class="lab">W4 Feb</span></div>
+            <div class="chart-bar" style="height:38%"><span class="val">$10.2k</span><span class="lab">W1 Mar</span></div>
+            <div class="chart-bar" style="height:46%"><span class="val">$12.1k</span><span class="lab">W2 Mar</span></div>
+            <div class="chart-bar" style="height:52%"><span class="val">$13.8k</span><span class="lab">W3 Mar</span></div>
+            <div class="chart-bar" style="height:48%"><span class="val">$12.7k</span><span class="lab">W4 Mar</span></div>
+            <div class="chart-bar" style="height:58%"><span class="val">$15.4k</span><span class="lab">W1 Apr</span></div>
+            <div class="chart-bar" style="height:65%"><span class="val">$17.2k</span><span class="lab">W2 Apr</span></div>
+            <div class="chart-bar" style="height:62%"><span class="val">$16.4k</span><span class="lab">W3 Apr</span></div>
+            <div class="chart-bar" style="height:70%"><span class="val">$18.6k</span><span class="lab">W4 Apr</span></div>
+            <div class="chart-bar" style="height:78%"><span class="val">$20.8k</span><span class="lab">W1 May</span></div>
+            <div class="chart-bar" style="height:84%"><span class="val">$22.4k</span><span class="lab">W2 May</span></div>
+            <div class="chart-bar bar-current" style="height:92%"><span class="val">$24.6k</span><span class="lab">This wk</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">Lay-By Status</h3>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:20px;align-items:center;padding:20px 24px 24px">
+            <div class="donut">
+              <div class="donut-center"><b>47</b><span>Active</span></div>
+            </div>
+            <div class="legend" style="width:100%">
+              <div class="legend-row"><span class="sw" style="background:var(--p-40)"></span><span class="nm">Active</span><span class="vl">68%</span></div>
+              <div class="legend-row"><span class="sw" style="background:var(--s-50)"></span><span class="nm">Completed</span><span class="vl">22%</span></div>
+              <div class="legend-row"><span class="sw" style="background:var(--success-40)"></span><span class="nm">Pending Deposit</span><span class="vl">7%</span></div>
+              <div class="legend-row"><span class="sw" style="background:var(--n-70)"></span><span class="nm">Cancelled</span><span class="vl">3%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spacer-lg"></div>
+
+      <!-- Recent activity + Top products -->
+      <div class="detail-grid">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>Recent Lay-By Activity</h3>
+              <div class="sub">Latest agreements and instalment events for your store</div>
+            </div>
+            <div class="card-actions">
+              <a href="laybys.html" class="link" style="font-size:13px">View all →</a>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data table-tight">
+              <thead><tr>
+                <th>When</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="cell-muted">Today · 11:42</span></td>
+                  <td>
+                    <div class="cell-thumb">
+                      <div class="avatar avatar-sm">SM</div>
+                      <div><div class="cell-strong">Sarah Mitchell</div></div>
+                    </div>
+                  </td>
+                  <td><span class="cell-strong">Samsung Galaxy S25 Ultra</span></td>
+                  <td><span class="cell-amount">$1,899</span></td>
+                  <td><span class="pill pill-active">New lay-by</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cell-muted">Today · 09:14</span></td>
+                  <td>
+                    <div class="cell-thumb">
+                      <div class="avatar avatar-sm">PN</div>
+                      <div><div class="cell-strong">Priya Nair</div></div>
+                    </div>
+                  </td>
+                  <td><span class="cell-strong">Sony WH-1000XM6</span></td>
+                  <td><span class="cell-amount">$549</span></td>
+                  <td><span class="pill pill-completed">Final paid</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cell-muted">Yesterday · 18:22</span></td>
+                  <td>
+                    <div class="cell-thumb">
+                      <div class="avatar avatar-sm">JO</div>
+                      <div><div class="cell-strong">James O'Connor</div></div>
+                    </div>
+                  </td>
+                  <td><span class="cell-strong">Apple Watch Ultra 3</span></td>
+                  <td><span class="cell-amount">$1,299</span></td>
+                  <td><span class="pill pill-completed">Final paid</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cell-muted">Yesterday · 14:08</span></td>
+                  <td>
+                    <div class="cell-thumb">
+                      <div class="avatar avatar-sm">EW</div>
+                      <div><div class="cell-strong">Emma Wilson</div></div>
+                    </div>
+                  </td>
+                  <td><span class="cell-strong">MacBook Pro M4 14"</span></td>
+                  <td><span class="cell-amount">$58</span></td>
+                  <td><span class="pill pill-info">Instalment</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cell-muted">Yesterday · 10:55</span></td>
+                  <td>
+                    <div class="cell-thumb">
+                      <div class="avatar avatar-sm">LB</div>
+                      <div><div class="cell-strong">Liam Bennett</div></div>
+                    </div>
+                  </td>
+                  <td><span class="cell-strong">AirPods Pro 2</span></td>
+                  <td><span class="cell-amount">$24.50</span></td>
+                  <td><span class="pill pill-overdue">Failed</span></td>
+                </tr>
+                <tr>
+                  <td><span class="cell-muted">02 May · 16:31</span></td>
+                  <td>
+                    <div class="cell-thumb">
+                      <div class="avatar avatar-sm">RK</div>
+                      <div><div class="cell-strong">Ravi Krishnan</div></div>
+                    </div>
+                  </td>
+                  <td><span class="cell-strong">iPad Air 13"</span></td>
+                  <td><span class="cell-amount">$899</span></td>
+                  <td><span class="pill pill-active">New lay-by</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>Top Products This Month</h3>
+              <div class="sub">By units sold via lay-by</div>
+            </div>
+          </div>
+          <div style="padding:14px 22px 18px">
+            <div class="reason-row"><span class="reason-name">Galaxy S25 Ultra</span><span class="reason-bar"><span class="reason-fill" style="width:92%"></span></span><span class="reason-val">14</span></div>
+            <div class="reason-row"><span class="reason-name">Sony WH-1000XM6</span><span class="reason-bar"><span class="reason-fill" style="width:78%"></span></span><span class="reason-val">12</span></div>
+            <div class="reason-row"><span class="reason-name">AirPods Pro 2</span><span class="reason-bar"><span class="reason-fill" style="width:65%"></span></span><span class="reason-val">10</span></div>
+            <div class="reason-row"><span class="reason-name">Apple Watch Ultra 3</span><span class="reason-bar"><span class="reason-fill" style="width:52%"></span></span><span class="reason-val">8</span></div>
+            <div class="reason-row"><span class="reason-name">iPad Air 13"</span><span class="reason-bar"><span class="reason-fill" style="width:46%"></span></span><span class="reason-val">7</span></div>
+            <div class="reason-row"><span class="reason-name">MacBook Pro M4</span><span class="reason-bar"><span class="reason-fill" style="width:32%"></span></span><span class="reason-val">5</span></div>
+          </div>
+          <div class="card-foot">
+            <span class="cell-muted">56 SKUs live</span>
+            <a href="products.html" class="link" style="font-size:13px">All products →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="spacer-lg"></div>
+
+      <!-- Bottom row: store health + this month summary -->
+      <div class="detail-grid">
+        <div class="card">
+          <div class="card-head">
+            <h3>Store Health</h3>
+          </div>
+          <div style="padding:8px 22px 18px">
+            <div class="health-row">
+              <span class="health-dot health-dot-ok"></span>
+              <span class="health-name">Payment success rate</span>
+              <span class="health-stat">98.6% · last 30 days</span>
+            </div>
+            <div class="health-row">
+              <span class="health-dot health-dot-ok"></span>
+              <span class="health-name">Lay-by completion rate</span>
+              <span class="health-stat">94.2% · industry avg 89%</span>
+            </div>
+            <div class="health-row">
+              <span class="health-dot health-dot-ok"></span>
+              <span class="health-name">Avg time to dispatch</span>
+              <span class="health-stat">1.2 days · target ≤ 3</span>
+            </div>
+            <div class="health-row">
+              <span class="health-dot health-dot-warn"></span>
+              <span class="health-name">Customer response time</span>
+              <span class="health-stat">14h avg · target ≤ 12h</span>
+            </div>
+            <div class="health-row">
+              <span class="health-dot health-dot-ok"></span>
+              <span class="health-name">Cancellation rate</span>
+              <span class="health-stat">2.8% · industry avg 5.1%</span>
+            </div>
+            <div class="health-row">
+              <span class="health-dot health-dot-ok"></span>
+              <span class="health-name">Customer rating</span>
+              <span class="health-stat">4.8 / 5 · 142 reviews</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>This Month So Far</h3>
+          </div>
+          <div style="padding:8px 22px 18px">
+            <div class="kv"><span>New lay-bys started</span><b>23</b></div>
+            <div class="kv"><span>Lay-bys completed</span><b>18</b></div>
+            <div class="kv"><span>Gross volume processed</span><b>$47,230</b></div>
+            <div class="kv"><span>Commission paid (5%)</span><b>$2,361.50</b></div>
+            <div class="kv"><span>Net to your account</span><b style="color:var(--success-30)">$44,868.50</b></div>
+            <div class="kv"><span>Refunds issued</span><b>$0.00</b></div>
+            <div class="kv"><span>Disputes</span><b>0</b></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount('dashboard','Dashboard',"TechZone Australia · Operations overview");</script>
+</body>
+</html>

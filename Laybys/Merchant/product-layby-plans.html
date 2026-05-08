@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lay-by plans · Galaxy S25 Ultra · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.plan-card{background:var(--surface);border:1px solid var(--outline-variant);border-radius:var(--r-lg);padding:0;overflow:hidden;transition:all .2s var(--easing)}
+.plan-card:hover{box-shadow:var(--elev-2)}
+.plan-card.recommended{border:2px solid var(--primary);box-shadow:0 0 0 4px rgba(28,95,184,.08)}
+.plan-head{padding:18px 22px;background:linear-gradient(135deg, var(--p-99) 0%, var(--surface) 100%);border-bottom:1px solid var(--outline-variant);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.plan-name{font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--on-surface);letter-spacing:-.1px;display:flex;align-items:center;gap:10px}
+.plan-actions{display:flex;gap:6px}
+.plan-body{padding:18px 22px}
+.plan-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+@media(max-width:680px){.plan-stats{grid-template-columns:repeat(2,1fr)}}
+.plan-stat{padding:10px 14px;background:var(--surface-1);border-radius:var(--r-sm)}
+.plan-stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--on-surface-variant);margin-bottom:3px}
+.plan-stat-val{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--on-surface);letter-spacing:-.2px;font-variant-numeric:tabular-nums}
+.plan-eg{padding:14px 18px;background:linear-gradient(135deg, var(--warn-95) 0%, var(--s-95) 100%);border:1px solid var(--s-90);border-radius:var(--r);font-size:13px;color:var(--s-30);line-height:1.6}
+.plan-eg b{color:var(--s-10);font-weight:600;font-variant-numeric:tabular-nums}
+.plan-perf{display:flex;gap:18px;font-size:12.5px;color:var(--on-surface-variant);margin-top:14px;flex-wrap:wrap}
+.plan-perf b{color:var(--on-surface);font-weight:600;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="breadcrumb"><a href="products.html">Products</a> <span>/</span> <a href="product-detail.html">Galaxy S25 Ultra</a> <span>/</span> <span>Lay-by plans</span></div>
+
+      <div class="entity-head">
+        <div class="entity-head-main">
+          <img src="https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&amp;w=400" alt="" class="prod-thumb-lg">
+          <div>
+            <h2 class="entity-title">Samsung Galaxy S25 Ultra 256GB <span class="pill pill-active">Live</span></h2>
+            <p class="entity-sub">Smartphones · Samsung · TZ-SGS25U-256-TG · $1,899</p>
+            <div class="entity-meta">
+              <span><b>3 plans</b> available</span>
+              <span><b>20%</b> default deposit</span>
+              <span><b>32 weeks</b> default term</span>
+              <span><b>$47.48 / wk</b> default instalment</span>
+            </div>
+          </div>
+        </div>
+        <div class="entity-head-actions">
+          <button class="btn btn-primary">+ Add custom plan</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="product-detail.html">Overview</a>
+        <a class="tab active" href="product-layby-plans.html">Lay-by plans</a>
+        <a class="tab" href="product-inventory.html">Inventory &amp; variants</a>
+        <a class="tab" href="product-performance.html">Performance</a>
+      </div>
+
+      <div class="alert alert-info" style="margin-top:18px">
+        <div class="alert-icon">i</div>
+        <div class="alert-body">
+          <div class="alert-title">How lay-by plans work</div>
+          <div class="alert-text">Each plan offers customers a different payment schedule for this product. The default plan is what shows first on the product page. Customers can pick from the alternates at checkout if you offer more than one.</div>
+        </div>
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <div style="display:flex;flex-direction:column;gap:14px">
+
+          <!-- Plan 1: Default -->
+          <div class="plan-card recommended">
+            <div class="plan-head">
+              <div class="plan-name">
+                Standard 32-week plan
+                <span class="pill pill-active">Default</span>
+                <span class="pill pill-info">Most popular</span>
+              </div>
+              <div class="plan-actions">
+                <button class="btn btn-ghost btn-sm">Duplicate</button>
+                <button class="btn btn-ghost btn-sm">Edit</button>
+              </div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-stats">
+                <div class="plan-stat"><div class="plan-stat-label">Deposit</div><div class="plan-stat-val">20%</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Frequency</div><div class="plan-stat-val">Weekly</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Term</div><div class="plan-stat-val">32 weeks</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Per instalment</div><div class="plan-stat-val">$47.48</div></div>
+              </div>
+              <div class="plan-eg">
+                <b>Customer pays:</b> $379.80 deposit today · then $47.48/week for 32 weeks · <b>Total $1,899.00</b> · zero interest, zero fees
+              </div>
+              <div class="plan-perf">
+                <span><b>11</b> active lay-bys</span>
+                <span><b>89%</b> completion rate</span>
+                <span><b>$20,889</b> volume YTD</span>
+                <span><b>1.2%</b> early-cancel rate</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan 2: Short -->
+          <div class="plan-card">
+            <div class="plan-head">
+              <div class="plan-name">Quick 16-week plan</div>
+              <div class="plan-actions">
+                <button class="btn btn-ghost btn-sm">Set default</button>
+                <button class="btn btn-ghost btn-sm">Duplicate</button>
+                <button class="btn btn-ghost btn-sm">Edit</button>
+              </div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-stats">
+                <div class="plan-stat"><div class="plan-stat-label">Deposit</div><div class="plan-stat-val">25%</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Frequency</div><div class="plan-stat-val">Weekly</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Term</div><div class="plan-stat-val">16 weeks</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Per instalment</div><div class="plan-stat-val">$89.02</div></div>
+              </div>
+              <div class="plan-eg">
+                <b>Customer pays:</b> $474.75 deposit today · then $89.02/week for 16 weeks · <b>Total $1,899.00</b> · zero interest, zero fees
+              </div>
+              <div class="plan-perf">
+                <span><b>3</b> active lay-bys</span>
+                <span><b>96%</b> completion rate</span>
+                <span><b>$5,697</b> volume YTD</span>
+                <span><b>0.4%</b> early-cancel rate</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan 3: Long -->
+          <div class="plan-card">
+            <div class="plan-head">
+              <div class="plan-name">Extended 52-week plan</div>
+              <div class="plan-actions">
+                <button class="btn btn-ghost btn-sm">Set default</button>
+                <button class="btn btn-ghost btn-sm">Duplicate</button>
+                <button class="btn btn-ghost btn-sm">Edit</button>
+              </div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-stats">
+                <div class="plan-stat"><div class="plan-stat-label">Deposit</div><div class="plan-stat-val">10%</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Frequency</div><div class="plan-stat-val">Weekly</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Term</div><div class="plan-stat-val">52 weeks</div></div>
+                <div class="plan-stat"><div class="plan-stat-label">Per instalment</div><div class="plan-stat-val">$32.87</div></div>
+              </div>
+              <div class="plan-eg">
+                <b>Customer pays:</b> $189.90 deposit today · then $32.87/week for 52 weeks · <b>Total $1,899.00</b> · zero interest, zero fees
+              </div>
+              <div class="plan-perf">
+                <span><b>0</b> active lay-bys</span>
+                <span><b>—</b> completion rate</span>
+                <span><b>$0</b> volume YTD</span>
+                <span class="pill pill-pending">Recently added</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-col">
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Plan summary</h3></div>
+            <div class="kv"><span>Active plans</span><b>3</b></div>
+            <div class="kv"><span>Default plan</span><b>Standard 32-week</b></div>
+            <div class="kv"><span>Total active lay-bys</span><b>14</b></div>
+            <div class="kv"><span>Total volume YTD</span><b style="color:var(--success-30)">$26,586</b></div>
+            <div class="kv"><span>Avg completion rate</span><b>91%</b></div>
+            <div class="kv"><span>Industry avg</span><b>87%</b></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Customer preference</h3><div class="card-actions"><span class="cell-muted" style="font-size:12px">Last 90 days</span></div></div>
+            <div style="padding:14px 22px 18px">
+              <div class="reason-row"><span class="reason-name">32-week (default)</span><span class="reason-bar"><span class="reason-fill" style="width:78%"></span></span><span class="reason-val">78%</span></div>
+              <div class="reason-row"><span class="reason-name">16-week (quick)</span><span class="reason-bar"><span class="reason-fill" style="width:22%"></span></span><span class="reason-val">22%</span></div>
+              <div class="reason-row"><span class="reason-name">52-week (extended)</span><span class="reason-bar"><span class="reason-fill" style="width:0%"></span></span><span class="reason-val">0%</span></div>
+            </div>
+            <div class="card-foot">
+              <span class="cell-muted" style="font-size:12px">Most customers pick the default plan</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Recommendation</h3></div>
+            <div class="card-body">
+              <div class="alert alert-success" style="margin:0">
+                <div class="alert-icon">✓</div>
+                <div class="alert-body">
+                  <div class="alert-title">Plans look healthy</div>
+                  <div class="alert-text">Your standard plan converts well. Consider promoting the 16-week option for repeat customers — they tend to prefer shorter terms.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("products","Lay-by plans","Galaxy S25 Ultra · 3 plans");</script>
+</body>
+</html>

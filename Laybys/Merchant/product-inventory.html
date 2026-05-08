@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Inventory &amp; variants · Galaxy S25 Ultra · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.stock-bar{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:5px;width:120px}
+.stock-fill{height:100%;border-radius:99px;background:linear-gradient(90deg, var(--success-40), var(--success-30))}
+.stock-fill.low{background:linear-gradient(90deg, var(--warn-40), var(--s-50))}
+.stock-fill.empty{background:linear-gradient(90deg, var(--error-40), var(--error-30))}
+.move-row{display:grid;grid-template-columns:80px 28px 1fr auto auto;gap:12px;align-items:center;padding:10px 22px;border-bottom:1px solid var(--outline-variant);font-size:13px}
+.move-row:last-child{border-bottom:0}
+.move-icon{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;font-size:11px;flex:none}
+.move-icon-in{background:linear-gradient(135deg, var(--success-40), var(--success-30));box-shadow:0 1px 3px rgba(31,157,90,.3)}
+.move-icon-out{background:linear-gradient(135deg, var(--info-40), var(--info-30));box-shadow:0 1px 3px rgba(0,97,164,.3)}
+.move-icon-adj{background:linear-gradient(135deg, var(--warn-40), var(--s-50));box-shadow:0 1px 3px rgba(196,122,9,.3)}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="breadcrumb"><a href="products.html">Products</a> <span>/</span> <a href="product-detail.html">Galaxy S25 Ultra</a> <span>/</span> <span>Inventory &amp; variants</span></div>
+
+      <div class="entity-head">
+        <div class="entity-head-main">
+          <img src="https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&amp;w=400" alt="" class="prod-thumb-lg">
+          <div>
+            <h2 class="entity-title">Samsung Galaxy S25 Ultra 256GB <span class="pill pill-active">Live</span></h2>
+            <p class="entity-sub">Smartphones · Samsung · TZ-SGS25U-256-TG · $1,899</p>
+            <div class="entity-meta">
+              <span><b>4 variants</b></span>
+              <span><b>322</b> units in stock</span>
+              <span><b>1</b> out of stock</span>
+              <span>Last restocked <b>28 Apr 2026</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="entity-head-actions">
+          <button class="btn btn-ghost">Bulk update</button>
+          <button class="btn">Receive stock</button>
+          <button class="btn btn-primary">+ Add variant</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="product-detail.html">Overview</a>
+        <a class="tab" href="product-layby-plans.html">Lay-by plans</a>
+        <a class="tab active" href="product-inventory.html">Inventory &amp; variants</a>
+        <a class="tab" href="product-performance.html">Performance</a>
+      </div>
+
+      <div class="kpi-grid" style="margin-top:18px">
+        <div class="kpi kpi-success"><div class="kpi-label">In Stock</div><div class="kpi-value">322</div><div class="kpi-meta">Across 4 variants</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Reserved (Lay-bys)</div><div class="kpi-value">14</div><div class="kpi-meta">Awaiting completion</div></div>
+        <div class="kpi kpi-warn"><div class="kpi-label">Available to Sell</div><div class="kpi-value">308</div><div class="kpi-meta">Stock − reserved</div></div>
+        <div class="kpi kpi-danger"><div class="kpi-label">Out of Stock</div><div class="kpi-value">1</div><div class="kpi-meta">1TB Titanium Black</div></div>
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Variants &amp; stock levels</h3>
+                <div class="card-sub">Each row tracks its own SKU, price and inventory</div>
+              </div>
+              <div class="card-actions"><button class="btn btn-ghost btn-sm">+ Add variant</button></div>
+            </div>
+            <div class="table-wrap">
+              <table class="data">
+                <thead><tr>
+                  <th>Variant</th><th>SKU</th><th>Price</th><th>Stock</th><th>Reserved</th><th>Available</th><th>Status</th><th></th>
+                </tr></thead>
+                <tbody>
+                  <tr>
+                    <td><span class="cell-strong">256GB · Titanium Grey</span><div class="cell-muted">Default</div></td>
+                    <td><span class="mono cell-muted">TZ-SGS25U-256-TG</span></td>
+                    <td><span class="cell-amount">$1,899</span></td>
+                    <td><span class="cell-strong">142</span><div class="stock-bar"><div class="stock-fill" style="width:88%"></div></div></td>
+                    <td>5</td>
+                    <td><span class="cell-strong">137</span></td>
+                    <td><span class="pill pill-active">In stock</span></td>
+                    <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="cell-strong">256GB · Titanium Black</span></td>
+                    <td><span class="mono cell-muted">TZ-SGS25U-256-TI</span></td>
+                    <td><span class="cell-amount">$1,899</span></td>
+                    <td><span class="cell-strong">108</span><div class="stock-bar"><div class="stock-fill" style="width:67%"></div></div></td>
+                    <td>4</td>
+                    <td><span class="cell-strong">104</span></td>
+                    <td><span class="pill pill-active">In stock</span></td>
+                    <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="cell-strong">512GB · Titanium Grey</span></td>
+                    <td><span class="mono cell-muted">TZ-SGS25U-512-TG</span></td>
+                    <td><span class="cell-amount">$2,099</span></td>
+                    <td><span class="cell-strong">72</span><div class="stock-bar"><div class="stock-fill" style="width:44%"></div></div></td>
+                    <td>3</td>
+                    <td><span class="cell-strong">69</span></td>
+                    <td><span class="pill pill-active">In stock</span></td>
+                    <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="cell-strong">512GB · Titanium Black</span></td>
+                    <td><span class="mono cell-muted">TZ-SGS25U-512-TI</span></td>
+                    <td><span class="cell-amount">$2,099</span></td>
+                    <td><span class="cell-strong">8</span><div class="stock-bar"><div class="stock-fill low" style="width:5%"></div></div></td>
+                    <td>2</td>
+                    <td><span class="cell-strong">6</span></td>
+                    <td><span class="pill pill-pending">Low stock</span></td>
+                    <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="cell-strong">1TB · Titanium Black</span></td>
+                    <td><span class="mono cell-muted">TZ-SGS25U-1T-TI</span></td>
+                    <td><span class="cell-amount">$2,499</span></td>
+                    <td><span class="cell-strong">0</span><div class="stock-bar"><div class="stock-fill empty" style="width:0%"></div></div></td>
+                    <td>0</td>
+                    <td><span class="cell-strong">0</span></td>
+                    <td><span class="pill pill-overdue">Out of stock</span></td>
+                    <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Stock movements</h3>
+                <div class="card-sub">Last 14 days · all variants</div>
+              </div>
+              <div class="card-actions"><button class="btn btn-ghost btn-sm">Export CSV</button></div>
+            </div>
+            <div class="move-row">
+              <span class="cell-muted">Today 09:14</span>
+              <div class="move-icon move-icon-out">−</div>
+              <span><b>Sold</b> · 256GB Titanium Grey · LB-2026-00891 · Sarah Mitchell</span>
+              <span style="color:var(--error-30);font-weight:600">−1</span>
+              <span class="cell-muted">142 left</span>
+            </div>
+            <div class="move-row">
+              <span class="cell-muted">Today 11:42</span>
+              <div class="move-icon move-icon-out">−</div>
+              <span><b>Reserved</b> · 256GB Titanium Black · LB-2026-00889 · Priya Nair</span>
+              <span style="color:var(--info-30);font-weight:600">−1 (reserved)</span>
+              <span class="cell-muted">108 stock · 4 reserved</span>
+            </div>
+            <div class="move-row">
+              <span class="cell-muted">02 May 14:08</span>
+              <div class="move-icon move-icon-out">−</div>
+              <span><b>Sold</b> · 256GB Titanium Grey · LB-2026-00871 · James O'Connor</span>
+              <span style="color:var(--error-30);font-weight:600">−1</span>
+              <span class="cell-muted">143 left</span>
+            </div>
+            <div class="move-row">
+              <span class="cell-muted">28 Apr 09:00</span>
+              <div class="move-icon move-icon-in">+</div>
+              <span><b>Restock received</b> · PO-2026-114 · Samsung Australia</span>
+              <span style="color:var(--success-30);font-weight:600">+50</span>
+              <span class="cell-muted">256GB TG · 192 → 142 sold</span>
+            </div>
+            <div class="move-row">
+              <span class="cell-muted">25 Apr 14:22</span>
+              <div class="move-icon move-icon-adj">⟳</div>
+              <span><b>Stock adjustment</b> · Quarterly count · −2 units missing (warehouse)</span>
+              <span style="color:var(--warn-30);font-weight:600">−2</span>
+              <span class="cell-muted">256GB TI · 110 → 108</span>
+            </div>
+            <div class="move-row">
+              <span class="cell-muted">22 Apr 11:35</span>
+              <div class="move-icon move-icon-out">−</div>
+              <span><b>Sold</b> · 1TB Titanium Black · LB-2026-00742 · Liam Bennett</span>
+              <span style="color:var(--error-30);font-weight:600">−1</span>
+              <span class="cell-muted">1 left → 0</span>
+            </div>
+            <div class="move-row">
+              <span class="cell-muted">18 Apr 16:08</span>
+              <div class="move-icon move-icon-in">+</div>
+              <span><b>Restock received</b> · PO-2026-109 · Samsung Australia</span>
+              <span style="color:var(--success-30);font-weight:600">+30</span>
+              <span class="cell-muted">512GB TI · 0 → 30 → 8 sold</span>
+            </div>
+            <div class="card-foot">
+              <span class="cell-muted">Showing 7 of 84 movements (last 14 days)</span>
+              <a href="#" class="link" style="font-size:13px">View all movements →</a>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-col">
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Reorder triggers</h3></div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="field">
+                  <label class="field-label">Auto-alert at</label>
+                  <div class="input-row"><input class="input" value="10"><span class="input-suffix">units</span></div>
+                  <div class="field-hint">Notify when any variant drops to or below this</div>
+                </div>
+                <div class="field">
+                  <label class="field-label">Mark out-of-stock at</label>
+                  <div class="input-row"><input class="input" value="0"><span class="input-suffix">units</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Suppliers</h3></div>
+            <div class="kv"><span>Primary</span><b>Samsung Australia</b></div>
+            <div class="kv"><span>Lead time</span><b>5–7 days</b></div>
+            <div class="kv"><span>Last PO</span><b>PO-2026-114 · 28 Apr</b></div>
+            <div class="kv"><span>MOQ</span><b>30 units</b></div>
+            <div class="kv"><span>Wholesale price</span><b>$1,420.00</b></div>
+            <div class="card-foot"><a href="#" class="link" style="font-size:13px">Manage suppliers →</a></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Reorder forecast</h3></div>
+            <div class="card-body">
+              <div class="alert alert-warn" style="margin:0">
+                <div class="alert-icon">!</div>
+                <div class="alert-body">
+                  <div class="alert-title">Reorder 512GB Titanium Black</div>
+                  <div class="alert-text">At current sell-through (3 units/wk), this variant will hit zero in <b>~2 weeks</b>. Suggested reorder quantity: <b>30 units</b>.</div>
+                </div>
+              </div>
+              <button class="btn btn-block btn-primary" style="margin-top:12px">Create purchase order</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("products","Inventory & variants","Galaxy S25 Ultra · 322 units");</script>
+</body>
+</html>

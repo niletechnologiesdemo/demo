@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hidden Products · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Products</h1>
+          <p class="page-sub">Products you've hidden from the marketplace · existing lay-bys keep running</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Bulk import</button>
+          <a href="product-new.html" class="btn btn-primary">+ Add product</a>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:18px">
+        <div class="alert-icon">i</div>
+        <div class="alert-body">
+          <div class="alert-title">About hidden products</div>
+          <div class="alert-text">Hidden products are removed from the marketplace and search, but any active lay-bys for them continue to be paid off and shipped normally. Use this for retiring SKUs, seasonal items, or products you're temporarily pulling. To delete completely, you must first cancel any active lay-bys.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Hidden Products</div><div class="kpi-value">1</div><div class="kpi-meta">1.8% of catalog</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Active Lay-bys</div><div class="kpi-value">2</div><div class="kpi-meta">Still running on hidden SKUs</div></div>
+        <div class="kpi kpi-warn"><div class="kpi-label">Stock on Hand</div><div class="kpi-value">8</div><div class="kpi-meta">Across hidden products</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Last Activity</div><div class="kpi-value">28 Apr</div><div class="kpi-meta">When last lay-by completed</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="products.html">All <span class="count">56</span></a>
+        <a class="tab" href="products-live.html">Live <span class="count">52</span></a>
+        <a class="tab" href="products-out.html">Out of stock <span class="count">3</span></a>
+        <a class="tab active" href="products-hidden.html">Hidden <span class="count">1</span></a>
+        <a class="tab" href="products-drafts.html">Drafts <span class="count">0</span></a>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search hidden products…" />
+          </div>
+          <select class="select select-sm"><option>All categories</option><option>Smartphones</option><option>Audio</option></select>
+          <select class="select select-sm"><option>Sort: Recently hidden</option><option>Longest hidden</option><option>Most stock</option></select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr>
+            <th style="width:36px"><input type="checkbox"/></th>
+            <th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Active lay-bys</th><th>Hidden since</th><th>Reason</th><th></th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">iPhone 15 Pro Max 256GB · Natural Titanium</div><div class="cell-muted mono">TZ-IP15PM-256-NT</div></div></a></td>
+              <td><span class="pill pill-info">Smartphones</span></td>
+              <td><span class="cell-amount">$1,749</span></td>
+              <td><span class="cell-strong">8</span><div class="cell-muted">in warehouse</div></td>
+              <td><span class="cell-strong">2</span><div class="cell-muted">paying off</div></td>
+              <td>14 Mar 2026<div class="cell-muted">52 days ago</div></td>
+              <td><span class="pill pill-tertiary">Superseded</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">Replaced by iPhone 16</div></td>
+              <td><a href="product-detail.html" class="link">Restore</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pager"><div class="pager-info">Showing 1 of 1 hidden product</div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("products","Hidden Products","Off-store but active lay-bys still running");</script>
+</body>
+</html>

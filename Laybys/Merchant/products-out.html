@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Out of Stock · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Products</h1>
+          <p class="page-sub">3 products currently out of stock · still listed but not purchasable</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Bulk import</button>
+          <a href="product-new.html" class="btn btn-primary">+ Add product</a>
+        </div>
+      </div>
+
+      <div class="alert alert-warn" style="margin-bottom:18px">
+        <div class="alert-icon">!</div>
+        <div class="alert-body">
+          <div class="alert-title">3 products are losing potential sales</div>
+          <div class="alert-text">These products are still visible on the marketplace but show "Out of stock" — customers can leave their email to be notified when stock returns. Restock these to re-enable purchases. Combined waitlist: <b>47 customers</b>.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-danger"><div class="kpi-label">Out of Stock</div><div class="kpi-value">3</div><div class="kpi-meta">5.4% of catalog</div></div>
+        <div class="kpi kpi-warn"><div class="kpi-label">Customers Waiting</div><div class="kpi-value">47</div><div class="kpi-meta">On notify-me waitlists</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Lost Demand (30d)</div><div class="kpi-value">$18.9k</div><div class="kpi-meta">Page views × conv. avg</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">PO Created</div><div class="kpi-value">2 of 3</div><div class="kpi-meta">1 needs ordering</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="products.html">All <span class="count">56</span></a>
+        <a class="tab" href="products-live.html">Live <span class="count">52</span></a>
+        <a class="tab active" href="products-out.html">Out of stock <span class="count">3</span></a>
+        <a class="tab" href="products-hidden.html">Hidden <span class="count">1</span></a>
+        <a class="tab" href="products-drafts.html">Drafts <span class="count">0</span></a>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search out-of-stock products…" />
+          </div>
+          <select class="select select-sm"><option>All categories</option><option>Smartphones</option><option>Audio</option><option>Wearables</option></select>
+          <select class="select select-sm"><option>Sort: Most demand</option><option>Longest out</option><option>Highest waitlist</option></select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr>
+            <th style="width:36px"><input type="checkbox"/></th>
+            <th>Product</th><th>Category</th><th>Price</th><th>Out since</th><th>Waitlist</th><th>Lost demand (30d)</th><th>PO status</th><th></th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/325153/pexels-photo-325153.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">iPhone 16 Pro Max 512GB</div><div class="cell-muted mono">TZ-IP16PM-512-TI</div></div></a></td>
+              <td><span class="pill pill-info">Smartphones</span></td>
+              <td><span class="cell-amount">$2,199</span></td>
+              <td>22 Apr 2026<div class="cell-muted">13 days</div></td>
+              <td><span class="cell-strong" style="color:var(--warn-30)">28</span><div class="cell-muted">customers</div></td>
+              <td><span class="cell-amount">$8,440</span></td>
+              <td><span class="pill pill-active">PO-2026-119</span><div class="cell-muted">ETA 09 May</div></td>
+              <td><a href="product-detail.html" class="link">Manage</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">Galaxy S25 Ultra 1TB · Titanium Black</div><div class="cell-muted mono">TZ-SGS25U-1T-TI</div></div></a></td>
+              <td><span class="pill pill-info">Smartphones</span></td>
+              <td><span class="cell-amount">$2,499</span></td>
+              <td>22 Apr 2026<div class="cell-muted">13 days</div></td>
+              <td><span class="cell-strong" style="color:var(--warn-30)">14</span><div class="cell-muted">customers</div></td>
+              <td><span class="cell-amount">$6,247</span></td>
+              <td><span class="pill pill-active">PO-2026-114</span><div class="cell-muted">ETA 11 May</div></td>
+              <td><a href="product-detail.html" class="link">Manage</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/2697618/pexels-photo-2697618.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">Sony α7C II Mirrorless</div><div class="cell-muted mono">TZ-SNYA7C2-BLK</div></div></a></td>
+              <td><span class="pill pill-tertiary">Cameras</span></td>
+              <td><span class="cell-amount">$2,899</span></td>
+              <td>05 Apr 2026<div class="cell-muted">30 days</div></td>
+              <td><span class="cell-strong" style="color:var(--error-30)">5</span><div class="cell-muted">customers</div></td>
+              <td><span class="cell-amount">$4,213</span></td>
+              <td><span class="pill pill-overdue">No PO yet</span><div class="cell-muted" style="color:var(--error-30)">Action needed</div></td>
+              <td><a href="product-detail.html" class="link">Reorder</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("products","Out of Stock","3 products awaiting restock");</script>
+</body>
+</html>

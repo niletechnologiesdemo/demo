@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Performance · Galaxy S25 Ultra · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.funnel-row{display:flex;align-items:center;gap:14px;padding:12px 0}
+.funnel-name{flex:1;font-size:13.5px;color:var(--on-surface);letter-spacing:0;font-weight:500}
+.funnel-bar{flex:none;width:280px;height:32px;background:var(--surface-2);border-radius:8px;overflow:hidden;position:relative}
+.funnel-fill{height:100%;display:flex;align-items:center;padding:0 12px;color:#fff;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:0;box-shadow:inset 0 -2px 4px rgba(0,0,0,.1)}
+.funnel-row:nth-child(6n+1) .funnel-fill{background:linear-gradient(90deg, var(--p-50), var(--p-40))}
+.funnel-row:nth-child(6n+2) .funnel-fill{background:linear-gradient(90deg, var(--info-40), var(--info-30))}
+.funnel-row:nth-child(6n+3) .funnel-fill{background:linear-gradient(90deg, var(--success-40), var(--success-30))}
+.funnel-row:nth-child(6n+4) .funnel-fill{background:linear-gradient(90deg, var(--s-70), var(--s-50))}
+.funnel-row:nth-child(6n+5) .funnel-fill{background:linear-gradient(90deg, var(--t-50), var(--t-40))}
+.funnel-conv{flex:none;width:80px;text-align:right;font-size:13px;color:var(--on-surface-variant);font-variant-numeric:tabular-nums}
+.funnel-conv b{color:var(--on-surface);font-weight:600}
+.cohort-cell{padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;font-size:12.5px}
+.cohort-h{padding:8px 12px;text-align:center;font-size:11px;font-weight:600;color:var(--on-surface-variant);text-transform:uppercase;letter-spacing:.5px;background:var(--surface-1)}
+.heat-100{background:linear-gradient(135deg, var(--success-40), var(--success-30));color:#fff}
+.heat-90{background:var(--success-90);color:var(--success-10)}
+.heat-80{background:linear-gradient(135deg, #d6fde3, var(--success-95));color:var(--success-10)}
+.heat-70{background:var(--warn-95);color:var(--s-10)}
+.heat-low{background:var(--surface-2);color:var(--on-surface-variant)}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="breadcrumb"><a href="products.html">Products</a> <span>/</span> <a href="product-detail.html">Galaxy S25 Ultra</a> <span>/</span> <span>Performance</span></div>
+
+      <div class="entity-head">
+        <div class="entity-head-main">
+          <img src="https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&amp;w=400" alt="" class="prod-thumb-lg">
+          <div>
+            <h2 class="entity-title">Samsung Galaxy S25 Ultra 256GB <span class="pill pill-active">Live</span></h2>
+            <p class="entity-sub">Smartphones · Samsung · TZ-SGS25U-256-TG · Listed 14 Feb 2026</p>
+            <div class="entity-meta">
+              <span><b>$26,586</b> revenue YTD</span>
+              <span><b>14 sales</b> last 30 days</span>
+              <span><b>3.8%</b> conversion</span>
+              <span>Rank <b>#1</b> in your store</span>
+            </div>
+          </div>
+        </div>
+        <div class="entity-head-actions">
+          <select class="select select-sm" style="height:36px"><option>Last 30 days</option><option>Last 90 days</option><option>YTD</option><option>All time</option></select>
+          <button class="btn btn-ghost">Export</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="product-detail.html">Overview</a>
+        <a class="tab" href="product-layby-plans.html">Lay-by plans</a>
+        <a class="tab" href="product-inventory.html">Inventory &amp; variants</a>
+        <a class="tab active" href="product-performance.html">Performance</a>
+      </div>
+
+      <div class="kpi-grid" style="margin-top:18px">
+        <div class="kpi kpi-info">
+          <div class="kpi-label">Page Views</div>
+          <div class="kpi-value">7,284</div>
+          <div class="kpi-meta"><span class="delta up">▲ 18%</span> vs prev period</div>
+        </div>
+        <div class="kpi kpi-success">
+          <div class="kpi-label">Lay-bys Started</div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-meta"><span class="delta up">▲ 22%</span> vs prev period</div>
+        </div>
+        <div class="kpi kpi-gold">
+          <div class="kpi-label">Conversion Rate</div>
+          <div class="kpi-value">3.8%</div>
+          <div class="kpi-meta">Store avg 2.4%</div>
+        </div>
+        <div class="kpi kpi-tertiary">
+          <div class="kpi-label">Revenue (30d)</div>
+          <div class="kpi-value">$26,586</div>
+          <div class="kpi-meta">Net to you · $25,257</div>
+        </div>
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Sales — Last 12 Weeks</h3>
+                <div class="card-sub">Lay-bys started each week</div>
+              </div>
+              <div class="card-actions">
+                <select class="select select-sm" style="height:32px"><option>Lay-bys started</option><option>Revenue</option><option>Page views</option></select>
+              </div>
+            </div>
+            <div class="chart-bars">
+              <div class="chart-bar" style="height:42%"><span class="val">5</span><span class="lab">W4 Feb</span></div>
+              <div class="chart-bar" style="height:50%"><span class="val">6</span><span class="lab">W1 Mar</span></div>
+              <div class="chart-bar" style="height:58%"><span class="val">7</span><span class="lab">W2 Mar</span></div>
+              <div class="chart-bar" style="height:50%"><span class="val">6</span><span class="lab">W3 Mar</span></div>
+              <div class="chart-bar" style="height:67%"><span class="val">8</span><span class="lab">W4 Mar</span></div>
+              <div class="chart-bar" style="height:75%"><span class="val">9</span><span class="lab">W1 Apr</span></div>
+              <div class="chart-bar" style="height:83%"><span class="val">10</span><span class="lab">W2 Apr</span></div>
+              <div class="chart-bar" style="height:75%"><span class="val">9</span><span class="lab">W3 Apr</span></div>
+              <div class="chart-bar" style="height:92%"><span class="val">11</span><span class="lab">W4 Apr</span></div>
+              <div class="chart-bar" style="height:100%"><span class="val">12</span><span class="lab">W1 May</span></div>
+              <div class="chart-bar bar-current" style="height:92%"><span class="val">11</span><span class="lab">W2 May</span></div>
+              <div class="chart-bar" style="height:33%"><span class="val">4</span><span class="lab">This wk</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Conversion funnel</h3>
+                <div class="card-sub">From product page view to completed lay-by · last 30 days</div>
+              </div>
+            </div>
+            <div style="padding:12px 22px 18px">
+              <div class="funnel-row">
+                <span class="funnel-name">Product page views</span>
+                <div class="funnel-bar"><div class="funnel-fill" style="width:100%">7,284</div></div>
+                <span class="funnel-conv"><b>100%</b></span>
+              </div>
+              <div class="funnel-row">
+                <span class="funnel-name">Added to cart</span>
+                <div class="funnel-bar"><div class="funnel-fill" style="width:18%">1,328</div></div>
+                <span class="funnel-conv"><b>18.2%</b></span>
+              </div>
+              <div class="funnel-row">
+                <span class="funnel-name">Started lay-by checkout</span>
+                <div class="funnel-bar"><div class="funnel-fill" style="width:8%">596</div></div>
+                <span class="funnel-conv"><b>8.2%</b></span>
+              </div>
+              <div class="funnel-row">
+                <span class="funnel-name">Deposit captured (lay-by created)</span>
+                <div class="funnel-bar"><div class="funnel-fill" style="width:3.8%">14</div></div>
+                <span class="funnel-conv"><b>3.8%</b></span>
+              </div>
+              <div class="funnel-row">
+                <span class="funnel-name">Completed (final paid)</span>
+                <div class="funnel-bar"><div class="funnel-fill" style="width:2.4%">9</div></div>
+                <span class="funnel-conv"><b>2.4%</b></span>
+              </div>
+            </div>
+            <div class="card-foot">
+              <span class="cell-muted" style="font-size:12px">Biggest drop-off: page → cart (82% leave). Industry benchmark for tech: 14–22%.</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Cohort completion</h3>
+                <div class="card-sub">% of lay-bys still active or completed by week, by start month</div>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data" style="font-size:12.5px">
+                <thead>
+                  <tr>
+                    <th class="cohort-h">Started</th>
+                    <th class="cohort-h">Lay-bys</th>
+                    <th class="cohort-h">W1</th>
+                    <th class="cohort-h">W4</th>
+                    <th class="cohort-h">W8</th>
+                    <th class="cohort-h">W16</th>
+                    <th class="cohort-h">W24</th>
+                    <th class="cohort-h">W32</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><b>Feb 2026</b></td>
+                    <td>11</td>
+                    <td class="cohort-cell heat-100">100%</td>
+                    <td class="cohort-cell heat-100">100%</td>
+                    <td class="cohort-cell heat-90">95%</td>
+                    <td class="cohort-cell heat-80">88%</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                  </tr>
+                  <tr>
+                    <td><b>Mar 2026</b></td>
+                    <td>27</td>
+                    <td class="cohort-cell heat-100">100%</td>
+                    <td class="cohort-cell heat-100">98%</td>
+                    <td class="cohort-cell heat-90">93%</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                  </tr>
+                  <tr>
+                    <td><b>Apr 2026</b></td>
+                    <td>38</td>
+                    <td class="cohort-cell heat-100">100%</td>
+                    <td class="cohort-cell heat-100">99%</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                  </tr>
+                  <tr>
+                    <td><b>May 2026</b></td>
+                    <td>15</td>
+                    <td class="cohort-cell heat-100">100%</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                    <td class="cohort-cell heat-low">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-foot">
+              <span class="cell-muted" style="font-size:12px">Higher % means lay-bys are still progressing or completed (haven't cancelled or defaulted).</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-col">
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Performance summary</h3></div>
+            <div class="kv"><span>Page views (30d)</span><b>7,284</b></div>
+            <div class="kv"><span>Lay-bys started</span><b>14</b></div>
+            <div class="kv"><span>Conversion rate</span><b style="color:var(--success-30)">3.8%</b></div>
+            <div class="kv"><span>Store avg conversion</span><b>2.4%</b></div>
+            <div class="kv"><span>Avg order value</span><b>$1,899</b></div>
+            <div class="kv"><span>Customer rating</span><b>4.9 / 5</b></div>
+            <div class="kv"><span>Reviews</span><b>28</b></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Where viewers come from</h3></div>
+            <div style="padding:14px 22px 18px">
+              <div class="reason-row"><span class="reason-name">Direct &amp; LayBys.com</span><span class="reason-bar"><span class="reason-fill" style="width:48%"></span></span><span class="reason-val">48%</span></div>
+              <div class="reason-row"><span class="reason-name">Google search</span><span class="reason-bar"><span class="reason-fill" style="width:32%"></span></span><span class="reason-val">32%</span></div>
+              <div class="reason-row"><span class="reason-name">Social media</span><span class="reason-bar"><span class="reason-fill" style="width:14%"></span></span><span class="reason-val">14%</span></div>
+              <div class="reason-row"><span class="reason-name">Email campaigns</span><span class="reason-bar"><span class="reason-fill" style="width:6%"></span></span><span class="reason-val">6%</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Comparison vs store</h3></div>
+            <div class="kv"><span>Conversion vs avg</span><b style="color:var(--success-30)">+58%</b></div>
+            <div class="kv"><span>AOV vs avg</span><b style="color:var(--success-30)">+22%</b></div>
+            <div class="kv"><span>Completion rate vs avg</span><b style="color:var(--success-30)">+5 pts</b></div>
+            <div class="kv"><span>Cancellation vs avg</span><b style="color:var(--success-30)">−2.3 pts</b></div>
+            <div class="kv"><span>Rank in store</span><b>#1 of 56</b></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Health</h3></div>
+            <div class="card-body">
+              <div class="alert alert-success" style="margin:0">
+                <div class="alert-icon">✓</div>
+                <div class="alert-body">
+                  <div class="alert-title">Top performer</div>
+                  <div class="alert-text">This product converts 58% better than your store average. Keep it featured and consider running paid traffic to it.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("products","Performance","Galaxy S25 Ultra · 30-day analytics");</script>
+</body>
+</html>

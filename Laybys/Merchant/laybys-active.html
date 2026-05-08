@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Active Lay-Bys · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Orders &amp; Lay-Bys</h1>
+          <p class="page-sub">Active lay-bys currently being paid off</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-info"><div class="kpi-label">Active Lay-Bys</div><div class="kpi-value">47</div><div class="kpi-meta">$84,290 in flight</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">On Track</div><div class="kpi-value">44</div><div class="kpi-meta">93.6% of active</div></div>
+        <div class="kpi kpi-warn"><div class="kpi-label">At Risk</div><div class="kpi-value">2</div><div class="kpi-meta">Multiple recent failures</div></div>
+        <div class="kpi kpi-danger"><div class="kpi-label">Overdue</div><div class="kpi-value">1</div><div class="kpi-meta">8 days late · LB-2026-00827</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="laybys.html">All <span class="count">371</span></a>
+        <a class="tab active" href="laybys-active.html">Active <span class="count">47</span></a>
+        <a class="tab" href="laybys-ready.html">Ready to ship <span class="count">3</span></a>
+        <a class="tab" href="laybys-completed.html">Completed <span class="count">312</span></a>
+        <a class="tab" href="laybys-cancelled.html">Cancelled <span class="count">9</span></a>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search active lay-bys…" />
+          </div>
+          <select class="select select-sm"><option>All products</option><option>Galaxy S25 Ultra</option><option>Sony WH-1000XM6</option></select>
+          <select class="select select-sm"><option>All risk levels</option><option>On track</option><option>At risk</option><option>Overdue</option></select>
+          <select class="select select-sm"><option>Sort: Next payment</option><option>Most progress</option><option>Highest value</option><option>Newest</option></select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr><th>Agreement</th><th>Customer</th><th>Product</th><th>Total</th><th>Progress</th><th>Next payment</th><th>Risk</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2026-00891</a><div class="cell-muted" style="font-size:11.5px">Today · 11:42</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">SM</div><div><div class="cell-strong">Sarah Mitchell</div><div class="cell-muted">sarah.m@gmail.com</div></div></div></td>
+              <td><span class="cell-strong">Galaxy S25 Ultra</span><div class="cell-muted">256GB Titanium Grey</div></td>
+              <td><span class="cell-amount">$1,899.00</span></td>
+              <td><div class="cell-strong">5/32 instalments</div><div class="progress" style="width:140px;margin-top:4px;height:6px"><div class="progress-bar" style="width:40%"></div></div><div class="cell-muted" style="font-size:11.5px;margin-top:3px">$759.20 paid · 40%</div></td>
+              <td><span class="cell-amount">$47.47</span><div class="cell-muted">11 May 2026</div></td>
+              <td><span class="pill pill-active">On track</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2026-00852</a><div class="cell-muted" style="font-size:11.5px">15 Mar 2026</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">EW</div><div><div class="cell-strong">Emma Wilson</div><div class="cell-muted">emma.w@yahoo.com</div></div></div></td>
+              <td><span class="cell-strong">MacBook Pro M4 14"</span><div class="cell-muted">512GB Space Grey</div></td>
+              <td><span class="cell-amount">$2,499.00</span></td>
+              <td><div class="cell-strong">16/32 instalments</div><div class="progress" style="width:140px;margin-top:4px;height:6px"><div class="progress-bar" style="width:49%"></div></div><div class="cell-muted" style="font-size:11.5px;margin-top:3px">$1,234 paid · 49%</div></td>
+              <td><span class="cell-amount">$62.47</span><div class="cell-muted">12 May 2026</div></td>
+              <td><span class="pill pill-active">On track</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2026-00819</a><div class="cell-muted" style="font-size:11.5px">22 Feb 2026</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">RK</div><div><div class="cell-strong">Ravi Krishnan</div><div class="cell-muted">ravi.k@gmail.com</div></div></div></td>
+              <td><span class="cell-strong">iPad Air 13"</span><div class="cell-muted">256GB Space Grey</div></td>
+              <td><span class="cell-amount">$899.00</span></td>
+              <td><div class="cell-strong">21/32 instalments</div><div class="progress" style="width:140px;margin-top:4px;height:6px"><div class="progress-bar" style="width:53%"></div></div><div class="cell-muted" style="font-size:11.5px;margin-top:3px">$472 paid · 53%</div></td>
+              <td><span class="cell-amount">$22.47</span><div class="cell-muted">13 May 2026</div></td>
+              <td><span class="pill pill-active">On track</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2026-00786</a><div class="cell-muted" style="font-size:11.5px">10 Feb 2026</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">CH</div><div><div class="cell-strong">Chloe Harper</div><div class="cell-muted">chloe.h@gmail.com</div></div></div></td>
+              <td><span class="cell-strong">iPhone 16 Pro Max</span><div class="cell-muted">512GB Titanium Black</div></td>
+              <td><span class="cell-amount">$2,199.00</span></td>
+              <td><div class="cell-strong">24/32 instalments</div><div class="progress" style="width:140px;margin-top:4px;height:6px"><div class="progress-bar" style="width:75%"></div></div><div class="cell-muted" style="font-size:11.5px;margin-top:3px">$1,650 paid · 75%</div></td>
+              <td><span class="cell-amount">$54.97</span><div class="cell-muted">14 May 2026</div></td>
+              <td><span class="pill pill-active">On track</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2026-04188</a><div class="cell-muted" style="font-size:11.5px">02 Mar 2026</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">TW</div><div><div class="cell-strong">Tom Whitfield</div><div class="cell-muted">tom.w@gmail.com</div></div></div></td>
+              <td><span class="cell-strong">Bose QuietComfort Ultra</span><div class="cell-muted">Black</div></td>
+              <td><span class="cell-amount">$649.00</span></td>
+              <td><div class="cell-strong">11/16 instalments</div><div class="progress" style="width:140px;margin-top:4px;height:6px"><div class="progress-bar warn" style="width:69%"></div></div><div class="cell-muted" style="font-size:11.5px;margin-top:3px">$447 paid · 69% · 1 retry pending</div></td>
+              <td><span class="cell-amount" style="color:var(--warn-30)">$45.00</span><div class="cell-muted" style="color:var(--warn-30)">Retry 06 May</div></td>
+              <td><span class="pill pill-pending">At risk</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2026-03917</a><div class="cell-muted" style="font-size:11.5px">28 Feb 2026</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">DK</div><div><div class="cell-strong">Daniel Kovac</div><div class="cell-muted">daniel.k@gmail.com</div></div></div></td>
+              <td><span class="cell-strong">Sony WH-1000XM6</span><div class="cell-muted">Black</div></td>
+              <td><span class="cell-amount">$549.00</span></td>
+              <td><div class="cell-strong">9/16 instalments</div><div class="progress" style="width:140px;margin-top:4px;height:6px"><div class="progress-bar warn" style="width:56%"></div></div><div class="cell-muted" style="font-size:11.5px;margin-top:3px">$307 paid · 56% · DD failed</div></td>
+              <td><span class="cell-amount" style="color:var(--warn-30)">$62.20</span><div class="cell-muted" style="color:var(--warn-30)">Retry 06 May</div></td>
+              <td><span class="pill pill-pending">At risk</span></td>
+              <td><a href="layby-detail.html" class="link">View →</a></td>
+            </tr>
+            <tr>
+              <td><a href="layby-detail.html" class="cell-id">LB-2026-00827</a><div class="cell-muted" style="font-size:11.5px">28 Feb 2026</div></td>
+              <td><div class="cell-thumb"><div class="avatar avatar-sm">LB</div><div><div class="cell-strong">Liam Bennett</div><div class="cell-muted">liam.b@hotmail.com</div></div></div></td>
+              <td><span class="cell-strong">AirPods Pro 2</span><div class="cell-muted">USB-C</div></td>
+              <td><span class="cell-amount">$399.00</span></td>
+              <td><div class="cell-strong">6/16 instalments</div><div class="progress" style="width:140px;margin-top:4px;height:6px"><div class="progress-bar danger" style="width:24%"></div></div><div class="cell-muted" style="font-size:11.5px;margin-top:3px">$98 paid · 24% · 3 retries failed</div></td>
+              <td><span class="cell-amount" style="color:var(--error-30)">$24.50</span><div class="cell-muted" style="color:var(--error-30)">8 days overdue</div></td>
+              <td><span class="pill pill-overdue">Overdue</span></td>
+              <td><a href="exception-detail.html" class="link">Action →</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pager"><div class="pager-info">Showing 1–7 of 47 active lay-bys</div><div class="pagination"><button class="btn btn-sm">←</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm">2</button><button class="btn btn-sm">3</button><button class="btn btn-sm">→</button></div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("laybys","Active Lay-Bys","47 lay-bys currently being paid off");</script>
+</body>
+</html>

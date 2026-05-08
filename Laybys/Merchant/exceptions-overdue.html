@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Overdue Lay-Bys · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Exceptions</h1>
+          <p class="page-sub">Lay-bys past their payment grace period · highest priority</p>
+        </div>
+      </div>
+
+      <div class="alert alert-danger" style="margin-bottom:18px">
+        <div class="alert-icon">!</div>
+        <div class="alert-body">
+          <div class="alert-title">1 lay-by is overdue and SLA-breaching soon</div>
+          <div class="alert-text">EX-2026-00041 (Liam Bennett · AirPods Pro 2) has been overdue for 8 days. The 9-day SLA window expires in <b>4h 12m</b>. Take action now or escalate to LayBys.com support.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-danger"><div class="kpi-label">Overdue</div><div class="kpi-value">1</div><div class="kpi-meta">P1 critical · SLA breach in 4h</div></div>
+        <div class="kpi kpi-warn"><div class="kpi-label">Avg Days Overdue</div><div class="kpi-value">8 d</div><div class="kpi-meta">Industry: 11 d</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">At Risk Value</div><div class="kpi-value">$301</div><div class="kpi-meta">Remaining balance</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Recovery Rate</div><div class="kpi-value">68%</div><div class="kpi-meta">Overdue → resolved</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="exceptions.html">All open <span class="count">3</span></a>
+        <a class="tab" href="exceptions-failed.html">Failed payments <span class="count">2</span></a>
+        <a class="tab active" href="exceptions-overdue.html">Overdue <span class="count">1</span></a>
+        <a class="tab" href="exceptions-disputes.html">Disputes <span class="count">0</span></a>
+        <a class="tab" href="exceptions-resolved.html">Resolved (30d) <span class="count">8</span></a>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="exceptions-list">
+          <div class="exception-row exception-danger">
+            <div class="exception-pri"><span class="pill pill-overdue">P1 · Critical</span></div>
+            <div class="exception-main">
+              <div class="exception-head">
+                <a href="exception-detail.html" class="cell-id">EX-2026-00041</a>
+                <span class="exception-type">Lay-By Overdue 8 Days</span>
+              </div>
+              <div class="exception-title">LB-2026-00827 — Liam Bennett · AirPods Pro 2</div>
+              <div class="exception-meta">
+                <span><b>$24.50</b> instalment 6 of 16</span><span class="dot-sep">·</span>
+                <span>3 retries failed</span><span class="dot-sep">·</span>
+                <span>Last contact 5 days ago</span><span class="dot-sep">·</span>
+                <span style="color:var(--error-30)"><b>SLA breach in 4h 12m</b></span>
+              </div>
+            </div>
+            <div class="exception-actions">
+              <button class="btn btn-ghost btn-sm">Send Email</button>
+              <a href="exception-detail.html" class="btn btn-sm btn-primary">Resolve</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">SLA timeline</h3></div>
+          <div style="padding:8px 22px 18px">
+            <div class="tl">
+              <div class="tl-item now">
+                <div class="tl-body">
+                  <div class="tl-title" style="color:var(--error-30)"><b>SLA breach in 4h 12m</b></div>
+                  <div class="tl-meta">Today 17:00 AEST · escalate or resolve before this</div>
+                </div>
+              </div>
+              <div class="tl-item fail">
+                <div class="tl-body">
+                  <div class="tl-title">Day 8 — Currently overdue</div>
+                  <div class="tl-meta">No customer response since 30 Apr · awaiting your action</div>
+                </div>
+              </div>
+              <div class="tl-item fail">
+                <div class="tl-body">
+                  <div class="tl-title">Day 5 — Auto-retries exhausted</div>
+                  <div class="tl-meta">02 May · 3rd retry failed "do not honour" · escalated to merchant</div>
+                </div>
+              </div>
+              <div class="tl-item done">
+                <div class="tl-body">
+                  <div class="tl-title">Day 3 — Reminder sent</div>
+                  <div class="tl-meta">30 Apr · 3-day reminder email sent to customer</div>
+                </div>
+              </div>
+              <div class="tl-item fail">
+                <div class="tl-body">
+                  <div class="tl-title">Day 0 — Original payment failed</div>
+                  <div class="tl-meta">28 Apr · $24.50 declined</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">What happens at SLA breach</h3></div>
+          <div style="padding:8px 22px 18px;font-size:13.5px;line-height:1.65;color:var(--on-surface)">
+            <p style="margin:0 0 12px">If the SLA window expires without action:</p>
+            <ol style="padding-left:20px;margin:0">
+              <li>LayBys.com Support is auto-notified and may contact the customer on your behalf.</li>
+              <li>The lay-by enters a <b>30-day final recovery window</b> with weekly courtesy retries.</li>
+              <li>If still unrecovered after 30 days, the lay-by is auto-cancelled. The customer is refunded their instalments minus the deposit, and the stock returns to your inventory.</li>
+              <li>This event is recorded against the customer's payment score but does not affect your store rating.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("exceptions","Overdue","1 critical · SLA breach in 4h 12m");</script>
+</body>
+</html>

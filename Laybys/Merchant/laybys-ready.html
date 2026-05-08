@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ready to Ship · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+<style>
+.ship-banner{display:flex;align-items:center;gap:18px;padding:20px 24px;background:linear-gradient(135deg, var(--success-95) 0%, #f0fde6 100%);border:1px solid var(--success-90);border-radius:var(--r-xl);margin-bottom:22px;box-shadow:0 4px 12px -4px rgba(31,157,90,.2)}
+.ship-banner-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg, var(--success-40), var(--success-30));color:#fff;display:grid;place-items:center;flex:none;box-shadow:0 6px 16px rgba(31,157,90,.4)}
+.ship-banner-text{flex:1;min-width:0}
+.ship-banner-title{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-.3px;color:var(--success-10);margin:0 0 4px}
+.ship-banner-sub{font-size:14px;color:var(--success-10);margin:0;letter-spacing:.05px;line-height:1.5}
+.ship-card{background:var(--surface);border:1px solid var(--success-90);border-left:4px solid var(--success-40);border-radius:var(--r-lg);padding:0;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px -4px rgba(31,157,90,.15)}
+.ship-card-head{padding:18px 22px;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.ship-card-thumb{width:72px;height:72px;border-radius:10px;object-fit:cover;flex:none;border:1px solid var(--outline-variant);box-shadow:var(--elev-1)}
+.ship-card-info{flex:1;min-width:200px}
+.ship-card-title{font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--on-surface);margin:0 0 4px;letter-spacing:-.1px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ship-card-meta{font-size:13px;color:var(--on-surface-variant);letter-spacing:.05px}
+.ship-addr{margin-top:10px;padding:10px 12px;background:var(--surface-1);border:1px solid var(--outline-variant);border-radius:var(--r-sm);font-size:13px;line-height:1.55;color:var(--on-surface)}
+.ship-addr b{color:var(--on-surface)}
+.ship-card-actions{display:flex;flex-direction:column;gap:8px;flex:none;align-items:flex-end;min-width:160px}
+.ship-amt{font-family:var(--font-display);font-size:20px;font-weight:600;letter-spacing:-.3px;background:linear-gradient(135deg, var(--success-30), var(--success-40));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.ship-card-foot{padding:12px 22px;background:var(--surface-1);border-top:1px solid var(--outline-variant);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--on-surface-variant)}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Orders &amp; Lay-Bys</h1>
+          <p class="page-sub">Lay-bys with final payment captured · ready for dispatch</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Print all picking slips</button>
+          <button class="btn btn-success">Mark all as shipped</button>
+        </div>
+      </div>
+
+      <div class="ship-banner">
+        <div class="ship-banner-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16h-2v-2h2v2zm5-7h-3V5H6v4H3l9 8 9-8z" transform="translate(0,2)"/><rect x="2" y="14" width="20" height="6" rx="1"/></svg>
+        </div>
+        <div class="ship-banner-text">
+          <h2 class="ship-banner-title">3 orders ready to ship</h2>
+          <p class="ship-banner-sub">Total order value $3,747.00 · Customers waiting since their final payment cleared. Aim to dispatch within 3 business days to maintain your store rating.</p>
+        </div>
+        <button class="btn btn-success" style="flex:none">Bulk dispatch →</button>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-success"><div class="kpi-label">Ready to Ship</div><div class="kpi-value">3</div><div class="kpi-meta">Avg lay-by value $1,249</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Total Value</div><div class="kpi-value">$3,747</div><div class="kpi-meta">Will release on dispatch</div></div>
+        <div class="kpi kpi-gold"><div class="kpi-label">Avg Time to Ship</div><div class="kpi-value">1.2 days</div><div class="kpi-meta">Target ≤ 3 days</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Oldest Awaiting</div><div class="kpi-value">2h 18m</div><div class="kpi-meta">Sony WH-1000XM6 · Priya Nair</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="laybys.html">All <span class="count">371</span></a>
+        <a class="tab" href="laybys-active.html">Active <span class="count">47</span></a>
+        <a class="tab active" href="laybys-ready.html">Ready to ship <span class="count">3</span></a>
+        <a class="tab" href="laybys-completed.html">Completed <span class="count">312</span></a>
+        <a class="tab" href="laybys-cancelled.html">Cancelled <span class="count">9</span></a>
+      </div>
+
+      <div style="margin-top:18px">
+
+        <div class="ship-card">
+          <div class="ship-card-head">
+            <img src="https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&amp;w=400" alt="" class="ship-card-thumb">
+            <div class="ship-card-info">
+              <h3 class="ship-card-title">Sony WH-1000XM6 · Black <span class="pill pill-completed">Final paid</span></h3>
+              <div class="ship-card-meta"><a href="layby-detail.html" class="cell-id">LB-2026-00889</a> · Priya Nair · priya.n@gmail.com</div>
+              <div class="ship-addr">
+                <b>Ship to:</b><br>
+                Priya Nair<br>
+                Unit 4, 18 Crown Street, Surry Hills NSW 2010<br>
+                +61 422 187 553
+              </div>
+            </div>
+            <div class="ship-card-actions">
+              <div class="ship-amt">$549.00</div>
+              <div class="cell-muted" style="font-size:12px">Final paid 2h 18m ago</div>
+              <button class="btn btn-success">Mark as shipped</button>
+              <button class="btn btn-ghost btn-sm">Print picking slip</button>
+            </div>
+          </div>
+          <div class="ship-card-foot">
+            <div>
+              <span style="margin-right:14px">SKU <b class="mono" style="color:var(--on-surface)">TZ-SNYWH1KM6-BLK</b></span>
+              <span style="margin-right:14px">Qty <b style="color:var(--on-surface)">1</b></span>
+              <span>Customer paid 32 instalments over 32 weeks</span>
+            </div>
+            <span>Net to you: <b style="color:var(--success-30)">$521.55</b> on dispatch</span>
+          </div>
+        </div>
+
+        <div class="ship-card">
+          <div class="ship-card-head">
+            <img src="https://images.pexels.com/photos/47856/iwatch-apple-ipad-tablet-47856.jpeg?auto=compress&amp;w=400" alt="" class="ship-card-thumb">
+            <div class="ship-card-info">
+              <h3 class="ship-card-title">Apple Watch Ultra 3 · 49mm Titanium <span class="pill pill-completed">Final paid</span></h3>
+              <div class="ship-card-meta"><a href="layby-detail.html" class="cell-id">LB-2026-00871</a> · James O'Connor · james.oc@outlook.com</div>
+              <div class="ship-addr">
+                <b>Ship to:</b><br>
+                James O'Connor<br>
+                12 Brunswick Street, Fitzroy VIC 3065<br>
+                +61 401 226 894
+              </div>
+            </div>
+            <div class="ship-card-actions">
+              <div class="ship-amt">$1,299.00</div>
+              <div class="cell-muted" style="font-size:12px">Final paid yesterday 18:22</div>
+              <button class="btn btn-success">Mark as shipped</button>
+              <button class="btn btn-ghost btn-sm">Print picking slip</button>
+            </div>
+          </div>
+          <div class="ship-card-foot">
+            <div>
+              <span style="margin-right:14px">SKU <b class="mono" style="color:var(--on-surface)">TZ-AWU3-49-TI</b></span>
+              <span style="margin-right:14px">Qty <b style="color:var(--on-surface)">1</b></span>
+              <span>Customer paid 32 instalments over 32 weeks</span>
+            </div>
+            <span>Net to you: <b style="color:var(--success-30)">$1,234.05</b> on dispatch</span>
+          </div>
+        </div>
+
+        <div class="ship-card">
+          <div class="ship-card-head">
+            <img src="https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&amp;w=400" alt="" class="ship-card-thumb">
+            <div class="ship-card-info">
+              <h3 class="ship-card-title">Galaxy S25 Ultra · 256GB Titanium Grey <span class="pill pill-completed">Final paid</span></h3>
+              <div class="ship-card-meta"><a href="layby-detail.html" class="cell-id">LB-2026-00803</a> · Marcus Lee · marcus.l@gmail.com</div>
+              <div class="ship-addr">
+                <b>Ship to:</b><br>
+                Marcus Lee<br>
+                88 Adelaide Terrace, Perth WA 6000<br>
+                +61 408 552 731
+              </div>
+            </div>
+            <div class="ship-card-actions">
+              <div class="ship-amt">$1,899.00</div>
+              <div class="cell-muted" style="font-size:12px">Final paid yesterday 09:45</div>
+              <button class="btn btn-success">Mark as shipped</button>
+              <button class="btn btn-ghost btn-sm">Print picking slip</button>
+            </div>
+          </div>
+          <div class="ship-card-foot">
+            <div>
+              <span style="margin-right:14px">SKU <b class="mono" style="color:var(--on-surface)">TZ-SGS25U-256-TG</b></span>
+              <span style="margin-right:14px">Qty <b style="color:var(--on-surface)">1</b></span>
+              <span>Customer paid 32 instalments over 32 weeks</span>
+            </div>
+            <span>Net to you: <b style="color:var(--success-30)">$1,804.05</b> on dispatch</span>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("laybys","Ready to Ship","3 orders awaiting dispatch");</script>
+</body>
+</html>

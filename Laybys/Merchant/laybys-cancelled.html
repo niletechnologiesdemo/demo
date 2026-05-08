@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cancelled Lay-Bys · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Orders &amp; Lay-Bys</h1>
+          <p class="page-sub">Lay-bys cancelled by customer or system before completion</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:18px">
+        <div class="alert-icon">i</div>
+        <div class="alert-body">
+          <div class="alert-title">Cancellation policy reminder</div>
+          <div class="alert-text">When a customer cancels, instalments paid (excluding deposit) are refunded within 5 business days. The 20% deposit is forfeited as a restocking fee. Stock is automatically returned to your inventory.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-warn"><div class="kpi-label">Cancelled YTD</div><div class="kpi-value">9</div><div class="kpi-meta">2.4% of all started · ↓ vs 2025</div></div>
+        <div class="kpi kpi-info"><div class="kpi-label">Stock Returned</div><div class="kpi-value">9</div><div class="kpi-meta">Back in inventory · resellable</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Deposits Retained</div><div class="kpi-value">$1,847</div><div class="kpi-meta">Restocking fees collected</div></div>
+        <div class="kpi kpi-tertiary"><div class="kpi-label">Avg Time to Cancel</div><div class="kpi-value">42 days</div><div class="kpi-meta">After lay-by start</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab" href="laybys.html">All <span class="count">371</span></a>
+        <a class="tab" href="laybys-active.html">Active <span class="count">47</span></a>
+        <a class="tab" href="laybys-ready.html">Ready to ship <span class="count">3</span></a>
+        <a class="tab" href="laybys-completed.html">Completed <span class="count">312</span></a>
+        <a class="tab active" href="laybys-cancelled.html">Cancelled <span class="count">9</span></a>
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <div>
+          <div class="table-wrap">
+            <div class="table-toolbar">
+              <div class="topbar-search" style="flex:1;max-width:340px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" placeholder="Search cancelled lay-bys…" />
+              </div>
+              <select class="select select-sm"><option>All reasons</option><option>Customer requested</option><option>Failed payments</option><option>Cooling-off</option><option>System</option></select>
+              <select class="select select-sm"><option>This year</option><option>Last 90 days</option><option>All time</option></select>
+              <div class="grow"></div>
+              <button class="btn btn-ghost btn-sm">More filters</button>
+            </div>
+
+            <table class="data">
+              <thead><tr><th>Agreement</th><th>Customer</th><th>Product</th><th>Total</th><th>Reason</th><th>Refunded</th><th>You kept</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><a href="layby-detail.html" class="cell-id">LB-2026-00742</a><div class="cell-muted" style="font-size:11.5px">Started 22 Apr 2026<br>Cancelled 28 Apr 2026 · 6d</div></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">JK</div><div><div class="cell-strong">Jamie Kim</div><div class="cell-muted">jamie.k@gmail.com</div></div></div></td>
+                  <td><span class="cell-strong">Galaxy S25 Ultra</span><div class="cell-muted">1TB Titanium Black</div></td>
+                  <td><span class="cell-amount">$2,499</span></td>
+                  <td><span class="pill pill-info">Cooling-off</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">Within 48h</div></td>
+                  <td><span class="cell-amount">$499.80</span><div class="cell-muted" style="font-size:11.5px">Full refund</div></td>
+                  <td><span class="cell-amount" style="color:var(--on-surface-variant)">$0.00</span></td>
+                  <td><a href="layby-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="layby-detail.html" class="cell-id">LB-2026-00688</a><div class="cell-muted" style="font-size:11.5px">Started 14 Mar 2026<br>Cancelled 25 Apr 2026 · 42d</div></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">NB</div><div><div class="cell-strong">Nathan Briggs</div><div class="cell-muted">nathan.b@yahoo.com</div></div></div></td>
+                  <td><span class="cell-strong">iPad Air 13"</span><div class="cell-muted">256GB Space Grey</div></td>
+                  <td><span class="cell-amount">$899</span></td>
+                  <td><span class="pill pill-pending">Customer request</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">"No longer needed"</div></td>
+                  <td><span class="cell-amount">$224.75</span><div class="cell-muted" style="font-size:11.5px">Instalments only</div></td>
+                  <td><span class="cell-amount" style="color:var(--success-30)">$179.80</span><div class="cell-muted" style="font-size:11.5px">Deposit kept</div></td>
+                  <td><a href="layby-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="layby-detail.html" class="cell-id">LB-2026-00614</a><div class="cell-muted" style="font-size:11.5px">Started 08 Mar 2026<br>Cancelled 18 Apr 2026 · 41d</div></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">ZP</div><div><div class="cell-strong">Zoe Park</div><div class="cell-muted">zoe.p@gmail.com</div></div></div></td>
+                  <td><span class="cell-strong">Sony WH-1000XM6</span><div class="cell-muted">Silver</div></td>
+                  <td><span class="cell-amount">$549</span></td>
+                  <td><span class="pill pill-overdue">Failed payments</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">3 consecutive failures</div></td>
+                  <td><span class="cell-amount">$78.59</span><div class="cell-muted" style="font-size:11.5px">Instalments only</div></td>
+                  <td><span class="cell-amount" style="color:var(--success-30)">$109.80</span><div class="cell-muted" style="font-size:11.5px">Deposit kept</div></td>
+                  <td><a href="layby-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="layby-detail.html" class="cell-id">LB-2026-00547</a><div class="cell-muted" style="font-size:11.5px">Started 22 Feb 2026<br>Cancelled 02 Apr 2026 · 39d</div></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">AS</div><div><div class="cell-strong">Aaron Singh</div><div class="cell-muted">aaron.s@hotmail.com</div></div></div></td>
+                  <td><span class="cell-strong">MacBook Pro M4 14"</span><div class="cell-muted">512GB Space Grey</div></td>
+                  <td><span class="cell-amount">$2,499</span></td>
+                  <td><span class="pill pill-pending">Customer request</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">"Found a better deal"</div></td>
+                  <td><span class="cell-amount">$249.80</span><div class="cell-muted" style="font-size:11.5px">Instalments only</div></td>
+                  <td><span class="cell-amount" style="color:var(--success-30)">$499.80</span><div class="cell-muted" style="font-size:11.5px">Deposit kept</div></td>
+                  <td><a href="layby-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="layby-detail.html" class="cell-id">LB-2026-00482</a><div class="cell-muted" style="font-size:11.5px">Started 15 Feb 2026<br>Cancelled 28 Mar 2026 · 41d</div></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">MC</div><div><div class="cell-strong">Maya Chen</div><div class="cell-muted">maya.c@gmail.com</div></div></div></td>
+                  <td><span class="cell-strong">Apple Watch Ultra 3</span><div class="cell-muted">49mm Natural Titanium</div></td>
+                  <td><span class="cell-amount">$1,299</span></td>
+                  <td><span class="pill pill-overdue">Failed payments</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">3 consecutive failures</div></td>
+                  <td><span class="cell-amount">$259.80</span><div class="cell-muted" style="font-size:11.5px">Instalments only</div></td>
+                  <td><span class="cell-amount" style="color:var(--success-30)">$259.80</span><div class="cell-muted" style="font-size:11.5px">Deposit kept</div></td>
+                  <td><a href="layby-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="layby-detail.html" class="cell-id">LB-2025-19887</a><div class="cell-muted" style="font-size:11.5px">Started 28 Dec 2025<br>Cancelled 12 Mar 2026 · 74d</div></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">OF</div><div><div class="cell-strong">Olivia Foster</div><div class="cell-muted">olivia.f@yahoo.com</div></div></div></td>
+                  <td><span class="cell-strong">Bose QuietComfort Ultra</span><div class="cell-muted">Black</div></td>
+                  <td><span class="cell-amount">$649</span></td>
+                  <td><span class="pill pill-pending">Customer request</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">Hardship — agreed mutual</div></td>
+                  <td><span class="cell-amount">$324.50</span><div class="cell-muted" style="font-size:11.5px">Full refund · goodwill</div></td>
+                  <td><span class="cell-amount" style="color:var(--on-surface-variant)">$0.00</span></td>
+                  <td><a href="layby-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="layby-detail.html" class="cell-id">LB-2025-19402</a><div class="cell-muted" style="font-size:11.5px">Started 14 Dec 2025<br>Cancelled 22 Feb 2026 · 70d</div></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">DP</div><div><div class="cell-strong">Damian Park</div><div class="cell-muted">damian.p@hotmail.com</div></div></div></td>
+                  <td><span class="cell-strong">iPhone 16 Pro Max</span><div class="cell-muted">512GB Titanium Black</div></td>
+                  <td><span class="cell-amount">$2,199</span></td>
+                  <td><span class="pill pill-overdue">Failed payments</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">3 consecutive failures</div></td>
+                  <td><span class="cell-amount">$549.75</span><div class="cell-muted" style="font-size:11.5px">Instalments only</div></td>
+                  <td><span class="cell-amount" style="color:var(--success-30)">$439.80</span><div class="cell-muted" style="font-size:11.5px">Deposit kept</div></td>
+                  <td><a href="layby-detail.html" class="link">View →</a></td>
+                </tr>
+                <tr>
+                  <td><a href="layby-detail.html" class="cell-id">LB-2025-18947</a><div class="cell-muted" style="font-size:11.5px">Started 02 Dec 2025<br>Cancelled 08 Feb 2026 · 68d</div></td>
+                  <td><div class="cell-thumb"><div class="avatar avatar-sm">RW</div><div><div class="cell-strong">Rachel Webb</div><div class="cell-muted">rachel.w@gmail.com</div></div></div></td>
+                  <td><span class="cell-strong">AirPods Pro 2</span><div class="cell-muted">USB-C</div></td>
+                  <td><span class="cell-amount">$399</span></td>
+                  <td><span class="pill pill-pending">Customer request</span><div class="cell-muted" style="font-size:11.5px;margin-top:2px">"Changed my mind"</div></td>
+                  <td><span class="cell-amount">$99.75</span><div class="cell-muted" style="font-size:11.5px">Instalments only</div></td>
+                  <td><span class="cell-amount" style="color:var(--success-30)">$79.80</span><div class="cell-muted" style="font-size:11.5px">Deposit kept</div></td>
+                  <td><a href="layby-detail.html" class="link">View →</a></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pager"><div class="pager-info">Showing 1–8 of 9 cancelled lay-bys</div><div class="pagination"><button class="btn btn-sm">←</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm">2</button><button class="btn btn-sm">→</button></div></div>
+          </div>
+        </div>
+
+        <aside class="side-col">
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Cancellation reasons</h3><div class="card-actions"><span class="cell-muted" style="font-size:12px">YTD</span></div></div>
+            <div style="padding:14px 22px 18px">
+              <div class="reason-row"><span class="reason-name">Customer request</span><span class="reason-bar"><span class="reason-fill" style="width:55%"></span></span><span class="reason-val">5</span></div>
+              <div class="reason-row"><span class="reason-name">Failed payments</span><span class="reason-bar"><span class="reason-fill" style="width:33%"></span></span><span class="reason-val">3</span></div>
+              <div class="reason-row"><span class="reason-name">Cooling-off (within 48h)</span><span class="reason-bar"><span class="reason-fill" style="width:11%"></span></span><span class="reason-val">1</span></div>
+              <div class="reason-row"><span class="reason-name">System cancellation</span><span class="reason-bar"><span class="reason-fill" style="width:0%"></span></span><span class="reason-val">0</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Cancellation rate</h3></div>
+            <div class="kv"><span>Your store</span><b style="color:var(--success-30)">2.4%</b></div>
+            <div class="kv"><span>Industry avg</span><b>5.1%</b></div>
+            <div class="kv"><span>Best in category</span><b>1.8%</b></div>
+            <div class="kv"><span>Trend (vs 2025)</span><b style="color:var(--success-30)">↓ 1.2 pts</b></div>
+            <div class="card-foot">
+              <span class="cell-muted" style="font-size:12px">Lower than industry — good signal to customers</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Financial impact</h3></div>
+            <div class="kv"><span>Gross volume cancelled</span><b>$10,891</b></div>
+            <div class="kv"><span>Total refunded to customers</span><b>$2,286.94</b></div>
+            <div class="kv"><span>Deposits retained</span><b style="color:var(--success-30)">$1,569.00</b></div>
+            <div class="kv"><span>Goodwill refunds</span><b style="color:var(--warn-30)">$324.50</b></div>
+            <div class="kv"><span>Net to you</span><b style="color:var(--success-30)">$1,569.00</b></div>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("laybys","Cancelled Lay-Bys","9 cancellations · 2.4% rate");</script>
+</body>
+</html>

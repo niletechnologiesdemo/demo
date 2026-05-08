@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Settings · Banking · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Settings</h1>
+          <p class="page-sub">Banking &amp; tax — where your payouts land</p>
+        </div>
+      </div>
+
+      <div class="detail-grid" style="grid-template-columns:240px minmax(0,1fr)">
+        <aside class="settings-nav">
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Profile</div>
+            <a href="settings.html" class="settings-nav-link">Business profile</a>
+          </div>
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Money</div>
+            <a href="settings-banking.html" class="settings-nav-link active">Banking &amp; tax</a>
+          </div>
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Account</div>
+            <a href="settings-notifications.html" class="settings-nav-link">Notifications</a>
+          </div>
+        </aside>
+
+        <div>
+          <div class="alert alert-success">
+            <div class="alert-icon">✓</div>
+            <div class="alert-body">
+              <div class="alert-title">Banking verified</div>
+              <div class="alert-text">Your settlement account passed micro-deposit verification on 14 Jan 2024. Payouts run automatically every Tuesday.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Settlement account</h3><div class="card-actions"><button class="btn btn-ghost btn-sm">Change account</button></div></div>
+            <div class="card-body">
+              <div style="display:flex;gap:14px;align-items:center;padding:16px;background:linear-gradient(135deg, var(--success-95) 0%, #f0fde6 100%);border:1px solid var(--success-90);border-radius:var(--r);margin-bottom:18px">
+                <div class="payment-method" style="background:transparent;border:0;padding:0">
+                  <div class="pm-icon" style="background:linear-gradient(135deg, #d0282e, #a91d23);width:48px;height:32px">WBC</div>
+                </div>
+                <div style="flex:1">
+                  <div style="font-weight:600;color:var(--success-10);font-size:15px">Westpac Banking Corporation</div>
+                  <div class="cell-muted" style="font-size:13px">BSB 032-543 · Account ··8421 · TechZone Australia Pty Ltd</div>
+                </div>
+                <span class="pill pill-active">Verified</span>
+              </div>
+              <div class="form-grid form-grid-2">
+                <div class="field"><label class="field-label">Account name</label><input class="input" value="TechZone Australia Pty Ltd" disabled></div>
+                <div class="field"><label class="field-label">Bank</label><input class="input" value="Westpac" disabled></div>
+                <div class="field"><label class="field-label">BSB</label><input class="input mono" value="032-543" disabled></div>
+                <div class="field"><label class="field-label">Account number</label><input class="input mono" value="•••• •••• 8421" disabled></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Payout schedule</h3></div>
+            <div class="card-body">
+              <div class="form-grid form-grid-2">
+                <div class="field"><label class="field-label">Frequency</label><select class="select"><option>Weekly · Tuesdays</option><option>Fortnightly · Tuesdays</option><option>Monthly · 1st of month</option></select></div>
+                <div class="field"><label class="field-label">Currency</label><select class="select"><option>AUD — Australian Dollar</option></select></div>
+                <div class="field"><label class="field-label">Minimum payout</label><div class="input-row"><span class="input-prefix">$</span><input class="input" value="100"></div><div class="field-hint">Below this, payout rolls to next week</div></div>
+                <div class="field"><label class="field-label">Hold period</label><select class="select"><option>0 days (immediate)</option><option>1 day</option><option>3 days</option></select></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Tax registration</h3></div>
+            <div class="card-body">
+              <div class="form-grid form-grid-2">
+                <div class="field"><label class="field-label">ABN</label><input class="input mono" value="47 612 938 401" disabled></div>
+                <div class="field"><label class="field-label">GST registered</label><select class="select"><option>Yes — register for GST</option><option>No</option></select></div>
+                <div class="field"><label class="field-label">GST number</label><input class="input mono" value="47 612 938 401" disabled></div>
+                <div class="field"><label class="field-label">Tax invoice prefix</label><input class="input mono" value="TZA-INV-"></div>
+              </div>
+              <div class="alert alert-info" style="margin-top:14px"><div class="alert-icon">i</div><div class="alert-body"><div class="alert-text">LayBys.com issues GST-compliant tax invoices on your behalf to customers when each lay-by completes. Your ABN appears on every invoice.</div></div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Commission &amp; fees</h3></div>
+            <div class="card-body">
+              <div class="kv"><span>Sale commission</span><b>5.0% flat</b></div>
+              <div class="kv"><span>Setup fee</span><b>$50 (paid 14 Jan 2024)</b></div>
+              <div class="kv"><span>Monthly fee</span><b style="color:var(--success-30)">$0.00</b></div>
+              <div class="kv"><span>Payout fee</span><b style="color:var(--success-30)">$0.00</b></div>
+              <div class="kv"><span>Refund fee</span><b style="color:var(--success-30)">$0.00</b></div>
+              <div class="kv"><span>Chargeback fee</span><b>$25 per occurrence</b></div>
+              <div class="alert alert-success" style="margin-top:14px"><div class="alert-icon">$</div><div class="alert-body"><div class="alert-text"><b>Pay only on results.</b> The 5% commission is the only ongoing cost. No monthly fees, no per-payout fees, no minimum volume requirements.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("settings","Settings","Banking & tax");</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Products · TechZone Australia · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Products</h1>
+          <p class="page-sub">56 SKUs across 4 categories · 52 live · 3 out of stock · 1 hidden</p>
+        </div>
+        <div class="filter-row">
+          <button class="btn">Bulk import</button>
+          <a href="product-new.html" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Add product
+          </a>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi kpi-info"><div class="kpi-label">Total Products</div><div class="kpi-value">56</div><div class="kpi-meta">Across 4 categories</div></div>
+        <div class="kpi kpi-success"><div class="kpi-label">Live on Marketplace</div><div class="kpi-value">52</div><div class="kpi-meta">Visible to customers</div></div>
+        <div class="kpi kpi-warn"><div class="kpi-label">Out of Stock</div><div class="kpi-value">3</div><div class="kpi-meta">Restock to reactivate</div></div>
+        <div class="kpi kpi-gold"><div class="kpi-label">Avg Lay-By Value</div><div class="kpi-value">$1,234</div><div class="kpi-meta">YTD across all SKUs</div></div>
+      </div>
+
+      <div class="tabs">
+        <a class="tab active" href="products.html">All <span class="count">56</span></a>
+        <a class="tab" href="products-live.html">Live <span class="count">52</span></a>
+        <a class="tab" href="products-out.html">Out of stock <span class="count">3</span></a>
+        <a class="tab" href="products-hidden.html">Hidden <span class="count">1</span></a>
+        <a class="tab" href="products-drafts.html">Drafts <span class="count">0</span></a>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="topbar-search" style="flex:1;max-width:340px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search by name, SKU, or brand…" />
+          </div>
+          <select class="select select-sm">
+            <option>All categories</option><option>Smartphones</option><option>Laptops &amp; Tablets</option><option>Audio</option><option>Wearables</option>
+          </select>
+          <select class="select select-sm">
+            <option>All status</option><option>Live</option><option>Out of stock</option><option>Hidden</option>
+          </select>
+          <select class="select select-sm">
+            <option>Sort: Best selling</option><option>Newest</option><option>Price low → high</option><option>Price high → low</option>
+          </select>
+          <div class="grow"></div>
+          <button class="btn btn-ghost btn-sm">More filters</button>
+        </div>
+
+        <table class="data">
+          <thead><tr>
+            <th style="width:36px"><input type="checkbox"/></th>
+            <th>Product</th><th>Category</th><th>Price</th><th>Lay-by</th><th>Stock</th><th>30-day sales</th><th>Status</th><th></th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">Samsung Galaxy S25 Ultra 256GB</div><div class="cell-muted mono">TZ-SGS25U-256-TG</div></div></a></td>
+              <td><span class="pill pill-info">Smartphones</span></td>
+              <td><span class="cell-amount">$1,899</span></td>
+              <td><span class="cell-muted">$47/wk · 32 wk</span></td>
+              <td><span class="cell-strong">142</span></td>
+              <td><span class="cell-strong">14</span><span class="cell-muted"> · $26.6k</span></td>
+              <td><span class="pill pill-active">Live</span></td>
+              <td><a href="product-detail.html" class="link">Edit</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">Sony WH-1000XM6</div><div class="cell-muted mono">TZ-SNYWH1KM6-BLK</div></div></a></td>
+              <td><span class="pill pill-tertiary">Audio</span></td>
+              <td><span class="cell-amount">$549</span></td>
+              <td><span class="cell-muted">$13.7/wk · 32 wk</span></td>
+              <td><span class="cell-strong">86</span></td>
+              <td><span class="cell-strong">12</span><span class="cell-muted"> · $6.6k</span></td>
+              <td><span class="pill pill-active">Live</span></td>
+              <td><a href="product-detail.html" class="link">Edit</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">AirPods Pro 2</div><div class="cell-muted mono">TZ-APP2-USB-C</div></div></a></td>
+              <td><span class="pill pill-tertiary">Audio</span></td>
+              <td><span class="cell-amount">$399</span></td>
+              <td><span class="cell-muted">$10/wk · 32 wk</span></td>
+              <td><span class="cell-strong">214</span></td>
+              <td><span class="cell-strong">10</span><span class="cell-muted"> · $4k</span></td>
+              <td><span class="pill pill-active">Live</span></td>
+              <td><a href="product-detail.html" class="link">Edit</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/47856/iwatch-apple-ipad-tablet-47856.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">Apple Watch Ultra 3 · Titanium</div><div class="cell-muted mono">TZ-AWU3-49-TI</div></div></a></td>
+              <td><span class="pill pill-info">Wearables</span></td>
+              <td><span class="cell-amount">$1,299</span></td>
+              <td><span class="cell-muted">$32.5/wk · 32 wk</span></td>
+              <td><span class="cell-strong">48</span></td>
+              <td><span class="cell-strong">8</span><span class="cell-muted"> · $10.4k</span></td>
+              <td><span class="pill pill-active">Live</span></td>
+              <td><a href="product-detail.html" class="link">Edit</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/1334597/pexels-photo-1334597.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">iPad Air 13" 256GB · Space Grey</div><div class="cell-muted mono">TZ-IPADAIR13-256</div></div></a></td>
+              <td><span class="pill pill-info">Laptops &amp; Tablets</span></td>
+              <td><span class="cell-amount">$899</span></td>
+              <td><span class="cell-muted">$22.5/wk · 32 wk</span></td>
+              <td><span class="cell-strong">62</span></td>
+              <td><span class="cell-strong">7</span><span class="cell-muted"> · $6.3k</span></td>
+              <td><span class="pill pill-active">Live</span></td>
+              <td><a href="product-detail.html" class="link">Edit</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/812264/pexels-photo-812264.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">MacBook Pro M4 14"</div><div class="cell-muted mono">TZ-MBP14-M4-512</div></div></a></td>
+              <td><span class="pill pill-info">Laptops &amp; Tablets</span></td>
+              <td><span class="cell-amount">$2,499</span></td>
+              <td><span class="cell-muted">$62/wk · 32 wk</span></td>
+              <td><span class="cell-strong">28</span></td>
+              <td><span class="cell-strong">5</span><span class="cell-muted"> · $12.5k</span></td>
+              <td><span class="pill pill-active">Live</span></td>
+              <td><a href="product-detail.html" class="link">Edit</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/325153/pexels-photo-325153.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">iPhone 16 Pro Max 512GB</div><div class="cell-muted mono">TZ-IP16PM-512-TI</div></div></a></td>
+              <td><span class="pill pill-info">Smartphones</span></td>
+              <td><span class="cell-amount">$2,199</span></td>
+              <td><span class="cell-muted">$55/wk · 32 wk</span></td>
+              <td><span class="cell-strong">0</span></td>
+              <td><span class="cell-strong">4</span><span class="cell-muted"> · $8.8k</span></td>
+              <td><span class="pill pill-overdue">Out of stock</span></td>
+              <td><a href="product-detail.html" class="link">Edit</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><a href="product-detail.html" class="cell-thumb"><img src="https://images.pexels.com/photos/3945683/pexels-photo-3945683.jpeg?auto=compress&amp;w=200" alt=""><div><div class="cell-strong">Bose QuietComfort Ultra</div><div class="cell-muted mono">TZ-BQCU-BLK</div></div></a></td>
+              <td><span class="pill pill-tertiary">Audio</span></td>
+              <td><span class="cell-amount">$649</span></td>
+              <td><span class="cell-muted">$16.2/wk · 32 wk</span></td>
+              <td><span class="cell-strong">34</span></td>
+              <td><span class="cell-strong">3</span><span class="cell-muted"> · $1.9k</span></td>
+              <td><span class="pill pill-active">Live</span></td>
+              <td><a href="product-detail.html" class="link">Edit</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pager">
+          <div class="pager-info">Showing 1–8 of 56 products</div>
+          <div class="pager-ctrls">
+            <div class="pagination">
+              <button class="btn btn-sm">←</button>
+              <button class="btn btn-sm btn-primary">1</button>
+              <button class="btn btn-sm">2</button>
+              <button class="btn btn-sm">3</button>
+              <button class="btn btn-sm">…</button>
+              <button class="btn btn-sm">7</button>
+              <button class="btn btn-sm">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("products","Products","All listings on TechZone Australia");</script>
+</body>
+</html>

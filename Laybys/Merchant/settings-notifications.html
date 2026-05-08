@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Settings · Notifications · LayBys.com Merchant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="merchant.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Settings</h1>
+          <p class="page-sub">Notifications — choose what reaches your inbox</p>
+        </div>
+      </div>
+
+      <div class="detail-grid" style="grid-template-columns:240px minmax(0,1fr)">
+        <aside class="settings-nav">
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Profile</div>
+            <a href="settings.html" class="settings-nav-link">Business profile</a>
+          </div>
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Money</div>
+            <a href="settings-banking.html" class="settings-nav-link">Banking &amp; tax</a>
+          </div>
+          <div class="settings-nav-group">
+            <div class="settings-nav-label">Account</div>
+            <a href="settings-notifications.html" class="settings-nav-link active">Notifications</a>
+          </div>
+        </aside>
+
+        <div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Sales &amp; orders</h3><div class="card-actions"><span class="cell-muted" style="font-size:12px">Email · SMS · In-app</span></div></div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">New lay-by started</div><div class="toggle-sub">When a customer signs up to buy your product on lay-by</div></div>
+              <div style="display:flex;gap:8px"><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Lay-by completed (ready to ship)</div><div class="toggle-sub">When the customer makes their final payment</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Lay-by cancelled</div><div class="toggle-sub">When a customer or system cancels an active lay-by</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Stock running low</div><div class="toggle-sub">When a SKU drops below 10 units in stock</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Payments &amp; payouts</h3></div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Payout settled</div><div class="toggle-sub">When weekly payout lands in your bank account</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Payout scheduled</div><div class="toggle-sub">Email summary 24h before each payout runs</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Payment failed</div><div class="toggle-sub">When an instalment auto-debit fails</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Refund processed</div><div class="toggle-sub">When you or LayBys.com issues a refund</div></div>
+              <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Exceptions &amp; risk</h3></div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">New exception assigned</div><div class="toggle-sub">When an issue requires your action (failed payment, dispute)</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">SLA breach warning</div><div class="toggle-sub">When an exception is approaching its resolution deadline</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Customer dispute opened</div><div class="toggle-sub">When a customer formally disputes a lay-by</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Reports &amp; insights</h3></div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Weekly summary email</div><div class="toggle-sub">Mondays at 09:00 — last week's sales, completion rate, top products</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Monthly statement</div><div class="toggle-sub">1st of each month — PDF statement of all activity</div></div>
+              <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-name">Marketing tips &amp; product news</div><div class="toggle-sub">Occasional tips on improving conversion and platform updates</div></div>
+              <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Notification routing</h3></div>
+            <div class="card-body">
+              <div class="form-grid form-grid-2">
+                <div class="field"><label class="field-label">Primary contact email</label><input class="input" value="marcus@techzone.com.au"></div>
+                <div class="field"><label class="field-label">Mobile (for urgent SMS)</label><input class="input" value="+61 412 553 207"></div>
+                <div class="field" style="grid-column:1/-1"><label class="field-label">Additional recipients (CC)</label><input class="input" value="finance@techzone.com.au, ops@techzone.com.au"><div class="field-hint">Comma-separated. These addresses also receive sales &amp; payout notifications.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="merchant.js"></script>
+<script>LBMerchant.mount("settings","Settings","Notifications");</script>
+</body>
+</html>
