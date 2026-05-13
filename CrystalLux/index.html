@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crystal Lux — Mobile App Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============= GLOBAL ============= */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root{
+    --bg:        #F6EFE6;
+    --bg-card:   #FFFFFF;
+    --bg-soft:   #EFE6D8;
+    --ink:       #2A1F14;
+    --ink-soft:  #6B5947;
+    --gold:      #B8956A;
+    --gold-deep: #8B6F4A;
+    --rose:      #E8D5C4;
+    --moss:      #7A8466;
+    --line:      #E5D9C6;
+    --danger:    #B5503D;
+  }
+  html, body { height: 100%; }
+  body{
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background:
+      radial-gradient(circle at 15% 20%, #EADCC4 0%, transparent 55%),
+      radial-gradient(circle at 85% 80%, #F2DCC8 0%, transparent 50%),
+      linear-gradient(135deg, #E8DCC9 0%, #D9C7AC 100%);
+    min-height: 100vh;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ============= STAGE LAYOUT ============= */
+  .stage{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 30px 40px;
+  }
+
+  /* ============= LEFT INTRO PANEL ============= */
+  .intro{
+    max-width: 420px;
+    flex-shrink: 1;
+  }
+  .intro-eyebrow{
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; letter-spacing: .35em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+  .intro-eyebrow::before{
+    content:''; width: 36px; height: 1px; background: var(--gold);
+  }
+  .intro-title{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 1.02;
+    color: var(--ink);
+    margin-bottom: 18px;
+    letter-spacing: -.01em;
+  }
+  .intro-title em{
+    font-style: italic;
+    color: var(--gold-deep);
+    font-weight: 500;
+  }
+  .intro-title .small-cap{
+    display:block;
+    font-size: 22px;
+    letter-spacing: .4em;
+    text-transform: uppercase;
+    margin-top: 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .intro-sub{
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.65;
+    margin-bottom: 28px;
+    max-width: 380px;
+  }
+  .intro-meta{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 30px;
+    max-width: 360px;
+  }
+  .meta-card{
+    background: rgba(255,255,255,.55);
+    border: 1px solid rgba(184,149,106,.25);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 14px 16px;
+  }
+  .meta-num{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    color: var(--gold-deep);
+    font-weight: 600;
+    line-height: 1;
+  }
+  .meta-label{
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .intro-tip{
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--ink);
+    font-size: 13px;
+    background: rgba(255,255,255,.65);
+    border: 1px solid rgba(184,149,106,.3);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-weight: 500;
+  }
+  .intro-tip .dot{
+    width: 8px; height: 8px; border-radius:50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 4px rgba(184,149,106,.25);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse{
+    0%, 100% { box-shadow: 0 0 0 4px rgba(184,149,106,.25); }
+    50% { box-shadow: 0 0 0 8px rgba(184,149,106,.1); }
+  }
+
+  /* ============= PHONE FRAME ============= */
+  .phone{
+    width: 360px;
+    height: 740px;
+    background: var(--bg);
+    border-radius: 46px;
+    box-shadow:
+      0 0 0 10px #1a1410,
+      0 0 0 12px #2a2018,
+      0 40px 80px rgba(40,25,10,.35),
+      0 15px 30px rgba(40,25,10,.2);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .phone::before{
+    content:'';
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 26px;
+    background: #1a1410;
+    border-radius: 0 0 16px 16px;
+    z-index: 100;
+  }
+  .status-bar{
+    height: 44px;
+    display:flex; align-items:flex-end; justify-content: space-between;
+    padding: 0 26px 6px; font-size: 12px; font-weight: 600;
+    color: var(--ink);
+    position: relative; z-index: 50;
+  }
+  .status-icons{ display:flex; gap: 5px; align-items:center; }
+  .status-icons svg{ width: 14px; height: 14px; }
+
+  /* ============= SCREENS ============= */
+  .screen{
+    position:absolute;
+    top: 44px; left: 0; right: 0; bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 90px;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar{ display:none; }
+  .screen{ display:none; }
+  .screen.active{ display:block; animation: fadeIn .35s ease; }
+  @keyframes fadeIn{ from{ opacity:0; transform: translateY(8px);} to{opacity:1; transform:none;} }
+
+  /* ============= HEADER ============= */
+  .app-header{
+    padding: 10px 18px 14px;
+    display:flex; align-items:center; justify-content: space-between;
+  }
+  .icon-btn{
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color: var(--ink);
+    transition: transform .15s ease;
+    position: relative;
+  }
+  .icon-btn:active{ transform: scale(.93); }
+  .icon-btn .badge{
+    position:absolute; top:-2px; right:-2px;
+    background: var(--gold); color:#fff;
+    font-size: 9px; font-weight: 700;
+    width: 16px; height: 16px; border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    border: 2px solid var(--bg);
+  }
+  .icon-group{ display:flex; gap: 8px; }
+  .logo{ text-align:center; flex: 1; }
+  .logo-text{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    letter-spacing: .35em;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .logo-sub{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 8px; letter-spacing: .4em;
+    color: var(--gold);
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ============= HERO ============= */
+  .hero{
+    margin: 4px 16px 22px;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    height: 240px;
+    background:
+      linear-gradient(135deg, rgba(43,24,12,.35) 0%, rgba(43,24,12,.05) 60%),
+      linear-gradient(160deg, #B8956A 0%, #8B6F4A 50%, #4A3A28 100%);
+  }
+  .hero::after{
+    content:'';
+    position: absolute; inset:0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,230,195,.35) 0%, transparent 40%),
+      radial-gradient(circle at 70% 70%, rgba(255,255,255,.15) 0%, transparent 35%);
+    pointer-events:none;
+  }
+  .hero-bottle-img{
+    position:absolute;
+    right: -30px; top: 50%;
+    transform: translateY(-50%);
+    height: 240px;
+    width: auto;
+    z-index: 1;
+    filter: drop-shadow(0 12px 24px rgba(0,0,0,.35));
+  }
+  .hero-content{
+    position: relative; z-index: 2;
+    padding: 22px 20px;
+    height:100%;
+    display:flex; flex-direction: column; justify-content: space-between;
+    color: #fff;
+  }
+  .hero-tag{
+    font-size: 9px; letter-spacing: .35em; text-transform: uppercase;
+    opacity: .9;
+    border: 1px solid rgba(255,255,255,.4);
+    padding: 5px 11px; border-radius: 30px;
+    align-self: flex-start;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(6px);
+  }
+  .hero-title{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.05;
+    max-width: 65%;
+  }
+  .hero-title em{ font-style: italic; color: #F4E4CB; font-weight: 500; }
+  .hero-cta{
+    background:#fff; color: var(--ink);
+    border: none;
+    padding: 11px 18px;
+    border-radius: 30px;
+    font-weight: 600; font-size: 11px;
+    letter-spacing: .15em; text-transform: uppercase;
+    align-self: flex-start;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap: 6px;
+    transition: all .2s ease;
+  }
+  .hero-cta:active{ transform: scale(.96); }
+
+  /* ============= SECTIONS ============= */
+  .section{ padding: 0 18px; margin-bottom: 24px; }
+  .section-head{
+    display:flex; align-items:flex-end; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .section-title em{ font-style: italic; color: var(--gold); }
+  .section-sub{
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .see-all{
+    font-size: 11px; color: var(--gold-deep);
+    font-weight: 600; text-decoration: none;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+    letter-spacing: .05em;
+  }
+
+  /* ============= CATEGORIES ============= */
+  .categories{
+    display:flex; gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin: 0 0 22px;
+    padding-left: 18px; padding-right: 18px;
+    scrollbar-width: none;
+  }
+  .categories::-webkit-scrollbar{ display:none; }
+  .chip{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 9px 16px;
+    border-radius: 30px;
+    font-size: 11px; font-weight: 500;
+    white-space: nowrap;
+    cursor:pointer;
+    transition: all .2s ease;
+    display:flex; align-items:center; gap: 6px;
+  }
+  .chip.active{
+    background: var(--ink); color: #fff;
+    border-color: var(--ink);
+  }
+  .chip-dot{ width:5px; height:5px; border-radius:50%; }
+
+  /* ============= PRODUCT GRID ============= */
+  .products{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .product{
+    background: var(--bg-card);
+    border-radius: 20px;
+    overflow:hidden;
+    position: relative;
+    cursor:pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+    border: 1px solid rgba(229,217,198,.6);
+  }
+  .product:active{ transform: scale(.97); }
+  .product-img{
+    height: 150px;
+    background: linear-gradient(135deg, #F4ECDD 0%, #E8DCC4 100%);
+    position: relative;
+    overflow: hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .product-img img{
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 12px rgba(100,70,40,.18));
+    transition: transform .3s ease;
+  }
+  .product:hover .product-img img{ transform: scale(1.05); }
+  .product .heart{
+    position:absolute; top: 8px; right: 8px;
+    width: 26px; height: 26px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--ink-soft);
+    z-index: 2;
+    border: none; cursor:pointer;
+  }
+  .product .heart.liked{ color: var(--danger); }
+  .product .sale{
+    position:absolute; top: 8px; left: 8px;
+    background: var(--gold);
+    color: #fff;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 7px; border-radius: 6px;
+    letter-spacing: .05em;
+    z-index: 2;
+  }
+  .product-info{ padding: 10px 12px 12px; }
+  .product-name{
+    font-size: 12px; font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1.3;
+    min-height: 32px;
+  }
+  .product-meta{
+    display:flex; align-items:center; justify-content: space-between;
+  }
+  .product-price{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-weight: 600;
+    color: var(--gold-deep);
+  }
+  .product-price s{
+    font-size: 10px; color: var(--ink-soft);
+    margin-right: 4px; font-weight: 400;
+  }
+  .product-add{
+    width: 26px; height: 26px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 50%;
+    border: none;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  /* ============= BANNER ============= */
+  .banner{
+    margin: 0 18px 22px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 18px;
+    padding: 18px;
+    display:flex; align-items:center; gap: 14px;
+    position: relative; overflow: hidden;
+  }
+  .banner::before{
+    content:''; position:absolute;
+    width: 110px; height: 110px;
+    background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+    opacity: .35;
+    right: -30px; top: -30px;
+    border-radius:50%;
+  }
+  .banner-icon{
+    width: 44px; height: 44px;
+    background: var(--gold);
+    border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    z-index:1;
+  }
+  .banner-text{ z-index: 1; }
+  .banner-title{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .banner-sub{
+    font-size: 10px; color: rgba(255,255,255,.7);
+    letter-spacing: .1em; text-transform: uppercase;
+  }
+
+  /* ============= BOTTOM NAV ============= */
+  .nav-bar{
+    position:absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 72px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--line);
+    display:flex; align-items:center; justify-content: space-around;
+    padding: 0 10px 14px;
+    z-index: 50;
+  }
+  .nav-item{
+    background:none; border:none;
+    display:flex; flex-direction: column; align-items:center; gap: 3px;
+    color: var(--ink-soft);
+    cursor:pointer;
+    font-size: 9px; font-weight: 500;
+    letter-spacing: .05em;
+    padding: 6px 10px;
+    transition: color .2s ease;
+    position: relative;
+  }
+  .nav-item.active{ color: var(--gold-deep); }
+  .nav-item.active::before{
+    content:'';
+    position:absolute; top: -2px; left:50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius:50%;
+    background: var(--gold);
+  }
+  .nav-item svg{ width: 20px; height: 20px; }
+
+  /* ============= PRODUCT DETAIL ============= */
+  .detail-hero{
+    height: 340px;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(255,230,195,.4) 0%, transparent 50%),
+      linear-gradient(160deg, #D9BFA3 0%, #B8956A 50%, #6B4A2E 100%);
+    position: relative;
+    margin-bottom: -25px;
+  }
+  .detail-nav{
+    position:absolute; top:0; left:0; right:0;
+    display:flex; justify-content: space-between;
+    padding: 16px;
+    z-index: 5;
+  }
+  .detail-nav .icon-btn{
+    background: rgba(255,255,255,.9);
+    backdrop-filter: blur(8px);
+  }
+  .detail-bottle-img{
+    position: absolute;
+    left: 50%; bottom: 20px;
+    transform: translateX(-50%);
+    height: 290px;
+    filter: drop-shadow(0 25px 35px rgba(40,25,10,.5));
+  }
+  .detail-content{
+    background: var(--bg);
+    border-radius: 28px 28px 0 0;
+    padding: 22px 18px;
+    position: relative;
+    z-index: 4;
+  }
+  .detail-tag{
+    color: var(--gold-deep);
+    font-size: 10px; letter-spacing: .25em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .detail-title{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 500;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .detail-rating{
+    display:flex; align-items:center; gap: 8px;
+    margin-bottom: 14px;
+    color: var(--ink-soft);
+    font-size: 11px;
+  }
+  .stars{ color: var(--gold); letter-spacing: .1em; }
+  .detail-price{
+    display:flex; align-items: baseline; gap: 10px;
+    margin-bottom: 16px;
+  }
+  .detail-price .now{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px; font-weight: 600;
+    color: var(--gold-deep);
+  }
+  .detail-price s{
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .detail-price .save{
+    background: var(--moss);
+    color: #fff;
+    padding: 3px 8px; border-radius: 8px;
+    font-size: 10px; font-weight: 600;
+  }
+  .detail-desc{
+    font-size: 12px; color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+  .detail-section-title{
+    font-size: 10px; letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .sizes{ display:flex; gap: 8px; margin-bottom: 18px; }
+  .size-btn{
+    flex:1;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    padding: 10px;
+    border-radius: 14px;
+    cursor:pointer;
+    text-align:center;
+    transition: all .2s ease;
+  }
+  .size-btn.active{
+    background: var(--ink); color: #fff; border-color: var(--ink);
+  }
+  .size-amt{ font-weight: 600; font-size: 12px; }
+  .size-price{ font-size: 9px; opacity: .7; margin-top: 2px; }
+
+  .benefits{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .benefit{
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 12px 10px;
+    display:flex; align-items:center; gap: 8px;
+    border: 1px solid var(--line);
+  }
+  .benefit-icon{
+    width:28px; height:28px; border-radius: 9px;
+    background: var(--bg-soft);
+    color: var(--gold-deep);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .benefit-icon svg{ width: 14px; height: 14px; }
+  .benefit-text{
+    font-size: 10px; font-weight: 500;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .add-cart-bar{
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    padding-top: 10px;
+    display:flex; gap: 10px;
+    align-items:center;
+  }
+  .qty{
+    display:flex; align-items:center;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    overflow: hidden;
+  }
+  .qty button{
+    width: 34px; height: 44px;
+    background:none; border:none; cursor:pointer;
+    color: var(--ink); font-size: 16px;
+    font-weight: 600;
+  }
+  .qty span{
+    min-width: 20px; text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .btn-cart{
+    flex:1; height: 48px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    font-size: 11px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap: 8px;
+    transition: all .2s ease;
+  }
+  .btn-cart:active{ transform: scale(.97); }
+
+  /* ============= SHOP SCREEN ============= */
+  .search-bar{
+    margin: 4px 18px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    padding: 10px 16px;
+    display:flex; align-items:center; gap: 8px;
+  }
+  .search-bar input{
+    border: none; background: none; outline: none;
+    flex: 1; font-size: 12px;
+    color: var(--ink);
+    font-family: inherit;
+  }
+  .search-bar input::placeholder{ color: var(--ink-soft); }
+  .filter-btn{
+    width: 28px; height: 28px;
+    background: var(--gold);
+    color: #fff;
+    border:none; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+
+  /* ============= CART SCREEN ============= */
+  .cart-list{ padding: 0 18px; }
+  .cart-item{
+    background: var(--bg-card);
+    border-radius: 18px;
+    padding: 12px;
+    display:flex; gap: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--line);
+    align-items:center;
+  }
+  .cart-img{
+    width: 64px; height: 72px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #F4ECDD 0%, #E8DCC4 100%);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    overflow:hidden;
+    padding: 4px;
+  }
+  .cart-img img{
+    max-width: 100%; max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(100,70,40,.15));
+  }
+  .cart-info{ flex:1; }
+  .cart-name{
+    font-size: 12px; font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .cart-vol{
+    font-size: 10px; color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .cart-bottom{
+    display:flex; align-items:center; justify-content: space-between;
+  }
+  .cart-price{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-weight: 600;
+    color: var(--gold-deep);
+  }
+  .cart-qty{
+    display:flex; align-items:center;
+    background: var(--bg);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .cart-qty button{
+    width: 26px; height: 26px;
+    background:none; border:none; cursor:pointer;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .cart-qty span{
+    min-width: 20px; text-align:center; font-size: 11px; font-weight: 600;
+  }
+  .summary{
+    margin: 16px 18px;
+    background: var(--bg-card);
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid var(--line);
+  }
+  .summary-row{
+    display:flex; justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .summary-row.total{
+    border-top: 1px solid var(--line);
+    padding-top: 12px; margin-top: 12px;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .summary-row.total span:last-child{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--gold-deep);
+  }
+  .checkout-btn{
+    margin: 0 18px;
+    width: calc(100% - 36px);
+    height: 52px;
+    background: var(--ink);
+    color: #fff;
+    border:none;
+    border-radius: 30px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    font-size: 11px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap: 8px;
+  }
+  .free-ship{
+    background: var(--bg-soft);
+    border: 1px dashed var(--gold);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin: 0 18px 14px;
+    display:flex; align-items:center; gap: 10px;
+    font-size: 11px;
+    color: var(--ink);
+  }
+  .free-ship svg{ color: var(--gold-deep); flex-shrink:0; }
+  .free-ship b{ color: var(--gold-deep); }
+
+  /* ============= PROFILE SCREEN ============= */
+  .profile-hero{ text-align: center; padding: 8px 18px 20px; }
+  .avatar{
+    width: 78px; height: 78px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+    margin: 0 auto 12px;
+    display:flex; align-items:center; justify-content:center;
+    color: #fff;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 500;
+    border: 3px solid var(--bg-card);
+    box-shadow: 0 8px 20px rgba(184,149,106,.4);
+  }
+  .profile-name{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 500;
+    color: var(--ink);
+  }
+  .profile-email{
+    font-size: 11px; color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .lux-badge{
+    display:inline-flex; align-items:center; gap: 5px;
+    background: var(--ink); color: var(--gold);
+    padding: 5px 11px; border-radius: 20px;
+    font-size: 9px; letter-spacing: .2em;
+    margin-top: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .stats{
+    display:grid; grid-template-columns: repeat(3,1fr);
+    gap: 8px;
+    margin: 0 18px 20px;
+  }
+  .stat{
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 12px 6px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .stat-num{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--gold-deep);
+  }
+  .stat-label{
+    font-size: 9px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    margin-top: 2px;
+  }
+  .menu-list{
+    margin: 0 18px;
+    background: var(--bg-card);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .menu-row{
+    display:flex; align-items:center; gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    cursor:pointer;
+  }
+  .menu-row:last-child{ border-bottom: none; }
+  .menu-row-icon{
+    width: 32px; height: 32px;
+    background: var(--bg-soft);
+    color: var(--gold-deep);
+    border-radius: 10px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .menu-row-text{
+    flex: 1;
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .menu-row-text small{
+    display:block;
+    font-weight: 400;
+    color: var(--ink-soft);
+    font-size: 10px;
+    margin-top: 2px;
+  }
+  .menu-row-arrow{ color: var(--ink-soft); }
+
+  /* ============= RESPONSIVE ============= */
+  @media (max-width: 1100px){
+    .stage{ flex-direction: column; gap: 40px; padding: 40px 20px; }
+    .intro{ text-align: center; max-width: 100%; }
+    .intro-eyebrow{ justify-content: center; }
+    .intro-eyebrow::before{ display:none; }
+    .intro-sub{ margin-left: auto; margin-right: auto; }
+    .intro-meta{ margin-left: auto; margin-right: auto; }
+    .intro-title{ font-size: 48px; }
+  }
+  @media (max-height: 800px) and (min-width: 1101px){
+    .phone{ width: 340px; height: 700px; }
+    .intro-title{ font-size: 54px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ============= LEFT INTRO PANEL ============= -->
+  <div class="intro">
+    <div class="intro-eyebrow">Concept Showcase</div>
+    <h1 class="intro-title">
+      Mobile App <em>Demo</em>
+      <span class="small-cap">for Crystal Lux</span>
+    </h1>
+    <p class="intro-sub">
+      A native-feel shopping experience for the pure luxury essential oil, crystal jewelry, and aromatherapy collection — designed to bring Crystal Lux's earthy elegance to every pocket.
+    </p>
+    <div class="intro-meta">
+      <div class="meta-card">
+        <div class="meta-num">5</div>
+        <div class="meta-label">Screens</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-num">12+</div>
+        <div class="meta-label">Real Products</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-num">100%</div>
+        <div class="meta-label">Brand Match</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-num">∞</div>
+        <div class="meta-label">Interactions</div>
+      </div>
+    </div>
+    <div class="intro-tip">
+      <span class="dot"></span>
+      Tap any product or nav icon to explore
+    </div>
+  </div>
+
+  <!-- ============= PHONE ============= -->
+  <div class="phone">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h2v-4H2v4zm5 0h2V14H7v8zm5 0h2V10h-2v12zm5 0h2V6h-2v16zm5 0h2V2h-2v20z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 18l2-2c-.5-.5-1.2-.8-2-.8s-1.5.3-2 .8l2 2zm0-4c1.7 0 3.2.7 4.3 1.7l1.7-1.7C16.3 12.4 14.3 11.5 12 11.5s-4.3.9-6 2.5l1.7 1.7C8.8 14.7 10.3 14 12 14zm0-4c2.8 0 5.4 1 7.3 2.7l1.7-1.7C18.4 8.4 15.4 7 12 7s-6.4 1.4-9 3l1.7 1.7C6.6 11 9.2 10 12 10z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="18" height="10" rx="2"/><rect x="3.5" y="8.5" width="13" height="7" fill="currentColor"/><line x1="21" y1="11" x2="21" y2="13" stroke-width="2"/></svg>
+      </div>
+    </div>
+
+    <!-- ============= HOME SCREEN ============= -->
+    <div class="screen active" id="home-screen">
+      <div class="app-header">
+        <button class="icon-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="14" y2="17"/></svg>
+        </button>
+        <div class="logo">
+          <div class="logo-text">CRYSTAL LUX</div>
+          <div class="logo-sub">— Pure Luxury —</div>
+        </div>
+        <button class="icon-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        </button>
+      </div>
+
+      <div class="hero">
+        <img class="hero-bottle-img" src="https://www.crystallux.ca/cdn/shop/files/388DB163-4958-44CE-AD7C-E8000A782066.png?v=1773944600&width=720" alt="Mythic Cedar"
+             onerror="this.style.display='none'"/>
+        <div class="hero-content">
+          <div class="hero-tag">New Collection</div>
+          <h1 class="hero-title">Nature's <em>gentle</em> touch</h1>
+          <button class="hero-cta" onclick="showScreen('shop-screen')">
+            Shop Now
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="section" style="margin-bottom: 14px;">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Curated <em>Collections</em></h2>
+            <div class="section-sub">Wellness · Beauty · Spirit</div>
+          </div>
+        </div>
+      </div>
+      <div class="categories">
+        <div class="chip active"><span class="chip-dot" style="background:var(--gold);"></span>All</div>
+        <div class="chip">Essential Oils</div>
+        <div class="chip">Diffusers</div>
+        <div class="chip">Jewelry</div>
+        <div class="chip">Gift Sets</div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Premium <em>Oil Blends</em></h2>
+            <div class="section-sub">Hand-crafted aromatherapy</div>
+          </div>
+          <a href="#" class="see-all" onclick="event.preventDefault(); showScreen('shop-screen')">See all</a>
+        </div>
+        <div class="products">
+          <div class="product" onclick="showScreen('detail-screen')">
+            <div class="product-img">
+              <span class="sale">-15%</span>
+              <button class="heart liked" onclick="event.stopPropagation(); this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/388DB163-4958-44CE-AD7C-E8000A782066.png?v=1773944600&width=720" alt="Mythic Cedar Musk"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Mythic Cedar Musk</div>
+              <div class="product-meta">
+                <div class="product-price">$174</div>
+                <button class="product-add" onclick="event.stopPropagation()">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product" onclick="showScreen('detail-screen')">
+            <div class="product-img">
+              <button class="heart" onclick="event.stopPropagation(); this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/51CD80F4-1C57-4132-806A-DAB42339958A.png?v=1778026510&width=720" alt="Romance Fragrance"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Romance Fragrance</div>
+              <div class="product-meta">
+                <div class="product-price">$130</div>
+                <button class="product-add" onclick="event.stopPropagation()">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product" onclick="showScreen('detail-screen')">
+            <div class="product-img">
+              <span class="sale">-50%</span>
+              <button class="heart" onclick="event.stopPropagation(); this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/8E1F6DF6-E341-49CA-837D-AD1E82AE8DC2.jpg?v=1773944623&width=720" alt="Relax Chamomile"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Relax Chamomile</div>
+              <div class="product-meta">
+                <div class="product-price"><s>$420</s>$210</div>
+                <button class="product-add" onclick="event.stopPropagation()">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product" onclick="showScreen('detail-screen')">
+            <div class="product-img">
+              <button class="heart" onclick="event.stopPropagation(); this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/71BBA4C2-F228-4D7F-854D-5480E4CA385B.png?v=1778165728&width=720" alt="Cognitive Clarity"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Cognitive Clarity</div>
+              <div class="product-meta">
+                <div class="product-price">$277</div>
+                <button class="product-add" onclick="event.stopPropagation()">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="banner">
+        <div class="banner-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16,8 20,8 23,11 23,16 16,16"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="banner-text">
+          <div class="banner-title">Free Shipping Across U.S.</div>
+          <div class="banner-sub">No minimum required</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Crystal <em>Jewelry</em></h2>
+            <div class="section-sub">Healing energy adorned</div>
+          </div>
+          <a href="#" class="see-all" onclick="event.preventDefault(); showScreen('shop-screen')">See all</a>
+        </div>
+        <div class="products">
+          <div class="product">
+            <div class="product-img">
+              <span class="sale">-30%</span>
+              <button class="heart" onclick="this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/314ef8c1-a79f-4332-bd0b-2fe061ef8ed8.jpg?v=1764427497&width=720" alt="Obsidian Necklace"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Obsidian Necklace</div>
+              <div class="product-meta">
+                <div class="product-price"><s>$33</s>$23</div>
+                <button class="product-add">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product">
+            <div class="product-img">
+              <button class="heart" onclick="this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/dde47c02-7a91-486f-b0d1-9dc942ff7199.jpg?v=1764426992&width=720" alt="Agate Bracelet"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Agate Bead Bracelet</div>
+              <div class="product-meta">
+                <div class="product-price">$27</div>
+                <button class="product-add">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= SHOP SCREEN ============= -->
+    <div class="screen" id="shop-screen">
+      <div class="app-header">
+        <button class="icon-btn" onclick="showScreen('home-screen')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="logo">
+          <div class="logo-text">SHOP</div>
+          <div class="logo-sub">— All Collections —</div>
+        </div>
+        <button class="icon-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="search-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B5947" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        <input type="text" placeholder="Search oils, crystals, diffusers..."/>
+        <button class="filter-btn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="categories">
+        <div class="chip active">All</div>
+        <div class="chip">Oils</div>
+        <div class="chip">Diffusers</div>
+        <div class="chip">Jewelry</div>
+        <div class="chip">Gifts</div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Featured <em>Products</em></h2>
+            <div class="section-sub">42 items found</div>
+          </div>
+        </div>
+        <div class="products">
+          <div class="product" onclick="showScreen('detail-screen')">
+            <div class="product-img">
+              <span class="sale">-50%</span>
+              <button class="heart" onclick="event.stopPropagation(); this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/D0E24446-29AC-4F76-BC2F-B3FFE639867D.png?v=1773944269&width=720" alt="Energize Citrus"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Energize Citrus</div>
+              <div class="product-meta">
+                <div class="product-price"><s>$420</s>$210</div>
+                <button class="product-add" onclick="event.stopPropagation()">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product" onclick="showScreen('detail-screen')">
+            <div class="product-img">
+              <span class="sale">-35%</span>
+              <button class="heart liked" onclick="event.stopPropagation(); this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/A7E53F80-08D3-48CC-A2B2-24AD7A4D857C.jpg?v=1773943848&width=720" alt="Serenity Pain Relief"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Serenity Pain Relief</div>
+              <div class="product-meta">
+                <div class="product-price"><s>$554</s>$360</div>
+                <button class="product-add" onclick="event.stopPropagation()">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product">
+            <div class="product-img">
+              <button class="heart" onclick="this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/58e492a8-51fb-4c86-aca9-76f89c1a051e.jpg?v=1764426097&width=720" alt="Wrought Iron Diffuser"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Wrought Iron Diffuser</div>
+              <div class="product-meta">
+                <div class="product-price">$81</div>
+                <button class="product-add">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product">
+            <div class="product-img">
+              <button class="heart" onclick="this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/584E42A9-0E74-4AAF-8C01-9FE3228B389D.jpg?v=1773947658&width=720" alt="Ignite Cinna Fusion"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Ignite Cinna Fusion</div>
+              <div class="product-meta">
+                <div class="product-price">$185</div>
+                <button class="product-add">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product">
+            <div class="product-img">
+              <span class="sale">-27%</span>
+              <button class="heart" onclick="this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/792b6e15-945a-4cf4-a771-67430381bcc5.jpg?v=1764426962&width=720" alt="Silver Crystal Earrings"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">925 Silver Earrings</div>
+              <div class="product-meta">
+                <div class="product-price">$34</div>
+                <button class="product-add">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product">
+            <div class="product-img">
+              <button class="heart" onclick="this.classList.toggle('liked')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://www.crystallux.ca/cdn/shop/files/K6NKXbFfDkP_39.png?v=1764425298&width=720" alt="Neroli Essential Oil"/>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Neroli Premium Oil</div>
+              <div class="product-meta">
+                <div class="product-price">$73</div>
+                <button class="product-add">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= DETAIL SCREEN ============= -->
+    <div class="screen" id="detail-screen">
+      <div class="detail-hero">
+        <div class="detail-nav">
+          <button class="icon-btn" onclick="showScreen('home-screen')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="icon-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+          </button>
+        </div>
+        <img class="detail-bottle-img" src="https://www.crystallux.ca/cdn/shop/files/388DB163-4958-44CE-AD7C-E8000A782066.png?v=1773944600&width=720" alt="Mythic Cedar Musk"/>
+      </div>
+
+      <div class="detail-content">
+        <div class="detail-tag">★ Bestseller · Men's Collection</div>
+        <h1 class="detail-title">Mythic Cedar Musk</h1>
+        <div class="detail-rating">
+          <span class="stars">★★★★★</span>
+          <span>4.9 (284 reviews)</span>
+        </div>
+        <div class="detail-price">
+          <span class="now">$174</span>
+          <s>$220</s>
+          <span class="save">Save 21%</span>
+        </div>
+        <p class="detail-desc">
+          A grounding blend of aged cedarwood, white musk, and warm amber — crafted for the modern man seeking calm strength. Notes of bergamot open into a rich, mythic base.
+        </p>
+
+        <div class="detail-section-title">Choose Volume</div>
+        <div class="sizes">
+          <div class="size-btn">
+            <div class="size-amt">10ml</div>
+            <div class="size-price">$97</div>
+          </div>
+          <div class="size-btn active">
+            <div class="size-amt">30ml</div>
+            <div class="size-price">$174</div>
+          </div>
+          <div class="size-btn">
+            <div class="size-amt">50ml</div>
+            <div class="size-price">$260</div>
+          </div>
+        </div>
+
+        <div class="detail-section-title">Benefits</div>
+        <div class="benefits">
+          <div class="benefit">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-6 4.5L17 21l-5-4-5 4 2-7.5L3 9h7z"/></svg>
+            </div>
+            <div class="benefit-text">100% Pure</div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="benefit-text">Calming Effect</div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="benefit-text">Lab Certified</div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </div>
+            <div class="benefit-text">Mood Lifting</div>
+          </div>
+        </div>
+
+        <div class="add-cart-bar">
+          <div class="qty">
+            <button onclick="changeQty(-1)">−</button>
+            <span id="detail-qty">1</span>
+            <button onclick="changeQty(1)">+</button>
+          </div>
+          <button class="btn-cart" onclick="showScreen('cart-screen')">
+            Add to Cart
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= CART SCREEN ============= -->
+    <div class="screen" id="cart-screen">
+      <div class="app-header">
+        <button class="icon-btn" onclick="showScreen('home-screen')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="logo">
+          <div class="logo-text">MY CART</div>
+          <div class="logo-sub">— 3 Items —</div>
+        </div>
+        <button class="icon-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>
+
+      <div class="free-ship">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16,8 20,8 23,11 23,16 16,16"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        You've unlocked <b>free shipping</b> across the U.S.
+      </div>
+
+      <div class="cart-list">
+        <div class="cart-item">
+          <div class="cart-img">
+            <img src="https://www.crystallux.ca/cdn/shop/files/388DB163-4958-44CE-AD7C-E8000A782066.png?v=1773944600&width=720" alt="Mythic Cedar"/>
+          </div>
+          <div class="cart-info">
+            <div class="cart-name">Mythic Cedar Musk</div>
+            <div class="cart-vol">30ml · Men's Blend</div>
+            <div class="cart-bottom">
+              <div class="cart-price">$174</div>
+              <div class="cart-qty">
+                <button>−</button><span>1</span><button>+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cart-item">
+          <div class="cart-img">
+            <img src="https://www.crystallux.ca/cdn/shop/files/51CD80F4-1C57-4132-806A-DAB42339958A.png?v=1778026510&width=720" alt="Romance Fragrance"/>
+          </div>
+          <div class="cart-info">
+            <div class="cart-name">Romance Fragrance</div>
+            <div class="cart-vol">15ml · Floral Blend</div>
+            <div class="cart-bottom">
+              <div class="cart-price">$130</div>
+              <div class="cart-qty">
+                <button>−</button><span>1</span><button>+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cart-item">
+          <div class="cart-img">
+            <img src="https://www.crystallux.ca/cdn/shop/files/314ef8c1-a79f-4332-bd0b-2fe061ef8ed8.jpg?v=1764427497&width=720" alt="Obsidian Necklace"/>
+          </div>
+          <div class="cart-info">
+            <div class="cart-name">Obsidian Necklace</div>
+            <div class="cart-vol">Healing Crystal</div>
+            <div class="cart-bottom">
+              <div class="cart-price">$23</div>
+              <div class="cart-qty">
+                <button>−</button><span>2</span><button>+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="summary-row"><span>Subtotal</span><span>$350.00</span></div>
+        <div class="summary-row"><span>Shipping</span><span style="color:var(--moss); font-weight:600;">Free</span></div>
+        <div class="summary-row"><span>Lux Member Discount</span><span>−$25.00</span></div>
+        <div class="summary-row total"><span>Total</span><span>$325.00</span></div>
+      </div>
+
+      <button class="checkout-btn">
+        Protected Checkout
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </button>
+    </div>
+
+    <!-- ============= PROFILE SCREEN ============= -->
+    <div class="screen" id="profile-screen">
+      <div class="app-header">
+        <button class="icon-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="14" y2="17"/></svg>
+        </button>
+        <div class="logo">
+          <div class="logo-text">ACCOUNT</div>
+          <div class="logo-sub">— My Crystal Lux —</div>
+        </div>
+        <button class="icon-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.39.36.84.55 1.31.55H21a2 2 0 0 1 0 4h-.09c-.66 0-1.29.26-1.76.73-.47.47-.73 1.1-.73 1.76z"/></svg>
+        </button>
+      </div>
+
+      <div class="profile-hero">
+        <div class="avatar">A</div>
+        <div class="profile-name">Aaditya Kapoor</div>
+        <div class="profile-email">aaditya@crystallux.ca</div>
+        <div class="lux-badge">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 7h7l-6 4.5L17 21l-5-4-5 4 2-7.5L3 9h7z"/></svg>
+          Lux Member
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-num">12</div><div class="stat-label">Orders</div></div>
+        <div class="stat"><div class="stat-num">8</div><div class="stat-label">Wishlist</div></div>
+        <div class="stat"><div class="stat-num">450</div><div class="stat-label">Points</div></div>
+      </div>
+
+      <div class="menu-list">
+        <div class="menu-row">
+          <div class="menu-row-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <div class="menu-row-text">My Orders<small>Track your purchases</small></div>
+          <svg class="menu-row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9c-2-3.6.5-8 4.5-8 2 0 3.7 1 5 2.5C13.3 5 15 4 17 4c4 0 6.5 4.4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+          </div>
+          <div class="menu-row-text">Wishlist<small>8 saved items</small></div>
+          <svg class="menu-row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          </div>
+          <div class="menu-row-text">Payment Methods<small>Visa, Apple Pay, PayPal</small></div>
+          <svg class="menu-row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="menu-row-text">Shipping Addresses<small>2 saved locations</small></div>
+          <svg class="menu-row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="menu-row-text">Help & FAQs<small>Crystal care, oil usage</small></div>
+          <svg class="menu-row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </div>
+          <div class="menu-row-text">Sign Out<small>See you soon</small></div>
+          <svg class="menu-row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="nav-bar">
+      <button class="nav-item active" onclick="setNav(this,'home-screen')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </button>
+      <button class="nav-item" onclick="setNav(this,'shop-screen')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        Shop
+      </button>
+      <button class="nav-item" onclick="setNav(this,'cart-screen')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        Cart
+      </button>
+      <button class="nav-item" onclick="setNav(this,'profile-screen')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+        Profile
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target){
+      target.classList.add('active');
+      target.scrollTop = 0;
+    }
+    const map = { 'home-screen':0, 'shop-screen':1, 'cart-screen':2, 'profile-screen':3 };
+    if (id in map){
+      document.querySelectorAll('.nav-item').forEach((n,i)=>{
+        n.classList.toggle('active', i === map[id]);
+      });
+    }
+  }
+  function setNav(btn, screen){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    btn.classList.add('active');
+    showScreen(screen);
+  }
+  let qty = 1;
+  function changeQty(delta){
+    qty = Math.max(1, qty + delta);
+    document.getElementById('detail-qty').textContent = qty;
+  }
+  document.querySelectorAll('.categories .chip, .filter-tabs .chip').forEach(chip => {
+    chip.addEventListener('click', function(){
+      const siblings = this.parentElement.querySelectorAll('.chip');
+      siblings.forEach(s => s.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', function(){
+      this.parentElement.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
