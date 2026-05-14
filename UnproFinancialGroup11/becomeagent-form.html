@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unpro Financial Group</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script src="js/jquery-4.0.0.min.js" type="text/javascript"></script>
+  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+  <script src="plugins/fontawesome/js/all.min.js" type="text/javascript"></script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg custom-navbar">
+  <div class="container">
+
+    <!-- Logo -->
+    <a class="navbar-brand" href="#">
+      <img src="images/logo.svg" alt="Logo">
+    </a>
+
+    <!-- Mobile Toggle -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menu -->
+    <div class="collapse navbar-collapse" id="navMenu">
+
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item ">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+
+        <li class="nav-item ">
+          <a class="nav-link" href="aboutus.html">About Us</a>
+        </li>
+
+        <li class="nav-item ">
+          <a class="nav-link" href="lifeinsurance.html">Life Insurance</a>
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="becomeagent.html">Become Agent</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="businesscoaching.html">Business Coaching</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="contact.html">Contact</a>
+        </li>
+      </ul>
+
+      <!-- CTA -->
+      <a href="becomeagent-form.html" class="btn-start">
+        Get Started
+      </a>
+
+    </div>
+  </div>
+</nav>
+
+
+<!-- <nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img src="images/logo.svg" height="65">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto gap-0">
+        <li class="nav-item active"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Get Life Insurance</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Become an Agent</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Business Coaching</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+      </ul>
+      <a href="#" class="btn btn-get-started ms-lg-3 mt-3 mt-lg-0">Get Started</a>
+    </div>
+  </div>
+</nav> -->
+
+<!-- HERO -->
+<section class="hero-innernal-section">
+  <div class="container hero-content">
+    <div class="row align-items-center">
+      <div class="col-lg-12">
+        <h1>Join Our Elite Network</h1>
+        <p>Build wealth for yourself while creating a lasting impact for families. We empower ambitious professionals with the tools and mentorship needed to dominate the financial services landscape.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ══════════ TAKE THE FIRST STEP + FORM ══════════ -->
+<section class="step-section" id="form">
+  <div class="container">
+    <div class="row g-5 align-items-start">
+
+      <!-- Left content -->
+      <div class="col-lg-4 step-left">
+        <h2>Take the First Step</h2>
+        <p>Whether you're looking to launch a new career or seeking premium financial services, our team is ready to guide you. Select your intent below to get started.</p>
+        <div class="step-feature">
+          <div class="sf-icon"><span class="material-symbols-outlined">verified</span></div>
+          <div>
+            <h6>Trusted Excellence</h6>
+            <p>Member FINRA/SIPC. Committed to the highest regulatory standards.</p>
+          </div>
+        </div>
+        <div class="step-feature">
+          <div class="sf-icon"><span class="material-symbols-outlined">groups</span></div>
+          <div>
+            <h6>Collaborative Culture</h6>
+            <p>Join a network of top-performing agents nationwide.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form card -->
+      <div class="col-lg-8">
+        <div class="form-card">
+
+          <!-- Interest toggle -->
+          <label class="interest-label">I am interested in</label>
+          <div class="interest-toggle">
+            <label class="interest-opt">
+              <input type="radio" name="interest" value="agent" checked/> Becoming an Agent
+            </label>
+            <label class="interest-opt">
+              <input type="radio" name="interest" value="financial"/> Financial Information
+            </label>
+            <label class="interest-opt">
+              <input type="radio" name="interest" value="insurance"/> Purchasing life insurance
+            </label>
+            <label class="interest-opt">
+              <input type="radio" name="interest" value="inquiries"/> General inquiries
+            </label>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="f-label">First Name <span class="f-req">*</span></label>
+              <input type="text" class="form-control" placeholder="First name"/>
+            </div>
+            <div class="col-md-6">
+              <label class="f-label">Last Name <span class="f-req">*</span></label>
+              <input type="text" class="form-control" placeholder="Last name"/>
+            </div>
+            <div class="col-md-6">
+              <label class="f-label">Email Address</label>
+              <input type="email" class="form-control" placeholder="john@example.com"/>
+            </div>
+            <div class="col-md-6">
+              <label class="f-label">State / Region</label>
+              <input type="text" class="form-control" placeholder="State / Region"/>
+            </div>
+            <div class="col-md-6">
+              <label class="f-label">Postal Code <span class="f-req">*</span></label>
+              <input type="text" class="form-control" placeholder="Postal code"/>
+            </div>
+            <div class="col-md-6">
+              <label class="f-label">Phone Number</label>
+              <input type="tel" class="form-control" placeholder="(555) 000-0000"/>
+            </div>
+            <div class="col-md-6">
+              <label class="f-label">State / Location</label>
+              <select class="form-select">
+                <option value="">Select State</option>
+                <option value="Alabama">Alabama</option>
+                <option value="Alaska">Alaska</option>
+                <option value="Arizona">Arizona</option>
+                <option value="Arkansas">Arkansas</option>
+                <option value="California">California</option>
+                <option value="Colorado">Colorado</option>
+                <option value="Connecticut">Connecticut</option>
+                <option value="Delaware">Delaware</option>
+                <option value="Florida">Florida</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Hawaii">Hawaii</option>
+                <option value="Idaho">Idaho</option>
+                <option value="Illinois">Illinois</option>
+                <option value="Indiana">Indiana</option>
+                <option value="Iowa">Iowa</option>
+                <option value="Kansas">Kansas</option>
+                <option value="Kentucky">Kentucky</option>
+                <option value="Louisiana">Louisiana</option>
+                <option value="Maine">Maine</option>
+                <option value="Maryland">Maryland</option>
+                <option value="Massachusetts">Massachusetts</option>
+                <option value="Michigan">Michigan</option>
+                <option value="Minnesota">Minnesota</option>
+                <option value="Mississippi">Mississippi</option>
+                <option value="Missouri">Missouri</option>
+                <option value="Montana">Montana</option>
+                <option value="Nebraska">Nebraska</option>
+                <option value="Nevada">Nevada</option>
+                <option value="New Hampshire">New Hampshire</option>
+                <option value="New Jersey">New Jersey</option>
+                <option value="New Mexico">New Mexico</option>
+                <option value="New York">New York</option>
+                <option value="North Carolina">North Carolina</option>
+                <option value="North Dakota">North Dakota</option>
+                <option value="Ohio">Ohio</option>
+                <option value="Oklahoma">Oklahoma</option>
+                <option value="Oregon">Oregon</option>
+                <option value="Pennsylvania">Pennsylvania</option>
+                <option value="Rhode Island">Rhode Island</option>
+                <option value="South Carolina">South Carolina</option>
+                <option value="South Dakota">South Dakota</option>
+                <option value="Tennessee">Tennessee</option>
+                <option value="Texas">Texas</option>
+                <option value="Utah">Utah</option>
+                <option value="Vermont">Vermont</option>
+                <option value="Virginia">Virginia</option>
+                <option value="Washington">Washington</option>
+                <option value="West Virginia">West Virginia</option>
+                <option value="Wisconsin">Wisconsin</option>
+                <option value="Wyoming">Wyoming</option>
+            </select>
+             
+            </div>
+            <div class="col-md-6">
+              <label class="f-label">How did you hear about us?</label>
+              <select class="form-select">
+                <option value="">Please Select</option>
+                <option>Social Media</option>
+                <option>Friend / Referral</option>
+                <option>Google Search</option>
+                <option>Event</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <!-- <div class="col-md-6">
+              <label class="f-label">Choose the option that best describes you</label>
+              <select class="form-select">
+                <option value="">Please Select</option>
+                <option>I'm looking for a career change</option>
+                <option>I want extra income</option>
+                <option>I want to build my own agency</option>
+                <option>I'm a student</option>
+                <option>I'm seeking financial services</option>
+              </select>
+            </div> -->
+            <div class="col-12">
+              <label class="f-label">Are you a licensed agent?</label>
+              <div class="radio-row">
+                <label><input type="radio" name="licensed" value="yes"/> Yes</label>
+                <label><input type="radio" name="licensed" value="no"/> No</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="f-label">Tell us about your goals</label>
+              <textarea class="form-control" placeholder="Briefly describe what you hope to achieve..."></textarea>
+            </div>
+            <div class="col-12">
+              <div class="consent-block">
+                <input type="checkbox" id="consent1"/>
+                <p>I hereby consent to receive calls, whether manual or autodialed, and/or pre-recorded telemarketing calls from or on behalf of UnPro Financial Group, Inc. at the telephone number provided above, including my wireless number (if applicable). I understand that consent is not a condition of purchase.*</p>
+              </div>
+              <div class="consent-block">
+                <input type="checkbox" id="consent2"/>
+                <p>I would like to receive text SMS alerts &amp; updates from UnPro Financial Group.*</p>
+              </div>
+            </div>
+            <div class="col-12 mt-1">
+              <button type="submit" class="btn-submit-red">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- CTA -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="row g-5">
+      <!-- Brand -->
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-brand">
+          <img src="images/logo1.svg" height="60">
+        </div>
+        <p>Elite wealth management and financial protection strategies. Member FINRA/SIPC. Empowering families and ambitious professionals.</p>
+      </div>
+      <!-- Navigation -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h6>Navigation</h6>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <!-- Legal -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h6>Legal</h6>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Disclosures</a></li>
+        </ul>
+      </div>
+      <!-- Contact -->
+      <div class="col-lg-4 col-md-6">
+        <h6>Contact Us</h6>
+        <ul class="footer-links">
+          <li><a href="mailto:info@unprofinancial.com">info@unprofinancialgroup.com</a></li>
+          <li><a href="tel:+18333231728">Office: +1 833 323 1728</a></li>
+          <li><a href="tel:+12026438566">Mobile: +1 202 643 8566</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-divider"/>
+    <div class="footer-bottom">
+      <span>© 2026 Unpro Financial Group. All rights reserved.</span>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224.3 141a115 115 0 1 0 -.6 230 115 115 0 1 0 .6-230zm-.6 40.4a74.6 74.6 0 1 1 .6 149.2 74.6 74.6 0 1 1 -.6-149.2zm93.4-45.1a26.8 26.8 0 1 1 53.6 0 26.8 26.8 0 1 1 -53.6 0zm129.7 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM399 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg> 
+        </a>
+        <a href="#" aria-label="Facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M80 299.3l0 212.7 116 0 0-212.7 86.5 0 18-97.8-104.5 0 0-34.6c0-51.7 20.3-71.5 72.7-71.5 16.3 0 29.4 .4 37 1.2l0-88.7C291.4 4 256.4 0 236.2 0 129.3 0 80 50.5 80 159.4l0 42.1-66 0 0 97.8 66 0z"/></svg> 
+        </a>
+        <a href="#" aria-label="TikTok">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M448.5 209.9c-44 .1-87-13.6-122.8-39.2l0 178.7c0 33.1-10.1 65.4-29 92.6s-45.6 48-76.6 59.6-64.8 13.5-96.9 5.3-60.9-25.9-82.7-50.8-35.3-56-39-88.9 2.9-66.1 18.6-95.2 40-52.7 69.6-67.7 62.9-20.5 95.7-16l0 89.9c-15-4.7-31.1-4.6-46 .4s-27.9 14.6-37 27.3-14 28.1-13.9 43.9 5.2 31 14.5 43.7 22.4 22.1 37.4 26.9 31.1 4.8 46-.1 28-14.4 37.2-27.1 14.2-28.1 14.2-43.8l0-349.4 88 0c-.1 7.4 .6 14.9 1.9 22.2 3.1 16.3 9.4 31.9 18.7 45.7s21.3 25.6 35.2 34.6c19.9 13.1 43.2 20.1 67 20.1l0 87.4z"/></svg> 
+        </a>
+        <a href="#" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M100.3 448l-92.9 0 0-299.1 92.9 0 0 299.1zM53.8 108.1C24.1 108.1 0 83.5 0 53.8 0 39.5 5.7 25.9 15.8 15.8s23.8-15.8 38-15.8 27.9 5.7 38 15.8 15.8 23.8 15.8 38c0 29.7-24.1 54.3-53.8 54.3zM447.9 448l-92.7 0 0-145.6c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7l0 148.1-92.8 0 0-299.1 89.1 0 0 40.8 1.3 0c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3l0 164.3-.1 0z"/></svg> 
+        </a>
+      </div>  
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
