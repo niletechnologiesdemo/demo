@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Meade Fischer — author of 18 books spanning coastal travel, kayaking, fiction, satire, and philosophy. Explore the library and find every title on Amazon." />
+    <title>Meade Fischer — Author, Wanderer, Storyteller</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- ============ NAVIGATION ============ -->
+    <header class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#top" class="nav-brand">
+                <span class="brand-mark">M<span class="brand-dot">·</span>F</span>
+                <span class="brand-name">Meade Fischer</span>
+            </a>
+            <nav class="nav-links" aria-label="Primary">
+                <a href="#featured">Featured</a>
+                <a href="#books">Books</a>
+                <a href="#about">About</a>
+                <a href="#press">Press</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <a href="#books" class="nav-cta">Browse Library</a>
+            <button class="nav-toggle" aria-label="Toggle menu" id="navToggle">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top">
+        <div class="hero-bg" aria-hidden="true">
+            <svg class="hero-waves" viewBox="0 0 800 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,120 Q200,80 400,120 T800,120" fill="none" stroke="currentColor" stroke-width="1" />
+                <path d="M0,140 Q200,100 400,140 T800,140" fill="none" stroke="currentColor" stroke-width="1" />
+                <path d="M0,160 Q200,120 400,160 T800,160" fill="none" stroke="currentColor" stroke-width="1" />
+            </svg>
+            <span class="hero-mark">MF</span>
+        </div>
+
+        <div class="hero-grid">
+            <div class="hero-text">
+                <div class="dateline">
+                    <span class="dot-mark"></span>
+                    <span>Est. 1984</span>
+                    <span class="dl-divider"></span>
+                    <span>Northern California</span>
+                    <span class="dl-divider"></span>
+                    <span>18 Books</span>
+                </div>
+
+                <h1 class="hero-title">
+                    Stories from <em>the&nbsp;coast,</em>
+                    <br />the mind, and
+                    <br />everywhere
+                    <span class="flourish">
+                        between.
+                        <svg viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true">
+                            <path d="M2,10 C50,2 110,2 160,7 C185,9 205,8 218,5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                </h1>
+
+                <p class="hero-lede">
+                    Eighteen books across travel, fiction, satire and quiet philosophy — written
+                    over a lifetime of paddling the Pacific shore and listening to what the world
+                    had to say.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#featured" class="btn btn-primary">Latest Releases</a>
+                    <a href="#books" class="btn btn-ghost">Browse All 18 →</a>
+                </div>
+
+                <div class="hero-signature" aria-hidden="true">
+                    <span class="sig-line"></span>
+                    <span class="sig-name">Meade Fischer</span>
+                </div>
+            </div>
+
+            <div class="hero-portrait">
+                <div class="portrait-stack">
+                    <span class="portrait-bgtype" aria-hidden="true">Meade</span>
+
+                    <div class="portrait-wrap">
+                        <img src="images/forweb.jpg" alt="Portrait of Meade Fischer" />
+                    </div>
+
+                    <div class="floating-book" aria-hidden="true">
+                        <img src="images/cover_17_nean.jpg" alt="" />
+                        <div class="fb-tag">
+                            <span class="fb-eyebrow">Latest · 2025</span>
+                            <span class="fb-title">A Neanderthal<br/>in the Nuclear Age</span>
+                        </div>
+                    </div>
+
+                    <div class="portrait-quote">
+                        <span class="pq-mark">“</span>
+                        <p>The world is more interesting than we usually give it credit for.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-strip">
+            <div class="strip-item"><strong>18</strong><span>Published Books</span></div>
+            <span class="strip-sep"></span>
+            <div class="strip-item"><strong>40+</strong><span>Years Writing</span></div>
+            <span class="strip-sep"></span>
+            <div class="strip-item"><strong>4</strong><span>Genres &amp; Forms</span></div>
+            <span class="strip-sep"></span>
+            <div class="strip-item"><strong>∞</strong><span>Miles of Coast</span></div>
+        </div>
+
+        <a href="#featured" class="scroll-cue" aria-label="Scroll to featured">
+            <span></span>
+        </a>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+            <span>California Explorer Magazine</span><span>•</span>
+            <span>Bay Nature</span><span>•</span>
+            <span>Monterey County Weekly</span><span>•</span>
+            <span>KUSP Public Radio</span><span>•</span>
+            <span>Adventure Sports Journal</span><span>•</span>
+            <span>Santa Cruz Sentinel</span><span>•</span>
+            <span>Coast &amp; Kayak</span><span>•</span>
+            <span>California Kayaker</span><span>•</span>
+            <span>Outdoor California</span><span>•</span>
+            <span>California Explorer Magazine</span><span>•</span>
+            <span>Bay Nature</span><span>•</span>
+            <span>Monterey County Weekly</span><span>•</span>
+            <span>KUSP Public Radio</span><span>•</span>
+            <span>Adventure Sports Journal</span><span>•</span>
+            <span>Santa Cruz Sentinel</span><span>•</span>
+            <span>Coast &amp; Kayak</span><span>•</span>
+        </div>
+    </div>
+
+    <!-- ============ FEATURED ============ -->
+    <section class="featured" id="featured">
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow">The Latest</p>
+                <h2 class="section-title">New &amp; Notable</h2>
+                <p class="section-sub">Two recent additions to the shelf — one ancient, one off the map.</p>
+            </div>
+
+            <div class="featured-grid">
+
+                <!-- Featured 1: Neanderthal -->
+                <article class="featured-card reveal">
+                    <div class="featured-cover">
+                        <span class="badge">Newest · 2025</span>
+                        <img src="images/cover_17_nean.jpg" alt="A Neanderthal in the Nuclear Age — cover" />
+                    </div>
+                    <div class="featured-body">
+                        <p class="genre-tag">Fiction</p>
+                        <h3>A Neanderthal in the Nuclear Age</h3>
+                        <p class="featured-desc">
+                            Frozen for thousands of years, she wakes up to a very strange new world — but
+                            one thing remains the same. A tender, unsettling story about what we lose
+                            and what we carry, no matter the century.
+                        </p>
+                        <div class="featured-meta">
+                            <span class="price">$14.95</span>
+                            <span class="dot">·</span>
+                            <span>Paperback</span>
+                        </div>
+                        <div class="featured-actions">
+                            <a class="btn btn-primary" href="https://www.amazon.com/Neanderthal-Nuclear-Age-Meade-Fischer/dp/B0F7RB9NLQ" target="_blank" rel="noopener">Buy on Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Featured 2: Kayaking on LSD -->
+                <article class="featured-card reveal">
+                    <div class="featured-cover">
+                        <span class="badge alt">Reader Favorite</span>
+                        <img src="images/coverKayaking.jpg" alt="Kayaking on LSD and Other Odd Musings — cover" />
+                    </div>
+                    <div class="featured-body">
+                        <p class="genre-tag">Stories &amp; Essays</p>
+                        <h3>Kayaking on LSD &amp; Other Odd Musings</h3>
+                        <p class="featured-desc">
+                            Fifty-five stories — humor, suspense, fiction, outdoor adventure — drawn
+                            from decades of paddling, wandering, and watching closely. A career in
+                            one book.
+                        </p>
+                        <div class="featured-meta">
+                            <span class="price">$14.95</span>
+                            <span class="dot">·</span>
+                            <span>55 Stories</span>
+                        </div>
+                        <div class="featured-actions">
+                            <a class="btn btn-primary" href="https://www.amazon.com/Kayaking-LSD-Other-Odd-Musings/dp/B0DXD6WN1M" target="_blank" rel="noopener">Buy on Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ ABOUT THE AUTHOR ============ -->
+    <section class="about" id="about">
+        <div class="container about-grid">
+            <div class="about-photo reveal">
+                <div class="photo-frame">
+                    <img src="images/forweb.jpg" alt="Meade Fischer outdoors" />
+                </div>
+                <div class="photo-accent" aria-hidden="true"></div>
+            </div>
+            <div class="about-text reveal">
+                <p class="eyebrow">About the Author</p>
+                <h2 class="section-title">A life spent at the<br />edge of the page<br />and the water.</h2>
+
+                <p class="about-lede">
+                    Meade Fischer is a California writer who has spent the better part of four decades
+                    on the coast — a freelance journalist, an outdoor essayist, and the author of eighteen
+                    books that move easily between travel writing, literary fiction, satire, and quiet
+                    spiritual inquiry.
+                </p>
+
+                <p>
+                    His work has appeared in <em>California Explorer Magazine</em>, <em>Bay Nature</em>,
+                    <em>Adventure Sports Journal</em>, the <em>Santa Cruz Sentinel</em>, the
+                    <em>Monterey County Weekly</em>, <em>Coast &amp; Kayak</em>, and on KUSP public radio,
+                    where he was a regular commentator. He wrote a weekly column for the
+                    <em>Register Pajaronian</em> from 2001 to 2005.
+                </p>
+
+                <p>
+                    Whether tracing the shoreline from Santa Barbara to British Columbia in a sea kayak,
+                    sketching a Bigfoot novel in the redwoods, or arguing the meaning of an ordinary
+                    moment, Meade writes with the same instinct: the world is more interesting than
+                    we usually give it credit for, and the only way to find out is to keep going.
+                </p>
+
+                <ul class="credentials">
+                    <li><strong>18</strong> published books</li>
+                    <li><strong>20+</strong> publications</li>
+                    <li><strong>4</strong> decades of writing</li>
+                    <li><strong>KUSP</strong> radio commentator</li>
+                </ul>
+
+                <div class="about-actions">
+                    <a href="#books" class="btn btn-primary">Explore the Library</a>
+                    <a href="mailto:info@meadefischer.com" class="btn btn-ghost">Contact Meade</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ ALL BOOKS LIBRARY ============ -->
+    <section class="library" id="books">
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow">The Library</p>
+                <h2 class="section-title">All Eighteen Books</h2>
+                <p class="section-sub">Every title links straight to Amazon. Filter by genre, or browse the whole shelf.</p>
+            </div>
+
+            <div class="filter-bar" role="tablist" aria-label="Filter books by genre">
+                <button class="filter-btn active" data-filter="all" role="tab">All <span>18</span></button>
+                <button class="filter-btn" data-filter="travel" role="tab">Travel &amp; Adventure <span>5</span></button>
+                <button class="filter-btn" data-filter="fiction" role="tab">Fiction <span>8</span></button>
+                <button class="filter-btn" data-filter="philosophy" role="tab">Philosophy &amp; Spirit <span>4</span></button>
+                <button class="filter-btn" data-filter="humor" role="tab">Humor &amp; Satire <span>1</span></button>
+            </div>
+
+            <div class="books-grid" id="booksGrid">
+
+                <!-- A Sea Beside Me -->
+                <article class="book" data-genre="travel">
+                    <div class="book-cover">
+                        <img src="images/cover_07_with_sea_mini.jpg" alt="A Sea Beside Me — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Travel &amp; Adventure</p>
+                        <h3 class="book-title">A Sea Beside Me</h3>
+                        <p class="book-desc">An intimate guide to California's coast from Santa Barbara to Oregon — everything the adventure traveler needs, with photographs.</p>
+                        <div class="book-foot">
+                            <span class="price">$15.95</span>
+                            <a class="buy" href="https://www.amazon.com/Sea-Beside-Me-intimate-Californias/dp/0967252369" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Cosmic Coastal Chronicles -->
+                <article class="book" data-genre="philosophy">
+                    <div class="book-cover">
+                        <img src="images/cover_11_cos_chron_mini.jpg" alt="Cosmic Coastal Chronicles — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Philosophy &amp; Spirit</p>
+                        <h3 class="book-title">Cosmic Coastal Chronicles</h3>
+                        <p class="book-desc">A wanderer on the west coast — California to British Columbia — searches for the elusive "moment" and the meaning of a life lived outdoors.</p>
+                        <div class="book-foot">
+                            <span class="price">$9.95</span>
+                            <a class="buy" href="https://www.amazon.com/Cosmic-Coastal-Chronicles-Reflections-wanderer/dp/1981967648" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Dreaming (covernew) -->
+                <article class="book" data-genre="philosophy">
+                    <div class="book-cover">
+                        <img src="images/covernew.jpg" alt="Dreaming — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Philosophy &amp; Spirit</p>
+                        <h3 class="book-title">Dreaming</h3>
+                        <p class="book-desc">The final volume in the trilogy begun with <em>Cosmic Coastal Chronicles</em> — a journey into life and how it gets that way.</p>
+                        <div class="book-foot">
+                            <span class="price">$12.95</span>
+                            <a class="buy" href="https://www.amazon.com/dp/B0CDNMBJD6" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Spinning Real Life -->
+                <article class="book" data-genre="fiction">
+                    <div class="book-cover">
+                        <img src="images/cover_09_spinning_mini.jpg" alt="Spinning Real Life — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Fiction</p>
+                        <h3 class="book-title">Spinning Real Life</h3>
+                        <p class="book-desc">A would-be writer searching for a story to tell finds himself in the middle of world-changing events — a satire on modern life.</p>
+                        <div class="book-foot">
+                            <span class="price">$9.20</span>
+                            <a class="buy" href="https://www.amazon.com/Spinning-Real-Life-Meade-Fischer/dp/0967252334" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Shattering the Crystal Face -->
+                <article class="book" data-genre="philosophy">
+                    <div class="book-cover">
+                        <img src="images/cover_10_shattering_mini.jpg" alt="Shattering the Crystal Face — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Philosophy &amp; Spirit</p>
+                        <h3 class="book-title">Shattering the Crystal Face</h3>
+                        <p class="book-desc">From lucidity to delirium, the Tripper explores life and the natural world in a series of mind-expanding chapters.</p>
+                        <div class="book-foot">
+                            <span class="price">$10.95</span>
+                            <a class="buy" href="https://www.amazon.com/Shattering-Crystal-Face-Meade-Fischer/dp/0967252326" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Clueless Guy's Guide -->
+                <article class="book" data-genre="humor">
+                    <div class="book-cover">
+                        <img src="images/cover_01_clueless_guide_mini.jpg" alt="The Clueless Guy's Guide to Love — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Humor &amp; Satire</p>
+                        <h3 class="book-title">The Clueless Guy's Guide to Love</h3>
+                        <p class="book-desc">A humorous take on relationships, with bits of real wisdom hidden among the wit — a laugh for both sexes.</p>
+                        <div class="book-foot">
+                            <span class="price">$10.95</span>
+                            <a class="buy" href="https://www.amazon.com/Clueless-Guys-Guide-Love-Beyond/dp/1974290573" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- To Sea Myself -->
+                <article class="book" data-genre="travel">
+                    <div class="book-cover">
+                        <img src="images/toSea.jpg" alt="To Sea Myself — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Travel &amp; Adventure</p>
+                        <h3 class="book-title">To Sea Myself</h3>
+                        <p class="book-desc">The joys and meditations of solitary kayaking — California, Oregon, Washington, and British Columbia, one paddle stroke at a time.</p>
+                        <div class="book-foot">
+                            <span class="price">$9.95</span>
+                            <a class="buy" href="https://www.amazon.com/Sea-Myself-Reflections-Solitary-Kayaker/dp/1517481791" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- California Explorer -->
+                <article class="book" data-genre="travel">
+                    <div class="book-cover">
+                        <img src="images/cover_05_cal_explorer_mini.jpg" alt="California Explorer — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Travel &amp; Adventure</p>
+                        <h3 class="book-title">California Explorer</h3>
+                        <p class="book-desc">A collected decade of hiking stories from across California, originally published in <em>California Explorer Magazine</em>.</p>
+                        <div class="book-foot">
+                            <span class="price">$10.95</span>
+                            <a class="buy" href="https://www.amazon.com/California-Explorer-years-contributions-Magazine/dp/0967252393" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Messiah Chronicles -->
+                <article class="book" data-genre="fiction">
+                    <div class="book-cover">
+                        <img src="images/cover_08_mes_chron_mini.jpg" alt="The Messiah Chronicles — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Fiction</p>
+                        <h3 class="book-title">The Messiah Chronicles</h3>
+                        <p class="book-desc">Jesus and his disciples on the road to preach — a buddy-story adaptation of the New Testament, warm, funny, and human.</p>
+                        <div class="book-foot">
+                            <span class="price">$15.00</span>
+                            <a class="buy" href="https://www.amazon.com/Messiah-Chronicles-Mr-Meade-Fischer/dp/0967252350" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Her Grand Plan -->
+                <article class="book" data-genre="fiction">
+                    <div class="book-cover">
+                        <img src="images/cover_06_grand_plan_mini.jpg" alt="Her Grand Plan — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Fiction</p>
+                        <h3 class="book-title">Her Grand Plan</h3>
+                        <p class="book-desc">A young girl sets out to become a writer — and to marry her teacher — in spite of his own plans for either of those things.</p>
+                        <div class="book-foot">
+                            <span class="price">$13.95</span>
+                            <a class="buy" href="https://www.amazon.com/Her-Grand-Plan-Meade-Fischer/dp/0967252385" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Beyond the Veil -->
+                <article class="book" data-genre="philosophy">
+                    <div class="book-cover">
+                        <img src="images/cover_03_beyond_veil_mini.jpg" alt="Beyond the Veil — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Philosophy &amp; Spirit</p>
+                        <h3 class="book-title">Beyond the Veil</h3>
+                        <p class="book-desc">A man breaks through the veil between this reality and the next, and his non-physical self teaches him a few cosmic lessons.</p>
+                        <div class="book-foot">
+                            <span class="price">$9.00</span>
+                            <a class="buy" href="https://www.amazon.com/Beyond-Veil-Conversations-non-material-self/dp/1503208370" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Shadows in the Forest -->
+                <article class="book" data-genre="fiction">
+                    <div class="book-cover">
+                        <img src="images/shadows.jpg" alt="Shadows in the Forest — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Fiction</p>
+                        <h3 class="book-title">Shadows in the Forest</h3>
+                        <p class="book-desc">Bigfoot, hiding in the redwood forests, hoping for rescue — trapped light years from home. A quietly strange novel of the Pacific Northwest.</p>
+                        <div class="book-foot">
+                            <span class="price">$12.95</span>
+                            <a class="buy" href="https://www.amazon.com/Shadows-Forest-Mr-Meade-Fischer/dp/1074610261" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Flawed! -->
+                <article class="book" data-genre="fiction">
+                    <div class="book-cover">
+                        <img src="images/flawed_small.jpg" alt="Flawed! — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Fiction</p>
+                        <h3 class="book-title">Flawed!</h3>
+                        <p class="book-desc">She's fourteen, cute, adorable — and a killer. Meet Heather, and the people who love her and the people who want to jail her.</p>
+                        <div class="book-foot">
+                            <span class="price">$12.50</span>
+                            <a class="buy" href="https://www.amazon.com/Flawed-Meade-Fischer-ebook/dp/B08MT4K1YP" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Proudly Flawed -->
+                <article class="book" data-genre="fiction">
+                    <div class="book-cover">
+                        <img src="images/proudly_flawed.jpg" alt="Proudly Flawed — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Fiction · Sequel</p>
+                        <h3 class="book-title">Proudly Flawed</h3>
+                        <p class="book-desc">Heather is eighteen, in college, and navigating her mother's illness, a complicated new community, and the possibility of an unlikely first love.</p>
+                        <div class="book-foot">
+                            <span class="price">$12.95</span>
+                            <a class="buy" href="https://www.amazon.com/s?k=Proudly+Flawed+Meade+Fischer" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Boy from Tomorrow -->
+                <article class="book" data-genre="fiction">
+                    <div class="book-cover">
+                        <img src="images/cover_04_boy_tomorrow_mini.jpg" alt="The Boy from Tomorrow — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Fiction</p>
+                        <h3 class="book-title">The Boy from Tomorrow</h3>
+                        <p class="book-desc">A twelve-year-old boy is accidentally transported back two hundred years — to the primitive world of the twenty-first century.</p>
+                        <div class="book-foot">
+                            <span class="price">$12.95</span>
+                            <a class="buy" href="https://www.amazon.com/Boy-Tomorrow-Mr-Meade-Fischer/dp/1502889013" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Kayaking on LSD -->
+                <article class="book" data-genre="travel">
+                    <div class="book-cover">
+                        <img src="images/coverKayaking.jpg" alt="Kayaking on LSD — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Travel &amp; Adventure</p>
+                        <h3 class="book-title">Kayaking on LSD &amp; Other Odd Musings</h3>
+                        <p class="book-desc">Fifty-five stories — humor, suspense, fiction, outdoor adventure — pulled from a lifetime of paddling and noticing.</p>
+                        <div class="book-foot">
+                            <span class="price">$14.95</span>
+                            <a class="buy" href="https://www.amazon.com/Kayaking-LSD-Other-Odd-Musings/dp/B0DXD6WN1M" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Neanderthal in the Nuclear Age -->
+                <article class="book" data-genre="fiction">
+                    <div class="book-cover">
+                        <img src="images/cover_17_nean.jpg" alt="A Neanderthal in the Nuclear Age — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Fiction · Latest</p>
+                        <h3 class="book-title">A Neanderthal in the Nuclear Age</h3>
+                        <p class="book-desc">Frozen for thousands of years, she wakes up to a very strange new world. One thing, however, remains the same.</p>
+                        <div class="book-foot">
+                            <span class="price">$14.95</span>
+                            <a class="buy" href="https://www.amazon.com/Neanderthal-Nuclear-Age-Meade-Fischer/dp/B0F7RB9NLQ" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Stay and Play Del Norte -->
+                <article class="book" data-genre="travel">
+                    <div class="book-cover">
+                        <img src="images/del_norte_cover.jpg" alt="Stay and Play in Del Norte County — cover" />
+                    </div>
+                    <div class="book-info">
+                        <p class="genre-tag">Travel &amp; Adventure · Kindle</p>
+                        <h3 class="book-title">Stay &amp; Play in Del Norte County</h3>
+                        <p class="book-desc">Del Norte for the adventure traveller — trails, beaches, and quiet corners of California's far north. Kindle edition.</p>
+                        <div class="book-foot">
+                            <span class="price">Kindle</span>
+                            <a class="buy" href="https://www.amazon.com/Stay-Play-Del-Norte-County-ebook/dp/B01N2TDWBQ" target="_blank" rel="noopener">Amazon →</a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <p class="amazon-note">
+                Every purchase is fulfilled directly by Amazon. This site is simply the shelf.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============ PRESS / CREDENTIALS ============ -->
+    <section class="press" id="press">
+        <div class="container">
+            <div class="section-head light">
+                <p class="eyebrow">Press &amp; Publications</p>
+                <h2 class="section-title">Bylines, columns, and a long radio voice.</h2>
+                <p class="section-sub">
+                    A small selection from forty years of freelance writing on the West Coast.
+                </p>
+            </div>
+
+            <div class="press-grid">
+                <div class="press-item reveal">
+                    <h4>Magazines</h4>
+                    <ul>
+                        <li>California Explorer Magazine — regular contributor</li>
+                        <li>Bay Nature</li>
+                        <li>Outdoor California</li>
+                        <li>Adventure Sports Journal</li>
+                        <li>Coast &amp; Kayak Magazine</li>
+                        <li>California Kayaker</li>
+                        <li>Wavelength Magazine</li>
+                    </ul>
+                </div>
+                <div class="press-item reveal">
+                    <h4>Newspapers</h4>
+                    <ul>
+                        <li>Santa Cruz Sentinel — outdoor recreation</li>
+                        <li>Register Pajaronian — weekly column 2001–2005</li>
+                        <li>Monterey County Weekly</li>
+                        <li>Monterey Herald</li>
+                        <li>San Luis Obispo New Times</li>
+                        <li>Pacific Sun</li>
+                        <li>Gringo Gazette, Baja CA</li>
+                    </ul>
+                </div>
+                <div class="press-item reveal">
+                    <h4>Radio &amp; Online</h4>
+                    <ul>
+                        <li>KUSP Public Radio — regular commentator</li>
+                        <li>Daily Iconoclast (blog)</li>
+                        <li>Meade Fischer Travels (Wordpress)</li>
+                        <li>YouTube — video work</li>
+                        <li>Featured: Del Norte Triplicate</li>
+                        <li>Northstate Outdoors</li>
+                        <li>Houseboats.com</li>
+                    </ul>
+                </div>
+            </div>
+
+            <blockquote class="press-quote reveal">
+                <p>"Fischer writes the West Coast the way a long-time neighbor talks about it — without performance, and with a quiet, accumulated affection that's hard to fake."</p>
+                <cite>— A reader, on <em>Cosmic Coastal Chronicles</em></cite>
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- ============ CONTACT / FOOTER ============ -->
+    <footer class="footer" id="contact">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <span class="brand-mark big">M<span class="brand-dot">·</span>F</span>
+                <h3>Meade Fischer</h3>
+                <p>Author · Essayist · Coastal Wanderer<br />Northern California, USA</p>
+                <a href="mailto:info@meadefischer.com" class="footer-email">info@meadefischer.com</a>
+            </div>
+
+            <div class="footer-col">
+                <h5>Read</h5>
+                <ul>
+                    <li><a href="#featured">New Releases</a></li>
+                    <li><a href="#books">The Library</a></li>
+                    <li><a href="#about">About the Author</a></li>
+                    <li><a href="#press">Press</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h5>Elsewhere</h5>
+                <ul>
+                    <li><a href="https://meadefischertravels.wordpress.com/" target="_blank" rel="noopener">Travel Blog</a></li>
+                    <li><a href="https://www.youtube.com/channel/UCm3_Ba27ffLyLEnvLEARmhg" target="_blank" rel="noopener">YouTube Channel</a></li>
+                    <li><a href="https://www.facebook.com/meade.fischer/" target="_blank" rel="noopener">Facebook</a></li>
+                    <li><a href="http://meadefischer.blogspot.com/" target="_blank" rel="noopener">Daily Iconoclast</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h5>Find the Books</h5>
+                <p class="footer-note">
+                    All eighteen titles are available through Amazon. This website is a showcase only —
+                    every purchase, fulfillment, and review happens on Amazon.com.
+                </p>
+                <a href="https://www.amazon.com/s?k=Meade+Fischer&i=stripbooks" class="btn btn-primary small" target="_blank" rel="noopener">All Books on Amazon →</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>© <span id="year"></span> Meade Fischer. All books and cover art © their respective publishers.</p>
+                <p>Designed as a quiet shelf for a long career.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
