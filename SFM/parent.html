@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SFM Parent Portal · sfmerionettes.org/parent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+  body {
+    background: linear-gradient(160deg, #0B1A47 0%, #1B3A8C 70%, #2C53B8 100%);
+    min-height: 100vh;
+    padding: 32px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===== Phone device · with mobile browser inside ===== */
+  .phone-device {
+    width: 412px;
+    max-width: 100%;
+    background: #0B0F1E;
+    border-radius: 54px;
+    padding: 12px;
+    box-shadow:
+      0 50px 100px rgba(0,0,0,0.45),
+      0 0 0 2px #1E293B,
+      inset 0 0 0 2px #0F172A;
+    position: relative;
+  }
+  /* Side buttons */
+  .phone-device::before {
+    content: "";
+    position: absolute;
+    right: -3px;
+    top: 140px;
+    width: 4px;
+    height: 64px;
+    background: #1E293B;
+    border-radius: 0 3px 3px 0;
+  }
+  .phone-device::after {
+    content: "";
+    position: absolute;
+    left: -3px;
+    top: 110px;
+    width: 4px;
+    height: 44px;
+    background: #1E293B;
+    border-radius: 3px 0 0 3px;
+    box-shadow: 0 60px 0 #1E293B, 0 110px 0 #1E293B;
+  }
+
+  .phone-screen {
+    background: var(--navy-700);
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    height: 880px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* iOS notch (Dynamic-Island-ish pill) */
+  .phone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 30px;
+    background: #0B0F1E;
+    border-radius: 18px;
+    z-index: 100;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04);
+  }
+
+  /* iOS status bar */
+  .ios-status {
+    background: var(--navy-700);
+    color: #fff;
+    padding: 16px 28px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+    z-index: 50;
+    letter-spacing: -0.01em;
+  }
+  .ios-status-icons { display: flex; align-items: center; gap: 6px; }
+
+  /* Mobile browser URL bar (Safari-style) */
+  .mb-browser-bar {
+    background: #f1f3f4;
+    padding: 7px 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid #d3d7dc;
+  }
+  .mb-btn {
+    background: transparent;
+    border: none;
+    color: var(--gray-700);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+  }
+  .mb-btn:hover { background: rgba(0,0,0,0.05); }
+  .mb-url-pill {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--gray-700);
+    height: 30px;
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  .mb-url-pill .mb-lock { color: var(--gray-600); display: inline-flex; align-items: center; }
+  .mb-url-pill .mb-domain { color: var(--gray-900); font-weight: 600; }
+  .mb-url-pill .mb-path { color: var(--gray-500); }
+
+  /* Browser content area where the parent portal lives */
+  .phone-content {
+    flex: 1;
+    background: var(--gray-50);
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Home indicator at very bottom of phone */
+  .phone-home-indicator {
+    position: absolute;
+    bottom: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: rgba(255,255,255,0.65);
+    border-radius: 3px;
+    z-index: 110;
+    pointer-events: none;
+  }
+
+  /* Parent shell inside the phone browser */
+  .phone-content .parent-shell {
+    background: var(--gray-50);
+    min-height: 100%;
+    max-width: 100%;
+    margin: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .phone-content .parent-content {
+    padding: 16px;
+    padding-bottom: 16px;
+    flex: 1;
+  }
+  .phone-content .parent-bottomnav {
+    position: sticky;
+    bottom: 0;
+    left: 0; right: 0;
+    margin: 0;
+    background: #fff;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 4px 26px; /* extra bottom for home indicator */
+    z-index: 30;
+    max-width: none;
+  }
+
+  /* Responsive: hide phone chrome on real phones */
+  @media (max-width: 480px) {
+    body { padding: 0; background: var(--gray-50); }
+    .phone-device {
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      max-width: 100%;
+      width: 100%;
+    }
+    .phone-device::before, .phone-device::after { display: none; }
+    .phone-screen {
+      border-radius: 0;
+      height: 100vh;
+    }
+    .phone-notch, .phone-home-indicator { display: none; }
+    .ios-status { display: none; }
+    .mb-browser-bar { display: none; }
+    .phone-content .parent-bottomnav { padding: 8px 4px 14px; }
+  }
+
+  .section-block { margin-bottom: 20px; }
+  .section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gray-500);
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .section-title a { font-size: 11px; color: var(--navy-700); text-transform: none; letter-spacing: 0; cursor: pointer; }
+
+  /* Child card */
+  .child-card {
+    display: flex; align-items: center; gap: 12px;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .child-card .child-info { flex: 1; min-width: 0; }
+  .child-card .child-name { font-weight: 700; font-size: 14px; color: var(--gray-900); }
+  .child-card .child-team { font-size: 12px; color: var(--gray-500); margin-top: 1px; }
+  .child-card .child-next {
+    background: var(--navy-50);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: var(--navy-700);
+    font-weight: 600;
+    margin-top: 6px;
+    display: inline-block;
+  }
+  .child-card .child-bal { text-align: right; font-size: 13px; font-weight: 700; }
+  .child-card .child-bal.ok { color: var(--green-700); }
+
+  /* Quick tiles */
+  .quick-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 18px 0 22px; }
+  .quick-tile { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 12px 6px 10px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .quick-tile .qt-ic { width: 36px; height: 36px; border-radius: 12px; background: var(--navy-100); color: var(--navy-700); display: flex; align-items: center; justify-content: center; }
+  .quick-tile .qt-label { font-size: 11px; font-weight: 600; color: var(--gray-700); }
+  .quick-tile.gold .qt-ic { background: var(--gold-100); color: var(--gold-500); }
+  .quick-tile.aqua .qt-ic { background: var(--aqua-100); color: var(--aqua-600); }
+  .quick-tile.green .qt-ic { background: var(--green-100); color: var(--green-700); }
+
+  /* Alert banner */
+  .alert-banner { background: linear-gradient(120deg, var(--gold-100), #FED7AA); border: 1px solid #FCD34D; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .alert-banner .ab-ic { width: 32px; height: 32px; background: var(--gold-500); color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .alert-banner .ab-title { font-weight: 700; font-size: 12px; color: #92400E; }
+  .alert-banner .ab-sub { font-size: 11px; color: #92400E; opacity: 0.85; }
+
+  /* Schedule mini */
+  .schedule-mini { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; overflow: hidden; }
+  .schedule-mini .smi { padding: 12px 14px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--gray-100); cursor: pointer; }
+  .schedule-mini .smi:last-child { border-bottom: none; }
+  .schedule-mini .smi:hover { background: var(--gray-50); }
+  .schedule-mini .smi-bar { width: 4px; border-radius: 2px; align-self: stretch; margin: 4px 0; }
+  .schedule-mini .smi-time { font-weight: 700; font-size: 12px; color: var(--gray-700); min-width: 80px; }
+  .schedule-mini .smi-title { font-weight: 600; font-size: 13px; color: var(--gray-900); }
+  .schedule-mini .smi-meta { font-size: 11px; color: var(--gray-500); margin-top: 1px; }
+
+  /* Announcement card */
+  .ann-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 14px; margin-bottom: 10px; cursor: pointer; }
+  .ann-card.pinned { border-left: 4px solid var(--gold-500); }
+  .ann-card .ann-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .ann-card .ann-from { font-weight: 700; font-size: 12px; }
+  .ann-card .ann-time { font-size: 11px; color: var(--gray-500); }
+  .ann-card .ann-title { font-weight: 700; font-size: 14px; color: var(--gray-900); margin-bottom: 4px; }
+  .ann-card .ann-body { font-size: 13px; color: var(--gray-700); line-height: 1.5; }
+
+  /* Pay summary */
+  .pay-summary { background: linear-gradient(120deg, var(--navy-700), var(--navy-800)); color: #fff; border-radius: 16px; padding: 18px; margin-bottom: 18px; position: relative; overflow: hidden; }
+  .pay-summary::after { content: ""; position: absolute; right: -50px; top: -50px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(34,211,238,0.3), transparent 60%); }
+  .pay-summary .ps-label { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .pay-summary .ps-amt { font-size: 32px; font-weight: 800; margin-top: 4px; letter-spacing: -0.02em; }
+  .pay-summary .ps-meta { font-size: 12px; opacity: 0.85; margin-top: 4px; }
+  .pay-summary .ps-cta { background: rgba(255,255,255,0.15); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.25); color: #fff; padding: 9px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 14px; width: 100%; cursor: pointer; }
+
+  .pay-line { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
+  .pay-line:hover { border-color: var(--navy-500); }
+  .pay-line .pl-title { font-weight: 600; font-size: 13px; }
+  .pay-line .pl-meta { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+  .pay-line .pl-amt { font-weight: 700; font-size: 14px; }
+
+  /* Child tab pills */
+  .pill-children { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 4px; scrollbar-width: none; }
+  .pill-children::-webkit-scrollbar { display: none; }
+
+  /* Profile / detail */
+  .profile-header-parent { background: linear-gradient(120deg, var(--navy-700), var(--navy-800)); margin: -16px -16px 16px; padding: 24px 16px 28px; color: #fff; text-align: center; }
+  .profile-avatar-parent { width: 72px; height: 72px; background: var(--aqua-500); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; border: 3px solid rgba(255,255,255,0.3); }
+
+  .profile-list-item { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .profile-list-item .pli-ic { width: 32px; height: 32px; background: var(--navy-100); color: var(--navy-700); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .profile-list-item .pli-body { flex: 1; }
+  .profile-list-item .pli-label { font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+  .profile-list-item .pli-val { font-size: 13px; font-weight: 600; color: var(--gray-900); margin-top: 2px; }
+  .profile-list-item .pli-chev { color: var(--gray-400); }
+
+  /* Detail page header */
+  .det-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 20;
+  }
+  .det-back {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--gray-100);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--gray-700);
+  }
+  .det-title { font-weight: 700; font-size: 15px; flex: 1; }
+  .det-sub { font-size: 11px; color: var(--gray-500); }
+
+  /* Child detail cover */
+  .child-cover {
+    background: linear-gradient(120deg, var(--navy-700), var(--navy-800));
+    color: #fff;
+    padding: 22px 16px 24px;
+    text-align: center;
+    margin: 0 -16px 16px;
+    position: relative;
+  }
+  .child-cover.purple { background: linear-gradient(120deg, #7C3AED, #5B21B6); }
+  .child-cover.pink { background: linear-gradient(120deg, #DB2777, #9D174D); }
+  .child-cover.gold { background: linear-gradient(120deg, #F59E0B, #B45309); }
+  .child-cover .cc-avatar { width: 72px; height: 72px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; border: 3px solid rgba(255,255,255,0.35); }
+  .child-cover h2 { color: #fff; font-size: 22px; }
+  .child-cover .cc-meta { font-size: 12px; opacity: 0.85; margin-top: 4px; }
+  .child-cover .cc-stats { display: flex; justify-content: space-around; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.18); }
+  .child-cover .cc-stat .cc-val { font-size: 18px; font-weight: 800; }
+  .child-cover .cc-stat .cc-lab { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+  /* Skill row in child detail */
+  .skill-progress-row {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .skill-progress-row .sp-title { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+
+  /* Practice detail / message thread */
+  .practice-info-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+
+  /* Resource card (mobile) */
+  .res-card-mobile { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; cursor: pointer; }
+  .res-card-mobile .rcm-thumb { height: 90px; background: linear-gradient(135deg, var(--navy-700), var(--aqua-500)); display: flex; align-items: center; justify-content: center; color: #fff; position: relative; }
+  .res-card-mobile .rcm-dur { position: absolute; bottom: 6px; right: 6px; background: rgba(15,23,42,0.7); color: #fff; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: 600; }
+  .res-card-mobile .rcm-body { padding: 10px 12px 12px; }
+  .res-card-mobile .rcm-title { font-weight: 600; font-size: 12px; line-height: 1.3; }
+  .res-card-mobile .rcm-meta { font-size: 10px; color: var(--gray-500); margin-top: 4px; }
+
+  /* Product card */
+  .product-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 14px; display: flex; gap: 12px; margin-bottom: 10px; cursor: pointer; }
+  .product-card .p-img { width: 64px; height: 64px; background: linear-gradient(135deg, var(--navy-700), var(--aqua-500)); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+  .product-card .p-name { font-weight: 600; font-size: 13px; }
+  .product-card .p-meta { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+  .product-card .p-price { font-weight: 700; font-size: 14px; color: var(--navy-700); margin-top: 4px; }
+  .product-card .p-info { flex: 1; }
+
+  /* Confirmation success card */
+  .success-card { background: var(--green-100); border: 1px solid var(--green-500); border-radius: 14px; padding: 18px; text-align: center; margin: 20px 0; }
+  .success-card .success-ic { width: 56px; height: 56px; background: var(--green-500); color: #fff; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; }
+  .success-card h3 { color: var(--green-700); }
+</style>
+</head>
+<body>
+
+<div class="phone-device">
+  <div class="phone-screen">
+
+    <div class="phone-notch"></div>
+
+    <!-- iOS status bar -->
+    <div class="ios-status">
+      <span>9:41</span>
+      <div class="ios-status-icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="6" width="2.5" height="5" rx="0.5"/><rect x="3.5" y="4" width="2.5" height="7" rx="0.5"/><rect x="7" y="2" width="2.5" height="9" rx="0.5"/><rect x="10.5" y="0" width="2.5" height="11" rx="0.5"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 1.5C5.5 1.5 3.2 2.4 1.5 4l1.5 1.5C4.2 4.3 6 3.5 8 3.5s3.8.8 5 2L14.5 4c-1.7-1.6-4-2.5-6.5-2.5zM8 5.5c-1.5 0-2.8.5-3.8 1.4l1.5 1.5c.6-.6 1.4-.9 2.3-.9s1.7.3 2.3.9l1.5-1.5C10.8 6 9.5 5.5 8 5.5z"/><circle cx="8" cy="9.5" r="1.5"/></svg>
+        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.5"/><rect x="2" y="2" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.5"/></svg>
+      </div>
+    </div>
+
+    <!-- Mobile browser URL bar -->
+    <div class="mb-browser-bar">
+      <button class="mb-btn" title="Text size">
+        <span style="font-size:13px;letter-spacing:-0.02em;"><span style="font-size:10px;">A</span>A</span>
+      </button>
+      <div class="mb-url-pill">
+        <span class="mb-lock">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
+        <span class="mb-domain">sfmerionettes.org</span><span class="mb-path">/parent</span>
+      </div>
+      <button class="mb-btn" title="Refresh">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </button>
+    </div>
+
+    <!-- Parent portal scrollable content -->
+    <div class="phone-content">
+
+      <div class="parent-shell">
+
+        <!-- Status / top bar -->
+        <div class="parent-topbar">
+          <div class="top-row">
+            <div>
+              <div class="greeting">Good morning</div>
+              <div class="name">Hi Kelly 👋</div>
+            </div>
+            <div class="top-actions">
+              <div class="pill-icon" onclick="showView('p-inbox','.bn-item')" title="Inbox">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span class="dot"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="parent-content">
+
+          <!-- ========== HOME ========== -->
+          <section class="view active" id="p-home">
+
+            <div class="alert-banner">
+              <div class="ab-ic">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="ab-body">
+                <div class="ab-title">📌 Coffman Pool closed Thu Jun 11</div>
+                <div class="ab-sub">All Coffman practices that day move to JB Pool — calendar updated</div>
+              </div>
+            </div>
+
+            <div class="next-practice-hero">
+              <div class="label">Janelle's next practice</div>
+              <div class="practice">Intermediates — Today</div>
+              <div class="practice-sub">5:30 — 7:30 PM · Balboa Pool · Coach Sofie</div>
+              <div class="countdown">
+                <div class="cd-box"><div class="cd-num">02</div><div class="cd-label">Hours</div></div>
+                <div class="cd-box"><div class="cd-num">14</div><div class="cd-label">Min</div></div>
+                <div class="cd-box"><div class="cd-num">35</div><div class="cd-label">Sec</div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">My Children <a onclick="showView('p-profile','.bn-item')">Manage →</a></div>
+
+              <div class="child-card" onclick="showDetailView('p-child-brianne','p-home')">
+                <div class="avatar avatar-lg purple">B</div>
+                <div class="child-info">
+                  <div class="child-name">Brianne, 11</div>
+                  <div class="child-team">12U B — Coach Niloo</div>
+                  <span class="child-next">Next: Tomorrow 4:30 PM · Coffman</span>
+                </div>
+                <div class="child-bal ok">$0 due</div>
+              </div>
+
+              <div class="child-card" onclick="showDetailView('p-child-janelle','p-home')">
+                <div class="avatar avatar-lg" style="background:#DB2777;">J</div>
+                <div class="child-info">
+                  <div class="child-name">Janelle, 13</div>
+                  <div class="child-team">Intermediates — Coach Sofie</div>
+                  <span class="child-next" style="background:var(--aqua-100);color:var(--aqua-600);">⏱ Today 5:30 PM · Balboa</span>
+                </div>
+                <div class="child-bal ok">$0 due</div>
+              </div>
+
+              <div class="child-card" onclick="showDetailView('p-child-syleste','p-home')">
+                <div class="avatar avatar-lg gold">S</div>
+                <div class="child-info">
+                  <div class="child-name">Syleste, 9</div>
+                  <div class="child-team">Novice — Coach Sophia M.</div>
+                  <span class="child-next">Next: Tomorrow 5:30 PM · Balboa</span>
+                </div>
+                <div class="child-bal ok">$0 due</div>
+              </div>
+            </div>
+
+            <div class="quick-tiles">
+              <div class="quick-tile" onclick="showDetailView('p-absence','p-home')">
+                <div class="qt-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+                <div class="qt-label">Mark Absent</div>
+              </div>
+              <div class="quick-tile aqua" onclick="showView('p-resources','.bn-item')">
+                <div class="qt-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                <div class="qt-label">Videos</div>
+              </div>
+              <div class="quick-tile gold" onclick="showView('p-shop','.bn-item')">
+                <div class="qt-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+                <div class="qt-label">Team Shop</div>
+              </div>
+              <div class="quick-tile green" onclick="showView('p-billing','.bn-item')">
+                <div class="qt-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                <div class="qt-label">Billing</div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Today's Practices <a onclick="showView('p-schedule','.bn-item')">Week →</a></div>
+              <div class="schedule-mini">
+                <div class="smi" onclick="showDetailView('p-practice-janelle','p-home')">
+                  <div class="smi-bar" style="background:#DB2777;"></div>
+                  <div class="smi-time">5:30 — 7:30p</div>
+                  <div class="flex-1">
+                    <div class="smi-title">Janelle · Intermediates</div>
+                    <div class="smi-meta">Balboa Pool · Coach Sofie · <span style="color:var(--green-700);">⏱ In 2h 14m</span></div>
+                  </div>
+                </div>
+                <div class="smi" onclick="showDetailView('p-practice-syleste','p-home')">
+                  <div class="smi-bar" style="background:var(--gold-500);"></div>
+                  <div class="smi-time">5:30 — 7:30p</div>
+                  <div class="flex-1">
+                    <div class="smi-title">Syleste · Novice</div>
+                    <div class="smi-meta">Balboa Pool · Coach Lucy &amp; Sophia M.</div>
+                  </div>
+                </div>
+                <div class="smi" onclick="showDetailView('p-practice-brianne','p-home')">
+                  <div class="smi-bar" style="background:#7C3AED;"></div>
+                  <div class="smi-time">5:30 — 8:00p</div>
+                  <div class="flex-1">
+                    <div class="smi-title">Brianne · 12U B</div>
+                    <div class="smi-meta">HL Pool · Coach Niloo</div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-muted text-xs text-center mt-3" style="background:var(--aqua-100);color:var(--aqua-600);padding:8px 12px;border-radius:10px;">
+                💡 Janelle &amp; Syleste are at the same pool — easy pickup!
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Latest Announcements <a onclick="showView('p-inbox','.bn-item')">All →</a></div>
+
+              <div class="ann-card pinned" onclick="showDetailView('p-thread-eileen','p-home')">
+                <div class="ann-head">
+                  <div class="avatar avatar-sm">EH</div>
+                  <div class="flex-1">
+                    <div class="ann-from">Eileen Horng <span style="font-size:10px;color:var(--gray-500);font-weight:500;">· Board</span></div>
+                    <div class="ann-time">2 hours ago</div>
+                  </div>
+                  <span class="badge badge-warning" style="font-size:10px;">📌</span>
+                </div>
+                <div class="ann-title">Pool Maintenance — Coffman Closed Thu Jun 11</div>
+                <div class="ann-body">All Coffman practices that day move to JB Pool. Calendar already updated.</div>
+              </div>
+
+              <div class="ann-card" onclick="showDetailView('p-thread-sofie','p-home')">
+                <div class="ann-head">
+                  <div class="avatar avatar-sm" style="background:#DB2777;">SF</div>
+                  <div class="flex-1">
+                    <div class="ann-from">Coach Sofie <span style="font-size:10px;color:var(--gray-500);font-weight:500;">· Intermediates</span></div>
+                    <div class="ann-time">Yesterday · for Janelle</div>
+                  </div>
+                </div>
+                <div class="ann-title">Counts drill homework — watch before Friday</div>
+                <div class="ann-body">Hi Intermediates families — I posted a new 8-count drill in Resources. Please ask the swimmers to watch before Friday.</div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ========== SCHEDULE ========== -->
+          <section class="view" id="p-schedule">
+            <h2 style="font-size:22px;margin-bottom:6px;">Family Schedule</h2>
+            <div class="text-muted text-sm mb-3">Week of June 1 — 7 · all three children combined</div>
+
+            <div class="pill-children">
+              <div class="child-tab active" onclick="selectChild(this)"><div class="child-avatar" style="background:rgba(255,255,255,0.3);">★</div> All Children</div>
+              <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:#7C3AED;">B</div> Brianne</div>
+              <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:#DB2777;">J</div> Janelle</div>
+              <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:var(--gold-500);">S</div> Syleste</div>
+            </div>
+
+            <div class="schedule-day"><div class="schedule-day-head"><div><div class="day-title">Monday — Jun 1</div><div class="day-date">1 practice</div></div><span class="badge badge-soft">Past ✓</span></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-brianne','p-schedule')"><div class="time-pill">5:00 — 8:00p</div><div class="practice-body"><div class="practice-title">Brianne · 12U B</div><div class="practice-meta">HL Pool · Coach Emily · ✓ Present</div></div></div>
+            </div>
+
+            <div class="schedule-day"><div class="schedule-day-head"><div><div class="day-title">Tuesday — Jun 2</div><div class="day-date">3 practices · same time, different pools!</div></div><span class="badge badge-soft">Past ✓</span></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-brianne','p-schedule')"><div class="time-pill">4:30 — 7:00p</div><div class="practice-body"><div class="practice-title">Brianne · 12U B</div><div class="practice-meta">Coffman · Niloo · ✓ Present</div></div></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-janelle','p-schedule')"><div class="time-pill">5:30 — 7:30p</div><div class="practice-body"><div class="practice-title">Janelle · Intermediates</div><div class="practice-meta">Balboa · Trina &amp; Sofie · ✓ Present</div></div></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-syleste','p-schedule')"><div class="time-pill">5:30 — 7:30p</div><div class="practice-body"><div class="practice-title">Syleste · Novice</div><div class="practice-meta">Balboa · Cameron &amp; Sophia M. · ⚠ Late (5m)</div></div></div>
+            </div>
+
+            <div class="schedule-day" style="border:2px solid var(--aqua-500);"><div class="schedule-day-head" style="background:var(--aqua-100);"><div><div class="day-title" style="color:var(--aqua-600);">Wednesday — Jun 3 · TODAY</div><div class="day-date">2 practices · 1 child off</div></div><span class="badge badge-aqua">Today</span></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-janelle','p-schedule')"><div class="time-pill" style="background:#DB2777;color:#fff;">5:30 — 7:30p</div><div class="practice-body"><div class="practice-title">Janelle · Intermediates</div><div class="practice-meta">Balboa · Sofie · In 2h 14m</div></div><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showDetailView('p-absence','p-schedule');">Absent?</button></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-syleste','p-schedule')"><div class="time-pill" style="background:var(--gold-500);color:#fff;">5:30 — 7:30p</div><div class="practice-body"><div class="practice-title">Syleste · Novice</div><div class="practice-meta">Balboa · Lucy &amp; Sophia M. · Same pool 🚗</div></div><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showDetailView('p-absence','p-schedule');">Absent?</button></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-brianne','p-schedule')"><div class="time-pill" style="background:#7C3AED;color:#fff;">5:30 — 8:00p</div><div class="practice-body"><div class="practice-title">Brianne · 12U B</div><div class="practice-meta">HL Pool · Niloo</div></div><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showDetailView('p-absence','p-schedule');">Absent?</button></div>
+            </div>
+
+            <div class="schedule-day"><div class="schedule-day-head"><div><div class="day-title">Thursday — Jun 4</div><div class="day-date">1 practice</div></div></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-brianne','p-schedule')"><div class="time-pill">4:30 — 7:00p</div><div class="practice-body"><div class="practice-title">Brianne · 12U B</div><div class="practice-meta">Coffman · Coach Niloo</div></div></div>
+            </div>
+
+            <div class="schedule-day"><div class="schedule-day-head"><div><div class="day-title">Friday — Jun 5</div><div class="day-date">1 practice</div></div></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-brianne','p-schedule')"><div class="time-pill">5:00 — 7:00p</div><div class="practice-body"><div class="practice-title">Brianne · 12U B</div><div class="practice-meta">Coffman · Niloo</div></div></div>
+            </div>
+
+            <div class="schedule-day"><div class="schedule-day-head"><div><div class="day-title">Saturday — Jun 6</div><div class="day-date">No practices · rest day</div></div><span class="badge badge-soft">Rest</span></div></div>
+
+            <div class="schedule-day"><div class="schedule-day-head"><div><div class="day-title">Sunday — Jun 7</div><div class="day-date">3 practices · long session day!</div></div><span class="badge badge-warning">Long</span></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-brianne','p-schedule')"><div class="time-pill">3:00 — 7:00p</div><div class="practice-body"><div class="practice-title">Brianne · 12U B</div><div class="practice-meta">JB Pool · 4hr session</div></div></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-janelle','p-schedule')"><div class="time-pill">4:00 — 7:00p</div><div class="practice-body"><div class="practice-title">Janelle · Intermediates</div><div class="practice-meta">JB Pool · same pool ✨</div></div></div>
+              <div class="schedule-row selectable" onclick="showDetailView('p-practice-syleste','p-schedule')"><div class="time-pill">3:00 — 5:00p</div><div class="practice-body"><div class="practice-title">Syleste · Novice</div><div class="practice-meta">JB Pool · same pool ✨</div></div></div>
+            </div>
+
+            <div class="text-muted text-xs text-center mt-3" style="background:var(--aqua-100);color:var(--aqua-600);padding:10px;border-radius:10px;">
+              💡 Sunday tip: all 3 girls at JB Pool — one drop-off, one pick-up!
+            </div>
+          </section>
+
+          <!-- ========== INBOX ========== -->
+          <section class="view" id="p-inbox">
+            <h2 style="font-size:22px;margin-bottom:6px;">Inbox</h2>
+            <div class="text-muted text-sm mb-3">Announcements &amp; messages from coaches and board</div>
+
+            <div class="chip-row mb-3">
+              <span class="chip active" data-value="all" onclick="filterByChip(this,'#inbox-list > div','tag')">All · 6</span>
+              <span class="chip" data-value="pinned" onclick="filterByChip(this,'#inbox-list > div','tag')">📌 Pinned · 1</span>
+              <span class="chip" data-value="coach" onclick="filterByChip(this,'#inbox-list > div','tag')">From Coaches · 3</span>
+              <span class="chip" data-value="admin" onclick="filterByChip(this,'#inbox-list > div','tag')">From Admin · 2</span>
+            </div>
+
+            <div id="inbox-list">
+              <div class="ann-card pinned" data-tag="pinned" onclick="showDetailView('p-thread-eileen','p-inbox')">
+                <div class="ann-head"><div class="avatar avatar-sm">EH</div><div class="flex-1"><div class="ann-from">Eileen Horng <span style="font-size:10px;color:var(--gray-500);font-weight:500;">· Board</span></div><div class="ann-time">2 hours ago · All families</div></div><span class="badge badge-warning" style="font-size:10px;">📌</span></div>
+                <div class="ann-title">Pool Maintenance — Coffman Closed Thu Jun 11</div>
+                <div class="ann-body">Heads up: Coffman Pool will be closed Thursday June 11 for emergency tile work. All Coffman practices that day move to JB Pool (same times). Brianne's Friday Jun 12 practice already moved.</div>
+              </div>
+
+              <div class="ann-card" data-tag="coach" onclick="showDetailView('p-thread-sofie','p-inbox')">
+                <div class="ann-head"><div class="avatar avatar-sm" style="background:#DB2777;">SF</div><div class="flex-1"><div class="ann-from">Coach Sofie</div><div class="ann-time">Yesterday · Intermediates · for Janelle</div></div></div>
+                <div class="ann-title">Counts drill homework — watch before Friday</div>
+                <div class="ann-body">Hi Intermediates families — I posted a new 8-count drill in Resources. Please ask the swimmers to watch before Friday's session.</div>
+              </div>
+
+              <div class="ann-card" data-tag="coach" onclick="showDetailView('p-thread-niloo','p-inbox')">
+                <div class="ann-head"><div class="avatar avatar-sm" style="background:#7C3AED;">NI</div><div class="flex-1"><div class="ann-from">Coach Niloo</div><div class="ann-time">2 days ago · 12U B · for Brianne</div></div></div>
+                <div class="ann-title">12U B — Bring caps to every session</div>
+                <div class="ann-body">Quick reminder: 12U B swimmers need to bring a clearly labeled cap to every session. We had 3 lost caps last week.</div>
+              </div>
+
+              <div class="ann-card" data-tag="admin">
+                <div class="ann-head"><div class="avatar avatar-sm">EH</div><div class="flex-1"><div class="ann-from">Eileen Horng</div><div class="ann-time">3 days ago · 12U families</div></div></div>
+                <div class="ann-title">New Skill Videos Posted — Required</div>
+                <div class="ann-body">Coach Niloo and I have posted the full USAAS 12U skill library in Resources. Required for 12U swimmers (Brianne) to review before next Sunday.</div>
+              </div>
+
+              <div class="ann-card" data-tag="coach">
+                <div class="ann-head"><div class="avatar avatar-sm" style="background:var(--gold-500);">SM</div><div class="flex-1"><div class="ann-from">Coach Sophia M.</div><div class="ann-time">4 days ago · Novice · for Syleste</div></div></div>
+                <div class="ann-title">Welcome video — Sculling foundations</div>
+                <div class="ann-body">For our Novice swimmers — please have your child watch the two sculling videos in Resources before our next session. Syleste is making great progress!</div>
+              </div>
+
+              <div class="ann-card" data-tag="admin">
+                <div class="ann-head"><div class="avatar avatar-sm">EH</div><div class="flex-1"><div class="ann-from">Eileen Horng</div><div class="ann-time">1 week ago · All families</div></div></div>
+                <div class="ann-title">April Newsletter — Now Available</div>
+                <div class="ann-body">Our April newsletter is live in Resources. Highlights: spring carnival results, fundraising recap, and summer competition schedule.</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== BILLING ========== -->
+          <section class="view" id="p-billing">
+            <h2 style="font-size:22px;margin-bottom:6px;">Billing</h2>
+            <div class="text-muted text-sm mb-3">3 children · 3 plans · 1 family bill</div>
+
+            <div class="pay-summary">
+              <div class="ps-label">All children — Current balance</div>
+              <div class="ps-amt">$0.00</div>
+              <div class="ps-meta">All caught up · next bill July 1 · $1,520.00</div>
+              <button class="ps-cta" onclick="showDetailView('p-autopay','p-billing')">Set up auto-pay →</button>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Monthly Dues — June 2026</div>
+
+              <div class="pay-line" onclick="showDetailView('p-bill-brianne','p-billing')">
+                <div class="avatar avatar-sm purple">B</div>
+                <div class="flex-1">
+                  <div class="pl-title">Brianne — 12U B</div>
+                  <div class="pl-meta">$600.00 / mo · auto-bills Jul 1 · Card 4421</div>
+                </div>
+                <span class="badge badge-success">Paid</span>
+              </div>
+
+              <div class="pay-line" onclick="showDetailView('p-bill-janelle','p-billing')">
+                <div class="avatar avatar-sm" style="background:#DB2777;">J</div>
+                <div class="flex-1">
+                  <div class="pl-title">Janelle — Intermediates</div>
+                  <div class="pl-meta">$500.00 / mo · auto-bills Jul 1 · Card 4421</div>
+                </div>
+                <span class="badge badge-success">Paid</span>
+              </div>
+
+              <div class="pay-line" onclick="showDetailView('p-bill-syleste','p-billing')">
+                <div class="avatar avatar-sm gold">S</div>
+                <div class="flex-1">
+                  <div class="pl-title">Syleste — Novice</div>
+                  <div class="pl-meta">$420.00 / mo · auto-bills Jul 1 · Card 4421</div>
+                </div>
+                <span class="badge badge-success">Paid</span>
+              </div>
+
+              <div style="background:var(--navy-50);border-radius:12px;padding:12px 14px;margin-top:6px;">
+                <div class="row row-between"><span class="text-sm text-muted">Family monthly total</span><span class="text-bold" style="font-size:16px;">$1,520.00</span></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Upcoming charges</div>
+              <div class="pay-line" onclick="showDetailView('p-pay-sectionals','p-billing')">
+                <div class="avatar avatar-sm purple">B</div>
+                <div class="flex-1">
+                  <div class="pl-title">Sectionals · 12U B</div>
+                  <div class="pl-meta">June 20 · Entry $50 + Team $70 · payment link sent</div>
+                </div>
+                <span class="pl-amt">$120.00</span>
+              </div>
+              <button class="btn btn-aqua btn-block mt-2" onclick="showDetailView('p-pay-sectionals','p-billing')">Pay $120 now</button>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Payment history</div>
+
+              <div class="pay-line" onclick="showDetailView('p-receipt','p-billing')">
+                <div style="width:36px;height:36px;border-radius:10px;background:var(--green-100);color:var(--green-700);display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="pl-title">June Dues · all 3 children</div>
+                  <div class="pl-meta">May 19 · Card ending 4421 · receipt available</div>
+                </div>
+                <span class="pl-amt">$1,520.00</span>
+              </div>
+
+              <div class="pay-line" onclick="showDetailView('p-receipt','p-billing')">
+                <div style="width:36px;height:36px;border-radius:10px;background:var(--green-100);color:var(--green-700);display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="pl-title">May Dues · all 3 children</div>
+                  <div class="pl-meta">Apr 18 · Card ending 4421</div>
+                </div>
+                <span class="pl-amt">$1,520.00</span>
+              </div>
+
+              <div class="pay-line" onclick="showDetailView('p-receipt','p-billing')">
+                <div style="width:36px;height:36px;border-radius:10px;background:var(--green-100);color:var(--green-700);display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="pl-title">April Dues · all 3 children</div>
+                  <div class="pl-meta">Mar 18 · Card ending 4421</div>
+                </div>
+                <span class="pl-amt">$1,520.00</span>
+              </div>
+
+              <button class="btn btn-secondary btn-block mt-3">View full history (12 months)</button>
+            </div>
+          </section>
+
+          <!-- ========== PROFILE / MORE ========== -->
+          <section class="view" id="p-profile">
+            <div class="profile-header-parent">
+              <div class="profile-avatar-parent">KC</div>
+              <h2 style="color:#fff;">Kelly Chen</h2>
+              <div style="font-size:13px;opacity:0.85;margin-top:4px;">3 children · Member since Aug 2022</div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">My Children</div>
+              <div class="profile-list-item" onclick="showDetailView('p-child-brianne','p-profile')">
+                <div class="avatar purple">B</div>
+                <div class="pli-body"><div class="pli-label">12U B · age 11</div><div class="pli-val">Brianne Chen</div></div>
+                <span class="pli-chev">›</span>
+              </div>
+              <div class="profile-list-item" onclick="showDetailView('p-child-janelle','p-profile')">
+                <div class="avatar" style="background:#DB2777;">J</div>
+                <div class="pli-body"><div class="pli-label">Intermediates · age 13</div><div class="pli-val">Janelle Chen</div></div>
+                <span class="pli-chev">›</span>
+              </div>
+              <div class="profile-list-item" onclick="showDetailView('p-child-syleste','p-profile')">
+                <div class="avatar gold">S</div>
+                <div class="pli-body"><div class="pli-label">Novice · age 9</div><div class="pli-val">Syleste Chen</div></div>
+                <span class="pli-chev">›</span>
+              </div>
+              <button class="btn btn-secondary btn-block" style="justify-content:flex-start;">+ Link sibling or add child</button>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Account &amp; Contact</div>
+              <div class="profile-list-item">
+                <div class="pli-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                <div class="pli-body"><div class="pli-label">Email</div><div class="pli-val">kelly.chen@example.com</div></div>
+                <span class="pli-chev">›</span>
+              </div>
+              <div class="profile-list-item">
+                <div class="pli-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                <div class="pli-body"><div class="pli-label">Phone</div><div class="pli-val">+1 (415) 555-0182</div></div>
+                <span class="pli-chev">›</span>
+              </div>
+              <div class="profile-list-item">
+                <div class="pli-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                <div class="pli-body"><div class="pli-label">Default payment</div><div class="pli-val">Visa •••• 4421</div></div>
+                <span class="pli-chev">›</span>
+              </div>
+              <div class="profile-list-item">
+                <div class="pli-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                <div class="pli-body"><div class="pli-label">Emergency contact</div><div class="pli-val">Marcus Chen — Spouse</div></div>
+                <span class="pli-chev">›</span>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Notification preferences</div>
+              <div class="profile-list-item">
+                <div class="pli-ic">📱</div>
+                <div class="pli-body"><div class="pli-label">Parent Portal push</div><div class="pli-val">Schedule changes &amp; announcements</div></div>
+                <div class="toggle-switch" onclick="flipToggle(this)"></div>
+              </div>
+              <div class="profile-list-item">
+                <div class="pli-ic">💬</div>
+                <div class="pli-body"><div class="pli-label">SMS (urgent only)</div><div class="pli-val">Pool closures &amp; emergencies</div></div>
+                <div class="toggle-switch" onclick="flipToggle(this)"></div>
+              </div>
+              <div class="profile-list-item">
+                <div class="pli-ic">✉️</div>
+                <div class="pli-body"><div class="pli-label">Email digest</div><div class="pli-val">Weekly summary every Sunday</div></div>
+                <div class="toggle-switch off" onclick="flipToggle(this)"></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">More</div>
+              <div class="profile-list-item" onclick="showView('p-resources','.bn-item')"><div class="pli-ic">🎥</div><div class="pli-body"><div class="pli-label">Library</div><div class="pli-val">Skill Videos</div></div><span class="pli-chev">›</span></div>
+              <div class="profile-list-item" onclick="showView('p-shop','.bn-item')"><div class="pli-ic">🛒</div><div class="pli-body"><div class="pli-label">Order</div><div class="pli-val">Team Shop</div></div><span class="pli-chev">›</span></div>
+              <div class="profile-list-item" onclick="showDetailView('p-absence','p-profile')"><div class="pli-ic">🤒</div><div class="pli-body"><div class="pli-label">Quick</div><div class="pli-val">Mark Absence</div></div><span class="pli-chev">›</span></div>
+              <div class="profile-list-item"><div class="pli-ic">❓</div><div class="pli-body"><div class="pli-label">Need help?</div><div class="pli-val">Contact club admin</div></div><span class="pli-chev">›</span></div>
+            </div>
+
+            <div class="text-muted text-xs text-center" style="margin-top:20px;padding-bottom:8px;">
+              SF Merionettes · Parent Portal v1.0 · <a href="index.html" style="color:var(--navy-700);">← Back to demo home</a>
+            </div>
+          </section>
+
+          <!-- ========== RESOURCES ========== -->
+          <section class="view" id="p-resources">
+            <h2 style="font-size:22px;margin-bottom:6px;">Skill Videos</h2>
+            <div class="text-muted text-sm mb-3">Curated by SFM coaches &amp; USAAS · for all 3 of your children</div>
+
+            <div class="pill-children">
+              <div class="child-tab active" onclick="selectChild(this)">All Videos</div>
+              <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:#7C3AED;">B</div> Brianne</div>
+              <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:#DB2777;">J</div> Janelle</div>
+              <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:var(--gold-500);">S</div> Syleste</div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">📌 Featured · 12U Skill Reference</div>
+              <a class="pool-video" href="https://www.youtube.com/watch?v=49H5hRhLhiA" target="_blank" rel="noopener" style="aspect-ratio:16/10;margin-bottom:10px;">
+                <div class="water-caustics"></div>
+                <div class="water-ripples"></div>
+                <svg class="swimmer-svg" viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" style="width:80%;">
+                  <defs><linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,0.92)"/><stop offset="100%" stop-color="rgba(255,255,255,0.78)"/></linearGradient></defs>
+                  <ellipse cx="240" cy="100" rx="58" ry="14" fill="url(#bg3)"/>
+                  <circle cx="178" cy="100" r="16" fill="url(#bg3)"/>
+                  <path d="M180 92 Q165 80 150 82 Q138 84 134 92" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round" fill="none"/>
+                  <path d="M180 108 Q165 116 150 116 Q138 116 134 108" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round" fill="none"/>
+                  <path d="M295 95 Q335 90 358 92 Q378 94 388 100" stroke="rgba(255,255,255,0.88)" stroke-width="11" stroke-linecap="round" fill="none"/>
+                  <path d="M295 106 Q335 110 358 110 Q378 108 388 102" stroke="rgba(255,255,255,0.88)" stroke-width="11" stroke-linecap="round" fill="none"/>
+                </svg>
+                <div class="pv-yt-mark">▶ YouTube</div>
+                <div class="pv-play"><div class="pv-btn" style="width:72px;height:72px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg></div></div>
+                <div class="pv-caption">
+                  <div class="pv-eyebrow">USAAS Library</div>
+                  <div class="pv-title" style="font-size:16px;">12U Skill Video</div>
+                  <div class="pv-meta">For Brianne — assigned by Coach Niloo</div>
+                </div>
+              </a>
+              <div class="text-muted text-xs text-center" style="background:var(--navy-50);color:var(--navy-700);padding:8px 12px;border-radius:10px;">
+                💡 Tap the video to watch on YouTube — opens in your browser
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Assigned to your children</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="res-card-mobile">
+                  <div class="rcm-thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg><span class="rcm-dur">4:12</span></div>
+                  <div class="rcm-body"><div class="rcm-title">Eggbeater Kick</div><div class="rcm-meta">Brianne · 12U Required</div></div>
+                </div>
+                <div class="res-card-mobile">
+                  <div class="rcm-thumb" style="background:linear-gradient(135deg,var(--aqua-600),var(--aqua-400));"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg><span class="rcm-dur">3:48</span></div>
+                  <div class="rcm-body"><div class="rcm-title">Ballet Leg</div><div class="rcm-meta">Brianne · 12U Required</div></div>
+                </div>
+                <div class="res-card-mobile">
+                  <div class="rcm-thumb" style="background:linear-gradient(135deg,#DB2777,#F472B6);"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg><span class="rcm-dur">5:45</span></div>
+                  <div class="rcm-body"><div class="rcm-title">8-Count Routine Drill</div><div class="rcm-meta">Janelle · Intermediates</div></div>
+                </div>
+                <div class="res-card-mobile">
+                  <div class="rcm-thumb" style="background:linear-gradient(135deg,var(--green-500),#34D399);"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg><span class="rcm-dur">3:15</span></div>
+                  <div class="rcm-body"><div class="rcm-title">Sculling — Stationary</div><div class="rcm-meta">Syleste · Novice</div></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== SHOP ========== -->
+          <section class="view" id="p-shop">
+            <h2 style="font-size:22px;margin-bottom:6px;">Team Shop</h2>
+            <div class="text-muted text-sm mb-3">Order on the app · pick up at the next practice</div>
+
+            <div class="alert-banner" style="background:linear-gradient(120deg,var(--aqua-100),#A7F3D0);border-color:var(--aqua-500);">
+              <div class="ab-ic" style="background:var(--aqua-500);">🏊</div>
+              <div class="ab-body">
+                <div class="ab-title" style="color:var(--navy-700);">New 2026 Team Suits arrived!</div>
+                <div class="ab-sub" style="color:var(--navy-700);">All sizes in stock · perfect for Sectionals</div>
+              </div>
+            </div>
+
+            <div class="product-card" onclick="showDetailView('p-product','p-shop')">
+              <div class="p-img"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 6h-4l-1-2H7L6 6H2v14h20V6h-4z"/></svg></div>
+              <div class="p-info">
+                <div class="p-name">Team Suit — 2026 Competition</div>
+                <div class="p-meta">Sizes JR 22 → Adult 38 · in stock</div>
+                <div class="p-price">$120.00</div>
+              </div>
+              <button class="btn btn-primary btn-sm" style="align-self:flex-start;" onclick="event.stopPropagation();">Add</button>
+            </div>
+
+            <div class="product-card">
+              <div class="p-img" style="background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h-2a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8a2 2 0 0 0-2 2v15a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a2 2 0 0 0-2-2z"/></svg></div>
+              <div class="p-info"><div class="p-name">Team Warm-up Jacket</div><div class="p-meta">YS → AXL · embroidered logo</div><div class="p-price">$95.00</div></div>
+              <button class="btn btn-primary btn-sm" style="align-self:flex-start;">Add</button>
+            </div>
+
+            <div class="product-card">
+              <div class="p-img" style="background:linear-gradient(135deg,var(--gold-500),#FBBF24);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="14" r="8"/></svg></div>
+              <div class="p-info"><div class="p-name">SFM Silicone Cap</div><div class="p-meta">One size · navy + white</div><div class="p-price">$18.00</div></div>
+              <button class="btn btn-primary btn-sm" style="align-self:flex-start;">Add</button>
+            </div>
+
+            <div class="product-card">
+              <div class="p-img" style="background:linear-gradient(135deg,var(--green-500),#34D399);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="12" r="4"/><circle cx="16" cy="12" r="4"/></svg></div>
+              <div class="p-info"><div class="p-name">SFM Logo Goggles</div><div class="p-meta">Junior / Adult · clear or tinted</div><div class="p-price">$28.00</div></div>
+              <button class="btn btn-primary btn-sm" style="align-self:flex-start;">Add</button>
+            </div>
+
+            <div class="product-card">
+              <div class="p-img" style="background:linear-gradient(135deg,#DB2777,#F472B6);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H4v4M4 8h16v4M4 8l8 8 8-8"/></svg></div>
+              <div class="p-info"><div class="p-name">Team Warm-up Pants</div><div class="p-meta">YS → AXL · matching jacket</div><div class="p-price">$65.00</div></div>
+              <button class="btn btn-primary btn-sm" style="align-self:flex-start;">Add</button>
+            </div>
+
+            <div class="product-card">
+              <div class="p-img"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h-2a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8L6 6v15a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6l-2-2z"/></svg></div>
+              <div class="p-info"><div class="p-name">Team T-shirt</div><div class="p-meta">YS → AXL · cotton blend</div><div class="p-price">$22.00</div></div>
+              <button class="btn btn-primary btn-sm" style="align-self:flex-start;">Add</button>
+            </div>
+          </section>
+
+          <!-- ========== CHILD DETAIL · Brianne ========== -->
+          <section class="view" id="p-child-brianne">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Brianne Chen</div><div class="det-sub">12U B · age 11</div></div></div>
+
+            <div class="child-cover purple">
+              <div class="cc-avatar">B</div>
+              <h2>Brianne Chen</h2>
+              <div class="cc-meta">12U B · Team routine · Coach Niloo · joined Jan 2024</div>
+              <div class="cc-stats">
+                <div class="cc-stat"><div class="cc-val">94%</div><div class="cc-lab">Attendance</div></div>
+                <div class="cc-stat"><div class="cc-val">2/5</div><div class="cc-lab">Skills</div></div>
+                <div class="cc-stat"><div class="cc-val">$0</div><div class="cc-lab">Balance</div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Next 3 practices</div>
+              <div class="schedule-mini">
+                <div class="smi" onclick="showDetailView('p-practice-brianne','p-child-brianne')"><div class="smi-bar" style="background:#7C3AED;"></div><div class="smi-time">Today 5:30p</div><div class="flex-1"><div class="smi-title">HL Pool · Coach Niloo</div><div class="smi-meta">5:30 — 8:00 PM</div></div></div>
+                <div class="smi"><div class="smi-bar" style="background:#7C3AED;"></div><div class="smi-time">Thu 4:30p</div><div class="flex-1"><div class="smi-title">Coffman · Niloo</div><div class="smi-meta">4:30 — 7:00 PM</div></div></div>
+                <div class="smi"><div class="smi-bar" style="background:#7C3AED;"></div><div class="smi-time">Fri 5:00p</div><div class="flex-1"><div class="smi-title">Coffman · Niloo</div><div class="smi-meta">5:00 — 7:00 PM</div></div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Skill Progress · 5 USAAS 12U elements</div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Eggbeater Kick</span><span class="badge badge-success">✓ Mastered</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Ballet Leg</span><span class="badge badge-success">✓ Mastered</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Vertical Position</span><span class="badge badge-warning">In progress · 9 counts</span></div><div class="progress"><div class="progress-fill gold" style="width:60%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Boost</span><span class="badge badge-soft">Not started</span></div><div class="progress"><div class="progress-fill" style="width:5%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Figure 142</span><span class="badge badge-soft">Not started</span></div><div class="progress"><div class="progress-fill" style="width:0%;"></div></div></div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Recent attendance · last 5</div>
+              <div class="mini-list">
+                <div class="mini-list-item"><div class="avatar avatar-sm green">✓</div><div class="mli-body"><div class="mli-title">Tue Jun 2 · Coffman</div><div class="mli-sub">Present · marked by Niloo</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm green">✓</div><div class="mli-body"><div class="mli-title">Mon Jun 1 · HL</div><div class="mli-sub">Present · marked by Emily (covers Mon)</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm green">✓</div><div class="mli-body"><div class="mli-title">Sun May 31 · JB</div><div class="mli-sub">Present · long session</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:var(--amber-500);">⚠</div><div class="mli-body"><div class="mli-title">Fri May 29 · Coffman</div><div class="mli-sub">Late 4m</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:var(--red-500);">✗</div><div class="mli-body"><div class="mli-title">Tue May 26 · Coffman</div><div class="mli-sub">Excused · stomach bug</div></div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Billing for Brianne</div>
+              <div class="pay-line" onclick="showDetailView('p-bill-brianne','p-child-brianne')"><div class="avatar avatar-sm green">$</div><div class="flex-1"><div class="pl-title">June dues · 12U B</div><div class="pl-meta">$600 · paid May 19</div></div><span class="badge badge-success">Paid</span></div>
+              <div class="pay-line" onclick="showDetailView('p-pay-sectionals','p-child-brianne')"><div class="avatar avatar-sm gold">$</div><div class="flex-1"><div class="pl-title">Sectionals · Entry + Team</div><div class="pl-meta">Jun 20 · payment link sent</div></div><span class="pl-amt">$120</span></div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Messages about Brianne</div>
+              <div class="ann-card" onclick="showDetailView('p-thread-niloo','p-child-brianne')">
+                <div class="ann-head"><div class="avatar avatar-sm" style="background:#7C3AED;">NI</div><div class="flex-1"><div class="ann-from">Coach Niloo</div><div class="ann-time">2 days ago</div></div></div>
+                <div class="ann-title">Bring caps to every session</div>
+                <div class="ann-body">Quick reminder: 12U B swimmers need to bring a clearly labeled cap to every session.</div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="btn btn-secondary" style="font-size:12px;" onclick="showDetailView('p-absence','p-child-brianne')">Mark Absent</button>
+                <button class="btn btn-secondary" style="font-size:12px;" onclick="showDetailView('p-thread-niloo','p-child-brianne')">Message Niloo</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== CHILD DETAIL · Janelle ========== -->
+          <section class="view" id="p-child-janelle">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Janelle Chen</div><div class="det-sub">Intermediates · age 13</div></div></div>
+
+            <div class="child-cover pink">
+              <div class="cc-avatar">J</div>
+              <h2>Janelle Chen</h2>
+              <div class="cc-meta">Intermediates · Team routine · Coach Sofie · joined Aug 2022</div>
+              <div class="cc-stats">
+                <div class="cc-stat"><div class="cc-val">100%</div><div class="cc-lab">Attendance ⭐</div></div>
+                <div class="cc-stat"><div class="cc-val">4/5</div><div class="cc-lab">Skills</div></div>
+                <div class="cc-stat"><div class="cc-val">$0</div><div class="cc-lab">Balance</div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="alert-banner" style="background:linear-gradient(120deg,var(--aqua-100),var(--navy-100));border-color:var(--navy-100);">
+                <div class="ab-ic" style="background:var(--aqua-500);">⭐</div>
+                <div class="ab-body">
+                  <div class="ab-title" style="color:var(--navy-700);">Janelle is in the running for J&amp;Y promotion!</div>
+                  <div class="ab-sub" style="color:var(--navy-700);">Eileen &amp; Coach Sofie are evaluating in July · all 5 skills nearly there</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Today's practice <a onclick="showDetailView('p-practice-janelle','p-child-janelle')">Open →</a></div>
+              <div class="schedule-mini">
+                <div class="smi" onclick="showDetailView('p-practice-janelle','p-child-janelle')"><div class="smi-bar" style="background:#DB2777;"></div><div class="smi-time">Today 5:30p</div><div class="flex-1"><div class="smi-title">Balboa Pool · Coach Sofie</div><div class="smi-meta">5:30 — 7:30 PM · In 2h 14m</div></div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Skill Progress</div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Eggbeater · 12U prep</span><span class="badge badge-success">✓</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Ballet Leg</span><span class="badge badge-success">✓</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Vertical Position</span><span class="badge badge-success">✓</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>8-count Drill</span><span class="badge badge-success">✓ Mastered</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Boost</span><span class="badge badge-warning">Bridging skill</span></div><div class="progress"><div class="progress-fill gold" style="width:60%;"></div></div></div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Recent activity</div>
+              <div class="mini-list">
+                <div class="mini-list-item"><div class="avatar avatar-sm green">✓</div><div class="mli-body"><div class="mli-title">100% attendance · 13/13 sessions</div><div class="mli-sub">Last 30 days — recognized by board</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:var(--aqua-500);">📝</div><div class="mli-body"><div class="mli-title">Coach Sofie posted a skill note</div><div class="mli-sub">"Almost ready for 12U A — re-assess July"</div></div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="btn btn-secondary" style="font-size:12px;" onclick="showDetailView('p-absence','p-child-janelle')">Mark Absent</button>
+                <button class="btn btn-secondary" style="font-size:12px;" onclick="showDetailView('p-thread-sofie','p-child-janelle')">Message Sofie</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== CHILD DETAIL · Syleste ========== -->
+          <section class="view" id="p-child-syleste">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Syleste Chen</div><div class="det-sub">Novice · age 9</div></div></div>
+
+            <div class="child-cover gold">
+              <div class="cc-avatar">S</div>
+              <h2>Syleste Chen</h2>
+              <div class="cc-meta">Novice · Coach Sophia M. + Cameron, Lucy · joined Sep 2023</div>
+              <div class="cc-stats">
+                <div class="cc-stat"><div class="cc-val">50%</div><div class="cc-lab">Attendance ⚠</div></div>
+                <div class="cc-stat"><div class="cc-val">1/3</div><div class="cc-lab">Skills</div></div>
+                <div class="cc-stat"><div class="cc-val">$0</div><div class="cc-lab">Balance</div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="alert-banner">
+                <div class="ab-ic">⚠</div>
+                <div class="ab-body">
+                  <div class="ab-title">Attendance below 70% — Coach reaching out</div>
+                  <div class="ab-sub">Syleste has missed 6 of last 12 practices. Coach Sophia M. would love to chat.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Tomorrow's practice</div>
+              <div class="schedule-mini">
+                <div class="smi"><div class="smi-bar" style="background:var(--gold-500);"></div><div class="smi-time">Thu 5:30p</div><div class="flex-1"><div class="smi-title">Balboa · Lucy + Sophia M.</div><div class="smi-meta">5:30 — 7:30 PM</div></div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Skill Progress · Novice foundation</div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Water Safety &amp; Breathing</span><span class="badge badge-success">✓ Mastered</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Sculling — Stationary</span><span class="badge badge-warning">In progress</span></div><div class="progress"><div class="progress-fill gold" style="width:50%;"></div></div></div>
+              <div class="skill-progress-row"><div class="sp-title"><span>Sculling — Travel Front</span><span class="badge badge-soft">Not started</span></div><div class="progress"><div class="progress-fill" style="width:0%;"></div></div></div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-title">Recent absences (6 of 12 missed)</div>
+              <div class="mini-list">
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:var(--red-500);">✗</div><div class="mli-body"><div class="mli-title">Sun May 31 · Travel</div><div class="mli-sub">Family event out of town</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:var(--red-500);">✗</div><div class="mli-body"><div class="mli-title">Wed May 28 · Sick</div><div class="mli-sub">Cold</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:var(--red-500);">✗</div><div class="mli-body"><div class="mli-title">Tue May 27 · School</div><div class="mli-sub">School play rehearsal</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:var(--red-500);">✗</div><div class="mli-body"><div class="mli-title">Sun May 24 · Travel</div><div class="mli-sub">Family trip</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:var(--amber-500);">⚠</div><div class="mli-body"><div class="mli-title">Tue Jun 2 · Late (5m)</div><div class="mli-sub">Carpool delay</div></div></div>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="btn btn-secondary" style="font-size:12px;" onclick="showDetailView('p-absence','p-child-syleste')">Mark Absent</button>
+                <button class="btn btn-primary" style="font-size:12px;">Message Sophia M.</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== PRACTICE DETAIL · Janelle Wed ========== -->
+          <section class="view" id="p-practice-janelle">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-schedule')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Janelle · Wed Jun 3</div><div class="det-sub">Intermediates · Balboa Pool</div></div></div>
+
+            <div class="next-practice-hero" style="margin:16px 0;background:linear-gradient(135deg,#DB2777,#9D174D);">
+              <div class="label">Janelle's practice — Today</div>
+              <div class="practice">Intermediates</div>
+              <div class="practice-sub">5:30 — 7:30 PM · Balboa Pool · Coach Sofie</div>
+              <div class="countdown">
+                <div class="cd-box"><div class="cd-num">02</div><div class="cd-label">Hours</div></div>
+                <div class="cd-box"><div class="cd-num">14</div><div class="cd-label">Min</div></div>
+                <div class="cd-box"><div class="cd-num">35</div><div class="cd-label">Sec</div></div>
+              </div>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="text-bold mb-2">📍 Location</div>
+              <div class="text-sm">Balboa Pool · 747 Jamestown Ave, San Francisco</div>
+              <button class="btn btn-secondary btn-sm mt-3" style="width:100%;">Open in Maps ↗</button>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="text-bold mb-2">🎒 What to bring</div>
+              <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:var(--gray-700);">
+                <li>Team swimsuit + 1 spare</li>
+                <li>Cap (labeled with name)</li>
+                <li>Goggles</li>
+                <li>Water bottle</li>
+                <li>Towel</li>
+              </ul>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="text-bold mb-2">🏊 Session focus</div>
+              <div class="text-sm text-muted">8-count routine drill (watch the prep video) · Boost progression · Sectionals rehearsal</div>
+              <div class="res-card-mobile mt-3" style="display:flex;gap:10px;padding:10px;">
+                <div class="rcm-thumb" style="width:60px;height:60px;background:linear-gradient(135deg,#DB2777,#F472B6);flex-shrink:0;border-radius:8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg></div>
+                <div style="flex:1;"><div class="text-sm text-bold">8-count Routine Drill</div><div class="text-xs text-muted">Prep video · 5:45</div></div>
+              </div>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="text-bold mb-2">💬 Messages with Coach Sofie about this practice</div>
+              <div class="msg-thread" style="margin-bottom:0;">
+                <div class="msg" style="padding:10px;">
+                  <div class="avatar avatar-sm msg-avatar" style="background:#DB2777;">SF</div>
+                  <div class="msg-body">
+                    <div class="msg-from" style="font-size:12px;">Coach Sofie<span class="msg-time">Yesterday 6:18 PM</span></div>
+                    <div class="msg-text" style="font-size:12px;">Quick heads up — we'll do the full 8-count routine cold tonight to test count memory. Have Janelle review the drill video.</div>
+                  </div>
+                </div>
+                <div class="msg outbound" style="padding:10px;margin-top:8px;">
+                  <div class="avatar avatar-sm msg-avatar aqua">KC</div>
+                  <div class="msg-body">
+                    <div class="msg-from" style="font-size:12px;">You<span class="msg-time">Yesterday 8:42 PM</span></div>
+                    <div class="msg-text" style="font-size:12px;">Got it — she watched the video this morning. See you tonight!</div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-secondary btn-block btn-sm mt-3" onclick="showDetailView('p-thread-sofie','p-practice-janelle')">Open full thread →</button>
+            </div>
+
+            <div class="section-block">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="btn btn-secondary" onclick="showDetailView('p-absence','p-practice-janelle')">Mark Absent</button>
+                <button class="btn btn-secondary" onclick="showDetailView('p-thread-sofie','p-practice-janelle')">Message Coach</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== PRACTICE DETAIL · Brianne ========== -->
+          <section class="view" id="p-practice-brianne">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-schedule')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Brianne · Wed Jun 3</div><div class="det-sub">12U B · HL Pool</div></div></div>
+
+            <div class="next-practice-hero" style="margin:16px 0;background:linear-gradient(135deg,#7C3AED,#5B21B6);">
+              <div class="label">Brianne's practice — Tonight</div>
+              <div class="practice">12U B</div>
+              <div class="practice-sub">5:30 — 8:00 PM · HL Pool · Coach Niloo</div>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="text-bold mb-2">📍 HL Pool</div>
+              <div class="text-sm">Hamilton Pool, Marina District</div>
+              <button class="btn btn-secondary btn-sm mt-3" style="width:100%;">Open in Maps ↗</button>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="text-bold mb-2">🎒 Coach Niloo's reminders</div>
+              <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:var(--gray-700);">
+                <li>Bring a labeled cap (lost 3 last week)</li>
+                <li>Water bottle</li>
+                <li>Be on deck by 5:25 PM</li>
+              </ul>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="text-bold mb-2">🏊 Session focus</div>
+              <div class="text-sm text-muted">Vertical position holds (Brianne working on 9-count) · Team routine run-through · Sectionals prep</div>
+            </div>
+
+            <div class="section-block">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="btn btn-secondary" onclick="showDetailView('p-absence','p-practice-brianne')">Mark Absent</button>
+                <button class="btn btn-secondary" onclick="showDetailView('p-thread-niloo','p-practice-brianne')">Message Niloo</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== PRACTICE DETAIL · Syleste ========== -->
+          <section class="view" id="p-practice-syleste">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-schedule')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Syleste · Wed Jun 3</div><div class="det-sub">Novice · Balboa Pool</div></div></div>
+
+            <div class="next-practice-hero" style="margin:16px 0;background:linear-gradient(135deg,#F59E0B,#B45309);">
+              <div class="label">Syleste's practice — Tonight</div>
+              <div class="practice">Novice</div>
+              <div class="practice-sub">5:30 — 7:30 PM · Balboa Pool · Lucy &amp; Sophia M.</div>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="alert-banner" style="margin:0;">
+                <div class="ab-ic">💡</div>
+                <div class="ab-body">
+                  <div class="ab-title">Same pool as Janelle today</div>
+                  <div class="ab-sub">Both at Balboa 5:30 — one drop-off, one pick-up!</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="practice-info-card">
+              <div class="text-bold mb-2">🎒 Bring</div>
+              <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:var(--gray-700);">
+                <li>Swimsuit + spare</li>
+                <li>Cap, goggles</li>
+                <li>Water bottle, towel</li>
+              </ul>
+            </div>
+
+            <div class="section-block">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="btn btn-secondary" onclick="showDetailView('p-absence','p-practice-syleste')">Mark Absent</button>
+                <button class="btn btn-secondary">Message Sophia M.</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== MESSAGE THREAD · Sofie (Janelle's coach) ========== -->
+          <section class="view" id="p-thread-sofie">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-inbox')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div class="avatar avatar-sm" style="background:#DB2777;">SF</div>
+              <div><div class="det-title">Coach Sofie</div><div class="det-sub">Intermediates · re: Janelle</div></div>
+            </div>
+
+            <div style="padding:16px;">
+              <div class="msg-thread">
+                <div class="msg">
+                  <div class="avatar avatar-sm msg-avatar" style="background:#DB2777;">SF</div>
+                  <div class="msg-body">
+                    <div class="msg-from">Coach Sofie<span class="msg-time">Yesterday 4:42 PM</span></div>
+                    <div class="msg-text">Hi Kelly — I posted a new 8-count drill video in Resources. Could you have Janelle watch before Friday's session? We'll test count memory cold.</div>
+                    <span class="msg-channel">📱 To Intermediates families</span>
+                  </div>
+                </div>
+                <div class="msg outbound">
+                  <div class="avatar avatar-sm aqua msg-avatar">KC</div>
+                  <div class="msg-body">
+                    <div class="msg-from">You<span class="msg-time">Yesterday 8:42 PM</span></div>
+                    <div class="msg-text">Got it — she watched it this morning. Quick Q: is she on track for 12U A promotion next season? Just wondering if I should start budgeting for the price diff.</div>
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="avatar avatar-sm msg-avatar" style="background:#DB2777;">SF</div>
+                  <div class="msg-body">
+                    <div class="msg-from">Coach Sofie<span class="msg-time">Today 9:12 AM</span></div>
+                    <div class="msg-text">Honestly very close! Vertical hold is there. Boost needs another month. Eileen and I are reassessing in July — I'll loop you in. Plan for it but no need to budget shift yet.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="reply-box mt-3">
+                <textarea class="textarea" placeholder="Reply to Coach Sofie…"></textarea>
+                <div class="row gap-2 mt-3">
+                  <span class="text-xs text-muted">Reply will be delivered via Parent Portal + email</span>
+                  <button class="btn btn-primary btn-sm" style="margin-left:auto;">Send</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== MESSAGE THREAD · Niloo (Brianne's coach) ========== -->
+          <section class="view" id="p-thread-niloo">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-inbox')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div class="avatar avatar-sm" style="background:#7C3AED;">NI</div>
+              <div><div class="det-title">Coach Niloo</div><div class="det-sub">12U B · re: Brianne</div></div>
+            </div>
+            <div style="padding:16px;">
+              <div class="msg-thread">
+                <div class="msg">
+                  <div class="avatar avatar-sm msg-avatar" style="background:#7C3AED;">NI</div>
+                  <div class="msg-body">
+                    <div class="msg-from">Coach Niloo<span class="msg-time">2 days ago · 12U B group</span></div>
+                    <div class="msg-text">Quick reminder: 12U B swimmers need to bring a clearly labeled cap to every session. We had 3 lost caps last week.</div>
+                    <span class="msg-channel">📱 To 12U B families</span>
+                  </div>
+                </div>
+                <div class="msg outbound">
+                  <div class="avatar avatar-sm aqua msg-avatar">KC</div>
+                  <div class="msg-body">
+                    <div class="msg-from">You<span class="msg-time">2 days ago</span></div>
+                    <div class="msg-text">Brianne's cap is labeled "BC" with permanent marker. Got it!</div>
+                  </div>
+                </div>
+              </div>
+              <div class="reply-box mt-3">
+                <textarea class="textarea" placeholder="Reply…"></textarea>
+                <button class="btn btn-primary btn-sm mt-3">Send</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== MESSAGE THREAD · Eileen (Admin) ========== -->
+          <section class="view" id="p-thread-eileen">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-inbox')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div class="avatar avatar-sm">EH</div>
+              <div><div class="det-title">Eileen Horng · Board</div><div class="det-sub">Pool Maintenance update</div></div>
+            </div>
+            <div style="padding:16px;">
+              <div class="msg-thread">
+                <div class="msg">
+                  <div class="avatar avatar-sm msg-avatar">EH</div>
+                  <div class="msg-body">
+                    <div class="msg-from">Eileen Horng<span class="msg-time">2 hours ago · All families</span></div>
+                    <div class="msg-text">Heads up: Coffman Pool will be closed Thursday June 11 for emergency tile work. All Coffman practices that day move to JB Pool (same times). Brianne's practice already moved on your calendar — Friday Jun 12 will be at JB instead of Coffman.</div>
+                    <span class="msg-channel">📱 Parent Portal · ✉️ Email · 💬 SMS</span>
+                  </div>
+                </div>
+                <div class="msg outbound">
+                  <div class="avatar avatar-sm aqua msg-avatar">KC</div>
+                  <div class="msg-body">
+                    <div class="msg-from">You<span class="msg-time">1 hour ago · private reply</span></div>
+                    <div class="msg-text">Thanks Eileen! Quick Q — does SFM offer any sibling discount? With 3 daughters on the club we're at $1,520/mo. Would help a lot.</div>
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="avatar avatar-sm msg-avatar">EH</div>
+                  <div class="msg-body">
+                    <div class="msg-from">Eileen Horng<span class="msg-time">32 min ago</span></div>
+                    <div class="msg-text">Hi Kelly! Great Q. We're discussing this at the next board meeting (Jun 15). Will follow up after that. 🤍</div>
+                  </div>
+                </div>
+              </div>
+              <div class="reply-box mt-3">
+                <textarea class="textarea" placeholder="Reply…"></textarea>
+                <button class="btn btn-primary btn-sm mt-3">Send</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== ABSENCE FLOW (full page) ========== -->
+          <section class="view" id="p-absence">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-home')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Mark Absence</div><div class="det-sub">No more Signal — log it here</div></div></div>
+
+            <div style="padding:16px;">
+              <div class="practice-info-card">
+                <div class="text-bold mb-3">Which child &amp; practice?</div>
+                <label class="input-label">Child</label>
+                <div class="pill-children" style="margin:6px 0 14px;">
+                  <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:#7C3AED;">B</div> Brianne</div>
+                  <div class="child-tab active" onclick="selectChild(this)"><div class="child-avatar" style="background:#DB2777;">J</div> Janelle</div>
+                  <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:var(--gold-500);">S</div> Syleste</div>
+                </div>
+                <label class="input-label">Practice to miss</label>
+                <select class="select" style="margin-bottom:14px;">
+                  <option>Today · Wed Jun 3 · 5:30 PM · Balboa</option>
+                  <option>Sun Jun 7 · 4:00 PM · JB (long session)</option>
+                </select>
+
+                <label class="input-label">Reason</label>
+                <div class="chip-row" style="margin:6px 0 14px;">
+                  <span class="chip active" onclick="selectChip(this)">🤒 Sick</span>
+                  <span class="chip" onclick="selectChip(this)">✈️ Travel</span>
+                  <span class="chip" onclick="selectChip(this)">📚 School</span>
+                  <span class="chip" onclick="selectChip(this)">👨‍👩‍👧 Family</span>
+                  <span class="chip" onclick="selectChip(this)">Other</span>
+                </div>
+
+                <label class="input-label">Note for Coach Sofie (optional)</label>
+                <textarea class="textarea" placeholder="Janelle has a mild fever — wanting to rest today and be back Friday."></textarea>
+
+                <button class="btn btn-primary btn-block mt-3" onclick="document.getElementById('absence-confirm').style.display='block';">Notify Coach Sofie</button>
+              </div>
+
+              <div id="absence-confirm" class="success-card" style="display:none;">
+                <div class="success-ic">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <h3 class="mb-2">Coach notified!</h3>
+                <div class="text-sm" style="color:var(--green-700);">Sofie received your message via Parent Portal + SMS. Janelle's attendance for today's practice is marked excused.</div>
+                <button class="btn btn-secondary btn-block mt-3" onclick="goBackView('p-home')">Done</button>
+              </div>
+
+              <div class="section-title" style="margin-top:24px;">Past absences</div>
+
+              <div class="practice-info-card">
+                <div class="row gap-3 mb-2"><div class="avatar avatar-sm" style="background:#7C3AED;">B</div><div class="flex-1"><div class="text-bold text-sm">Brianne · 12U B</div><div class="text-xs text-muted">May 14 · Wed</div></div><span class="badge badge-success">✓ Excused</span></div>
+                <div class="text-xs text-muted">🤒 Sick · "Stomach bug" · Coach Niloo: "Feel better Bri 🤍"</div>
+              </div>
+              <div class="practice-info-card">
+                <div class="row gap-3 mb-2"><div class="avatar avatar-sm gold">S</div><div class="flex-1"><div class="text-bold text-sm">Syleste · Novice</div><div class="text-xs text-muted">Apr 29 · Mon</div></div><span class="badge badge-success">✓ Excused</span></div>
+                <div class="text-xs text-muted">👨‍👩‍👧 Family · "Family event out of town"</div>
+              </div>
+              <div class="practice-info-card">
+                <div class="row gap-3 mb-2"><div class="avatar avatar-sm" style="background:#DB2777;">J</div><div class="flex-1"><div class="text-bold text-sm">Janelle · Intermediates</div><div class="text-xs text-muted">Apr 22 · Tue</div></div><span class="badge badge-success">✓ Excused</span></div>
+                <div class="text-xs text-muted">📚 School · "School play rehearsal"</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== BILL DETAIL · Brianne ========== -->
+          <section class="view" id="p-bill-brianne">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-billing')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Brianne's Billing</div><div class="det-sub">12U B · $600 / mo</div></div></div>
+
+            <div style="padding:16px;">
+              <div class="pay-summary" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);">
+                <div class="ps-label">Brianne — current balance</div>
+                <div class="ps-amt">$120.00</div>
+                <div class="ps-meta">Sectionals fee due Jun 12 · dues paid · auto-renews Jul 1</div>
+                <button class="ps-cta" onclick="showDetailView('p-pay-sectionals','p-bill-brianne')">Pay $120 Sectionals →</button>
+              </div>
+
+              <div class="section-title">Plan details</div>
+              <div class="practice-info-card">
+                <div class="spec-list">
+                  <div class="spec-row"><span class="lbl">Plan</span><span class="val">12U B Competitive</span></div>
+                  <div class="spec-row"><span class="lbl">Monthly fee</span><span class="val">$600.00</span></div>
+                  <div class="spec-row"><span class="lbl">Next bill</span><span class="val">July 1, 2026</span></div>
+                  <div class="spec-row"><span class="lbl">Auto-renew</span><span class="val" style="color:var(--green-700);">✓ On</span></div>
+                  <div class="spec-row"><span class="lbl">Payment</span><span class="val">Visa •••• 4421</span></div>
+                </div>
+              </div>
+
+              <div class="section-title">Recent transactions</div>
+              <div class="pay-line"><div class="avatar avatar-sm green">$</div><div class="flex-1"><div class="pl-title">June Dues</div><div class="pl-meta">May 19 · Card 4421</div></div><span class="pl-amt">$600</span></div>
+              <div class="pay-line"><div class="avatar avatar-sm green">$</div><div class="flex-1"><div class="pl-title">May Dues</div><div class="pl-meta">Apr 18 · Card 4421</div></div><span class="pl-amt">$600</span></div>
+              <div class="pay-line"><div class="avatar avatar-sm gold">$</div><div class="flex-1"><div class="pl-title">Onboarding fee (Jan 2024)</div><div class="pl-meta">Suit + Registration + Pro-rated 1st month</div></div><span class="pl-amt">$770</span></div>
+            </div>
+          </section>
+
+          <!-- Bill detail Janelle/Syleste (stubs) -->
+          <section class="view" id="p-bill-janelle">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-billing')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Janelle's Billing</div><div class="det-sub">Intermediates · $500 / mo</div></div></div>
+            <div style="padding:16px;">
+              <div class="pay-summary" style="background:linear-gradient(135deg,#DB2777,#9D174D);"><div class="ps-label">Janelle — balance</div><div class="ps-amt">$0.00</div><div class="ps-meta">All caught up · next bill Jul 1 · $500</div></div>
+              <div class="section-title">Plan</div>
+              <div class="practice-info-card"><div class="spec-list"><div class="spec-row"><span class="lbl">Plan</span><span class="val">Intermediates</span></div><div class="spec-row"><span class="lbl">Monthly fee</span><span class="val">$500.00</span></div><div class="spec-row"><span class="lbl">Next bill</span><span class="val">July 1, 2026</span></div></div></div>
+            </div>
+          </section>
+
+          <section class="view" id="p-bill-syleste">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-billing')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Syleste's Billing</div><div class="det-sub">Novice · $420 / mo</div></div></div>
+            <div style="padding:16px;">
+              <div class="pay-summary" style="background:linear-gradient(135deg,#F59E0B,#B45309);"><div class="ps-label">Syleste — balance</div><div class="ps-amt">$0.00</div><div class="ps-meta">All caught up · next bill Jul 1 · $420</div></div>
+              <div class="section-title">Plan</div>
+              <div class="practice-info-card"><div class="spec-list"><div class="spec-row"><span class="lbl">Plan</span><span class="val">Novice</span></div><div class="spec-row"><span class="lbl">Monthly fee</span><span class="val">$420.00</span></div><div class="spec-row"><span class="lbl">Next bill</span><span class="val">July 1, 2026</span></div></div></div>
+            </div>
+          </section>
+
+          <!-- ========== PAY SECTIONALS ========== -->
+          <section class="view" id="p-pay-sectionals">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-billing')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Pay · Sectionals</div><div class="det-sub">12U B · Brianne</div></div></div>
+
+            <div style="padding:16px;">
+              <div class="practice-info-card">
+                <h3 class="mb-3">Pacific Coast Sectionals</h3>
+                <div class="text-muted text-xs mb-3">Saturday, June 20, 2026 · Concord Community Pool</div>
+                <div class="spec-list">
+                  <div class="spec-row"><span class="lbl">Swimmer</span><span class="val">Brianne Chen (12U B)</span></div>
+                  <div class="spec-row"><span class="lbl">Entry fee</span><span class="val">$50.00</span></div>
+                  <div class="spec-row"><span class="lbl">Team routine fee</span><span class="val">$70.00</span></div>
+                  <div class="spec-row" style="border-top:2px solid var(--gray-300);padding-top:14px;"><span class="lbl text-bold">Total due</span><span class="val text-bold" style="font-size:20px;color:var(--navy-700);">$120.00</span></div>
+                </div>
+              </div>
+
+              <div class="practice-info-card">
+                <div class="text-bold mb-3">Payment method</div>
+                <div class="chip-row">
+                  <span class="chip active" onclick="selectChip(this)">💳 Visa •••• 4421</span>
+                  <span class="chip" onclick="selectChip(this)">+ New card</span>
+                  <span class="chip" onclick="selectChip(this)">🏦 Bank</span>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-block" style="font-size:15px;padding:14px;" onclick="document.getElementById('pay-confirm').style.display='block';">
+                Pay $120.00 →
+              </button>
+
+              <div id="pay-confirm" class="success-card" style="display:none;margin-top:18px;">
+                <div class="success-ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <h3 class="mb-2">Payment received · $120.00</h3>
+                <div class="text-sm" style="color:var(--green-700);">Receipt emailed to kelly.chen@example.com. Brianne is officially registered for Sectionals!</div>
+                <button class="btn btn-secondary btn-block mt-3" onclick="goBackView('p-billing')">Done</button>
+              </div>
+
+              <div class="text-muted text-xs text-center mt-3">Secured by Stripe · 1-2% processing fee absorbed by SFM</div>
+            </div>
+          </section>
+
+          <!-- ========== RECEIPT ========== -->
+          <section class="view" id="p-receipt">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-billing')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Receipt · June dues</div><div class="det-sub">All 3 children · May 19, 2026</div></div></div>
+            <div style="padding:16px;">
+              <div class="practice-info-card">
+                <div style="text-align:center;padding:14px;border-bottom:1px solid var(--gray-200);margin:-14px -14px 14px;">
+                  <div class="text-bold" style="font-size:16px;">San Francisco Merionettes</div>
+                  <div class="text-xs text-muted">Receipt #SFM-2026-0519-0042</div>
+                </div>
+                <div class="spec-list">
+                  <div class="spec-row"><span class="lbl">Date</span><span class="val">May 19, 2026 · 10:42 AM</span></div>
+                  <div class="spec-row"><span class="lbl">Brianne — 12U B</span><span class="val">$600.00</span></div>
+                  <div class="spec-row"><span class="lbl">Janelle — Intermediates</span><span class="val">$500.00</span></div>
+                  <div class="spec-row"><span class="lbl">Syleste — Novice</span><span class="val">$420.00</span></div>
+                  <div class="spec-row" style="border-top:2px solid var(--gray-300);padding-top:14px;"><span class="lbl text-bold">Total charged</span><span class="val text-bold">$1,520.00</span></div>
+                  <div class="spec-row"><span class="lbl">Method</span><span class="val">Visa •••• 4421</span></div>
+                  <div class="spec-row"><span class="lbl">Confirmation</span><span class="val">ch_3OqXYZ4421</span></div>
+                </div>
+              </div>
+              <button class="btn btn-secondary btn-block">📧 Email receipt</button>
+              <button class="btn btn-ghost btn-block mt-2">📄 Download PDF</button>
+            </div>
+          </section>
+
+          <!-- Autopay setup -->
+          <section class="view" id="p-autopay">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-billing')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Auto-pay setup</div><div class="det-sub">Already enabled · manage below</div></div></div>
+            <div style="padding:16px;">
+              <div class="practice-info-card">
+                <div class="text-bold mb-2">✓ Auto-pay is on</div>
+                <div class="text-sm text-muted mb-3">Your family monthly bill of $1,520 will be auto-charged to Visa •••• 4421 on the 1st of each month.</div>
+                <div class="spec-list">
+                  <div class="spec-row"><span class="lbl">Brianne</span><span class="val">$600 · 1st</span></div>
+                  <div class="spec-row"><span class="lbl">Janelle</span><span class="val">$500 · 1st</span></div>
+                  <div class="spec-row"><span class="lbl">Syleste</span><span class="val">$420 · 1st</span></div>
+                </div>
+              </div>
+              <button class="btn btn-secondary btn-block">Update payment method</button>
+              <button class="btn btn-ghost btn-block mt-2" style="color:var(--red-500);">Turn off auto-pay</button>
+            </div>
+          </section>
+
+          <!-- Product detail -->
+          <section class="view" id="p-product">
+            <div class="det-header"><button class="det-back" onclick="goBackView('p-shop')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="det-title">Team Suit · 2026</div><div class="det-sub">$120 · in stock</div></div></div>
+            <div style="padding:16px;">
+              <div style="background:linear-gradient(135deg,var(--navy-700),var(--aqua-500));height:240px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 6h-4l-1-2H7L6 6H2v14h20V6h-4z"/></svg>
+              </div>
+              <h2 style="font-size:20px;">Team Suit — 2026 Competition</h2>
+              <div class="text-muted text-sm mb-3">Navy + white pattern · USAAS-approved · embroidered SFM logo</div>
+              <div style="font-size:24px;font-weight:800;color:var(--navy-700);">$120.00</div>
+
+              <div class="section-title" style="margin-top:18px;">For which child?</div>
+              <div class="pill-children">
+                <div class="child-tab active" onclick="selectChild(this)"><div class="child-avatar" style="background:#7C3AED;">B</div> Brianne</div>
+                <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:#DB2777;">J</div> Janelle</div>
+                <div class="child-tab" onclick="selectChild(this)"><div class="child-avatar" style="background:var(--gold-500);">S</div> Syleste</div>
+              </div>
+
+              <div class="section-title">Size</div>
+              <div class="chip-row">
+                <span class="chip" onclick="selectChip(this)">JR 22</span>
+                <span class="chip active" onclick="selectChip(this)">JR 24</span>
+                <span class="chip" onclick="selectChip(this)">JR 26</span>
+                <span class="chip" onclick="selectChip(this)">JR 28</span>
+                <span class="chip" onclick="selectChip(this)">Adult 30</span>
+              </div>
+
+              <div class="practice-info-card" style="margin-top:18px;">
+                <div class="text-bold mb-2">Pickup at next practice</div>
+                <div class="text-sm text-muted">Brianne · Wed Jun 3 · 5:30 PM · HL Pool — Coach Niloo will hand it over</div>
+              </div>
+
+              <button class="btn btn-primary btn-block" style="font-size:15px;padding:14px;margin-top:14px;">Charge $120 to Visa •••• 4421</button>
+              <button class="btn btn-ghost btn-block mt-2" onclick="goBackView('p-shop')">Cancel</button>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Bottom nav -->
+        <div class="parent-bottomnav">
+          <div class="bn-item active" data-view="p-home" onclick="showView('p-home','.bn-item')">
+            <div class="bn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            Home
+          </div>
+          <div class="bn-item" data-view="p-schedule" onclick="showView('p-schedule','.bn-item')">
+            <div class="bn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            Schedule
+          </div>
+          <div class="bn-item" data-view="p-inbox" onclick="showView('p-inbox','.bn-item')">
+            <div class="bn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            Inbox
+          </div>
+          <div class="bn-item" data-view="p-billing" onclick="showView('p-billing','.bn-item')">
+            <div class="bn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+            Billing
+          </div>
+          <div class="bn-item" data-view="p-profile" onclick="showView('p-profile','.bn-item')">
+            <div class="bn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            More
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="phone-home-indicator"></div>
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  function selectChildOnHome(el) {
+    el.style.transform = 'scale(0.98)';
+    setTimeout(() => el.style.transform = '', 120);
+  }
+</script>
+</body>
+</html>

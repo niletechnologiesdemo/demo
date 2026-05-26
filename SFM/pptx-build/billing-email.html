@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: #e8eaed; font-family: 'Inter', -apple-system, sans-serif; padding: 24px; }
+
+  /* Gmail-ish header strip */
+  .mail-window {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .mail-bar {
+    background: #f8f9fa;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mail-bar .sender-avatar {
+    width: 36px; height: 36px;
+    background: #1B3A8C;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+  }
+  .mail-bar .sender-info { flex: 1; line-height: 1.3; }
+  .mail-bar .sender-name { font-weight: 600; font-size: 13px; color: #202124; }
+  .mail-bar .sender-email { font-size: 11px; color: #5f6368; }
+  .mail-bar .time-info { font-size: 12px; color: #5f6368; text-align: right; }
+  .mail-bar .star {
+    color: #dadce0;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .mail-subject {
+    padding: 14px 20px 18px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fff;
+  }
+  .mail-subject .subj-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #202124;
+  }
+  .mail-subject .subj-label {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #1967d2;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-right: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Email body */
+  .mail-body {
+    padding: 24px 20px 8px;
+    color: #202124;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .brand-bar {
+    background: linear-gradient(120deg, #1B3A8C, #122763);
+    color: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+  }
+  .brand-bar .brand-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    font-weight: 700;
+  }
+  .brand-bar .brand-title {
+    font-size: 19px;
+    font-weight: 700;
+    margin-top: 3px;
+  }
+
+  .greeting { margin: 0 0 10px; color: #202124; }
+  .intro { color: #5f6368; line-height: 1.6; margin: 0 0 20px; font-size: 13.5px; }
+
+  .total-card {
+    background: #F4F7FD;
+    border-radius: 10px;
+    padding: 22px 18px;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .total-card .lab {
+    font-size: 10px;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+  .total-card .amt {
+    font-size: 40px;
+    font-weight: 800;
+    color: #1B3A8C;
+    margin-top: 6px;
+    letter-spacing: -0.02em;
+  }
+  .total-card .meta {
+    font-size: 12px;
+    color: #64748B;
+    margin-top: 4px;
+  }
+
+  .sec-h {
+    font-size: 10px;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    margin: 8px 0 10px;
+  }
+
+  table.items {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.items tr td {
+    padding: 11px 0;
+    border-bottom: 1px solid #E2E8F0;
+    vertical-align: middle;
+  }
+  table.items tr:last-child td { border-bottom: none; }
+  table.items .name {
+    font-weight: 600;
+    color: #0F172A;
+    font-size: 13px;
+  }
+  table.items .meta {
+    font-size: 11px;
+    color: #64748B;
+    margin-top: 2px;
+  }
+  table.items .amount {
+    text-align: right;
+    font-weight: 700;
+    color: #0F172A;
+    font-size: 13px;
+  }
+  table.items .total-row td {
+    padding-top: 14px;
+    border-top: 2px solid #0F172A;
+    border-bottom: none;
+  }
+  table.items .total-row .name { font-weight: 800; color: #0F172A; font-size: 14px; }
+  table.items .total-row .amount { font-size: 18px; font-weight: 800; color: #1B3A8C; }
+
+  .cta-btn {
+    display: block;
+    background: #1B3A8C;
+    color: #fff !important;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    margin: 24px 0 8px;
+  }
+  .cta-sub {
+    font-size: 11px;
+    color: #64748B;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .autopay-note {
+    background: #ECFDF5;
+    border-left: 3px solid #10B981;
+    padding: 11px 13px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12.5px;
+    color: #047857;
+    line-height: 1.55;
+    margin: 0 0 18px;
+  }
+  .autopay-note strong { color: #047857; }
+
+  .mail-footer {
+    background: #F8FAFC;
+    padding: 16px 20px 18px;
+    font-size: 11px;
+    color: #94A3B8;
+    text-align: center;
+    line-height: 1.65;
+    border-top: 1px solid #e0e0e0;
+  }
+  .mail-footer .logo-line {
+    font-weight: 700;
+    color: #1B3A8C;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .mail-footer a { color: #1B3A8C; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="mail-window">
+
+  <!-- Mail bar (Gmail-ish) -->
+  <div class="mail-bar">
+    <div class="sender-avatar">SFM</div>
+    <div class="sender-info">
+      <div class="sender-name">Eileen Horng · SF Merionettes</div>
+      <div class="sender-email">billing@sfmerionettes.org &nbsp;→&nbsp; to me</div>
+    </div>
+    <div>
+      <div class="time-info">10:42 AM (2 min ago)</div>
+    </div>
+    <div class="star">☆</div>
+  </div>
+
+  <!-- Subject -->
+  <div class="mail-subject">
+    <div class="subj-text">
+      <span class="subj-label">Billing</span>
+      Your June bill is ready · 3 children · $1,520.00
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="mail-body">
+
+    <div class="brand-bar">
+      <div class="brand-eyebrow">SF MERIONETTES · MONTHLY BILL</div>
+      <div class="brand-title">Your June dues are ready 🤍</div>
+    </div>
+
+    <p class="greeting">Hi Kelly,</p>
+    <p class="intro">
+      Your June monthly dues for Brianne, Janelle and Syleste are below. You're on auto-pay — no action needed unless you want to update your card. You can also pay manually or view a full receipt anytime in the Parent Portal.
+    </p>
+
+    <div class="total-card">
+      <div class="lab">TOTAL DUE</div>
+      <div class="amt">$1,520.00</div>
+      <div class="meta">Auto-bills Jul 1, 2026 · Visa •••• 4421 on file</div>
+    </div>
+
+    <div class="sec-h">BILL BREAKDOWN · 3 CHILDREN</div>
+
+    <table class="items">
+      <tr>
+        <td>
+          <div class="name">Brianne Chen <span style="color:#7C3AED;">·</span> 12U B</div>
+          <div class="meta">Monthly dues · Coach Niloo</div>
+        </td>
+        <td class="amount">$600.00</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="name">Janelle Chen <span style="color:#DB2777;">·</span> Intermediates</div>
+          <div class="meta">Monthly dues · Coach Sofie</div>
+        </td>
+        <td class="amount">$500.00</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="name">Syleste Chen <span style="color:#F59E0B;">·</span> Novice</div>
+          <div class="meta">Monthly dues · Coach Sophia M.</div>
+        </td>
+        <td class="amount">$420.00</td>
+      </tr>
+      <tr class="total-row">
+        <td><span class="name">Total · all 3 children</span></td>
+        <td class="amount">$1,520.00</td>
+      </tr>
+    </table>
+
+    <a href="https://sfmerionettes.org/parent" class="cta-btn">Pay Now in Parent Portal &nbsp;→</a>
+    <div class="cta-sub">Or go to <strong>sfmerionettes.org/parent</strong> · billing</div>
+
+    <div class="autopay-note">
+      <strong>✓ Auto-pay is active.</strong> $1,520.00 will be charged to Visa •••• 4421 on Jul 1. To turn off auto-pay or update your card, visit the Parent Portal.
+    </div>
+
+    <div style="font-size:12.5px;color:#5f6368;line-height:1.6;">
+      Need to chat about the bill or set up a sibling-discount discussion?
+      Reply to this email anytime — it goes straight to <strong>Eileen</strong>.
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="mail-footer">
+    <div class="logo-line">SF MERIONETTES</div>
+    <a href="#">sfmerionettes.org</a> &nbsp;·&nbsp;
+    <a href="#">Parent Portal</a> &nbsp;·&nbsp;
+    <a href="#">Manage notifications</a>
+    <br/>
+    You're receiving this because you have a swimmer registered with SFM.
+  </div>
+
+</div>
+
+</body>
+</html>

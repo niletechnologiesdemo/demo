@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SFM Operations System — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+  body {
+    background: linear-gradient(135deg, #0B1A47 0%, #1B3A8C 55%, #2C53B8 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+    padding: 36px 24px;
+  }
+  .landing-wrap { max-width: 1080px; margin: 0 auto; width: 100%; }
+  .landing-head { text-align: center; margin-bottom: 40px; }
+  .landing-head img { height: 90px; margin-bottom: 22px; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.25)); }
+  .landing-head h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+  .landing-head .subtitle {
+    font-size: 15px; color: rgba(255,255,255,0.78); margin-top: 8px;
+    letter-spacing: 0.04em; text-transform: uppercase; font-weight: 500;
+  }
+  .landing-head .lead {
+    font-size: 17px; color: rgba(255,255,255,0.88); margin-top: 22px;
+    max-width: 640px; margin-left: auto; margin-right: auto; line-height: 1.55;
+  }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+  @media (max-width: 920px) { .role-grid { grid-template-columns: 1fr; } }
+
+  .role-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 20px;
+    padding: 28px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.2s;
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .role-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.32);
+    transform: translateY(-4px);
+    color: #fff;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .role-card .role-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .role-card h2 { color: #fff; font-size: 22px; }
+  .role-card .role-sub {
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 4px;
+  }
+  .role-card .role-desc {
+    font-size: 14px; color: rgba(255,255,255,0.82);
+    line-height: 1.6; margin-top: 14px; flex: 1;
+  }
+  .role-card .role-features {
+    margin-top: 14px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .role-card .feat-pill {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.88);
+  }
+  .role-card .enter-link {
+    margin-top: 20px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #22D3EE;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-note {
+    text-align: center;
+    color: rgba(255,255,255,0.55);
+    font-size: 12px;
+    margin-top: 44px;
+    letter-spacing: 0.04em;
+  }
+  .footer-note strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="landing-wrap">
+
+  <div class="landing-head">
+    <img src="Images/Logo.png" alt="SF Merionettes" />
+    <div class="subtitle">Operations Management System · Demo</div>
+    <h1>Built for the San Francisco Merionettes</h1>
+    <p class="lead">
+      One unified platform replacing SportsEngine, fragmented Google Calendars, and Signal threads —
+      bringing onboarding, billing, scheduling, attendance, and communication into a single owned system.
+      Select a role below to explore.
+    </p>
+  </div>
+
+  <div class="role-grid">
+
+    <a href="admin.html" class="role-card">
+      <div class="role-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9" rx="1"/>
+          <rect x="14" y="3" width="7" height="5" rx="1"/>
+          <rect x="14" y="12" width="7" height="9" rx="1"/>
+          <rect x="3" y="16" width="7" height="5" rx="1"/>
+        </svg>
+      </div>
+      <div class="role-sub">For Eileen / Board / Treasurer</div>
+      <h2>Admin Console</h2>
+      <p class="role-desc">
+        The full operational control center — manage every swimmer, team, coach, practice,
+        payment, and announcement from a single dashboard.
+      </p>
+      <div class="role-features">
+        <span class="feat-pill">Dashboard</span>
+        <span class="feat-pill">Members</span>
+        <span class="feat-pill">Billing &amp; POS</span>
+        <span class="feat-pill">Schedule</span>
+        <span class="feat-pill">Communications</span>
+      </div>
+      <span class="enter-link">
+        Enter as Admin
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+
+    <a href="coach.html" class="role-card">
+      <div class="role-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+          <path d="M20 8l2-2-2-2"/>
+          <path d="M4 8l-2-2 2-2"/>
+        </svg>
+      </div>
+      <div class="role-sub">For Emily, Heidi, Niloo, Lolli &amp; Team</div>
+      <h2>Coach Interface</h2>
+      <p class="role-desc">
+        Focused workspace for coaches — take attendance in seconds, view today's roster,
+        assign training videos, and coordinate with co-coaches sharing the same team.
+      </p>
+      <div class="role-features">
+        <span class="feat-pill">Today's Practices</span>
+        <span class="feat-pill">Attendance</span>
+        <span class="feat-pill">My Teams</span>
+        <span class="feat-pill">Co-Coach Notes</span>
+        <span class="feat-pill">Resources</span>
+      </div>
+      <span class="enter-link">
+        Enter as Coach
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+
+    <a href="parent.html" class="role-card">
+      <div class="role-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="3"/>
+          <line x1="10" y1="18" x2="14" y2="18"/>
+        </svg>
+      </div>
+      <div class="role-sub">Mobile-responsive — open on any phone</div>
+      <h2>Parent / Student</h2>
+      <p class="role-desc">
+        Designed for parents like Kelly with three daughters across three teams —
+        one place for schedules, billing, absence requests, and announcements.
+      </p>
+      <div class="role-features">
+        <span class="feat-pill">Multi-child View</span>
+        <span class="feat-pill">Schedule</span>
+        <span class="feat-pill">Mark Absent</span>
+        <span class="feat-pill">Pay Dues</span>
+        <span class="feat-pill">Skill Videos</span>
+      </div>
+      <span class="enter-link">
+        Enter as Parent
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+
+  </div>
+
+  <div class="footer-note">
+    Custom proprietary platform built by <strong>Nile Technologies</strong> ·
+    Designed for one-time investment ownership — no recurring SaaS fees · <strong>Demo Build · May 2026</strong>
+  </div>
+
+</div>
+
+</body>
+</html>

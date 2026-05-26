@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SFM Coach Interface — Coach Emily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+  .coach-banner {
+    background: linear-gradient(120deg, var(--aqua-100), var(--navy-100));
+    border: 1px solid var(--navy-100);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 18px;
+  }
+  .coach-banner .ico {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--aqua-600);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .att-mark-row {
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .att-mark-row:last-child { border-bottom: none; }
+  .att-mark-row .swimmer-info { flex: 1; min-width: 0; }
+  .att-mark-row .sw-name { font-weight: 600; font-size: 14px; color: var(--gray-900); }
+  .att-mark-row .sw-meta { font-size: 11px; color: var(--gray-500); margin-top: 1px; }
+
+  .skill-note {
+    background: var(--gold-100);
+    border-left: 4px solid var(--gold-500);
+    padding: 12px 14px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+  }
+  .skill-note .note-from { font-weight: 700; font-size: 12px; color: #92400E; }
+  .skill-note .note-body { font-size: 13px; color: var(--gray-800); margin-top: 4px; }
+
+  .roster-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .roster-card:hover { border-color: var(--navy-500); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .roster-card .skill-bars { display: flex; gap: 3px; margin-top: 6px; }
+  .roster-card .skill-bar {
+    height: 4px; width: 18px;
+    background: var(--gray-200);
+    border-radius: 2px;
+  }
+  .roster-card .skill-bar.filled { background: var(--green-500); }
+  .roster-card .skill-bar.warning { background: var(--amber-500); }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-brand">
+      <img src="Images/Logo.png" alt="SF Merionettes" />
+      <span class="brand-subtitle">Coach Interface</span>
+    </a>
+
+    <div class="sidebar-group-label">Today</div>
+    <div class="nav-item active" data-view="view-today" onclick="showView('view-today')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      My Day
+      <span class="nav-badge">2</span>
+    </div>
+
+    <div class="sidebar-group-label">Coach</div>
+    <div class="nav-item" data-view="view-team" onclick="showView('view-team')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      My Team — 12U A
+    </div>
+    <div class="nav-item" data-view="view-schedule" onclick="showView('view-schedule')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      My Schedule
+    </div>
+    <div class="nav-item" data-view="view-attendance" onclick="showView('view-attendance')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Attendance History
+    </div>
+
+    <div class="sidebar-group-label">Engage</div>
+    <div class="nav-item" data-view="view-comms" onclick="showView('view-comms')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      Messages &amp; Announcements
+      <span class="nav-badge">3</span>
+    </div>
+    <div class="nav-item" data-view="view-resources" onclick="showView('view-resources')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      Resources
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar aqua">EM</div>
+        <div>
+          <div style="color:#fff;font-weight:600;font-size:13px;">Coach Emily</div>
+          <div style="font-size:11px;opacity:0.65;">12U A · with Heidi</div>
+        </div>
+      </div>
+      Coach App v1.1
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ========== MY DAY ========== -->
+    <section class="view active" id="view-today">
+      <div class="topbar">
+        <div>
+          <h1>Good afternoon, Coach Emily 👋</h1>
+          <div class="topbar-sub">Wednesday, June 3, 2026 · No 12U A practice today — Heidi takes Thursday at Coffman</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="dot"></span></button>
+          <button class="btn btn-secondary" onclick="showDetailView('view-add-skill-note','view-today')">+ Skill Note</button>
+          <button class="btn btn-primary" onclick="showDetailView('view-send-announce','view-today')">Send Announcement</button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <div class="coach-banner">
+          <div class="ico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="flex-1">
+            <div class="text-bold">Coach Heidi just marked Tuesday's attendance for 12U A</div>
+            <div class="text-muted text-xs mt-2">9 present · 1 absent (Jade — flu, parent notified). She also added 2 skill notes for Lumi &amp; Sebastian — review below.</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="showView('view-team'); switchTabById('team-tab-notes','team-tab');">View notes</button>
+        </div>
+
+        <div class="grid grid-4 mb-4">
+          <div class="stat-card accent-aqua">
+            <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            <div class="stat-label">My Practices This Week</div>
+            <div class="stat-value">3</div>
+            <div class="stat-meta">Mon ✓ · Fri upcoming · Sun joint</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="stat-label">Swimmers on 12U A</div>
+            <div class="stat-value">10</div>
+            <div class="stat-meta">Shared roster with Heidi</div>
+          </div>
+          <div class="stat-card accent-green">
+            <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="stat-label">Team Attendance</div>
+            <div class="stat-value">92%</div>
+            <div class="stat-meta">30-day rolling · 14 skill notes</div>
+          </div>
+          <div class="stat-card accent-gold">
+            <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div class="stat-label">Parent Messages</div>
+            <div class="stat-value">2</div>
+            <div class="stat-meta">Unread · re: Friday session</div>
+          </div>
+        </div>
+
+        <div class="grid grid-3-2">
+
+          <div class="stack">
+
+            <div class="card card-flush">
+              <div class="card-header">
+                <div>
+                  <h3>Upcoming · Friday June 5 — 12U A at Coffman</h3>
+                  <div class="card-sub">5:00 — 7:00 PM · Your session · 10 swimmers expected · focus: Boost &amp; Figure 142</div>
+                </div>
+                <div class="row gap-2">
+                  <span class="badge" style="background:var(--gray-100);color:var(--gray-600);">Heidi · Thu 4:30p</span>
+                  <span class="badge badge-aqua">You · Fri 5:00p</span>
+                </div>
+              </div>
+
+              <div style="padding:12px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-200);">
+                <div class="row">
+                  <button class="btn btn-secondary btn-sm">Mark all present</button>
+                  <button class="btn btn-ghost btn-sm">Reset</button>
+                  <div style="margin-left:auto;" class="text-muted text-xs">Pre-marked based on Tuesday's session · tap pill to update</div>
+                </div>
+              </div>
+
+              <div class="att-mark-row att-row" style="margin:0;background:transparent;border-radius:0;">
+                <div class="avatar selectable" onclick="showDetailView('view-swimmer-ellie','view-today')">EL</div>
+                <div class="swimmer-info">
+                  <div class="sw-name">Ellie Wong</div>
+                  <div class="sw-meta">Combo + Team · Parent: Karen Wong · ⚠ "will be 10m late"</div>
+                </div>
+                <div class="att-controls">
+                  <button class="att-pill active-present" data-state="present" onclick="setAttendancePill(this)">Present</button>
+                  <button class="att-pill" data-state="late" onclick="setAttendancePill(this)">Late</button>
+                  <button class="att-pill" data-state="absent" onclick="setAttendancePill(this)">Absent</button>
+                </div>
+              </div>
+              <div class="att-mark-row att-row" style="margin:0;background:transparent;border-radius:0;">
+                <div class="avatar gold selectable" onclick="showDetailView('view-swimmer-jade','view-today')">JL</div>
+                <div class="swimmer-info">
+                  <div class="sw-name">Jade Lee</div>
+                  <div class="sw-meta">Team · Parent: Daniel Lee · ⚠ Absent Tue (flu) — back today?</div>
+                </div>
+                <div class="att-controls">
+                  <button class="att-pill" data-state="present" onclick="setAttendancePill(this)">Present</button>
+                  <button class="att-pill" data-state="late" onclick="setAttendancePill(this)">Late</button>
+                  <button class="att-pill" data-state="absent" onclick="setAttendancePill(this)">Absent</button>
+                </div>
+              </div>
+              <div class="att-mark-row att-row" style="margin:0;background:transparent;border-radius:0;">
+                <div class="avatar gold selectable" onclick="showDetailView('view-swimmer-detail','view-today')">JP</div>
+                <div class="swimmer-info">
+                  <div class="sw-name">Jasmine Park</div>
+                  <div class="sw-meta">Team · Parent: Min Park</div>
+                </div>
+                <div class="att-controls">
+                  <button class="att-pill active-present" data-state="present" onclick="setAttendancePill(this)">Present</button>
+                  <button class="att-pill" data-state="late" onclick="setAttendancePill(this)">Late</button>
+                  <button class="att-pill" data-state="absent" onclick="setAttendancePill(this)">Absent</button>
+                </div>
+              </div>
+              <div class="att-mark-row att-row" style="margin:0;background:transparent;border-radius:0;">
+                <div class="avatar green selectable" onclick="showDetailView('view-swimmer-detail','view-today')">KP</div>
+                <div class="swimmer-info">
+                  <div class="sw-name">Keira Patel</div>
+                  <div class="sw-meta">Team · Parent: Anjali Patel</div>
+                </div>
+                <div class="att-controls">
+                  <button class="att-pill active-present" data-state="present" onclick="setAttendancePill(this)">Present</button>
+                  <button class="att-pill" data-state="late" onclick="setAttendancePill(this)">Late</button>
+                  <button class="att-pill" data-state="absent" onclick="setAttendancePill(this)">Absent</button>
+                </div>
+              </div>
+              <div class="att-mark-row att-row" style="margin:0;background:transparent;border-radius:0;">
+                <div class="avatar aqua selectable" onclick="showDetailView('view-swimmer-lumi','view-today')">LT</div>
+                <div class="swimmer-info">
+                  <div class="sw-name">Lumi Tanaka ⭐</div>
+                  <div class="sw-meta">Combo + Team · Heidi flagged for combo lift promotion</div>
+                </div>
+                <div class="att-controls">
+                  <button class="att-pill active-present" data-state="present" onclick="setAttendancePill(this)">Present</button>
+                  <button class="att-pill" data-state="late" onclick="setAttendancePill(this)">Late</button>
+                  <button class="att-pill" data-state="absent" onclick="setAttendancePill(this)">Absent</button>
+                </div>
+              </div>
+              <div class="att-mark-row att-row" style="margin:0;background:transparent;border-radius:0;">
+                <div class="avatar aqua selectable" onclick="showDetailView('view-swimmer-detail','view-today')">SR</div>
+                <div class="swimmer-info">
+                  <div class="sw-name">Sebastian Ruiz</div>
+                  <div class="sw-meta">Solo + Team · Heidi note: stamina block this session</div>
+                </div>
+                <div class="att-controls">
+                  <button class="att-pill active-late" data-state="present" onclick="setAttendancePill(this)">Present</button>
+                  <button class="att-pill" data-state="late" onclick="setAttendancePill(this)">Late</button>
+                  <button class="att-pill" data-state="absent" onclick="setAttendancePill(this)">Absent</button>
+                </div>
+              </div>
+
+              <div style="padding:14px 18px;background:var(--gray-50);border-top:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;">
+                <div class="row gap-3">
+                  <span class="badge badge-success">4 present</span>
+                  <span class="badge badge-warning">1 late</span>
+                  <span class="text-muted text-xs">+ 4 more swimmers · scroll up to confirm</span>
+                </div>
+                <div class="row gap-2">
+                  <button class="btn btn-secondary btn-sm">Open full practice ↗</button>
+                  <button class="btn btn-primary btn-sm">Save Attendance</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card card-flush">
+              <div class="card-header">
+                <div>
+                  <h3>Class messages — Friday Jun 5 · 12U A</h3>
+                  <div class="card-sub">2 unread · class-specific thread (not team-wide)</div>
+                </div>
+                <button class="btn btn-secondary btn-sm">Compose</button>
+              </div>
+              <div style="padding:14px 18px;">
+                <div class="msg">
+                  <div class="avatar avatar-sm msg-avatar">KW</div>
+                  <div class="msg-body">
+                    <div class="msg-from">Karen Wong <span class="msg-role">Parent · Ellie</span><span class="msg-time">2 hrs ago</span></div>
+                    <div class="msg-text">Ellie will be 10 min late tomorrow — school project running over. She's on the way!</div>
+                    <span class="msg-channel">📱 Parent Portal · Unread</span>
+                  </div>
+                </div>
+                <div class="msg" style="margin-top:10px;">
+                  <div class="avatar avatar-sm msg-avatar gold">DL</div>
+                  <div class="msg-body">
+                    <div class="msg-from">Daniel Lee <span class="msg-role">Parent · Jade</span><span class="msg-time">3 hrs ago</span></div>
+                    <div class="msg-text">Jade is back from flu — she'll be there Thursday and Friday. Thanks for understanding!</div>
+                    <span class="msg-channel">📱 Parent Portal · Unread</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stack">
+
+            <div class="card">
+              <h3 class="mb-3">Notes from Coach Heidi</h3>
+              <div class="text-muted text-xs mb-3">Co-coach skill observations · auto-shared with you</div>
+
+              <div class="skill-note">
+                <div class="note-from">Heidi · Tue Jun 2 · 7:02 PM · about Lumi</div>
+                <div class="note-body">Lumi is locking the vertical at 8 counts cleanly now — she's ready to start the combo lift. Sub her into the front row for Sunday's run-through? Also her solo timing on count 32 is consistently early.</div>
+              </div>
+
+              <div class="skill-note">
+                <div class="note-from">Heidi · Tue Jun 2 · 7:04 PM · about Sebastian</div>
+                <div class="note-body">Sebastian's eggbeater height is great but the head position dropped during the final 30s — let's plan a stamina block on Friday. He also asked about extra solo videos.</div>
+              </div>
+
+              <div style="background:var(--navy-50);border-radius:10px;padding:12px 14px;margin-top:14px;">
+                <div class="text-bold text-xs" style="color:var(--navy-700);">📌 Reminder from Heidi</div>
+                <div class="text-xs text-muted mt-2">Jade's mom (Daniel Lee) asked to schedule a make-up session — Jade missed Tuesday with flu.</div>
+                <button class="btn btn-secondary btn-sm mt-3">Schedule make-up →</button>
+              </div>
+              <button class="btn btn-aqua btn-block mt-3" onclick="showDetailView('view-add-skill-note','view-today')">+ Add Note for Heidi</button>
+            </div>
+
+            <div class="card">
+              <h3 class="mb-3">Quick message to 12U A parents</h3>
+              <textarea class="textarea" placeholder="Reminder Friday's session at Coffman starts at 5pm sharp — please have suits on…"></textarea>
+              <div class="row gap-2 mt-3">
+                <span class="chip active" onclick="selectChip(this)">📱 Parent Portal</span>
+                <span class="chip active" onclick="selectChip(this)">💬 SMS</span>
+                <span class="chip" onclick="selectChip(this)">✉️ Email</span>
+              </div>
+              <button class="btn btn-primary btn-block mt-3">Send to 10 families</button>
+              <a class="text-xs text-center" onclick="showDetailView('view-send-announce','view-today')" style="display:block;margin-top:8px;color:var(--navy-700);cursor:pointer;">Open full compose →</a>
+            </div>
+
+            <div class="card">
+              <h3 class="mb-3">Today's other teams</h3>
+              <div class="text-muted text-xs mb-3">Visibility into what's happening across the club</div>
+              <div class="mini-list">
+                <div class="mini-list-item"><div class="avatar avatar-sm green">10U</div><div class="mli-body"><div class="mli-title">10U · Balboa</div><div class="mli-sub">5:00 — 7:30 PM · Lolli + Eve · <span class="live-dot"></span> Live</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm" style="background:#DB2777;">INT</div><div class="mli-body"><div class="mli-title">Intermediates · Balboa</div><div class="mli-sub">5:30 — 7:30 PM · Sofie · <span class="live-dot"></span> Live</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm gold">NOV</div><div class="mli-body"><div class="mli-title">Novice · Balboa</div><div class="mli-sub">5:30 — 7:30 PM · Lucy + Sophia M.</div></div></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm purple">12B</div><div class="mli-body"><div class="mli-title">12U B · HL</div><div class="mli-sub">5:30 — 8:00 PM · Niloo</div></div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== MY TEAM (full tabs) ========== -->
+    <section class="view" id="view-team">
+      <div class="topbar">
+        <div>
+          <h1>12U A — My Team</h1>
+          <div class="topbar-sub">Co-coached with Heidi · 10 swimmers · $600/mo · 92% attendance</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" onclick="showDetailView('view-add-skill-note','view-team')">+ Skill Note</button>
+          <button class="btn btn-primary" onclick="showDetailView('view-send-announce','view-team')">Message Team</button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <div class="profile-cover">
+          <div class="avatar avatar-xl aqua">12A</div>
+          <div>
+            <h1>12U A</h1>
+            <div class="pc-meta">Competitive A Squad · co-coached by Emily &amp; Heidi · Mon/Tue/Thu/Fri/Sun</div>
+            <div class="row gap-2 mt-3">
+              <span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">10 swimmers</span>
+              <span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">5 practices / wk</span>
+              <span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">⚡ Co-coach pair</span>
+            </div>
+          </div>
+          <div class="pc-stats">
+            <div><div class="pcs-val">92%</div><div class="pcs-label">Attendance</div></div>
+            <div><div class="pcs-val">14</div><div class="pcs-label">Notes (30d)</div></div>
+            <div><div class="pcs-val">17 days</div><div class="pcs-label">To Sectionals</div></div>
+          </div>
+        </div>
+
+        <div class="inline-alert">
+          <strong>⚡ Co-coaching with Coach Heidi</strong> — you both see the same roster, attendance, and skill notes. Emily takes Mon/Fri/Sun · Heidi takes Tue/Thu · Sunday is joint. Hand-offs auto-sync.
+        </div>
+
+        <div class="tab-bar">
+          <div class="tab active" onclick="switchTab(this,'team-tab')" data-target="team-tab-roster">Roster (10)</div>
+          <div class="tab" onclick="switchTab(this,'team-tab')" data-target="team-tab-sched">Schedule</div>
+          <div class="tab" onclick="switchTab(this,'team-tab')" data-target="team-tab-att">Attendance</div>
+          <div class="tab" onclick="switchTab(this,'team-tab')" data-target="team-tab-notes">Co-coach Notes <span class="badge badge-warning" style="margin-left:4px;font-size:10px;padding:1px 5px;">2 new</span></div>
+          <div class="tab" onclick="switchTab(this,'team-tab')" data-target="team-tab-mat">Training Materials</div>
+          <div class="tab" onclick="switchTab(this,'team-tab')" data-target="team-tab-comms">Team Communications</div>
+        </div>
+
+        <!-- Roster -->
+        <div data-tab-group="team-tab" id="team-tab-roster">
+          <div class="grid grid-auto-300">
+            <div class="roster-card" onclick="showDetailView('view-swimmer-ellie','view-team')">
+              <div class="avatar avatar-lg">EL</div>
+              <div class="flex-1">
+                <div class="text-bold">Ellie Wong</div>
+                <div class="text-muted text-xs">Age 11 · Combo + Team · Karen Wong</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled" title="Eggbeater"></div>
+                  <div class="skill-bar filled" title="Ballet"></div>
+                  <div class="skill-bar filled" title="Vertical"></div>
+                  <div class="skill-bar filled" title="Boost"></div>
+                  <div class="skill-bar warning" title="Figure 142"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">5 of 5 · 100% att.</div>
+              </div>
+              <span class="badge badge-success">✓</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-jade','view-team')">
+              <div class="avatar avatar-lg gold">JL</div>
+              <div class="flex-1">
+                <div class="text-bold">Jade Lee</div>
+                <div class="text-muted text-xs">Age 11 · Team · Daniel Lee</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar warning"></div>
+                  <div class="skill-bar"></div>
+                  <div class="skill-bar"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">2 of 5 · ⚠ Vertical work</div>
+              </div>
+              <span class="badge badge-warning">87%</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-detail','view-team')">
+              <div class="avatar avatar-lg gold">JP</div>
+              <div class="flex-1">
+                <div class="text-bold">Jasmine Park</div>
+                <div class="text-muted text-xs">Age 11 · Team · Min Park</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar warning"></div>
+                  <div class="skill-bar"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">3 of 5 skills</div>
+              </div>
+              <span class="badge badge-success">94%</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-detail','view-team')">
+              <div class="avatar avatar-lg green">KP</div>
+              <div class="flex-1">
+                <div class="text-bold">Keira Patel</div>
+                <div class="text-muted text-xs">Age 12 · Team · Anjali Patel</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar warning"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">4 of 5 skills</div>
+              </div>
+              <span class="badge badge-success">100%</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-lumi','view-team')" style="border-color:var(--gold-500);">
+              <div class="avatar avatar-lg aqua">LT</div>
+              <div class="flex-1">
+                <div class="text-bold">Lumi Tanaka <span style="color:var(--gold-500);">⭐</span></div>
+                <div class="text-muted text-xs">Age 11 · Combo + Team · Akiko Tanaka</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">All 5 ✓ — combo promotion</div>
+              </div>
+              <span class="badge badge-success">100%</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-detail','view-team')">
+              <div class="avatar avatar-lg aqua">SR</div>
+              <div class="flex-1">
+                <div class="text-bold">Sebastian Ruiz</div>
+                <div class="text-muted text-xs">Age 12 · Solo + Team · only boy</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar warning"></div>
+                  <div class="skill-bar warning"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">3 of 5 · ⚠ Stamina note</div>
+              </div>
+              <span class="badge badge-success">87%</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-detail','view-team')">
+              <div class="avatar avatar-lg">AH</div>
+              <div class="flex-1">
+                <div class="text-bold">Annabelle Ho</div>
+                <div class="text-muted text-xs">Age 11 · Team · Grace Ho</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar warning"></div>
+                  <div class="skill-bar"></div>
+                  <div class="skill-bar"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">2 of 5 skills</div>
+              </div>
+              <span class="badge badge-success">93%</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-detail','view-team')">
+              <div class="avatar avatar-lg gold">CA</div>
+              <div class="flex-1">
+                <div class="text-bold">Caitlin Adams</div>
+                <div class="text-muted text-xs">Age 12 · Team · Lisa Adams</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar"></div>
+                  <div class="skill-bar"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">3 of 5 skills</div>
+              </div>
+              <span class="badge badge-success">87%</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-detail','view-team')">
+              <div class="avatar avatar-lg green">EO</div>
+              <div class="flex-1">
+                <div class="text-bold">Eloise Park</div>
+                <div class="text-muted text-xs">Age 11 · Team · Lexie's sister</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar warning"></div>
+                  <div class="skill-bar"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">3 of 5 skills</div>
+              </div>
+              <span class="badge badge-success">93%</span>
+            </div>
+
+            <div class="roster-card" onclick="showDetailView('view-swimmer-detail','view-team')">
+              <div class="avatar avatar-lg">AL</div>
+              <div class="flex-1">
+                <div class="text-bold">Alison Choi</div>
+                <div class="text-muted text-xs">Age 11 · Team · Eun Choi</div>
+                <div class="skill-bars">
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar filled"></div>
+                  <div class="skill-bar warning"></div>
+                  <div class="skill-bar"></div>
+                  <div class="skill-bar"></div>
+                </div>
+                <div class="text-xs text-muted mt-2">2 of 5 · ⚠ 80% att.</div>
+              </div>
+              <span class="badge badge-warning">80%</span>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <h3 class="mb-3">Skill progress — 12U A team aggregate</h3>
+            <div class="stack stack-sm">
+              <div><div class="row row-between text-xs mb-2"><span><strong>Eggbeater Kick</strong> — Foundations</span><span class="text-bold">10 / 10 ✓</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Ballet Leg</strong> — Single</span><span class="text-bold">10 / 10 ✓</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Vertical Position</strong> — Hold</span><span class="text-bold">8 / 10</span></div><div class="progress"><div class="progress-fill" style="width:80%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Boost</strong> — Vertical to Surface</span><span class="text-bold">5 / 10</span></div><div class="progress"><div class="progress-fill gold" style="width:50%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Figure 142</strong> — Walkover Front</span><span class="text-bold">2 / 10</span></div><div class="progress"><div class="progress-fill red" style="width:20%;"></div></div></div>
+            </div>
+            <div class="text-muted text-xs mt-4">Sectionals requires all 5 — focus areas for next 17 days: <strong style="color:var(--navy-700);">Boost &amp; Figure 142</strong>.</div>
+          </div>
+        </div>
+
+        <!-- Schedule -->
+        <div data-tab-group="team-tab" id="team-tab-sched" style="display:none;">
+          <div class="card mb-4">
+            <div class="row row-between mb-3"><h3>12U A — Practice Schedule</h3><button class="btn btn-primary btn-sm" onclick="openModal('modal-add-practice')">+ Add Practice</button></div>
+
+            <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Monday — Jun 1</div><div class="day-sub">Your session · completed</div></div><span class="badge badge-success">✓ 9 present</span></div>
+              <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-600);"></div><div class="sch-time">5:00 — 8:00 PM</div><div class="sch-info"><div class="sch-title">HL Pool · Coach Emily</div><div class="sch-meta">9 present · 1 late (Sebastian) · 2 skill notes posted</div></div><div class="sch-actions"><button class="btn btn-ghost btn-sm">View</button></div></div>
+            </div>
+
+            <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Tuesday — Jun 2</div><div class="day-sub">Heidi's session · visible to you</div></div><span class="badge badge-soft">Co-coach</span></div>
+              <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-600);"></div><div class="sch-time">4:30 — 7:00 PM</div><div class="sch-info"><div class="sch-title">Coffman Pool · Coach Heidi</div><div class="sch-meta">9 present · 1 absent (Jade — flu) · 2 messages</div></div><div class="sch-actions"><button class="btn btn-ghost btn-sm">View</button></div></div>
+            </div>
+
+            <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Wednesday — Jun 3 (today)</div><div class="day-sub">No 12U A practice today</div></div><span class="badge badge-soft">Rest</span></div>
+              <div style="padding:14px 18px;color:var(--gray-500);font-size:13px;text-align:center;">No session — focus on parent comms &amp; review Heidi's notes</div>
+            </div>
+
+            <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Thursday — Jun 4</div><div class="day-sub">Heidi's session</div></div><span class="badge badge-soft">Co-coach</span></div>
+              <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-600);"></div><div class="sch-time">4:30 — 7:00 PM</div><div class="sch-info"><div class="sch-title">Coffman Pool · Coach Heidi</div><div class="sch-meta">10 swimmers expected · Heidi taking attendance</div></div><div class="sch-actions"><button class="btn btn-ghost btn-sm">Preview</button></div></div>
+            </div>
+
+            <div class="sch-day-card" style="border:2px solid var(--aqua-500);"><div class="sch-day-head" style="background:var(--aqua-100);"><div><div class="day-h" style="color:var(--aqua-600);">Friday — Jun 5 · UPCOMING</div><div class="day-sub">Your next session — focus: Boost &amp; Figure 142</div></div><span class="badge badge-aqua">Up next ⏱</span></div>
+              <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-500);"></div><div class="sch-time">5:00 — 7:00 PM</div><div class="sch-info"><div class="sch-title">Coffman Pool · Coach Emily</div><div class="sch-meta">10 swimmers · 2 incoming messages · Sebastian stamina block (Heidi note)</div></div><div class="sch-actions"><button class="btn btn-primary btn-sm">Open ↗</button></div></div>
+            </div>
+
+            <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Sunday — Jun 7</div><div class="day-sub">Long session · joint with Heidi</div></div><span class="badge badge-warning">5 hr</span></div>
+              <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-600);"></div><div class="sch-time">3:00 — 8:00 PM</div><div class="sch-info"><div class="sch-title">JB Pool · Emily &amp; Heidi together</div><div class="sch-meta">Sectionals dress rehearsal · pack snacks + 2 suits</div></div><div class="sch-actions"><button class="btn btn-ghost btn-sm">Plan</button></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance -->
+        <div data-tab-group="team-tab" id="team-tab-att" style="display:none;">
+          <div class="card card-flush">
+            <div class="card-header"><div><h3>Attendance — 30-day rolling</h3><div class="card-sub">92% team rate · click any swimmer for per-practice breakdown</div></div><button class="btn btn-secondary btn-sm">Export</button></div>
+            <div class="table-wrap" style="border:none;border-radius:0;">
+              <table class="table">
+                <thead><tr><th>Swimmer</th><th>Present</th><th>Late</th><th>Excused</th><th>No-show</th><th class="text-right">Rate</th></tr></thead>
+                <tbody>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-ellie','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm">EL</div><span class="user-name">Ellie Wong</span></div></td><td>15</td><td>0</td><td>0</td><td>0</td><td class="text-right text-bold">100% ⭐</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-jade','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm gold">JL</div><span class="user-name">Jade Lee</span></div></td><td>13</td><td>0</td><td>2</td><td>0</td><td class="text-right text-bold">87%</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-detail','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm gold">JP</div><span class="user-name">Jasmine Park</span></div></td><td>14</td><td>1</td><td>0</td><td>0</td><td class="text-right text-bold">94%</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-detail','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm green">KP</div><span class="user-name">Keira Patel</span></div></td><td>15</td><td>0</td><td>0</td><td>0</td><td class="text-right text-bold">100% ⭐</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-lumi','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm aqua">LT</div><span class="user-name">Lumi Tanaka ⭐</span></div></td><td>15</td><td>0</td><td>0</td><td>0</td><td class="text-right text-bold">100% ⭐</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-detail','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm aqua">SR</div><span class="user-name">Sebastian Ruiz</span></div></td><td>13</td><td>2</td><td>0</td><td>0</td><td class="text-right text-bold">87%</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-detail','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm">AH</div><span class="user-name">Annabelle Ho</span></div></td><td>14</td><td>0</td><td>1</td><td>0</td><td class="text-right text-bold">93%</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-detail','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm gold">CA</div><span class="user-name">Caitlin Adams</span></div></td><td>13</td><td>1</td><td>1</td><td>0</td><td class="text-right text-bold">87%</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-detail','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm green">EO</div><span class="user-name">Eloise Park</span></div></td><td>14</td><td>0</td><td>1</td><td>0</td><td class="text-right text-bold">93%</td></tr>
+                  <tr class="selectable" onclick="showDetailView('view-swimmer-detail','view-team')"><td><div class="user-cell"><div class="avatar avatar-sm">AL</div><span class="user-name">Alison Choi</span></div></td><td>12</td><td>1</td><td>1</td><td>1</td><td class="text-right text-bold" style="color:#B45309;">80%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Co-coach Notes -->
+        <div data-tab-group="team-tab" id="team-tab-notes" style="display:none;">
+          <div class="inline-alert mb-3">Shared skill observations between <strong>Emily</strong> &amp; <strong>Heidi</strong>. Both coaches see everything in real-time. Notes are private (not visible to parents).</div>
+
+          <div class="row row-between mb-3">
+            <div class="chip-row">
+              <span class="chip active" data-value="all" onclick="filterByChip(this,'#cc-notes > div','swimmer')">All swimmers · 14</span>
+              <span class="chip" data-value="lumi" onclick="filterByChip(this,'#cc-notes > div','swimmer')">Lumi · 3</span>
+              <span class="chip" data-value="sebastian" onclick="filterByChip(this,'#cc-notes > div','swimmer')">Sebastian · 3</span>
+              <span class="chip" data-value="ellie" onclick="filterByChip(this,'#cc-notes > div','swimmer')">Ellie · 2</span>
+              <span class="chip" data-value="alison" onclick="filterByChip(this,'#cc-notes > div','swimmer')">Alison · 2</span>
+              <span class="chip" data-value="jade" onclick="filterByChip(this,'#cc-notes > div','swimmer')">Jade · 2</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="showDetailView('view-add-skill-note','view-team')">+ Add Note</button>
+          </div>
+
+          <div id="cc-notes">
+            <div class="skill-note" data-swimmer="lumi">
+              <div class="note-from">Heidi · Tue Jun 2 · 7:02 PM · about <strong>Lumi Tanaka ⭐</strong></div>
+              <div class="note-body">Lumi is locking the vertical at 8 counts cleanly now — she's ready to start the combo lift. Sub her into the front row for Sunday's run-through? Also her solo timing on count 32 is consistently early.</div>
+            </div>
+            <div class="skill-note" data-swimmer="sebastian">
+              <div class="note-from">Heidi · Tue Jun 2 · 7:04 PM · about <strong>Sebastian Ruiz</strong></div>
+              <div class="note-body">Sebastian's eggbeater height is great but the head position dropped during the final 30s — let's plan a stamina block on Friday. He also asked about extra solo videos.</div>
+            </div>
+            <div class="skill-note" data-swimmer="ellie" style="background:var(--navy-50);border-left-color:var(--navy-700);">
+              <div class="note-from" style="color:var(--navy-700);">You · Mon Jun 1 · 8:14 PM · about <strong>Ellie Wong</strong></div>
+              <div class="note-body">Ellie's Figure 142 still over-rotating on the descent. Try the slow-down drill from the USAAS library before Friday. Watched the video with her after Monday's session.</div>
+            </div>
+            <div class="skill-note" data-swimmer="alison" style="background:var(--red-100);border-left-color:var(--red-500);">
+              <div class="note-from" style="color:var(--red-700);">Heidi · Sun May 25 · 8:32 PM · about <strong>Alison Choi</strong></div>
+              <div class="note-body">⚠ Alison missed 3 sessions this month (80% rate). I checked in with mom — work conflict. Let's offer make-up sessions. She's also behind on Vertical.</div>
+            </div>
+            <div class="skill-note" data-swimmer="lumi">
+              <div class="note-from">Heidi · Fri May 22 · 6:48 PM · about <strong>Lumi Tanaka</strong></div>
+              <div class="note-body">Lumi nailed all 5 required skills today — she's the first in the team. Recommend recognition at Sectionals lineup announcement.</div>
+            </div>
+            <div class="skill-note" data-swimmer="jade" style="background:var(--navy-50);border-left-color:var(--navy-700);">
+              <div class="note-from" style="color:var(--navy-700);">You · Mon May 18 · 7:55 PM · about <strong>Jade Lee</strong></div>
+              <div class="note-body">Jade is improving fast on Vertical — went from 6 counts to 9 counts in one week. Encourage her to keep at it. Started Boost basics today.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Training Materials -->
+        <div data-tab-group="team-tab" id="team-tab-mat" style="display:none;">
+          <div class="card mb-4">
+            <div class="row row-between mb-3"><h3>Training Materials assigned to 12U A</h3><button class="btn btn-primary btn-sm" onclick="showView('view-resources')">+ Assign</button></div>
+            <div class="grid grid-auto-260">
+              <div class="resource-card"><div class="resource-thumb"><div class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg></div><span class="duration">4:12</span></div><div class="resource-body"><div class="resource-title">Eggbeater Kick</div><div class="resource-meta">USAAS Library</div><div class="progress mt-3"><div class="progress-fill green" style="width:100%;"></div></div><div class="text-xs text-muted mt-2">10 of 10 watched</div></div></div>
+              <div class="resource-card"><div class="resource-thumb" style="background:linear-gradient(135deg,var(--aqua-600),var(--aqua-400));"><div class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg></div><span class="duration">3:48</span></div><div class="resource-body"><div class="resource-title">Ballet Leg — Single</div><div class="resource-meta">USAAS Library</div><div class="progress mt-3"><div class="progress-fill green" style="width:100%;"></div></div><div class="text-xs text-muted mt-2">10 of 10 watched</div></div></div>
+              <div class="resource-card"><div class="resource-thumb" style="background:linear-gradient(135deg,#7C3AED,#A78BFA);"><div class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg></div><span class="duration">5:30</span></div><div class="resource-body"><div class="resource-title">Vertical Position</div><div class="resource-meta">USAAS Library</div><div class="progress mt-3"><div class="progress-fill" style="width:80%;"></div></div><div class="text-xs text-muted mt-2">8 of 10 · ping Jade, Annabelle</div></div></div>
+              <div class="resource-card"><div class="resource-thumb"><div class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg></div><span class="duration">4:55</span></div><div class="resource-body"><div class="resource-title">Boost</div><div class="resource-meta">USAAS Library</div><div class="progress mt-3"><div class="progress-fill gold" style="width:50%;"></div></div><div class="text-xs text-muted mt-2">5 of 10 · focus area for Friday</div></div></div>
+              <div class="resource-card"><div class="resource-thumb" style="background:linear-gradient(135deg,var(--gold-500),#FBBF24);"><div class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg></div><span class="duration">6:20</span></div><div class="resource-body"><div class="resource-title">Figure 142</div><div class="resource-meta">USAAS Library</div><div class="progress mt-3"><div class="progress-fill red" style="width:20%;"></div></div><div class="text-xs text-muted mt-2">2 of 10 · highest priority</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Communications -->
+        <div data-tab-group="team-tab" id="team-tab-comms" style="display:none;">
+          <div class="row row-between mb-3"><h3>Sent to 12U A parents</h3><button class="btn btn-primary btn-sm" onclick="showDetailView('view-send-announce','view-team')">+ Send Announcement</button></div>
+          <div class="announcement">
+            <div class="announcement-head"><div class="avatar avatar-sm aqua">EM</div><div><div class="sender">You · Coach Emily</div><div class="meta">Yesterday · 10 families</div></div><span class="badge badge-success" style="margin-left:auto;">10/10 read</span></div>
+            <div class="text-bold text-md mb-2">12U A — Routine Fees Posted</div>
+            <div class="announcement-body">Sectionals routine fees for 12U A are now live on the billing page. Solo swimmers (Ellie, Lumi) have a $140 routine fee — everyone else $70. Please clear balances before June 12.</div>
+            <div class="announcement-channels"><span class="badge badge-info">📱 Parent Portal</span><span class="badge badge-info">✉️ Email</span></div>
+          </div>
+          <div class="announcement">
+            <div class="announcement-head"><div class="avatar avatar-sm">HE</div><div><div class="sender">Coach Heidi</div><div class="meta">4 days ago · 10 families</div></div><span class="badge badge-success" style="margin-left:auto;">9/10 read</span></div>
+            <div class="text-bold text-md mb-2">Bring caps + water bottles every session</div>
+            <div class="announcement-body">Quick reminder we ask all 12U A swimmers to bring a clearly labeled water bottle and team cap. We had 3 lost bottles last week.</div>
+            <div class="announcement-channels"><span class="badge badge-info">📱 Parent Portal</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== SWIMMER DETAIL (Ellie · drill-in showcase) ========== -->
+    <section class="view" id="view-swimmer-ellie">
+      <div class="topbar">
+        <div class="row gap-3">
+          <button class="back-btn" onclick="goBackView('view-team')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div><div class="crumb"><a onclick="showView('view-team')">12U A</a> / Ellie Wong</div><h1>Ellie Wong</h1></div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary">Message Parent</button>
+          <button class="btn btn-secondary" onclick="showDetailView('view-add-skill-note','view-swimmer-ellie')">+ Skill Note</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="profile-cover">
+          <div class="avatar avatar-xl">EW</div>
+          <div>
+            <h1>Ellie Wong</h1>
+            <div class="pc-meta">Age 11 · 12U A · Combo + Team routine · with SFM since Sep 2022</div>
+            <div class="row gap-2 mt-3"><span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">100% attendance</span><span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">5/5 skills ✓</span><span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">Solo + Team</span></div>
+          </div>
+          <div class="pc-stats">
+            <div><div class="pcs-val">15/15</div><div class="pcs-label">Last 30 days</div></div>
+            <div><div class="pcs-val">5/5</div><div class="pcs-label">Required Skills</div></div>
+            <div><div class="pcs-val">A+</div><div class="pcs-label">Sectionals Ready</div></div>
+          </div>
+        </div>
+
+        <div class="tab-bar">
+          <div class="tab active" onclick="switchTab(this,'sw-tab')" data-target="sw-tab-overview">Overview</div>
+          <div class="tab" onclick="switchTab(this,'sw-tab')" data-target="sw-tab-att">Attendance</div>
+          <div class="tab" onclick="switchTab(this,'sw-tab')" data-target="sw-tab-skills">Skills (5)</div>
+          <div class="tab" onclick="switchTab(this,'sw-tab')" data-target="sw-tab-msgs">Parent Messages <span class="badge badge-aqua" style="margin-left:4px;font-size:10px;padding:1px 5px;">3</span></div>
+          <div class="tab" onclick="switchTab(this,'sw-tab')" data-target="sw-tab-notes">Co-coach Notes (2)</div>
+        </div>
+
+        <div data-tab-group="sw-tab" id="sw-tab-overview">
+          <div class="grid grid-3-2">
+            <div class="stack">
+              <div class="card">
+                <h3 class="mb-3">Parent / Guardian</h3>
+                <div class="row gap-3 mb-3">
+                  <div class="avatar avatar-lg">KW</div>
+                  <div class="flex-1"><div class="text-bold">Karen Wong</div><div class="text-muted text-xs">Primary contact</div></div>
+                </div>
+                <div class="spec-list">
+                  <div class="spec-row"><span class="lbl">Email</span><span class="val">karen.wong@example.com</span></div>
+                  <div class="spec-row"><span class="lbl">Phone</span><span class="val">+1 (415) 555-0238</span></div>
+                  <div class="spec-row"><span class="lbl">Preferred channel</span><span class="val">📱 Parent Portal</span></div>
+                  <div class="spec-row"><span class="lbl">Emergency contact</span><span class="val">David Wong (Father)</span></div>
+                </div>
+                <button class="btn btn-primary btn-block mt-3">Open thread →</button>
+              </div>
+
+              <div class="card">
+                <h3 class="mb-3">Routine assignment</h3>
+                <div class="spec-list">
+                  <div class="spec-row"><span class="lbl">Team routine</span><span class="val" style="color:var(--green-700);">✓ Confirmed</span></div>
+                  <div class="spec-row"><span class="lbl">Combo</span><span class="val" style="color:var(--green-700);">✓ Confirmed</span></div>
+                  <div class="spec-row"><span class="lbl">Solo</span><span class="val">—</span></div>
+                  <div class="spec-row"><span class="lbl">Duet partner</span><span class="val">—</span></div>
+                  <div class="spec-row"><span class="lbl">Sectionals fees</span><span class="val">$190 paid ✓</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack">
+              <div class="card card-flush">
+                <div class="card-header"><h3>Recent activity</h3></div>
+                <div>
+                  <div class="activity-item"><div class="activity-icon green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="activity-body"><div class="activity-title">Marked present — Mon Jun 1 · HL Pool</div><div class="activity-meta">By you · 5:00 — 8:00 PM</div></div></div>
+                  <div class="activity-item"><div class="activity-icon green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="activity-body"><div class="activity-title">Marked present — Tue Jun 2 · Coffman</div><div class="activity-meta">By Heidi · 4:30 — 7:00 PM</div></div></div>
+                  <div class="activity-item"><div class="activity-icon gold">📝</div><div class="activity-body"><div class="activity-title">Skill note by you — Figure 142</div><div class="activity-meta">"Over-rotating on descent · slow-down drill" · Mon Jun 1</div></div></div>
+                  <div class="activity-item"><div class="activity-icon aqua">📱</div><div class="activity-body"><div class="activity-title">Karen sent message — "10 min late Friday"</div><div class="activity-meta">2 hrs ago · pending reply</div></div></div>
+                  <div class="activity-item"><div class="activity-icon green">$</div><div class="activity-body"><div class="activity-title">Sectionals fee paid · $190</div><div class="activity-meta">May 17 · Card · auto-confirmed</div></div></div>
+                </div>
+              </div>
+              <div class="card">
+                <h3 class="mb-3">Next sessions for Ellie</h3>
+                <div class="mini-list">
+                  <div class="mini-list-item"><div class="avatar avatar-sm aqua">Fri</div><div class="mli-body"><div class="mli-title">Fri Jun 5 · 5:00 PM · Coffman</div><div class="mli-sub">Your session · ⚠ "will be 10m late"</div></div><span class="badge badge-warning">Late</span></div>
+                  <div class="mini-list-item"><div class="avatar avatar-sm">Sun</div><div class="mli-body"><div class="mli-title">Sun Jun 7 · 3:00 PM · JB</div><div class="mli-sub">Joint w/ Heidi · 5-hour</div></div><span class="badge badge-success">On</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div data-tab-group="sw-tab" id="sw-tab-att" style="display:none;">
+          <div class="card card-flush">
+            <div class="card-header"><h3>Ellie's attendance — last 15 sessions</h3><div class="text-muted text-xs">100% perfect attendance ⭐</div></div>
+            <div class="table-wrap" style="border:none;"><table class="table">
+              <thead><tr><th>Date</th><th>Practice</th><th>Coach</th><th>Status</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td>Tue Jun 2</td><td>Coffman · 4:30-7p</td><td>Heidi</td><td><span class="badge badge-success">✓ Present</span></td><td>—</td></tr>
+                <tr><td>Mon Jun 1</td><td>HL · 5:00-8p</td><td>You (Emily)</td><td><span class="badge badge-success">✓ Present</span></td><td>You added skill note on Figure 142</td></tr>
+                <tr><td>Sun May 31</td><td>JB · 3-8p</td><td>Joint</td><td><span class="badge badge-success">✓ Present</span></td><td>Strong Combo run-through</td></tr>
+                <tr><td>Fri May 29</td><td>Coffman · 5-7p</td><td>You</td><td><span class="badge badge-success">✓ Present</span></td><td>—</td></tr>
+                <tr><td>Thu May 28</td><td>Coffman · 4:30-7p</td><td>Heidi</td><td><span class="badge badge-success">✓ Present</span></td><td>—</td></tr>
+                <tr><td>Tue May 26</td><td>Coffman · 4:30-7p</td><td>Heidi</td><td><span class="badge badge-success">✓ Present</span></td><td>Heidi note: ready for combo lift</td></tr>
+                <tr><td>Mon May 25</td><td>HL · 5-8p</td><td>You</td><td><span class="badge badge-success">✓ Present</span></td><td>—</td></tr>
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <div data-tab-group="sw-tab" id="sw-tab-skills" style="display:none;">
+          <div class="card mb-4">
+            <h3 class="mb-3">5 USAAS 12U Required Elements</h3>
+            <div class="stack stack-sm">
+              <div><div class="row row-between text-xs mb-2"><span><strong>Eggbeater Kick</strong> — Foundations</span><span class="badge badge-success">Mastered ✓ · May 12</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Ballet Leg</strong> — Single</span><span class="badge badge-success">Mastered ✓ · May 18</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Vertical Position</strong> — Hold</span><span class="badge badge-success">Mastered ✓ · May 22</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Boost</strong> — Vertical to Surface</span><span class="badge badge-success">Mastered ✓ · May 27</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Figure 142</strong> — Walkover Front</span><span class="badge badge-warning">In progress · over-rotating</span></div><div class="progress"><div class="progress-fill" style="width:80%;"></div></div></div>
+            </div>
+            <div class="inline-alert mt-4">Ellie is the <strong>strongest 12U A swimmer</strong> — 5 of 5 skills targeted, 100% attendance, ready for Sectionals A-team lineup.</div>
+          </div>
+        </div>
+
+        <div data-tab-group="sw-tab" id="sw-tab-msgs" style="display:none;">
+          <div class="card">
+            <h3 class="mb-3">Messages from Karen Wong (parent)</h3>
+            <div class="msg-thread">
+              <div class="msg">
+                <div class="avatar avatar-sm msg-avatar">KW</div>
+                <div class="msg-body">
+                  <div class="msg-from">Karen Wong<span class="msg-time">2 hrs ago · Friday Jun 5 session</span></div>
+                  <div class="msg-text">Ellie will be 10 min late tomorrow — school project running over. She's on the way! Please don't mark her absent.</div>
+                  <span class="msg-channel">📱 Parent Portal · Tied to Fri Jun 5 practice</span>
+                </div>
+              </div>
+              <div class="msg outbound">
+                <div class="avatar avatar-sm msg-avatar aqua">EM</div>
+                <div class="msg-body">
+                  <div class="msg-from">You · Coach Emily<span class="msg-time">1 hr ago</span></div>
+                  <div class="msg-text">No problem Karen! We'll start with Boost warm-ups, she can jump in for the routine portion. Thanks for the heads up.</div>
+                  <span class="msg-channel">📱 Coach Interface</span>
+                </div>
+              </div>
+              <div class="msg">
+                <div class="avatar avatar-sm msg-avatar">KW</div>
+                <div class="msg-body">
+                  <div class="msg-from">Karen Wong<span class="msg-time">May 28 · general</span></div>
+                  <div class="msg-text">Can Ellie do an extra solo session before Sectionals? Happy to pay if you have availability.</div>
+                  <span class="msg-channel">📱 Parent Portal</span>
+                </div>
+              </div>
+              <div class="msg outbound">
+                <div class="avatar avatar-sm msg-avatar aqua">EM</div>
+                <div class="msg-body">
+                  <div class="msg-from">You · Coach Emily<span class="msg-time">May 28</span></div>
+                  <div class="msg-text">Yes! Saturday June 6 · 9-10 AM at HL works. I'll send a payment request for $65 (1-hour private). Sound good?</div>
+                  <span class="msg-channel">📱 Coach Interface · Karen accepted</span>
+                </div>
+              </div>
+            </div>
+            <div class="reply-box mt-3">
+              <textarea class="textarea" placeholder="Reply to Karen…"></textarea>
+              <button class="btn btn-primary btn-sm mt-3">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <div data-tab-group="sw-tab" id="sw-tab-notes" style="display:none;">
+          <div class="card">
+            <h3 class="mb-3">Co-coach notes about Ellie</h3>
+            <div class="skill-note" style="background:var(--navy-50);border-left-color:var(--navy-700);">
+              <div class="note-from" style="color:var(--navy-700);">You · Mon Jun 1 · 8:14 PM</div>
+              <div class="note-body">Ellie's Figure 142 still over-rotating on the descent. Try the slow-down drill from the USAAS library before Friday. Watched the video with her after Monday's session.</div>
+            </div>
+            <div class="skill-note">
+              <div class="note-from">Heidi · Tue May 26 · 7:18 PM</div>
+              <div class="note-body">Ellie is ready for combo lift promotion. She holds vertical at 10 counts now — strongest in the team. Consider moving her to A-team lineup.</div>
+            </div>
+            <button class="btn btn-aqua btn-block mt-3" onclick="showDetailView('view-add-skill-note','view-swimmer-ellie')">+ Add Note about Ellie</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SWIMMER DETAIL · Jade (compact template) ========== -->
+    <section class="view" id="view-swimmer-jade">
+      <div class="topbar">
+        <div class="row gap-3"><button class="back-btn" onclick="goBackView('view-team')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="crumb"><a onclick="showView('view-team')">12U A</a> / Jade Lee</div><h1>Jade Lee</h1></div></div>
+        <div class="topbar-actions"><button class="btn btn-secondary">Message Daniel</button><button class="btn btn-secondary" onclick="showDetailView('view-add-skill-note','view-swimmer-jade')">+ Note</button></div>
+      </div>
+      <div class="content">
+        <div class="profile-cover">
+          <div class="avatar avatar-xl gold">JL</div>
+          <div><h1>Jade Lee</h1><div class="pc-meta">Age 11 · Team routine · joined Aug 2024</div>
+            <div class="row gap-2 mt-3"><span class="badge" style="background:rgba(245,158,11,0.85);color:#fff;">⚠ Absent Tue (flu)</span><span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">2/5 skills</span><span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">87% attendance</span></div>
+          </div>
+          <div class="pc-stats"><div><div class="pcs-val">13/15</div><div class="pcs-label">Last 30 days</div></div><div><div class="pcs-val">2/5</div><div class="pcs-label">Skills</div></div><div><div class="pcs-val">Back Thu</div><div class="pcs-label">Status</div></div></div>
+        </div>
+        <div class="grid grid-3-2">
+          <div class="card">
+            <h3 class="mb-3">5 USAAS 12U Skills</h3>
+            <div class="stack stack-sm">
+              <div><div class="row row-between text-xs mb-2"><span><strong>Eggbeater</strong></span><span class="badge badge-success">Mastered ✓</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Ballet Leg</strong></span><span class="badge badge-success">Mastered ✓</span></div><div class="progress"><div class="progress-fill green" style="width:100%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Vertical Position</strong></span><span class="badge badge-warning">In progress · 9 counts</span></div><div class="progress"><div class="progress-fill gold" style="width:60%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Boost</strong></span><span class="badge badge-soft">Not started</span></div><div class="progress"><div class="progress-fill" style="width:10%;"></div></div></div>
+              <div><div class="row row-between text-xs mb-2"><span><strong>Figure 142</strong></span><span class="badge badge-soft">Not started</span></div><div class="progress"><div class="progress-fill" style="width:0%;"></div></div></div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <h3 class="mb-3">Parent · Daniel Lee</h3>
+              <div class="spec-list">
+                <div class="spec-row"><span class="lbl">Email</span><span class="val">daniel.lee@…</span></div>
+                <div class="spec-row"><span class="lbl">Phone</span><span class="val">(415) 555-0312</span></div>
+                <div class="spec-row"><span class="lbl">Last msg</span><span class="val" style="font-size:11px;">"Back Thursday"</span></div>
+              </div>
+              <button class="btn btn-primary btn-block mt-3">Open thread</button>
+            </div>
+            <div class="card">
+              <h3 class="mb-3">Make-up needed</h3>
+              <div class="inline-alert gold">Jade missed Tuesday (flu). Daniel asked about a make-up.</div>
+              <button class="btn btn-aqua btn-block mt-3">Schedule make-up</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SWIMMER DETAIL · Lumi (compact) ========== -->
+    <section class="view" id="view-swimmer-lumi">
+      <div class="topbar">
+        <div class="row gap-3"><button class="back-btn" onclick="goBackView('view-team')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="crumb"><a onclick="showView('view-team')">12U A</a> / Lumi Tanaka ⭐</div><h1>Lumi Tanaka <span style="color:var(--gold-500);">⭐</span></h1></div></div>
+        <div class="topbar-actions"><button class="btn btn-secondary">Message Akiko</button></div>
+      </div>
+      <div class="content">
+        <div class="profile-cover">
+          <div class="avatar avatar-xl aqua">LT</div>
+          <div><h1>Lumi Tanaka <span style="color:var(--gold-500);">⭐</span></h1><div class="pc-meta">Age 11 · Combo + Team · top performer · ready for combo lift promotion</div>
+            <div class="row gap-2 mt-3"><span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">All 5 skills ✓</span><span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">100% attendance</span><span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;">⭐ 4-month streak</span></div>
+          </div>
+          <div class="pc-stats"><div><div class="pcs-val">5/5 ✓</div><div class="pcs-label">All Skills</div></div><div><div class="pcs-val">100%</div><div class="pcs-label">Attendance</div></div><div><div class="pcs-val">A+</div><div class="pcs-label">Sectionals</div></div></div>
+        </div>
+        <div class="card mt-4">
+          <h3 class="mb-3">Why Lumi stands out</h3>
+          <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:var(--gray-700);">
+            <li>Only 12U A swimmer with all 5 required elements mastered</li>
+            <li>Vertical hold at 10 counts (team avg: 6)</li>
+            <li>4-month perfect attendance streak — recognized by board</li>
+            <li>Combo + Team routine — solo timing on count 32 needs work (Heidi note)</li>
+            <li>Mom Akiko Tanaka regularly engaged · quick to respond</li>
+          </ul>
+          <div class="row gap-2 mt-3">
+            <button class="btn btn-primary btn-sm">Recommend for combo lift</button>
+            <button class="btn btn-secondary btn-sm">Suggest J&amp;Y promotion (next season)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== GENERIC SWIMMER DETAIL ========== -->
+    <section class="view" id="view-swimmer-detail">
+      <div class="topbar">
+        <div class="row gap-3"><button class="back-btn" onclick="goBackView('view-team')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="crumb"><a onclick="showView('view-team')">12U A</a> / Swimmer</div><h1>Swimmer Profile</h1></div></div>
+        <div class="topbar-actions"><button class="btn btn-secondary">Message Parent</button><button class="btn btn-secondary" onclick="showDetailView('view-add-skill-note','view-swimmer-detail')">+ Note</button></div>
+      </div>
+      <div class="content">
+        <div class="profile-cover">
+          <div class="avatar avatar-xl">12A</div>
+          <div><h1>12U A swimmer profile</h1><div class="pc-meta">Generic template · same layout as Ellie's full page above</div></div>
+        </div>
+        <div class="inline-alert mt-4">The full template is on <a onclick="showDetailView('view-swimmer-ellie','view-swimmer-detail')" style="cursor:pointer;text-decoration:underline;">Ellie Wong's profile</a> — every swimmer gets the same 5-tab layout: Overview · Attendance · Skills · Parent Messages · Co-coach Notes.</div>
+      </div>
+    </section>
+
+    <!-- ========== MY SCHEDULE ========== -->
+    <section class="view" id="view-schedule">
+      <div class="topbar">
+        <div>
+          <h1>My Schedule</h1>
+          <div class="topbar-sub">12U A · 3 sessions / week · co-coached with Heidi · click any practice to manage</div>
+        </div>
+        <div class="topbar-actions">
+          <div class="date-nav">
+            <button class="date-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div class="date-label">Week of Jun 1 — 7</div>
+            <button class="date-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
+          <button class="btn btn-secondary" onclick="openModal('modal-reschedule')">Request Sub</button>
+          <button class="btn btn-primary" onclick="openModal('modal-add-practice')">+ Add Practice</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="card mb-4" style="padding:14px 18px;">
+          <div class="row" style="gap:14px;flex-wrap:wrap;">
+            <div>
+              <div class="text-xs text-muted text-semibold mb-2" style="text-transform:uppercase;letter-spacing:0.06em;">View</div>
+              <div class="chip-row">
+                <span class="chip active" onclick="selectChip(this)">My sessions only</span>
+                <span class="chip" onclick="selectChip(this)">Include Heidi's</span>
+                <span class="chip" onclick="selectChip(this)">All 12U A</span>
+              </div>
+            </div>
+            <div>
+              <div class="text-xs text-muted text-semibold mb-2" style="text-transform:uppercase;letter-spacing:0.06em;">Status</div>
+              <div class="chip-row">
+                <span class="chip active" onclick="selectChip(this)">All</span>
+                <span class="chip" onclick="selectChip(this)">Upcoming</span>
+                <span class="chip" onclick="selectChip(this)">Completed</span>
+                <span class="chip" onclick="selectChip(this)">Cancelled</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Monday — June 1</div><div class="day-sub">Your session · completed · 9 present</div></div><span class="badge badge-success">✓ Completed</span></div>
+          <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-600);"></div><div class="sch-time">5:00 — 8:00 PM</div><div class="sch-info"><div class="sch-title">12U A · HL Pool · You</div><div class="sch-meta">10 swimmers · 9 present · 1 late (Sebastian) · 0 messages</div></div><div class="sch-actions"><button class="btn btn-ghost btn-sm">View</button></div></div>
+        </div>
+
+        <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Tuesday — June 2</div><div class="day-sub">Heidi's session · auto-synced to you</div></div><span class="badge badge-soft">Co-coach</span></div>
+          <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-600);"></div><div class="sch-time">4:30 — 7:00 PM</div><div class="sch-info"><div class="sch-title">12U A · Coffman · Coach Heidi</div><div class="sch-meta">9 present · 1 absent (Jade flu) · 2 messages · 2 skill notes posted</div></div><div class="sch-actions"><button class="btn btn-ghost btn-sm">View</button></div></div>
+        </div>
+
+        <div class="sch-day-card"><div class="sch-day-head today"><div><div class="day-h">Wednesday — June 3 · TODAY</div><div class="day-sub">No 12U A practice — rest day</div></div><span class="badge badge-aqua">Today</span></div>
+          <div style="padding:14px 18px;color:var(--gray-500);font-size:13px;text-align:center;">Rest day · use this time to review Heidi's notes &amp; prep Friday's session plan</div>
+        </div>
+
+        <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Thursday — June 4</div><div class="day-sub">Heidi's session</div></div><span class="badge badge-soft">Co-coach</span></div>
+          <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-600);"></div><div class="sch-time">4:30 — 7:00 PM</div><div class="sch-info"><div class="sch-title">12U A · Coffman · Coach Heidi</div><div class="sch-meta">10 expected · Jade returning from flu</div></div><div class="sch-actions"><button class="btn btn-ghost btn-sm">Preview</button></div></div>
+        </div>
+
+        <div class="sch-day-card" style="border:2px solid var(--aqua-500);"><div class="sch-day-head" style="background:var(--aqua-100);"><div><div class="day-h" style="color:var(--aqua-600);">Friday — June 5 · UP NEXT</div><div class="day-sub">Your next session · 2 unread parent messages</div></div><span class="badge badge-aqua">Up next ⏱</span></div>
+          <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-500);"></div><div class="sch-time">5:00 — 7:00 PM</div><div class="sch-info"><div class="sch-title">12U A · Coffman · You</div><div class="sch-meta">Focus: Boost &amp; Figure 142 · Sebastian stamina block · Ellie arriving late · Jade back</div></div><div class="sch-actions"><button class="btn btn-primary btn-sm">Open ↗</button></div></div>
+        </div>
+
+        <div class="sch-day-card"><div class="sch-day-head"><div><div class="day-h">Sunday — June 7</div><div class="day-sub">Long session · joint with Heidi · Sectionals prep</div></div><span class="badge badge-warning">5-hour</span></div>
+          <div class="sch-row" onclick="openModal('modal-edit-practice')"><div class="team-bar" style="background:var(--aqua-600);"></div><div class="sch-time">3:00 — 8:00 PM</div><div class="sch-info"><div class="sch-title">12U A · JB Pool · Emily &amp; Heidi together</div><div class="sch-meta">Dress rehearsal · pack snacks + 2 suits · 13 days to Sectionals</div></div><div class="sch-actions"><button class="btn btn-ghost btn-sm">Plan session</button></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== ATTENDANCE HISTORY ========== -->
+    <section class="view" id="view-attendance">
+      <div class="topbar">
+        <div>
+          <h1>Attendance History — 12U A</h1>
+          <div class="topbar-sub">92% team rate · last 30 days · shared roster with Heidi</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary">Export CSV</button>
+          <button class="btn btn-primary">Generate Report</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="grid grid-4 mb-4">
+          <div class="stat-card accent-green"><div class="stat-label">Team Rate</div><div class="stat-value">92%</div><div class="stat-meta">30-day rolling</div></div>
+          <div class="stat-card"><div class="stat-label">Perfect attendance</div><div class="stat-value">4</div><div class="stat-meta">Ellie · Keira · Lumi · Eloise</div></div>
+          <div class="stat-card accent-gold"><div class="stat-label">Excused absences</div><div class="stat-value">6</div><div class="stat-meta">3 illness · 3 family</div></div>
+          <div class="stat-card accent-red"><div class="stat-label">At-risk</div><div class="stat-value">1</div><div class="stat-meta">Alison Choi (80%)</div></div>
+        </div>
+
+        <div class="card mb-4" style="padding:14px 18px;">
+          <div class="row" style="gap:14px;flex-wrap:wrap;">
+            <div class="search-input" style="flex:1;min-width:220px;"><input class="input" placeholder="Search by swimmer name…" oninput="searchList(this, '#att-history tbody tr', ['name','status'])" /></div>
+            <div class="chip-row">
+              <span class="chip active" data-value="all" onclick="filterByChip(this, '#att-history tbody tr', 'status')">All · 10</span>
+              <span class="chip" data-value="perfect" onclick="filterByChip(this, '#att-history tbody tr', 'status')">Perfect · 4</span>
+              <span class="chip" data-value="good" onclick="filterByChip(this, '#att-history tbody tr', 'status')">90%+ · 6</span>
+              <span class="chip" data-value="at-risk" onclick="filterByChip(this, '#att-history tbody tr', 'status')">⚠ At-risk · 1</span>
+            </div>
+            <select class="select" style="width:auto;"><option>Last 30 days</option><option>Last 60 days</option><option>This season</option><option>Custom range</option></select>
+          </div>
+        </div>
+
+        <div class="card card-flush">
+          <div class="card-header"><h3>Per-swimmer attendance</h3><div class="text-muted text-xs">Click any swimmer for per-practice breakdown</div></div>
+          <div class="table-wrap" style="border:none;border-radius:0;">
+            <table class="table" id="att-history">
+              <thead><tr><th>Swimmer</th><th>Present</th><th>Late</th><th>Excused</th><th>No-show</th><th class="text-right">Rate</th><th></th></tr></thead>
+              <tbody>
+                <tr data-name="ellie wong" data-status="perfect" class="selectable" onclick="showDetailView('view-swimmer-ellie','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm">EL</div><span class="user-name">Ellie Wong</span></div></td><td>15</td><td>0</td><td>0</td><td>0</td><td class="text-right text-bold">100% ⭐</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="keira patel" data-status="perfect" class="selectable" onclick="showDetailView('view-swimmer-detail','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm green">KP</div><span class="user-name">Keira Patel</span></div></td><td>15</td><td>0</td><td>0</td><td>0</td><td class="text-right text-bold">100% ⭐</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="lumi tanaka" data-status="perfect" class="selectable" onclick="showDetailView('view-swimmer-lumi','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm aqua">LT</div><span class="user-name">Lumi Tanaka ⭐</span></div></td><td>15</td><td>0</td><td>0</td><td>0</td><td class="text-right text-bold">100% ⭐</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="jasmine park" data-status="good" class="selectable" onclick="showDetailView('view-swimmer-detail','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm gold">JP</div><span class="user-name">Jasmine Park</span></div></td><td>14</td><td>1</td><td>0</td><td>0</td><td class="text-right text-bold">94%</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="annabelle ho" data-status="good" class="selectable" onclick="showDetailView('view-swimmer-detail','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm">AH</div><span class="user-name">Annabelle Ho</span></div></td><td>14</td><td>0</td><td>1</td><td>0</td><td class="text-right text-bold">93%</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="eloise park" data-status="perfect" class="selectable" onclick="showDetailView('view-swimmer-detail','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm green">EO</div><span class="user-name">Eloise Park</span></div></td><td>14</td><td>0</td><td>1</td><td>0</td><td class="text-right text-bold">93%</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="jade lee" data-status="good" class="selectable" onclick="showDetailView('view-swimmer-jade','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm gold">JL</div><span class="user-name">Jade Lee</span></div></td><td>13</td><td>0</td><td>2</td><td>0</td><td class="text-right text-bold">87%</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="sebastian ruiz" data-status="good" class="selectable" onclick="showDetailView('view-swimmer-detail','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm aqua">SR</div><span class="user-name">Sebastian Ruiz</span></div></td><td>13</td><td>2</td><td>0</td><td>0</td><td class="text-right text-bold">87%</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="caitlin adams" data-status="good" class="selectable" onclick="showDetailView('view-swimmer-detail','view-attendance')"><td><div class="user-cell"><div class="avatar avatar-sm gold">CA</div><span class="user-name">Caitlin Adams</span></div></td><td>13</td><td>1</td><td>1</td><td>0</td><td class="text-right text-bold">87%</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+                <tr data-name="alison choi" data-status="at-risk" class="selectable" onclick="showDetailView('view-swimmer-detail','view-attendance')" style="background:rgba(239,68,68,0.04);"><td><div class="user-cell"><div class="avatar avatar-sm">AL</div><span class="user-name">Alison Choi ⚠</span></div></td><td>12</td><td>1</td><td>1</td><td>1</td><td class="text-right text-bold" style="color:#B45309;">80%</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== COMMUNICATIONS ========== -->
+    <section class="view" id="view-comms">
+      <div class="topbar">
+        <div>
+          <h1>Messages &amp; Announcements</h1>
+          <div class="topbar-sub">Your outgoing comms · admin announcements · parent inbox · DM with Eileen</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" onclick="showDetailView('view-send-announce','view-comms')">+ Send Announcement</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="grid grid-4 mb-4">
+          <div class="stat-card"><div class="stat-label">Sent by you</div><div class="stat-value">6</div><div class="stat-meta">This month · 12U A only</div></div>
+          <div class="stat-card accent-aqua"><div class="stat-label">From Admin</div><div class="stat-value">3</div><div class="stat-meta">Eileen's announcements</div></div>
+          <div class="stat-card accent-gold"><div class="stat-label">DM w/ Eileen</div><div class="stat-value">2</div><div class="stat-meta">Internal threads</div></div>
+          <div class="stat-card accent-red"><div class="stat-label">Parent Inbox</div><div class="stat-value">3</div><div class="stat-meta">3 unread</div></div>
+        </div>
+
+        <div class="tab-bar">
+          <div class="tab active" onclick="switchTab(this,'comm-tab')" data-target="comm-tab-inbox">Parent Inbox <span class="badge badge-danger" style="margin-left:4px;font-size:10px;padding:1px 5px;">3</span></div>
+          <div class="tab" onclick="switchTab(this,'comm-tab')" data-target="comm-tab-sent">Sent by Me</div>
+          <div class="tab" onclick="switchTab(this,'comm-tab')" data-target="comm-tab-admin">From Admin</div>
+          <div class="tab" onclick="switchTab(this,'comm-tab')" data-target="comm-tab-dm">DM with Eileen</div>
+        </div>
+
+        <!-- Parent Inbox -->
+        <div data-tab-group="comm-tab" id="comm-tab-inbox">
+          <div class="inline-alert mb-3">Messages from <strong>12U A parents</strong> sent to you via Parent Portal · or class-specific threads.</div>
+
+          <div class="chip-row mb-4">
+            <span class="chip active" data-value="all" onclick="filterByChip(this, '#coach-inbox > div', 'tag')">All · 3</span>
+            <span class="chip" data-value="practice" onclick="filterByChip(this, '#coach-inbox > div', 'tag')">Practice-tied · 2</span>
+            <span class="chip" data-value="general" onclick="filterByChip(this, '#coach-inbox > div', 'tag')">General · 1</span>
+          </div>
+
+          <div id="coach-inbox">
+            <div class="card mb-3 selectable" data-tag="practice" onclick="showDetailView('view-swimmer-ellie','view-comms')" style="border-left:4px solid var(--red-500);">
+              <div class="row gap-3 mb-2"><div class="avatar avatar-sm">KW</div><div class="flex-1"><div class="text-bold">Karen Wong<span class="text-muted text-xs" style="font-weight:500;"> · parent of Ellie</span></div><div class="text-xs text-muted">📤 To: You · 2 hrs ago · <span style="color:var(--red-500);font-weight:700;">UNREAD</span></div></div><span class="badge badge-info">Tied to Fri Jun 5</span></div>
+              <div class="text-bold mb-2">Ellie 10 min late Friday</div>
+              <div class="text-sm text-muted">"Ellie will be 10 min late tomorrow — school project running over. She's on the way!"</div>
+              <div class="row gap-2 mt-3"><button class="btn btn-primary btn-sm">Reply</button><button class="btn btn-secondary btn-sm">Mark late on attendance</button></div>
+            </div>
+
+            <div class="card mb-3 selectable" data-tag="practice" onclick="showDetailView('view-swimmer-jade','view-comms')" style="border-left:4px solid var(--red-500);">
+              <div class="row gap-3 mb-2"><div class="avatar avatar-sm gold">DL</div><div class="flex-1"><div class="text-bold">Daniel Lee<span class="text-muted text-xs" style="font-weight:500;"> · parent of Jade</span></div><div class="text-xs text-muted">📤 To: You · 4 hrs ago · <span style="color:var(--red-500);font-weight:700;">UNREAD</span></div></div><span class="badge badge-info">Tied to Tue Jun 2</span></div>
+              <div class="text-bold mb-2">Jade flu — back Thursday</div>
+              <div class="text-sm text-muted">"Jade woke up with a fever — keeping her home today. Should be back by Thursday."</div>
+              <div class="row gap-2 mt-3"><button class="btn btn-primary btn-sm">Reply</button><button class="btn btn-secondary btn-sm">Confirm Thu return</button></div>
+            </div>
+
+            <div class="card mb-3 selectable" data-tag="general" style="border-left:4px solid var(--red-500);">
+              <div class="row gap-3 mb-2"><div class="avatar avatar-sm">AT</div><div class="flex-1"><div class="text-bold">Akiko Tanaka<span class="text-muted text-xs" style="font-weight:500;"> · parent of Lumi ⭐</span></div><div class="text-xs text-muted">📤 To: You · 1 day ago · <span style="color:var(--red-500);font-weight:700;">UNREAD</span></div></div></div>
+              <div class="text-bold mb-2">Solo private session — 30 min early?</div>
+              <div class="text-sm text-muted">"Lumi asked if she can come 30 min early Friday to work on her solo. Possible?"</div>
+              <div class="row gap-2 mt-3"><button class="btn btn-primary btn-sm">Reply</button></div>
+            </div>
+
+            <div class="card mb-3 selectable" data-tag="general">
+              <div class="row gap-3 mb-2"><div class="avatar avatar-sm gold">MR</div><div class="flex-1"><div class="text-bold">Maria Ruiz<span class="text-muted text-xs" style="font-weight:500;"> · parent of Sebastian</span></div><div class="text-xs text-muted">📤 To: You · 4 days ago</div></div><span class="badge badge-soft">Read</span></div>
+              <div class="text-bold mb-2">Extra solo videos?</div>
+              <div class="text-sm text-muted">"Sebastian asked if there are any extra solo reference videos. He wants to study before Sectionals."</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sent by me -->
+        <div data-tab-group="comm-tab" id="comm-tab-sent" style="display:none;">
+          <div class="row row-between mb-3"><h3>Announcements sent by you to 12U A parents</h3><button class="btn btn-primary btn-sm" onclick="showDetailView('view-send-announce','view-comms')">+ New</button></div>
+
+          <div class="announcement">
+            <div class="announcement-head"><div class="avatar avatar-sm aqua">EM</div><div><div class="sender">You · Coach Emily</div><div class="meta">Yesterday · 10 families</div></div><span class="badge badge-success" style="margin-left:auto;">10/10 read</span></div>
+            <div class="text-bold text-md mb-2">12U A — Routine Fees Posted</div>
+            <div class="announcement-body">Sectionals routine fees are live on the billing page. Solos (Ellie, Lumi) $140 — everyone else $70. Please clear balances before June 12.</div>
+            <div class="announcement-channels"><span class="badge badge-info">📱 Parent Portal</span><span class="badge badge-info">✉️ Email</span></div>
+          </div>
+
+          <div class="announcement">
+            <div class="announcement-head"><div class="avatar avatar-sm aqua">EM</div><div><div class="sender">You · Coach Emily</div><div class="meta">May 28 · 1-on-1 with Daniel Lee</div></div><span class="badge badge-success" style="margin-left:auto;">Read</span></div>
+            <div class="text-bold text-md mb-2">Make-up session for Jade</div>
+            <div class="announcement-body">Daniel — scheduling Jade for a 1-on-1 make-up Wed at HL · 5:30 PM. Reply if not possible.</div>
+            <div class="announcement-channels"><span class="badge badge-info">📱 Parent Portal</span></div>
+          </div>
+
+          <div class="announcement">
+            <div class="announcement-head"><div class="avatar avatar-sm aqua">EM</div><div><div class="sender">You · Coach Emily</div><div class="meta">May 25 · 10 families</div></div><span class="badge badge-success" style="margin-left:auto;">10/10 read</span></div>
+            <div class="text-bold text-md mb-2">Sunday June 7 — Bring 2 suits + snack</div>
+            <div class="announcement-body">Reminder for our 5-hour Sunday session at JB Pool: pack a second swimsuit and substantial snack. We break at 5pm for 20 min.</div>
+            <div class="announcement-channels"><span class="badge badge-info">📱 Parent Portal</span><span class="badge badge-info">💬 SMS</span></div>
+          </div>
+        </div>
+
+        <!-- From Admin -->
+        <div data-tab-group="comm-tab" id="comm-tab-admin" style="display:none;">
+          <div class="inline-alert mb-3">Announcements from <strong>Eileen Horng (Admin)</strong> sent to coaches.</div>
+
+          <div class="announcement pinned">
+            <div class="announcement-head"><div class="avatar avatar-sm">EH</div><div><div class="sender">Eileen Horng</div><div class="meta">Board · 2 hrs ago · all families</div></div><span class="badge badge-warning" style="margin-left:auto;">📌 Pinned</span></div>
+            <div class="text-bold text-md mb-2">Pool Maintenance — Coffman Closed Thu Jun 11</div>
+            <div class="announcement-body">Coffman Pool closed Jun 11. Your Friday Jun 12 12U A session moves to JB Pool · same time.</div>
+          </div>
+
+          <div class="announcement">
+            <div class="announcement-head"><div class="avatar avatar-sm">EH</div><div><div class="sender">Eileen Horng</div><div class="meta">3 days ago · 12U A &amp; 12U B</div></div></div>
+            <div class="text-bold text-md mb-2">USAAS 12U Skill Videos Posted</div>
+            <div class="announcement-body">Required for all 12U swimmers to review before next Sunday's dress rehearsal.</div>
+          </div>
+
+          <div class="announcement">
+            <div class="announcement-head"><div class="avatar avatar-sm">EH</div><div><div class="sender">Eileen Horng</div><div class="meta">5 days ago · all coaches</div></div></div>
+            <div class="text-bold text-md mb-2">Coach payroll cycle — paid Friday May 31</div>
+            <div class="announcement-body">Please confirm logged hours by Wed May 29 EOD. Your May total: 38h · $1,710 (direct deposit).</div>
+          </div>
+        </div>
+
+        <!-- DM with Eileen -->
+        <div data-tab-group="comm-tab" id="comm-tab-dm" style="display:none;">
+          <div class="card">
+            <h3 class="mb-3">Thread with Eileen (Admin) · about Sebastian</h3>
+            <div class="msg-thread">
+              <div class="msg outbound">
+                <div class="avatar avatar-sm aqua msg-avatar">EM</div>
+                <div class="msg-body">
+                  <div class="msg-from">You<span class="msg-time">May 30</span></div>
+                  <div class="msg-text">Sebastian's stamina is dropping in final 30s. I'm planning a stamina block Friday. Heads up if Maria asks.</div>
+                </div>
+              </div>
+              <div class="msg">
+                <div class="avatar avatar-sm msg-avatar">EH</div>
+                <div class="msg-body">
+                  <div class="msg-from">Eileen<span class="msg-time">May 30</span></div>
+                  <div class="msg-text">Got it. Good catch. Loop Heidi in?</div>
+                </div>
+              </div>
+              <div class="msg outbound">
+                <div class="avatar avatar-sm aqua msg-avatar">EM</div>
+                <div class="msg-body">
+                  <div class="msg-from">You<span class="msg-time">May 30</span></div>
+                  <div class="msg-text">Done — she's the one who flagged it actually. We'll co-strategize Friday.</div>
+                </div>
+              </div>
+            </div>
+            <div class="reply-box mt-3">
+              <textarea class="textarea" placeholder="Reply…"></textarea>
+              <button class="btn btn-primary btn-sm mt-3">Send</button>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <h3 class="mb-3">Thread with Eileen · about Lumi promotion</h3>
+            <div class="text-muted text-xs mb-3">2 messages · Eileen asked May 26 about Lumi being ready for combo lift · still open</div>
+            <button class="btn btn-secondary btn-sm">Open thread →</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== RESOURCES (single pool video) ========== -->
+    <section class="view" id="view-resources">
+      <div class="topbar">
+        <div>
+          <h1>Resource Library</h1>
+          <div class="topbar-sub">Reference videos for assignment to your 12U A swimmers · also surfaces in Parent Portal</div>
+        </div>
+        <div class="topbar-actions">
+          <a class="btn btn-secondary" href="https://usaartisticswimming.slocoach.com/sessions/68a020abfeca6c36ec1abc50" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Open USAAS Skill Library
+          </a>
+          <button class="btn btn-primary">+ Add Video</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="grid grid-3-2">
+          <a class="pool-video" href="https://www.youtube.com/watch?v=49H5hRhLhiA" target="_blank" rel="noopener">
+            <div class="water-caustics"></div>
+            <div class="water-ripples"></div>
+            <svg class="swimmer-svg" viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="bodyGrad2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,0.92)"/><stop offset="100%" stop-color="rgba(255,255,255,0.78)"/></linearGradient></defs>
+              <ellipse cx="240" cy="100" rx="58" ry="14" fill="url(#bodyGrad2)"/>
+              <circle cx="178" cy="100" r="16" fill="url(#bodyGrad2)"/>
+              <path d="M180 92 Q165 80 150 82 Q138 84 134 92" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round" fill="none"/>
+              <path d="M180 108 Q165 116 150 116 Q138 116 134 108" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round" fill="none"/>
+              <path d="M295 95 Q335 90 358 92 Q378 94 388 100" stroke="rgba(255,255,255,0.88)" stroke-width="11" stroke-linecap="round" fill="none"/>
+              <path d="M295 106 Q335 110 358 110 Q378 108 388 102" stroke="rgba(255,255,255,0.88)" stroke-width="11" stroke-linecap="round" fill="none"/>
+              <ellipse cx="394" cy="98" rx="8" ry="5" fill="rgba(255,255,255,0.85)"/>
+              <ellipse cx="394" cy="104" rx="8" ry="5" fill="rgba(255,255,255,0.85)"/>
+              <ellipse cx="240" cy="100" rx="160" ry="32" stroke="rgba(255,255,255,0.18)" stroke-width="2" fill="none"/>
+              <ellipse cx="240" cy="100" rx="190" ry="40" stroke="rgba(255,255,255,0.10)" stroke-width="2" fill="none"/>
+            </svg>
+            <div class="pv-yt-mark">▶ YouTube</div>
+            <div class="pv-play"><div class="pv-btn"><svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg></div></div>
+            <div class="pv-caption">
+              <div class="pv-eyebrow">USAAS · 12U Skill Reference</div>
+              <div class="pv-title">Featured Skill Video</div>
+              <div class="pv-meta">Tap to watch on YouTube · assign to specific 12U A swimmers below</div>
+            </div>
+          </a>
+
+          <div class="stack">
+            <div class="card">
+              <h3 class="mb-3">Assign this video</h3>
+              <div class="text-muted text-xs mb-3">Choose 12U A swimmers who should watch</div>
+              <div class="mini-list">
+                <div class="mini-list-item"><div class="avatar avatar-sm">EL</div><div class="mli-body"><div class="mli-title">Ellie Wong</div><div class="mli-sub">Already watched</div></div><span class="badge badge-success">✓</span></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm gold">JL</div><div class="mli-body"><div class="mli-title">Jade Lee</div><div class="mli-sub">Needs to watch</div></div><input type="checkbox" /></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm">AH</div><div class="mli-body"><div class="mli-title">Annabelle Ho</div><div class="mli-sub">Needs to watch</div></div><input type="checkbox" checked /></div>
+                <div class="mini-list-item"><div class="avatar avatar-sm">AL</div><div class="mli-body"><div class="mli-title">Alison Choi</div><div class="mli-sub">Needs to watch</div></div><input type="checkbox" checked /></div>
+              </div>
+              <button class="btn btn-primary btn-block mt-3">Assign to 2 selected</button>
+            </div>
+
+            <div class="card">
+              <h3 class="mb-3">Connected to USAAS</h3>
+              <div class="text-muted text-sm mb-3">The complete 50+ skill library lives at slocoach.com — link individual videos in here.</div>
+              <a class="btn btn-secondary btn-block" href="https://usaartisticswimming.slocoach.com/sessions/68a020abfeca6c36ec1abc50" target="_blank" rel="noopener" style="justify-content:flex-start;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                slocoach.com · USAAS Library
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== ADD SKILL NOTE (full page) ========== -->
+    <section class="view" id="view-add-skill-note">
+      <div class="topbar">
+        <div class="row gap-3">
+          <button class="back-btn" onclick="goBackView('view-team')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div><div class="crumb"><a onclick="showView('view-team')">12U A</a> / Add Skill Note</div><h1>Add Skill Note</h1></div>
+        </div>
+      </div>
+      <div class="content" style="max-width:760px;margin:0 auto;">
+
+        <div class="card mb-4">
+          <h3 class="mb-3">Who is this note about?</h3>
+          <div class="grid grid-3" style="gap:10px;">
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Ellie Wong</div><div class="text-xs text-muted mt-1">Combo + Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Jade Lee</div><div class="text-xs text-muted mt-1">Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Jasmine Park</div><div class="text-xs text-muted mt-1">Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Keira Patel</div><div class="text-xs text-muted mt-1">Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;border-color:var(--aqua-500);"><input type="radio" name="note-sw" checked /><div class="text-bold text-sm mt-2">Lumi Tanaka ⭐</div><div class="text-xs text-muted mt-1">Combo + Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Sebastian Ruiz</div><div class="text-xs text-muted mt-1">Solo + Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Annabelle Ho</div><div class="text-xs text-muted mt-1">Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Caitlin Adams</div><div class="text-xs text-muted mt-1">Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Eloise Park</div><div class="text-xs text-muted mt-1">Team</div></label>
+            <label class="card" style="padding:12px;cursor:pointer;"><input type="radio" name="note-sw" /><div class="text-bold text-sm mt-2">Alison Choi</div><div class="text-xs text-muted mt-1">Team</div></label>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <h3 class="mb-3">Note details</h3>
+          <div class="input-group"><label class="input-label">Skill / Topic</label>
+            <div class="chip-row">
+              <span class="chip" onclick="selectChip(this)">Eggbeater</span>
+              <span class="chip" onclick="selectChip(this)">Ballet Leg</span>
+              <span class="chip active" onclick="selectChip(this)">Vertical</span>
+              <span class="chip" onclick="selectChip(this)">Boost</span>
+              <span class="chip" onclick="selectChip(this)">Figure 142</span>
+              <span class="chip" onclick="selectChip(this)">Solo timing</span>
+              <span class="chip" onclick="selectChip(this)">Attendance / behavior</span>
+              <span class="chip" onclick="selectChip(this)">General</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Observation</label>
+            <textarea class="textarea" placeholder="Lumi is locking the vertical at 8 counts cleanly now — she's ready to start the combo lift. Sub her into the front row for Sunday's run-through? Also her solo timing on count 32 is consistently early." style="min-height:140px;"></textarea>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Visibility</label>
+            <div class="chip-row">
+              <span class="chip active" onclick="selectChip(this)">🏊 Both coaches (Emily + Heidi)</span>
+              <span class="chip" onclick="selectChip(this)">📋 + Admin (Eileen)</span>
+              <span class="chip" onclick="selectChip(this)">👨‍👩‍👧 + Parent</span>
+              <span class="chip" onclick="selectChip(this)">🔒 Private to me</span>
+            </div>
+            <div class="text-xs text-muted mt-2">Default: visible to both co-coaches. Parents don't see notes unless explicitly shared.</div>
+          </div>
+
+          <div class="input-group" style="margin-bottom:0;">
+            <label class="input-label">Tag for action (optional)</label>
+            <div class="chip-row" data-multi="true">
+              <span class="chip" onclick="selectChip(this)">📌 Pin to swimmer profile</span>
+              <span class="chip active" onclick="selectChip(this)">✨ Recommend promotion</span>
+              <span class="chip" onclick="selectChip(this)">⚠ Needs follow-up</span>
+              <span class="chip" onclick="selectChip(this)">📞 Talk to parent</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;">
+          <button class="btn btn-ghost" onclick="goBackView('view-team')">Cancel</button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-secondary" onclick="goBackView('view-team')">Save Draft</button>
+            <button class="btn btn-primary" onclick="goBackView('view-team')">Save Note &amp; Notify Heidi</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== SEND ANNOUNCEMENT (full page) ========== -->
+    <section class="view" id="view-send-announce">
+      <div class="topbar">
+        <div class="row gap-3">
+          <button class="back-btn" onclick="goBackView('view-comms')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div><div class="crumb"><a onclick="showView('view-comms')">Messages</a> / New Announcement</div><h1>Send Announcement</h1></div>
+        </div>
+      </div>
+      <div class="content" style="max-width:840px;margin:0 auto;">
+
+        <div class="card mb-4">
+          <h3 class="mb-3">Audience</h3>
+          <div class="input-group">
+            <label class="input-label">Send to</label>
+            <div class="chip-row">
+              <span class="chip active" onclick="selectChip(this)">👨‍👩‍👧 All 12U A parents (10)</span>
+              <span class="chip" onclick="selectChip(this)">Specific swimmer's parent</span>
+              <span class="chip" onclick="selectChip(this)">⚡ Just my co-coach Heidi</span>
+            </div>
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label class="input-label">Tie this announcement to a specific practice? (optional)</label>
+            <div class="chip-row">
+              <span class="chip active" onclick="selectChip(this)">No · team-wide</span>
+              <span class="chip" onclick="selectChip(this)">Fri Jun 5 · Coffman</span>
+              <span class="chip" onclick="selectChip(this)">Sun Jun 7 · JB (long)</span>
+              <span class="chip" onclick="selectChip(this)">Sectionals · Jun 20</span>
+            </div>
+            <div class="text-xs text-muted mt-2">If tied to a practice, this message will appear in the class-specific message thread.</div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <h3 class="mb-3">Message</h3>
+          <div class="input-group">
+            <label class="input-label">Title</label>
+            <input class="input" placeholder="Friday session focus — Boost &amp; Figure 142" value="Friday session focus — Boost &amp; Figure 142" />
+          </div>
+          <div class="input-group">
+            <label class="input-label">Body</label>
+            <textarea class="textarea" style="min-height:140px;" placeholder="Hi 12U A families — heads up that Friday's session at Coffman will focus heavily on Boost technique and Figure 142...">Hi 12U A families — heads up that Friday's session at Coffman (5pm sharp) will focus heavily on Boost technique and Figure 142. Both elements are in our Sectionals routine.
+
+A few reminders:
+• Bring a labeled water bottle + team cap
+• Sebastian will be doing a stamina block
+• Ellie arriving 10 min late (already cleared)
+• Heidi will not be there — DM me if urgent
+
+See you Friday!
+Coach Emily 🤍</textarea>
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <label class="input-label">Use a template</label>
+            <div class="chip-row">
+              <span class="chip" onclick="selectChip(this)">Practice prep checklist</span>
+              <span class="chip" onclick="selectChip(this)">Competition reminder</span>
+              <span class="chip" onclick="selectChip(this)">Weather / pool change</span>
+              <span class="chip" onclick="selectChip(this)">Skill homework</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <h3 class="mb-3">Delivery</h3>
+          <div class="input-group">
+            <label class="input-label">Send via</label>
+            <div class="chip-row" data-multi="true">
+              <span class="chip active" onclick="selectChip(this)">📱 Parent Portal</span>
+              <span class="chip active" onclick="selectChip(this)">✉️ Email</span>
+              <span class="chip" onclick="selectChip(this)">💬 SMS</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">When</label>
+            <div class="chip-row">
+              <span class="chip active" onclick="selectChip(this)">Now</span>
+              <span class="chip" onclick="selectChip(this)">Tonight 8pm</span>
+              <span class="chip" onclick="selectChip(this)">Schedule…</span>
+            </div>
+          </div>
+          <div class="input-group" style="margin-bottom:0;">
+            <div class="row gap-2"><input type="checkbox" id="copy-heidi" checked /><label for="copy-heidi" class="text-sm">CC Coach Heidi (co-coach visibility)</label></div>
+            <div class="row gap-2 mt-2"><input type="checkbox" id="show-admin" /><label for="show-admin" class="text-sm">Also notify Eileen (Admin)</label></div>
+          </div>
+        </div>
+
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;">
+          <button class="btn btn-ghost" onclick="goBackView('view-comms')">Cancel</button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-secondary" onclick="goBackView('view-comms')">Save Draft</button>
+            <button class="btn btn-primary" onclick="goBackView('view-comms')">Send to 10 families</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ===================== EDIT PRACTICE (with messages) ===================== -->
+<div class="modal-overlay" id="modal-edit-practice">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div>
+        <h3>Practice — 12U A · Coffman Pool</h3>
+        <div class="text-muted text-xs">Friday, June 5, 2026 · 5:00 — 7:00 PM · Your session · 10 swimmers</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-edit-practice')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="tab-bar" style="margin-top:0;margin-bottom:18px;">
+        <div class="tab active" onclick="switchTab(this,'practice-tab')" data-target="practice-tab-details">Details</div>
+        <div class="tab" onclick="switchTab(this,'practice-tab')" data-target="practice-tab-roster">Roster (10) <span class="badge badge-warning" style="margin-left:4px;font-size:10px;padding:1px 5px;">1 late</span></div>
+        <div class="tab" onclick="switchTab(this,'practice-tab')" data-target="practice-tab-messages">Messages <span class="badge badge-aqua" style="margin-left:4px;font-size:10px;padding:1px 5px;">2</span></div>
+        <div class="tab" onclick="switchTab(this,'practice-tab')" data-target="practice-tab-plan">Session Plan</div>
+      </div>
+
+      <div data-tab-group="practice-tab" id="practice-tab-details">
+        <div class="grid grid-2">
+          <div class="input-group"><label class="input-label">Date</label><input class="input" type="date" value="2026-06-05" /></div>
+          <div class="input-group"><label class="input-label">Pool</label><select class="select"><option>Coffman Pool</option><option>JB Pool</option><option>HL Pool</option><option>Balboa Pool</option></select></div>
+          <div class="input-group"><label class="input-label">Start time</label><input class="input" type="time" value="17:00" /></div>
+          <div class="input-group"><label class="input-label">End time</label><input class="input" type="time" value="19:00" /></div>
+        </div>
+        <div class="input-group"><label class="input-label">Lead coach</label><div class="chip-row"><span class="chip active" onclick="selectChip(this)">You · Emily</span><span class="chip" onclick="selectChip(this)">Heidi</span></div></div>
+        <div class="input-group"><label class="input-label">Notes for parents</label><textarea class="textarea" placeholder="Focus: Boost &amp; Figure 142. Bring extra cap.">Focus: Boost &amp; Figure 142 — Sectionals prep. Bring labeled water bottle + team cap. Sebastian doing a stamina block.</textarea></div>
+
+        <div class="sub-h">Cancel this practice</div>
+        <div class="card" style="background:rgba(239,68,68,0.04);border-color:rgba(239,68,68,0.18);padding:14px;">
+          <div class="input-group" style="margin-bottom:10px;"><label class="input-label">Reason</label>
+            <select class="select" id="practice-cancel-reason">
+              <option>Coach unavailable</option>
+              <option>Pool maintenance</option>
+              <option>Weather</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="text-xs text-muted">Cancelling will notify Eileen + all 10 families instantly. Heidi will also be alerted.</div>
+        </div>
+      </div>
+
+      <div data-tab-group="practice-tab" id="practice-tab-roster" style="display:none;">
+        <div class="inline-alert mb-3"><strong>Roster pre-check for Friday Jun 5</strong> · 1 late request (Ellie · school) · 0 absences · 10 expected.</div>
+        <div class="mini-list">
+          <div class="mini-list-item"><div class="avatar avatar-sm">EL</div><div class="mli-body"><div class="mli-title">Ellie Wong</div><div class="mli-sub">Karen Wong · ⏱ 10 min late confirmed</div></div><span class="badge badge-warning">⏱ Late</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm gold">JL</div><div class="mli-body"><div class="mli-title">Jade Lee</div><div class="mli-sub">Daniel Lee · Back from flu</div></div><span class="badge badge-success">Expected</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm gold">JP</div><div class="mli-body"><div class="mli-title">Jasmine Park</div><div class="mli-sub">Min Park</div></div><span class="badge badge-success">Expected</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm green">KP</div><div class="mli-body"><div class="mli-title">Keira Patel</div><div class="mli-sub">Anjali Patel</div></div><span class="badge badge-success">Expected</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm aqua">LT</div><div class="mli-body"><div class="mli-title">Lumi Tanaka ⭐</div><div class="mli-sub">Akiko Tanaka · asked for 30-min early solo time</div></div><span class="badge badge-success">Expected</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm aqua">SR</div><div class="mli-body"><div class="mli-title">Sebastian Ruiz</div><div class="mli-sub">Maria Ruiz · Stamina block today</div></div><span class="badge badge-success">Expected</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm">AH</div><div class="mli-body"><div class="mli-title">Annabelle Ho</div><div class="mli-sub">Grace Ho</div></div><span class="badge badge-success">Expected</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm gold">CA</div><div class="mli-body"><div class="mli-title">Caitlin Adams</div><div class="mli-sub">Lisa Adams</div></div><span class="badge badge-success">Expected</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm green">EO</div><div class="mli-body"><div class="mli-title">Eloise Park</div><div class="mli-sub">Diana Park · Lexie's sister</div></div><span class="badge badge-success">Expected</span></div>
+          <div class="mini-list-item"><div class="avatar avatar-sm">AL</div><div class="mli-body"><div class="mli-title">Alison Choi</div><div class="mli-sub">Eun Choi · ⚠ 80% att.</div></div><span class="badge badge-success">Expected</span></div>
+        </div>
+      </div>
+
+      <div data-tab-group="practice-tab" id="practice-tab-messages" style="display:none;">
+        <div class="inline-alert mb-3"><strong>Class-specific thread</strong> — only messages about this particular practice (not team-wide).</div>
+
+        <div class="msg-thread">
+          <div class="msg">
+            <div class="avatar avatar-sm msg-avatar">KW</div>
+            <div class="msg-body">
+              <div class="msg-from">Karen Wong<span class="msg-role">Parent · Ellie</span><span class="msg-time">2 hrs ago</span></div>
+              <div class="msg-text">Ellie will be 10 min late tomorrow — school project running over. She's on the way!</div>
+              <span class="msg-channel">📱 Parent Portal · Unread until 1 hr ago</span>
+            </div>
+          </div>
+          <div class="msg outbound">
+            <div class="avatar avatar-sm aqua msg-avatar">EM</div>
+            <div class="msg-body">
+              <div class="msg-from">You · Coach Emily<span class="msg-time">1 hr ago</span></div>
+              <div class="msg-text">No problem Karen! We'll start with Boost warm-ups, she can jump in for the routine portion. Thanks for the heads up.</div>
+              <span class="msg-channel">📱 Coach Interface</span>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="avatar avatar-sm msg-avatar">AT</div>
+            <div class="msg-body">
+              <div class="msg-from">Akiko Tanaka<span class="msg-role">Parent · Lumi ⭐</span><span class="msg-time">1 day ago</span></div>
+              <div class="msg-text">Can Lumi come 30 min early Friday to work on her solo? She's prepping for Sectionals.</div>
+              <span class="msg-channel">📱 Parent Portal · Awaiting reply</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reply-box mt-3">
+          <textarea class="textarea" placeholder="Reply to this practice thread… visible to everyone tagged in this class"></textarea>
+          <button class="btn btn-primary btn-sm mt-3">Post to thread</button>
+        </div>
+      </div>
+
+      <div data-tab-group="practice-tab" id="practice-tab-plan" style="display:none;">
+        <div class="card" style="background:var(--gray-50);">
+          <h3 class="mb-3">Friday June 5 session plan · 2 hours</h3>
+          <div class="spec-list">
+            <div class="spec-row"><span class="lbl">5:00 — 5:15 PM</span><span class="val" style="font-size:12px;">Warm-up · Lumi solo time</span></div>
+            <div class="spec-row"><span class="lbl">5:15 — 5:45 PM</span><span class="val" style="font-size:12px;">Boost technique drill (5/10 swimmers need)</span></div>
+            <div class="spec-row"><span class="lbl">5:45 — 6:15 PM</span><span class="val" style="font-size:12px;">Figure 142 — slow-down progression</span></div>
+            <div class="spec-row"><span class="lbl">6:15 — 6:30 PM</span><span class="val" style="font-size:12px;">Sebastian stamina block (per Heidi's note)</span></div>
+            <div class="spec-row"><span class="lbl">6:30 — 7:00 PM</span><span class="val" style="font-size:12px;">Full routine run-through · Sectionals prep</span></div>
+          </div>
+          <button class="btn btn-secondary btn-sm mt-3">Edit plan</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-edit-practice')">Close</button>
+      <button class="btn btn-danger" onclick="confirmCancelPractice()">Cancel This Practice</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-edit-practice')">Save &amp; Notify families</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ADD PRACTICE ===================== -->
+<div class="modal-overlay" id="modal-add-practice">
+  <div class="modal">
+    <div class="modal-header"><div><h3>Add Practice / Make-up Session</h3><div class="text-muted text-xs">Add a one-time class for 12U A — optionally turn into recurrence</div></div><button class="modal-close" onclick="closeModal('modal-add-practice')">✕</button></div>
+    <div class="modal-body">
+      <div class="grid grid-2">
+        <div class="input-group"><label class="input-label">Type</label><select class="select"><option>Make-up session</option><option>Special practice</option><option>One-off team meeting</option></select></div>
+        <div class="input-group"><label class="input-label">Pool</label><select class="select"><option>HL Pool</option><option>Coffman Pool</option><option>JB Pool</option><option>Balboa Pool</option></select></div>
+        <div class="input-group"><label class="input-label">Date</label><input class="input" type="date" value="2026-06-08" /></div>
+        <div class="input-group"><label class="input-label">Specific swimmer (optional)</label><select class="select"><option>All 10 swimmers</option><option>Jade Lee (make-up)</option><option>Lumi Tanaka (solo private)</option></select></div>
+        <div class="input-group"><label class="input-label">Start time</label><input class="input" type="time" value="17:00" /></div>
+        <div class="input-group"><label class="input-label">End time</label><input class="input" type="time" value="18:00" /></div>
+      </div>
+      <div class="input-group"><label class="input-label">Notes</label><textarea class="textarea" placeholder="Boost technique private session"></textarea></div>
+      <div class="row gap-2"><input type="checkbox" id="notify-c" checked /><label for="notify-c" class="text-sm">Notify families + Heidi</label></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-add-practice')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-add-practice')">Schedule</button></div>
+  </div>
+</div>
+
+<!-- ===================== RESCHEDULE / SUB REQUEST ===================== -->
+<div class="modal-overlay" id="modal-reschedule">
+  <div class="modal">
+    <div class="modal-header"><div><h3>Reschedule Session</h3></div><button class="modal-close" onclick="closeModal('modal-reschedule')">✕</button></div>
+    <div class="modal-body">
+      <div class="inline-alert gold">Moving this practice will auto-notify Heidi, Eileen, and all 10 families via Parent Portal + email.</div>
+      <div class="grid grid-2">
+        <div class="input-group"><label class="input-label">New date</label><input class="input" type="date" /></div>
+        <div class="input-group"><label class="input-label">New pool</label><select class="select"><option>Coffman Pool</option><option>JB Pool</option><option>HL Pool</option><option>Balboa Pool</option></select></div>
+        <div class="input-group"><label class="input-label">New start</label><input class="input" type="time" /></div>
+        <div class="input-group"><label class="input-label">New end</label><input class="input" type="time" /></div>
+      </div>
+      <div class="input-group"><label class="input-label">Reason</label>
+        <select class="select">
+          <option>Coach unavailable (me)</option>
+          <option>Coach unavailable (Heidi)</option>
+          <option>Pool conflict</option>
+          <option>Weather</option>
+        </select>
+      </div>
+      <div class="input-group"><label class="input-label">Need a sub?</label>
+        <div class="chip-row">
+          <span class="chip active" onclick="selectChip(this)">Ask Heidi to cover</span>
+          <span class="chip" onclick="selectChip(this)">Ask Lolli</span>
+          <span class="chip" onclick="selectChip(this)">Just cancel</span>
+        </div>
+      </div>
+      <div class="input-group" style="margin-bottom:0;"><label class="input-label">Message to families</label><textarea class="textarea" placeholder="Heidi will cover Friday — same time, same pool…"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-reschedule')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-reschedule')">Reschedule &amp; Notify</button></div>
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  /* Coach interface — helpers */
+  function switchTabById(targetId, group) {
+    const tab = document.querySelector(`.tab[data-target="${targetId}"]`);
+    if (tab) switchTab(tab, group);
+  }
+  /* Cancel-practice flow (mirrors admin) */
+  window.LAST_PRACTICE_ROW = null;
+  document.addEventListener('click', function(e) {
+    const row = e.target.closest('.sch-row');
+    if (row) window.LAST_PRACTICE_ROW = row;
+  }, true);
+  function confirmCancelPractice() {
+    const row = window.LAST_PRACTICE_ROW;
+    if (!row) { closeModal('modal-edit-practice'); return; }
+    const reasonEl = document.getElementById('practice-cancel-reason');
+    const reason = reasonEl ? reasonEl.value : 'Coach unavailable';
+    markPracticeCancelled(row, reason);
+    closeModal('modal-edit-practice');
+  }
+  function markPracticeCancelled(row, reason) {
+    row.classList.add('cancelled-practice');
+    const info = row.querySelector('.sch-info');
+    if (info && !info.querySelector('.cancel-meta')) {
+      const cm = document.createElement('div');
+      cm.className = 'sch-meta cancel-meta';
+      cm.innerHTML = '<span class="cancel-pill">✕ Cancelled</span> Reason: ' + reason + ' · Families notified';
+      info.appendChild(cm);
+    }
+    const actions = row.querySelector('.sch-actions');
+    if (actions) {
+      actions.innerHTML = '<button class="btn btn-aqua btn-sm" onclick="event.stopPropagation(); openModal(\'modal-reschedule\');"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Reschedule</button>';
+    }
+  }
+</script>
+</body>
+</html>
