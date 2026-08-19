@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apex · Admin Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/apex.css" />
+<link rel="stylesheet" href="assets/web.css" />
+</head>
+<body class="web">
+<script src="assets/icons.js"></script>
+
+<div class="demobar" style="background:#14211D">
+  <img src="assets/img/logo-word-light.png" style="height:14px" alt="APEX"><span class="sep">|</span>
+  <span>Admin Console &middot; interactive mockup &mdash; signed in as <b>Platform Admin</b></span>
+  <a href="business.html">Open the business portal &rarr;</a>
+</div>
+
+<div class="shell">
+  <aside class="side">
+    <div class="brand">
+      <img src="assets/img/logo-seal.png" style="width:36px;height:36px;flex:0 0 auto" alt="">
+      <span><img src="assets/img/logo-word.png" style="height:15px;display:block" alt="APEX">
+        <span class="sub">Admin</span></span>
+    </div>
+    <div class="navlabel">Platform</div>
+    <button class="nav" data-nav="overview"><svg width="17" height="17"><use href="#i-chart"/></svg>Overview</button>
+    <button class="nav" data-nav="queue"><svg width="17" height="17"><use href="#i-shield"/></svg>Verification queue<span class="pipn" id="qpip"></span></button>
+    <div class="navlabel">Directory</div>
+    <button class="nav" data-nav="businesses"><svg width="17" height="17"><use href="#i-building"/></svg>Businesses</button>
+    <button class="nav" data-nav="deals"><svg width="17" height="17"><use href="#i-tag"/></svg>Deals &amp; moderation</button>
+    <button class="nav" data-nav="categories"><svg width="17" height="17"><use href="#i-grid"/></svg>Categories</button>
+    <div class="navlabel">Commercial</div>
+    <button class="nav" data-nav="members"><svg width="17" height="17"><use href="#i-users"/></svg>Members</button>
+    <button class="nav" data-nav="revenue"><svg width="17" height="17"><use href="#i-pound"/></svg>Revenue</button>
+    <button class="nav" data-nav="ads"><svg width="17" height="17"><use href="#i-sparkle"/></svg>Advertising</button>
+    <div class="foot">
+      <div class="bizswitch">
+        <img src="assets/img/person-7.jpg" alt="">
+        <div><div class="n">Platform Admin</div><div class="s">Full access</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div><h1 id="ptitle">Overview</h1><div class="sub" id="psub"></div></div>
+      <div class="grow"></div><div id="topact"></div>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<div class="modalwrap" id="modal"></div>
+<div id="wtoasts"></div>
+
+<script src="assets/data.js"></script>
+<script>
+/* ==========================================================
+   APEX admin console · demo interaction layer
+   ========================================================== */
+const ico  = (n,s=18) => `<svg width="${s}" height="${s}"><use href="#i-${n}"/></svg>`;
+const esc  = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const gbp  = n => '£' + n.toLocaleString('en-GB', {minimumFractionDigits:0, maximumFractionDigits:0});
+const gbp2 = n => '£' + n.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2});
+function hash(str){ let h=2166136261>>>0; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h>>>0; }
+
+/* ---------- platform figures ---------- */
+const P = {
+  members:12480, standard:2610, unlimited:655,
+  redemptions:4182, adRevenue:2340
+};
+P.paid = P.standard + P.unlimited;
+P.mrr  = P.standard*10 + P.unlimited*24.99;
+
+/* ---------- applications awaiting review ---------- */
+const PENDING = [
+  { id:'pa1', name:'Ardern & Vale Opticians', cat:'beauty',  area:'Dulwich',      img:'assets/img/biz-lumen-skin.jpg',
+    reg:'15229841', applied:'2 hours ago', contact:'Rebecca Vale', email:'hello@ardernvale.co.uk',
+    about:'Independent opticians offering eye tests, dispensing and a designer frame range.',
+    docs:['Companies House record','Proof of trading address','Public liability insurance'], flag:null },
+  { id:'pa2', name:'Southside Print Studio', cat:'home',      area:'Peckham',      img:'assets/img/biz-marlow-joinery.jpg',
+    reg:'14773902', applied:'5 hours ago', contact:'Danny Okafor', email:'studio@southsideprint.uk',
+    about:'Screen printing and large format for small businesses and artists.',
+    docs:['Companies House record','Proof of trading address'], flag:'Insurance certificate not supplied' },
+  { id:'pa3', name:'The Copper Pot',        cat:'dining',     area:'Herne Hill',   img:'assets/img/biz-casa-pellegrino.jpg',
+    reg:'15104663', applied:'Yesterday', contact:'Maria Iliescu', email:'bookings@thecopperpot.london',
+    about:'Forty-cover neighbourhood bistro serving lunch and dinner, six days a week.',
+    docs:['Companies House record','Proof of trading address','Food hygiene rating (5)','Public liability insurance'], flag:null },
+  { id:'pa4', name:'Kite & Compass Travel',  cat:'leisure',    area:'Islington',    img:'assets/img/hero-london.jpg',
+    reg:'—', applied:'Yesterday', contact:'Aaron Blyth', email:'a.blyth@kitecompass.com',
+    about:'Bespoke travel planning and concierge for independent travellers.',
+    docs:['Proof of trading address'], flag:'No company registration and no ABTA/ATOL reference' },
+  { id:'pa5', name:'Fielder Cycle Works',    cat:'motoring',   area:'Walthamstow',  img:'assets/img/biz-kestrel-tyres.jpg',
+    reg:'14990218', applied:'2 days ago', contact:'Sam Fielder', email:'shop@fieldercycles.co.uk',
+    about:'Bicycle servicing, wheel building and a small workshop-built frame range.',
+    docs:['Companies House record','Proof of trading address','Public liability insurance'], flag:null },
+  { id:'pa6', name:'Verity Wellness Rooms',  cat:'beauty',     area:'Highbury',     img:'assets/img/biz-ivory-room.jpg',
+    reg:'15310774', applied:'2 days ago', contact:'Nina Verity', email:'care@veritywellness.co.uk',
+    about:'Sports and remedial massage, physiotherapy and acupuncture across four rooms.',
+    docs:['Companies House record','Proof of trading address','Practitioner registrations','Public liability insurance'], flag:null },
+  { id:'pa7', name:'Brightline Electricals', cat:'home',       area:'Catford',      img:'assets/img/biz-southbank-auto.jpg',
+    reg:'15008112', applied:'3 days ago', contact:'Joseph Adeyemi', email:'office@brightline-elec.co.uk',
+    about:'NICEIC registered domestic and commercial electricians covering south east London.',
+    docs:['Companies House record','NICEIC registration','Public liability insurance'], flag:null }
+];
+
+/* ---------- members ---------- */
+const MEMBERS = [
+  ['Sajjad Kassamali','person-2','Standard','Clapham','Mar 2026',312.40,13],
+  ['Priya Raman','person-1','Unlimited','Balham','Jan 2026',884.10,47],
+  ['Marcus Ellery','person-4','Standard','Brixton','Apr 2026',196.75,9],
+  ['Aoife Brennan','person-3','Standard','Peckham','Feb 2026',421.30,18],
+  ['Tom Whitfield','person-6','Unlimited','Fulham','Dec 2025',1104.60,62],
+  ['Nadia Osei','person-8','Standard','Dulwich','May 2026',148.20,7],
+  ['Helena Ford','person-5','Standard','Wandsworth','Mar 2026',274.85,12],
+  ['Daniel Okonkwo','person-7','Unlimited','Islington','Nov 2025',1342.00,71]
+];
+
+const el = id => document.getElementById(id);
+let A = { page:'overview', pending:[...PENDING], decisions:{}, bizQuery:'', memQuery:'', catFilter:'all', removed:new Set() };
+
+function wtoast(msg, icon='check'){
+  const t = document.createElement('div');
+  t.className='wtoast'; t.innerHTML = ico(icon,17)+`<span>${esc(msg)}</span>`;
+  el('wtoasts').appendChild(t);
+  setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),280); }, 2600);
+}
+function openModal(h){ const m=el('modal'); m.className='modalwrap on'; m.innerHTML=`<div class="scrim" data-closemodal></div><div class="modal">${h}</div>`; }
+function closeModal(){ const m=el('modal'); m.className='modalwrap'; m.innerHTML=''; }
+
+/* ==========================================================
+   PAGES
+   ========================================================== */
+const PAGES = {};
+const META = {
+  overview:  { t:'Overview',            s:'The platform at a glance' },
+  queue:     { t:'Verification queue',  s:'Every business is checked by a person before it goes live' },
+  businesses:{ t:'Businesses',          s:'All verified listings in the directory' },
+  deals:     { t:'Deals & moderation',  s:'Live offers across the platform' },
+  categories:{ t:'Categories',          s:'The taxonomy members browse' },
+  members:   { t:'Members',             s:'Subscribers and their activity' },
+  revenue:   { t:'Revenue',             s:'Subscription and advertising income' },
+  ads:       { t:'Advertising',         s:'Campaigns businesses are running' }
+};
+
+/* ---------------- OVERVIEW ---------------- */
+PAGES.overview = () => `
+  <div class="masthead">
+    <img class="bgi" src="assets/img/hero-london.jpg" alt=""><span class="sc"></span>
+    <img class="seal" src="assets/img/logo-seal.png" alt="">
+    <div class="in">
+      <div class="g">
+        <div class="kick">Apex platform &middot; London</div>
+        <h2>${P.members.toLocaleString()} members, ${BUSINESSES.length} houses</h2>
+        <div class="tags">
+          <span class="badge badge-verified">${ico('check',10)} All listings human-verified</span>
+          <span class="badge badge-member">${DEALS.length} live deals</span>
+          <span class="badge badge-live">${JOBS.length} open roles</span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="k">Monthly recurring</div>
+        <div class="v tnum">${gbp(P.mrr)}</div>
+        <div class="d">${ico('up',11)} 11.4% this month</div>
+      </div>
+    </div>
+  </div>
+
+  ${A.pending.length ? `
+  <div class="verifybar" style="margin-bottom:20px">
+    <span class="ic">${ico('shield',21)}</span>
+    <div style="flex:1;min-width:220px"><div class="t">${A.pending.length} businesses waiting for review</div>
+      <div class="s">The oldest has been waiting ${esc(A.pending[A.pending.length-1].applied)}.</div></div>
+    <button class="btn btn-gold" data-nav="queue">Open the queue</button>
+  </div>` : ''}
+
+  <div class="webhead" style="margin-top:0">
+    <div class="g"><div class="eyebrow2">Where the platform stands</div><div class="t">This month at a glance</div></div>
+  </div>
+  <div class="grid g4" style="margin-bottom:18px">
+    <div class="stat"><div class="k">Members</div><div class="v tnum">${P.members.toLocaleString()}</div>
+      <div class="d up">${ico('up',12)} 8.2% this month</div></div>
+    <div class="stat"><div class="k">Paying subscribers</div><div class="v tnum">${P.paid.toLocaleString()}</div>
+      <div class="d up">${Math.round(P.paid/P.members*100)}% of members</div></div>
+    <div class="stat"><div class="k">Monthly recurring</div><div class="v tnum">${gbp(P.mrr)}</div>
+      <div class="d up">${ico('up',12)} 11.4% this month</div></div>
+    <div class="stat"><div class="k">Live businesses</div><div class="v tnum">${BUSINESSES.length}</div>
+      <div class="d flat">${A.pending.length} awaiting review</div></div>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:18px">
+    <div class="card"><div class="hd"><h3>Subscriber growth</h3><span class="grow"></span><span class="pill">12 months</span></div>
+      <div class="bd"><div class="mini" style="height:120px">
+        ${[12,18,23,29,34,42,48,57,63,74,82,96].map((h,i)=>`<span class="${i>8?'hi':''}" style="height:${h}%;animation-delay:${i*45}ms"></span>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink-3);font-weight:700;margin-top:10px">
+        <span>Sept 2025</span><span>Feb 2026</span><span>Aug 2026</span></div></div></div>
+
+    <div class="card"><div class="hd"><h3>Where members redeem</h3><span class="grow"></span><span class="pill">This month</span></div>
+      <div class="bd"><div class="barrow">
+        ${CATEGORIES.map(c => ({c, n: 180 + hash(c.id)%720}))
+          .sort((a,b)=>b.n-a.n).slice(0,6)
+          .map(({c,n},i,arr) => `<div class="b">
+            <span class="nm">${esc(c.name)}</span>
+            <span class="tr"><i class="${i===0?'gold':''}" data-w="${Math.round(n/arr[0].n*100)}%" style="width:0"></i></span>
+            <span class="vv tnum">${n}</span></div>`).join('')}
+      </div></div></div>
+  </div>
+
+  <div class="grid g3">
+    <div class="stat"><div class="k">Codes redeemed</div><div class="v tnum">${P.redemptions.toLocaleString()}</div>
+      <div class="d up">${ico('up',12)} 16% this month</div></div>
+    <div class="stat"><div class="k">Member savings delivered</div><div class="v tnum">${gbp(118640)}</div>
+      <div class="d up">Across all members this month</div></div>
+    <div class="stat"><div class="k">Advertising income</div><div class="v tnum">${gbp(P.adRevenue)}</div>
+      <div class="d up">${ico('up',12)} 4 active campaigns</div></div>
+  </div>`;
+
+/* ---------------- VERIFICATION QUEUE ---------------- */
+PAGES.queue = () => {
+  if(!A.pending.length) return `<div class="card"><div class="emptyw">
+    <div class="ic">${ico('check',24)}</div><h4>The queue is clear</h4>
+    <p>Every application has been reviewed. New submissions will appear here.</p></div></div>`;
+  return `
+  <div class="pagehead">
+    <h2>${A.pending.length} applications waiting</h2>
+    <p>Nothing reaches members until it is approved here. Check the registration, the trading address and
+       any licence the category requires, then approve or send it back.</p>
+  </div>
+  ${A.pending.map(p => `
+    <div class="card" style="margin-bottom:16px">
+      <div class="hd">
+        <img src="${p.img}" alt="" style="width:46px;height:46px;border-radius:12px;object-fit:cover;border:1px solid var(--line)">
+        <div style="flex:1;min-width:180px">
+          <h3>${esc(p.name)}</h3>
+          <div style="font-size:.76rem;color:var(--ink-3);font-weight:600;margin-top:3px">
+            ${esc(cat(p.cat).name)} &middot; ${esc(p.area)} &middot; applied ${esc(p.applied)}</div>
+        </div>
+        ${p.flag ? `<span class="badge badge-ends">${ico('flag',10)} Needs attention</span>`
+                 : `<span class="badge badge-live">${ico('check',10)} Documents complete</span>`}
+      </div>
+      <div class="bd">
+        <div class="grid g2" style="margin-bottom:16px">
+          <div>
+            <div class="kv" style="margin-bottom:9px"><span class="k">Contact</span><span class="v">${esc(p.contact)}</span></div>
+            <div class="kv" style="margin-bottom:9px"><span class="k">Email</span><span class="v">${esc(p.email)}</span></div>
+            <div class="kv"><span class="k">Company number</span><span class="v tnum">${esc(p.reg)}</span></div>
+          </div>
+          <div>
+            <div style="font-size:.7rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px">Submitted</div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px">
+              ${p.docs.map(d => `<span class="pill" style="background:var(--forest-tint);color:var(--forest)">${ico('check',12)} ${esc(d)}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+        <p style="font-size:.84rem;color:var(--ink-2);line-height:1.6;margin-bottom:${p.flag?'14px':'18px'}">${esc(p.about)}</p>
+        ${p.flag ? `<div style="background:var(--alert-tint);border-radius:var(--r-md);padding:13px 15px;margin-bottom:18px;
+          display:flex;gap:10px;align-items:flex-start">
+          <span style="color:var(--alert);flex:0 0 auto">${ico('flag',16)}</span>
+          <span style="font-size:.81rem;color:var(--alert);font-weight:700;line-height:1.5">${esc(p.flag)}</span></div>` : ''}
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm" data-approve="${p.id}">${ico('check',15)} Approve and publish</button>
+          <button class="btn btn-ghost btn-sm" data-info="${p.id}">Request more information</button>
+          <button class="btn btn-ghost btn-sm" data-reject="${p.id}" style="color:var(--alert)">Reject</button>
+          <span style="flex:1"></span>
+          <button class="btn btn-ghost btn-sm" data-preview="${p.id}">${ico('eye',15)} Preview listing</button>
+        </div>
+      </div>
+    </div>`).join('')}`;
+};
+
+/* ---------------- BUSINESSES ---------------- */
+PAGES.businesses = () => {
+  const q = A.bizQuery.toLowerCase();
+  const list = BUSINESSES.filter(b =>
+    (A.catFilter === 'all' || b.cat === A.catFilter) &&
+    (!q || (b.name+' '+b.area).toLowerCase().includes(q)));
+  return `
+  <div class="card">
+    <div class="hd">
+      <h3>${list.length} of ${BUSINESSES.length} businesses</h3><span class="grow"></span>
+      <input class="inp" id="bq" placeholder="Search name or area" value="${esc(A.bizQuery)}" style="max-width:220px">
+      <select class="sel" id="bcat" style="max-width:190px">
+        <option value="all">All categories</option>
+        ${CATEGORIES.map(c=>`<option value="${c.id}" ${A.catFilter===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="tblwrap"><table class="tbl">
+      <tr><th>Business</th><th>Category</th><th>Deals</th><th>Followers</th><th>Rating</th><th>Verified</th><th>Status</th></tr>
+      ${list.map(b => `<tr>
+        <td><span class="thumbcell"><img src="${b.img}" alt="">
+          <span><b style="display:block">${esc(b.name)}</b>
+          <span style="font-size:.74rem;color:var(--ink-3);font-weight:600">${esc(b.area)} &middot; ${b.dist} mi</span></span></span></td>
+        <td>${esc(cat(b.cat).name)}</td>
+        <td class="num">${dealsOf(b.id).length}</td>
+        <td class="num">${b.followers.toLocaleString()}</td>
+        <td class="num">${b.rating}</td>
+        <td>${esc(b.verified)}</td>
+        <td>${b.ad ? `<span class="badge badge-member">${ico('sparkle',10)} Advertising</span>`
+                   : `<span class="badge badge-live">Live</span>`}</td>
+      </tr>`).join('') || `<tr><td colspan="7"><div class="emptyw"><h4>No matches</h4><p>Try a different name or category.</p></div></td></tr>`}
+    </table></div>
+  </div>`;
+};
+
+/* ---------------- DEALS ---------------- */
+PAGES.deals = () => {
+  const live = DEALS.filter(d => !A.removed.has(d.id));
+  return `
+  <div class="grid g4" style="margin-bottom:18px">
+    <div class="stat"><div class="k">Live deals</div><div class="v tnum">${live.length}</div><div class="d flat">Across ${BUSINESSES.length} businesses</div></div>
+    <div class="stat"><div class="k">Ending this week</div><div class="v tnum">${DEALS.filter(d=>d.ending).length}</div><div class="d flat">Businesses notified</div></div>
+    <div class="stat"><div class="k">Reported by members</div><div class="v tnum">2</div><div class="d flat">Awaiting review</div></div>
+    <div class="stat"><div class="k">Removed this month</div><div class="v tnum">${A.removed.size}</div><div class="d flat">Breached guidelines</div></div>
+  </div>
+  <div class="card">
+    <div class="hd"><h3>All live deals</h3><span class="grow"></span><span class="pill">Sorted by business</span></div>
+    <div class="tblwrap"><table class="tbl">
+      <tr><th>Deal</th><th>Business</th><th>Category</th><th>Ends</th><th>Status</th><th></th></tr>
+      ${live.map(d => { const b = biz(d.biz); return `<tr>
+        <td><span class="thumbcell"><img src="${d.img}" alt="">
+          <span><b style="display:block">${esc(d.title)}</b>
+          <span style="font-size:.74rem;color:var(--gold);font-weight:800">${esc(d.value)}</span></span></span></td>
+        <td>${esc(b.name)}</td><td>${esc(cat(b.cat).name)}</td><td>${esc(d.ends)}</td>
+        <td>${d.ending ? '<span class="badge badge-ends">Ends soon</span>' : '<span class="badge badge-live">Live</span>'}</td>
+        <td><button class="btn btn-ghost btn-sm" data-remove="${d.id}" style="color:var(--alert)">Remove</button></td>
+      </tr>`; }).join('')}
+    </table></div>
+  </div>`;
+};
+
+/* ---------------- CATEGORIES ---------------- */
+PAGES.categories = () => `
+  <div class="pagehead"><h2>Eight categories</h2>
+    <p>Categories drive browsing, search and the paid ranking slots. Keep them broad enough that
+       every business fits and narrow enough that a member knows where to look.</p></div>
+  <div class="grid g3">
+    ${CATEGORIES.map(c => {
+      const bs = BUSINESSES.filter(b => b.cat === c.id);
+      return `<div class="card">
+        <div style="height:110px;overflow:hidden;border-radius:var(--r-lg) var(--r-lg) 0 0;position:relative">
+          <img src="${c.img}" style="width:100%;height:100%;object-fit:cover" alt="">
+          <span style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,24,20,.82),transparent 62%)"></span>
+          <span style="position:absolute;left:14px;bottom:11px;color:#fff;font-weight:800;font-size:.92rem;
+            text-shadow:0 1px 8px rgba(0,0,0,.5)">${esc(c.name)}</span>
+        </div>
+        <div class="bd" style="padding:16px">
+          <div class="kv" style="margin-bottom:8px"><span class="k">Businesses</span><span class="v tnum">${bs.length}</span></div>
+          <div class="kv" style="margin-bottom:8px"><span class="k">Live deals</span><span class="v tnum">${dealCount(c.id)}</span></div>
+          <div class="kv"><span class="k">Ranking slot</span>
+            <span class="v">${bs.find(b=>b.ad==='category') ? `<span class="badge badge-member">Sold</span>` : `<span class="badge badge-ad">Available</span>`}</span></div>
+        </div></div>`;
+    }).join('')}
+  </div>`;
+
+/* ---------------- MEMBERS ---------------- */
+PAGES.members = () => {
+  const q = A.memQuery.toLowerCase();
+  const list = MEMBERS.filter(m => !q || (m[0]+' '+m[3]).toLowerCase().includes(q));
+  return `
+  <div class="grid g4" style="margin-bottom:18px">
+    <div class="stat"><div class="k">Registered</div><div class="v tnum">${P.members.toLocaleString()}</div><div class="d up">${ico('up',12)} 8.2%</div></div>
+    <div class="stat"><div class="k">Apex Standard</div><div class="v tnum">${P.standard.toLocaleString()}</div><div class="d flat">${gbp(P.standard*10)} a month</div></div>
+    <div class="stat"><div class="k">Apex Unlimited</div><div class="v tnum">${P.unlimited.toLocaleString()}</div><div class="d flat">${gbp(P.unlimited*24.99)} a month</div></div>
+    <div class="stat"><div class="k">Monthly churn</div><div class="v tnum">2.4%</div><div class="d up">Down from 3.1%</div></div>
+  </div>
+  <div class="card">
+    <div class="hd"><h3>Members</h3><span class="grow"></span>
+      <input class="inp" id="mq" placeholder="Search name or area" value="${esc(A.memQuery)}" style="max-width:230px"></div>
+    <div class="tblwrap"><table class="tbl">
+      <tr><th>Member</th><th>Plan</th><th>Area</th><th>Joined</th><th>Saved</th><th>Codes</th></tr>
+      ${list.map(([n,img,plan,area,joined,saved,codes]) => `<tr>
+        <td><span class="thumbcell" style="min-width:0"><img src="assets/img/${img}.jpg" alt="" style="border-radius:50%"><b>${esc(n)}</b></span></td>
+        <td>${plan==='Unlimited'?`<span class="badge badge-member">${esc(plan)}</span>`:`<span class="badge badge-verified">${esc(plan)}</span>`}</td>
+        <td>${esc(area)}</td><td>${esc(joined)}</td>
+        <td class="num">${gbp2(saved)}</td><td class="num">${codes}</td></tr>`).join('')
+        || `<tr><td colspan="6"><div class="emptyw"><h4>No matches</h4></div></td></tr>`}
+    </table></div>
+    <div class="bd" style="border-top:1px solid var(--line);font-size:.79rem;color:var(--ink-3);font-weight:600">
+      Showing ${list.length} of ${P.members.toLocaleString()} members. Personal data is limited to what a member
+      chooses to share with a business when they register interest in a role.</div>
+  </div>`;
+};
+
+/* ---------------- REVENUE ---------------- */
+PAGES.revenue = () => `
+  <div class="grid g4" style="margin-bottom:18px">
+    <div class="stat"><div class="k">Monthly recurring</div><div class="v tnum">${gbp(P.mrr)}</div><div class="d up">${ico('up',12)} 11.4%</div></div>
+    <div class="stat"><div class="k">Advertising</div><div class="v tnum">${gbp(P.adRevenue)}</div><div class="d up">4 campaigns</div></div>
+    <div class="stat"><div class="k">Total monthly</div><div class="v tnum">${gbp(P.mrr + P.adRevenue)}</div><div class="d up">${ico('up',12)} 12.1%</div></div>
+    <div class="stat"><div class="k">Annualised</div><div class="v tnum">${gbp((P.mrr + P.adRevenue)*12)}</div><div class="d flat">At the current run rate</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="hd"><h3>Revenue by month</h3><span class="grow"></span><span class="pill">12 months</span></div>
+      <div class="bd"><div class="mini" style="height:130px">
+        ${[16,21,27,33,38,45,52,61,68,79,88,100].map((h,i)=>`<span class="${i>8?'hi':''}" style="height:${h}%;animation-delay:${i*45}ms"></span>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink-3);font-weight:700;margin-top:10px">
+        <span>Sept 2025</span><span>Aug 2026</span></div></div></div>
+    <div class="card"><div class="hd"><h3>Where the money comes from</h3></div>
+      <div class="bd"><div class="barrow">
+        <div class="b"><span class="nm">Apex Standard</span><span class="tr"><i data-w="58%" style="width:0"></i></span><span class="vv tnum">${gbp(P.standard*10)}</span></div>
+        <div class="b"><span class="nm">Apex Unlimited</span><span class="tr"><i data-w="36%" style="width:0"></i></span><span class="vv tnum">${gbp(P.unlimited*24.99)}</span></div>
+        <div class="b"><span class="nm">Advertising</span><span class="tr"><i class="gold" data-w="6%" style="width:0"></i></span><span class="vv tnum">${gbp(P.adRevenue)}</span></div>
+      </div>
+      <p style="font-size:.81rem;color:var(--ink-2);line-height:1.6;margin-top:18px">
+        Subscriptions carry the business. Advertising is upside from businesses that want more than the free listing,
+        and it grows without adding cost per member.</p>
+      </div></div>
+  </div>`;
+
+/* ---------------- ADS ---------------- */
+PAGES.ads = () => {
+  const camps = [
+    ['Ironworks Strength Club','biz-ironworks','Featured placement','Fitness',120,2,'Ends 19 Oct'],
+    ['TechZone Accessories','biz-techzone','Category ranking','Technology',75,1,'Ends 19 Sept'],
+    ['Casa Pellegrino','biz-casa-pellegrino','Category ranking','Dining & Drink',75,2,'Ends 12 Oct'],
+    ['Rosewood Salon','biz-rosewood','Featured placement','Beauty & Wellbeing',120,1,'Ends 19 Sept']
+  ];
+  return `
+  <div class="grid g4" style="margin-bottom:18px">
+    <div class="stat"><div class="k">Active campaigns</div><div class="v tnum">${camps.length}</div><div class="d flat">of ${BUSINESSES.length} businesses</div></div>
+    <div class="stat"><div class="k">This month</div><div class="v tnum">${gbp(P.adRevenue)}</div><div class="d up">${ico('up',12)} 4 bookings</div></div>
+    <div class="stat"><div class="k">Placement slots</div><div class="v tnum">2 / 4</div><div class="d flat">Two available</div></div>
+    <div class="stat"><div class="k">Category slots</div><div class="v tnum">2 / 8</div><div class="d flat">Six available</div></div>
+  </div>
+  <div class="card">
+    <div class="hd"><h3>Running now</h3><span class="grow"></span>
+      <span class="pill">Maximum two months per booking</span></div>
+    <div class="tblwrap"><table class="tbl">
+      <tr><th>Business</th><th>Type</th><th>Where</th><th>Monthly</th><th>Term</th><th>Runs until</th></tr>
+      ${camps.map(([n,img,type,where,price,months,ends]) => `<tr>
+        <td><span class="thumbcell" style="min-width:0"><img src="assets/img/${img}.jpg" alt=""><b>${esc(n)}</b></span></td>
+        <td>${type==='Featured placement'?`<span class="badge badge-member">${esc(type)}</span>`:`<span class="badge badge-verified">${esc(type)}</span>`}</td>
+        <td>${esc(where)}</td><td class="num">${gbp(price)}</td>
+        <td class="num">${months} month${months>1?'s':''}</td><td>${esc(ends)}</td></tr>`).join('')}
+    </table></div>
+  </div>`;
+};
+
+/* ==========================================================
+   RENDER + EVENTS
+   ========================================================== */
+function paint(){
+  const m = META[A.page];
+  el('ptitle').textContent = m.t; el('psub').textContent = m.s;
+  el('topact').innerHTML = '';
+  el('content').innerHTML = PAGES[A.page]();
+  el('qpip').textContent = A.pending.length;
+  el('qpip').style.display = A.pending.length ? 'grid' : 'none';
+  document.querySelectorAll('.side .nav').forEach(b => b.classList.toggle('on', b.dataset.nav === A.page));
+  requestAnimationFrame(() => document.querySelectorAll('[data-w]').forEach(i => i.style.width = i.dataset.w));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function nav(p){ A.page = p; paint(); }
+function decide(id, verb, msg, icon){
+  const p = A.pending.find(x => x.id === id); if(!p) return;
+  A.pending = A.pending.filter(x => x.id !== id);
+  A.decisions[id] = verb;
+  paint(); wtoast(msg.replace('%s', p.name), icon);
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-nav],[data-approve],[data-reject],[data-info],[data-preview],[data-remove],[data-closemodal]');
+  if(!t) return; const d = t.dataset;
+  if(d.closemodal !== undefined){ closeModal(); return; }
+  if(d.nav){ nav(d.nav); return; }
+  if(d.approve){ decide(d.approve, 'approved', '%s approved — the listing is live for members', 'check'); return; }
+  if(d.reject){ decide(d.reject, 'rejected', '%s rejected — the applicant has been told why', 'x'); return; }
+  if(d.info){ decide(d.info, 'info', 'Sent %s a request for more information', 'mega'); return; }
+  if(d.remove){ A.removed.add(d.remove); paint(); wtoast('Deal removed and the business notified', 'x'); return; }
+  if(d.preview){
+    const p = A.pending.find(x => x.id === d.preview);
+    openModal(`<div class="mh"><h3>Listing preview</h3><button class="btn btn-ghost btn-sm" data-closemodal>${ico('x',15)}</button></div>
+      <div class="mb">
+        <p style="font-size:.82rem;color:var(--ink-2);line-height:1.6;margin-bottom:16px">
+          This is what a member would see if you approve ${esc(p.name)} now.</p>
+        <div style="border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden">
+          <div style="height:140px;overflow:hidden"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+          <div style="padding:16px">
+            <div style="font-size:1.05rem;font-weight:800;letter-spacing:-.02em">${esc(p.name)}</div>
+            <div style="font-size:.77rem;color:var(--ink-3);font-weight:600;margin-top:4px">
+              ${esc(cat(p.cat).name)} &middot; ${esc(p.area)}</div>
+            <div style="display:flex;gap:6px;margin-top:11px;flex-wrap:wrap">
+              <span class="badge badge-verified">${ico('check',10)} Verified</span>
+              <span class="badge badge-ad">No deals yet</span></div>
+            <p style="font-size:.84rem;color:var(--ink-2);line-height:1.6;margin-top:13px">${esc(p.about)}</p>
+          </div>
+        </div>
+      </div>
+      <div class="mf"><button class="btn btn-ghost" data-closemodal>Close</button>
+        <button class="btn btn-primary" data-approve="${p.id}" data-closemodal>Approve and publish</button></div>`);
+    return;
+  }
+});
+document.addEventListener('input', e => {
+  if(e.target.id === 'bq'){ A.bizQuery = e.target.value; const s = e.target.selectionStart; paint();
+    const i = el('bq'); if(i){ i.focus(); i.setSelectionRange(s,s); } }
+  if(e.target.id === 'mq'){ A.memQuery = e.target.value; const s = e.target.selectionStart; paint();
+    const i = el('mq'); if(i){ i.focus(); i.setSelectionRange(s,s); } }
+});
+document.addEventListener('change', e => {
+  if(e.target.id === 'bcat'){ A.catFilter = e.target.value; paint(); }
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+nav('overview');
+</script>
+</body>
+</html>

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apex · Business Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/apex.css" />
+<link rel="stylesheet" href="assets/web.css" />
+</head>
+<body class="web">
+<script src="assets/icons.js"></script>
+
+<div class="demobar">
+  <img src="assets/img/logo-word-light.png" style="height:14px" alt="APEX"><span class="sep">|</span>
+  <span>Business Portal &middot; interactive mockup &mdash; signed in as <b id="dbname">Rosewood Salon</b></span>
+  <a href="app.html">Open the member app &rarr;</a>
+</div>
+
+<div class="shell">
+  <aside class="side">
+    <div class="brand">
+      <img src="assets/img/logo-seal.png" style="width:36px;height:36px;flex:0 0 auto" alt="">
+      <span><img src="assets/img/logo-word.png" style="height:15px;display:block" alt="APEX">
+        <span class="sub">Business</span></span>
+    </div>
+    <div class="navlabel">Trading</div>
+    <button class="nav" data-nav="dashboard"><svg width="17" height="17"><use href="#i-chart"/></svg>Dashboard</button>
+    <button class="nav" data-nav="verify"><svg width="17" height="17"><use href="#i-shield"/></svg>Verify a code</button>
+    <button class="nav" data-nav="deals"><svg width="17" height="17"><use href="#i-tag"/></svg>My deals</button>
+    <div class="navlabel">Reach</div>
+    <button class="nav" data-nav="posts"><svg width="17" height="17"><use href="#i-mega"/></svg>Announcements</button>
+    <button class="nav" data-nav="network"><svg width="17" height="17"><use href="#i-case"/></svg>Apex Network<span class="pipn" id="pipn">3</span></button>
+    <button class="nav" data-nav="ads"><svg width="17" height="17"><use href="#i-sparkle"/></svg>Advertising</button>
+    <div class="navlabel">Account</div>
+    <button class="nav" data-nav="profile"><svg width="17" height="17"><use href="#i-building"/></svg>Business profile</button>
+    <div class="foot">
+      <div class="bizswitch">
+        <img id="swimg" src="assets/img/biz-rosewood.jpg" alt="">
+        <div><div class="n" id="swname">Rosewood Salon</div><div class="s">Verified &middot; Clapham</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div><h1 id="ptitle">Dashboard</h1><div class="sub" id="psub"></div></div>
+      <div class="grow"></div>
+      <div id="topact"></div>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<div class="modalwrap" id="modal"></div>
+<div id="wtoasts"></div>
+
+<script src="assets/data.js"></script>
+<script>
+/* ==========================================================
+   APEX business portal · demo interaction layer
+   ========================================================== */
+const ico  = (n,s=18) => `<svg width="${s}" height="${s}"><use href="#i-${n}"/></svg>`;
+const esc  = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money= n => '£' + n.toFixed(2);
+const ME   = 'rosewood';                       // the business signed in for this demo
+
+function hash(str, seed){
+  let h = (seed === undefined ? 2166136261 : seed) >>> 0;
+  for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h,16777619) >>> 0; }
+  return h >>> 0;
+}
+function makeCode(id){
+  const A='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const h1 = hash('apex-code-'+id), h2 = hash('apex-code-'+id, 3221225473);
+  return `APX-${A[h1%24]}${A[(h1>>>9)%24]}${(h1>>>18)%10}${(h1>>>24)%10}-${h2%10}${(h2>>>8)%10}${(h2>>>16)%10}${(h2>>>24)%10}`;
+}
+
+/* ---------- state ---------- */
+const me = biz(ME);
+let W = {
+  page:'dashboard',
+  deals: dealsOf(ME).map(d => ({...d, unlocked: 40 + hash(d.id)%160, redeemed: 12 + hash(d.id+'r')%70, live:true })),
+  posts: postsOf(ME).map(p => ({...p})),
+  redemptions: [],
+  adType:'placement', adMonths:1, adLive:null,
+  candidates:[
+    { name:'Priya Raman',    img:'assets/img/person-1.jpg', role:'j01', when:'2 hours ago',  note:'6 years colour experience, NVQ Level 3, currently in Balham.' },
+    { name:'Marcus Ellery',  img:'assets/img/person-4.jpg', role:'j01', when:'Yesterday',    note:'Salon manager looking to return to the chair. Colour trained at Sassoon.' },
+    { name:'Aoife Brennan',  img:'assets/img/person-3.jpg', role:'j01', when:'3 days ago',   note:'Four years in a Soho salon, strong balayage portfolio.' }
+  ]
+};
+/* live member codes this business can be shown at the counter */
+const LIVE_CODES = MEMBER.wallet
+  .filter(w => deal(w.deal) && deal(w.deal).biz === ME)
+  .map(w => ({...w}));
+
+const el = id => document.getElementById(id);
+function wtoast(msg, icon='check'){
+  const t = document.createElement('div');
+  t.className = 'wtoast'; t.innerHTML = ico(icon,17) + `<span>${esc(msg)}</span>`;
+  el('wtoasts').appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 280); }, 2600);
+}
+function openModal(html){ const m = el('modal'); m.className='modalwrap on'; m.innerHTML = `<div class="scrim" data-closemodal></div><div class="modal">${html}</div>`; }
+function closeModal(){ const m = el('modal'); m.className='modalwrap'; m.innerHTML=''; }
+
+/* ==========================================================
+   PAGES
+   ========================================================== */
+const PAGES = {};
+
+const META = {
+  dashboard:{ t:'Dashboard', s:'How Apex members are finding and using your offers' },
+  verify:   { t:'Verify a code', s:'Confirm a member’s deal code before you apply the discount' },
+  deals:    { t:'My deals', s:'Offers you are running for Apex members' },
+  posts:    { t:'Announcements', s:'Post to the members who follow you' },
+  network:  { t:'Apex Network', s:'Your roles and the members who registered interest' },
+  ads:      { t:'Advertising', s:'Put your listing in front of more members' },
+  profile:  { t:'Business profile', s:'What members see when they open your page' }
+};
+const TOPACT = {
+  deals:'<button class="btn btn-primary btn-sm" data-newdeal>'+ico('plus',15)+' Create a deal</button>',
+  posts:'<button class="btn btn-primary btn-sm" data-focuspost>'+ico('plus',15)+' New announcement</button>',
+  network:'<button class="btn btn-primary btn-sm" data-newrole>'+ico('plus',15)+' Post a role</button>'
+};
+
+/* ---------------- DASHBOARD ---------------- */
+PAGES.dashboard = () => {
+  const totUnlock = W.deals.reduce((t,d) => t+d.unlocked, 0);
+  const totRedeem = W.deals.reduce((t,d) => t+d.redeemed, 0) + W.redemptions.length;
+  const conv = Math.round(totRedeem/totUnlock*100);
+  const maxU = Math.max(...W.deals.map(d => d.unlocked));
+  const spark = (vals, gold) => `<div class="spark ${gold?'gold':''}">${vals.map((v,i) =>
+    `<span class="${i>=vals.length-4?'hi':''}" style="height:${v}%;animation-delay:${i*35}ms"></span>`).join('')}</div>`;
+  return `
+  <div class="masthead">
+    <img class="bgi" src="${me.img}" alt=""><span class="sc"></span>
+    <img class="seal" src="assets/img/logo-seal.png" alt="">
+    <div class="in">
+      <span class="lg"><img src="${me.img}" alt=""></span>
+      <div class="g">
+        <div class="kick">${esc(cat(me.cat).name)} &middot; ${esc(me.area)}</div>
+        <h2>${esc(me.name)}</h2>
+        <div class="tags">
+          <span class="badge badge-verified">${ico('check',10)} Verified ${esc(me.verified)}</span>
+          <span class="badge badge-member">${W.deals.filter(d=>d.live).length} live deals</span>
+          <span class="badge badge-live">${me.followers.toLocaleString()} followers</span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="k">Member spend, 30 days</div>
+        <div class="v tnum">£4,182</div>
+        <div class="d">${ico('up',11)} 23% on last month</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verifybar" style="margin-bottom:24px">
+    <img class="seal" src="assets/img/logo-seal.png" alt="">
+    <span class="ic">${ico('shield',21)}</span>
+    <div><div class="t">A member is at the counter?</div>
+      <div class="s">Enter the code they show you and we'll confirm it in a second.</div></div>
+    <input class="codeinput" id="qcode" placeholder="APX-0000-0000" maxlength="13" autocomplete="off">
+    <button class="btn btn-gold" data-verify="qcode">Verify code</button>
+  </div>
+  <div id="qresult"></div>
+
+  <div class="webhead" style="margin-top:0">
+    <div class="g"><div class="eyebrow2">Last thirty days</div><div class="t">How you are trading</div></div>
+  </div>
+  <div class="grid g4" style="margin-bottom:8px">
+    <div class="stat"><div class="k">Profile views</div><div class="v tnum">1,284</div>
+      <div class="d up">${ico('up',12)} 18% this month</div>${spark([28,34,31,45,42,58,54,66,72,68,84,92])}</div>
+    <div class="stat"><div class="k">Deals unlocked</div><div class="v tnum">${totUnlock}</div>
+      <div class="d up">${ico('up',12)} 42 this week</div>${spark([22,30,26,38,44,40,56,62,58,74,80,88])}</div>
+    <div class="stat accent"><div class="k">Codes redeemed</div><div class="v tnum">${totRedeem}</div>
+      <div class="d up">${conv}% conversion</div>${spark([18,24,20,32,29,41,38,50,47,62,70,78], true)}</div>
+    <div class="stat"><div class="k">Followers</div><div class="v tnum">${me.followers.toLocaleString()}</div>
+      <div class="d up">${ico('up',12)} 31 this week</div>${spark([40,44,42,52,56,54,64,68,72,78,84,90])}</div>
+  </div>
+
+  <div class="webhead">
+    <div class="g"><div class="eyebrow2">What members respond to</div><div class="t">Your offers, ranked</div></div>
+    <button class="btn btn-ghost btn-sm a" data-nav="deals">Manage deals</button>
+  </div>
+  <div class="grid g2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="hd"><h3>Unlocks by deal</h3><span class="grow"></span>
+        <span class="pill">Last 30 days</span></div>
+      <div class="bd"><div class="barrow">
+        ${W.deals.map(d => `<div class="b">
+          <span class="nm" title="${esc(d.title)}"><b style="color:var(--gold)">${esc(d.value)}</b> ${esc(d.title)}</span>
+          <span class="tr"><i data-w="${Math.round(d.unlocked/maxU*100)}%" style="width:0"></i></span>
+          <span class="vv tnum">${d.unlocked}</span></div>`).join('')}
+      </div></div>
+    </div>
+    <div class="card">
+      <div class="hd"><h3>Member activity</h3><span class="grow"></span><span class="pill">12 weeks</span></div>
+      <div class="bd">
+        <div class="mini" style="height:96px">
+          ${[24,31,28,42,38,55,49,64,58,72,68,88].map((h,i) =>
+            `<span class="${i>8?'hi':''}" style="height:${h}%;animation-delay:${i*45}ms"></span>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink-3);font-weight:700;margin-top:10px">
+          <span>Jun</span><span>Jul</span><span>Aug</span></div>
+        <p style="font-size:.8rem;color:var(--ink-2);margin-top:14px;line-height:1.6">
+          Members who follow you unlock <b>3.4&times;</b> more of your deals than members who don't.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="webhead">
+    <div class="g"><div class="eyebrow2">At the counter</div><div class="t">Recent redemptions</div></div>
+    <button class="btn btn-ghost btn-sm a" data-nav="verify">Verify a code</button>
+  </div>
+  <div class="card">
+    <div class="tblwrap"><table class="tbl">
+      <tr><th>Member</th><th>Deal</th><th>Code</th><th>Saved</th><th>When</th></tr>
+      ${(W.redemptions.length ? W.redemptions : []).map(r => `<tr>
+        <td><span class="thumbcell" style="min-width:0"><img src="${MEMBER.avatar}" alt=""><b>${esc(MEMBER.name)}</b></span></td>
+        <td>${esc(deal(r.deal).title)}</td><td class="num">${r.code}</td>
+        <td class="num">${money(r.saved)}</td><td>Just now</td></tr>`).join('')}
+      ${[['Priya Raman','person-1','Any colour service, midweek','APX-4RD2-8890',38.00,'Today, 11:24'],
+         ['Tom Whitfield','person-6','Gloss treatment with any cut','APX-8KM5-1207',22.00,'Today, 10:02'],
+         ['Aoife Brennan','person-3','Student Tuesdays','APX-2JQ7-4415',9.50,'Yesterday, 16:47'],
+         ['Nadia Osei','person-8','Any colour service, midweek','APX-6BT9-3328',41.00,'Yesterday, 14:15'],
+         ['Marcus Ellery','person-4','Gloss treatment with any cut','APX-3WN4-7761',22.00,'17 Aug, 15:30']]
+        .map(([n,img,dl,code,save,when]) => `<tr>
+          <td><span class="thumbcell" style="min-width:0"><img src="assets/img/${img}.jpg" alt=""><b>${n}</b></span></td>
+          <td>${dl}</td><td class="num">${code}</td><td class="num">${money(save)}</td><td>${when}</td></tr>`).join('')}
+    </table></div>
+  </div>`;
+};
+
+/* ---------------- VERIFY ---------------- */
+PAGES.verify = () => `
+  <div class="grid g2" style="align-items:start">
+    <div>
+      <div class="card">
+        <div class="hd"><h3>Verify a member's deal code</h3></div>
+        <div class="bd">
+          <label class="field">
+            <span class="lb">Deal code</span>
+            <input class="codeinput" id="vcode" placeholder="APX-0000-0000" maxlength="13" autocomplete="off" style="width:100%">
+            <span class="hint">The member shows you this in the Apex app. Codes are unique to one member and one deal.</span>
+          </label>
+          <button class="btn btn-primary btn-block" data-verify="vcode">${ico('shield',16)} Verify code</button>
+        </div>
+      </div>
+      <div id="vresult"></div>
+    </div>
+    <div class="card">
+      <div class="hd"><h3>Live codes for your deals</h3></div>
+      <div class="bd" style="padding-top:14px">
+        <p style="font-size:.81rem;color:var(--ink-2);line-height:1.6;margin-bottom:14px">
+          For this demonstration, these are real codes a member is holding in the app right now.
+          Type one in to see the verification.</p>
+        ${LIVE_CODES.map(w => {
+          const d = deal(w.deal);
+          return `<button class="choice" style="margin-bottom:10px;padding:14px" data-usecode="${w.code}">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="font-family:var(--serif);font-size:1.3rem;color:var(--gold)">${esc(d.value)}</span>
+              <span style="flex:1"><span style="display:block;font-size:.83rem;font-weight:700">${esc(d.title)}</span>
+                <span style="font-size:.75rem;color:var(--ink-3);font-weight:700;letter-spacing:.1em">${w.code}</span></span>
+              ${ico('right',16)}
+            </div></button>`;
+        }).join('') || `<div class="emptyw"><p>No live codes right now.</p></div>`}
+        <div style="background:var(--sunk);border-radius:var(--r-md);padding:14px;margin-top:6px">
+          <p style="font-size:.78rem;color:var(--ink-2);line-height:1.6">
+            Try <b>APX-0000-0000</b> to see how an invalid code is handled.</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+/* ---------------- DEALS ---------------- */
+PAGES.deals = () => `
+  <div class="card">
+    <div class="hd"><h3>${W.deals.length} deals</h3><span class="grow"></span>
+      <span class="pill">${W.deals.filter(d=>d.live).length} live</span>
+      <button class="btn btn-primary btn-sm" data-newdeal>${ico('plus',15)} Create a deal</button></div>
+    <div class="tblwrap"><table class="tbl">
+      <tr><th>Deal</th><th>Status</th><th>Unlocked</th><th>Redeemed</th><th>Rate</th><th>Ends</th><th></th></tr>
+      ${W.deals.map(d => `<tr>
+        <td><span class="thumbcell"><img src="${d.img}" alt="">
+          <span><b style="display:block">${esc(d.title)}</b>
+          <span style="font-size:.74rem;color:var(--gold);font-weight:800">${esc(d.value)}</span></span></span></td>
+        <td>${d.live ? (d.ending ? '<span class="badge badge-ends">Ends soon</span>' : '<span class="badge badge-live">Live</span>')
+                     : '<span class="badge badge-ad">Paused</span>'}</td>
+        <td class="num">${d.unlocked}</td><td class="num">${d.redeemed}</td>
+        <td class="num">${Math.round(d.redeemed/d.unlocked*100)}%</td>
+        <td>${esc(d.ends)}</td>
+        <td><button class="btn btn-ghost btn-sm" data-toggledeal="${d.id}">${d.live?'Pause':'Resume'}</button></td>
+      </tr>`).join('')}
+    </table></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card"><div class="hd"><h3>What makes a deal perform</h3></div><div class="bd">
+      <div class="barrow">
+        <div class="b"><span class="nm">Percentage off</span><span class="tr"><i data-w="88%" style="width:0"></i></span><span class="vv">88%</span></div>
+        <div class="b"><span class="nm">Two for one</span><span class="tr"><i data-w="74%" style="width:0"></i></span><span class="vv">74%</span></div>
+        <div class="b"><span class="nm">Free add-on</span><span class="tr"><i data-w="61%" style="width:0"></i></span><span class="vv">61%</span></div>
+        <div class="b"><span class="nm">Fixed amount off</span><span class="tr"><i data-w="47%" style="width:0"></i></span><span class="vv">47%</span></div>
+      </div>
+      <p style="font-size:.8rem;color:var(--ink-2);margin-top:16px;line-height:1.6">
+        Redemption rate across all Apex businesses in your category. Percentage discounts convert best.</p>
+    </div></div>
+    <div class="card"><div class="hd"><h3>Your share of member spend</h3></div><div class="bd">
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px">
+        <span style="font-family:var(--serif);font-size:2.5rem;color:var(--forest)" class="tnum">£4,182</span>
+        <span class="badge badge-live">${ico('up',10)} 23%</span>
+      </div>
+      <p style="font-size:.8rem;color:var(--ink-2);line-height:1.6">
+        Total takings from Apex members in the last 30 days, after discount. Members spend
+        <b>28% more per visit</b> than walk-ins because the discount is applied at the till, not before.</p>
+      <div class="mini" style="margin-top:18px">
+        ${[38,45,41,58,52,66,72,64,80,76,88,94].map((h,i)=>`<span class="${i>7?'hi':''}" style="height:${h}%;animation-delay:${i*40}ms"></span>`).join('')}
+      </div>
+    </div></div>
+  </div>`;
+
+/* ---------------- POSTS ---------------- */
+PAGES.posts = () => `
+  <div class="card" style="margin-bottom:18px">
+    <div class="hd"><h3>Post to your ${me.followers.toLocaleString()} followers</h3></div>
+    <div class="bd">
+      <div class="composer">
+        <img src="${me.img}" alt="" style="width:42px;height:42px;border-radius:12px;object-fit:cover;flex:0 0 auto">
+        <textarea class="ta" id="postbox" placeholder="Tell your followers what's new — a fresh offer, an arrival, a change of hours…"></textarea>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm">${ico('plus',14)} Add a photo</button>
+        <span class="hint" style="font-size:.74rem;color:var(--ink-3);font-weight:600">
+          Followers get a notification the moment you post.</span>
+        <span style="flex:1"></span>
+        <button class="btn btn-primary btn-sm" data-post>Publish</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="hd"><h3>Published</h3><span class="grow"></span><span class="pill">${W.posts.length} posts</span></div>
+    <div class="timeline">
+      ${W.posts.map(p => `<div class="item">
+        <img class="lg" src="${me.img}" alt="">
+        <div style="flex:1"><div class="tm">${esc(p.time)}</div><p>${esc(p.text)}</p>
+          <div style="display:flex;gap:16px;margin-top:9px;font-size:.72rem;color:var(--ink-3);font-weight:700">
+            <span>${ico('eye',13)} ${(420 + hash(p.id)%900).toLocaleString()} seen</span>
+            <span>${ico('star',13)} ${18 + hash(p.id+'l')%90} likes</span></div>
+        </div></div>`).join('')}
+    </div>
+  </div>`;
+
+/* ---------------- NETWORK ---------------- */
+PAGES.network = () => {
+  const roles = jobsOf(ME);
+  return `
+  ${roles.map(j => `
+    <div class="card" style="margin-bottom:18px">
+      <div class="hd">
+        <div><h3>${esc(j.title)}</h3>
+          <div style="font-size:.76rem;color:var(--ink-3);font-weight:600;margin-top:3px">
+            ${esc(j.type)} &middot; ${esc(j.pay)} &middot; posted ${esc(j.posted)}</div></div>
+        <span class="grow"></span>
+        <span class="badge badge-network">${W.candidates.filter(c=>c.role===j.id).length} interested</span>
+        <button class="btn btn-ghost btn-sm">Edit</button>
+      </div>
+      ${W.candidates.filter(c => c.role === j.id).map(c => `
+        <div class="candidate">
+          <img class="avatarw" src="${c.img}" alt="">
+          <div class="g"><div class="n">${esc(c.name)}</div><div class="s">${esc(c.note)}</div></div>
+          <span class="pill">${esc(c.when)}</span>
+          <button class="btn btn-ghost btn-sm" data-cv="${esc(c.name)}">View profile</button>
+          <button class="btn btn-primary btn-sm" data-contact="${esc(c.name)}">Contact</button>
+        </div>`).join('') || `<div class="emptyw"><div class="ic">${ico('users',22)}</div>
+          <h4>No interest yet</h4><p>Members who register interest appear here with their profile.</p></div>`}
+    </div>`).join('')}
+  <div class="card">
+    <div class="bd" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <span style="width:42px;height:42px;border-radius:12px;background:var(--harbor-tint);color:var(--harbor);
+        display:grid;place-items:center;flex:0 0 auto">${ico('case',20)}</span>
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:.9rem;font-weight:800">Hiring is included in your listing</div>
+        <div style="font-size:.8rem;color:var(--ink-2);margin-top:3px;line-height:1.55">
+          Post as many roles as you like at no extra cost. Members register interest, you see their profile,
+          and you contact them directly &mdash; Apex stays out of the conversation.</div>
+      </div>
+      <button class="btn btn-primary btn-sm" data-newrole>${ico('plus',15)} Post a role</button>
+    </div>
+  </div>`;
+};
+
+/* ---------------- ADVERTISING ---------------- */
+PAGES.ads = () => {
+  const price = W.adType === 'placement' ? 120 : 75;
+  const total = price * W.adMonths;
+  return `
+  ${W.adLive ? `
+    <div class="card" style="margin-bottom:18px;border-color:#BFE0CE;background:var(--success-tint)">
+      <div class="bd" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <span style="width:42px;height:42px;border-radius:50%;background:var(--success);color:#fff;display:grid;place-items:center;flex:0 0 auto">${ico('check',20)}</span>
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:.92rem;font-weight:800">Your campaign is live</div>
+          <div style="font-size:.81rem;color:var(--success);font-weight:600;margin-top:3px">
+            ${W.adLive.type === 'placement' ? 'Featured placement' : 'Category ranking in Beauty & Wellbeing'}
+            &middot; ${W.adLive.months} month${W.adLive.months>1?'s':''} &middot; ${money(W.adLive.total)} paid</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" data-endad>End campaign</button>
+      </div>
+    </div>` : ''}
+
+  <div class="pagehead">
+    <h2>Put your listing in front of more members</h2>
+    <p>Two ways to advertise. Pick one, choose how long to run it, and pay by card. Campaigns run for a
+       maximum of two months at a time so the placements stay fresh for members.</p>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:20px">
+    <button class="choice ${W.adType==='placement'?'sel':''}" data-adtype="placement">
+      <span class="tick">${ico('check',13)}</span>
+      <span class="ic">${ico('sparkle',19)}</span>
+      <span class="t">Featured placement</span>
+      <span class="s">A full-width card on the member home screen and across category pages.
+        The most visible slot in the app.</span>
+      <span class="pr tnum">£120 <small>per month</small></span>
+    </button>
+    <button class="choice ${W.adType==='category'?'sel':''}" data-adtype="category">
+      <span class="tick">${ico('check',13)}</span>
+      <span class="ic">${ico('up',19)}</span>
+      <span class="t">Category ranking</span>
+      <span class="s">Rank first in Beauty &amp; Wellbeing whenever a member browses or searches
+        that category.</span>
+      <span class="pr tnum">£75 <small>per month</small></span>
+    </button>
+  </div>
+
+  <div class="grid g2" style="align-items:start">
+    <div class="card">
+      <div class="hd"><h3>How long should it run?</h3></div>
+      <div class="bd">
+        <div class="stepper">
+          <button data-admonths="-1" ${W.adMonths<=1?'disabled':''}>&minus;</button>
+          <span class="val">${W.adMonths} month${W.adMonths>1?'s':''}</span>
+          <button data-admonths="1" ${W.adMonths>=2?'disabled':''}>+</button>
+        </div>
+        <p class="hint" style="margin-top:12px">Two months is the maximum in one booking. You can renew when it ends.</p>
+        <div style="border-top:1px solid var(--line);margin:18px 0;padding-top:18px">
+          <div class="kv" style="margin-bottom:9px"><span class="k">${W.adType==='placement'?'Featured placement':'Category ranking'}</span>
+            <span class="v tnum">${money(price)} / month</span></div>
+          <div class="kv" style="margin-bottom:9px"><span class="k">Duration</span>
+            <span class="v">${W.adMonths} month${W.adMonths>1?'s':''}</span></div>
+          <div class="kv" style="font-size:.98rem;padding-top:9px;border-top:1px solid var(--line-2)">
+            <span class="k" style="color:var(--ink);font-weight:800">Total</span>
+            <span class="v tnum" style="font-family:var(--serif);font-size:1.5rem">${money(total)}</span></div>
+        </div>
+        <label class="field"><span class="lb">Card</span>
+          <div style="display:flex;align-items:center;gap:11px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--sunk)">
+            ${ico('card',18)}<span style="font-size:.85rem;font-weight:700">Visa ending 8842</span>
+            <span style="flex:1"></span><span style="font-size:.76rem;font-weight:700;color:var(--forest)">Change</span>
+          </div>
+          <span class="hint">Demonstration only &mdash; no card is charged.</span>
+        </label>
+        <button class="btn btn-primary btn-block" data-buyad>Start campaign &middot; ${money(total)}</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="hd"><h3>Where it appears</h3></div>
+      <div class="bd">
+        ${W.adType==='placement' ? `
+          <div style="border-radius:var(--r-lg);overflow:hidden;position:relative;height:170px;border:1px solid var(--line)">
+            <img src="${me.img}" style="width:100%;height:100%;object-fit:cover" alt="">
+            <span style="position:absolute;inset:0;background:linear-gradient(105deg,rgba(10,24,20,.88) 12%,rgba(10,24,20,.3) 74%)"></span>
+            <span style="position:absolute;top:12px;right:12px;font-size:.56rem;font-weight:800;letter-spacing:.1em;
+              text-transform:uppercase;background:rgba(255,255,255,.9);color:var(--ink-2);padding:4px 9px;border-radius:5px">Featured</span>
+            <span style="position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;justify-content:center;color:#fff;max-width:74%">
+              <span style="font-size:.58rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-2)">Clapham</span>
+              <span style="font-size:1.05rem;font-weight:800;letter-spacing:-.018em;margin:5px 0 3px">20% off any colour service at Rosewood Salon</span>
+              <span style="font-size:.75rem;opacity:.85">Midweek, Tuesday to Thursday</span>
+            </span>
+          </div>
+          <p style="font-size:.81rem;color:var(--ink-2);line-height:1.6;margin-top:14px">
+            Shown to every member in your area on the home screen, and again on the Beauty &amp; Wellbeing page.
+            Typical reach is <b>4,200 members a month</b> in south London.</p>
+        ` : `
+          <div style="border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden">
+            ${[[me.name,true],['The Ivory Room',false],['Barber & Bell',false],['Lumen Skin Clinic',false]]
+              .map(([n,first],i) => `
+              <div style="display:flex;align-items:center;gap:12px;padding:13px 15px;
+                ${i<3?'border-bottom:1px solid var(--line-2);':''}${first?'background:var(--gold-tint);':''}">
+                <span style="font-family:var(--serif);font-size:1.1rem;color:${first?'var(--gold)':'var(--ink-3)'};width:20px">${i+1}</span>
+                <span style="font-size:.85rem;font-weight:${first?'800':'600'};flex:1">${esc(n)}</span>
+                ${first?'<span class="badge badge-member">Promoted</span>':''}
+              </div>`).join('')}
+          </div>
+          <p style="font-size:.81rem;color:var(--ink-2);line-height:1.6;margin-top:14px">
+            You hold first position in Beauty &amp; Wellbeing for every member browsing or searching that
+            category. Businesses in the top slot see <b>3.1&times; more profile views</b>.</p>
+        `}
+      </div>
+    </div>
+  </div>`;
+};
+
+/* ---------------- PROFILE ---------------- */
+PAGES.profile = () => `
+  <div class="grid g2" style="align-items:start">
+    <div class="card">
+      <div class="hd"><h3>Your listing</h3><span class="grow"></span>
+        <span class="badge badge-verified">${ico('check',10)} Verified ${esc(me.verified)}</span></div>
+      <div class="bd">
+        <label class="field"><span class="lb">Business name</span>
+          <input class="inp" value="${esc(me.name)}"></label>
+        <div class="row2">
+          <label class="field"><span class="lb">Category</span>
+            <select class="sel">${CATEGORIES.map(c => `<option ${c.id===me.cat?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
+          <label class="field"><span class="lb">Area</span><input class="inp" value="${esc(me.area)}"></label>
+        </div>
+        <label class="field"><span class="lb">About</span>
+          <textarea class="ta">${esc(me.about)}</textarea>
+          <span class="hint">Shown at the top of your page in the app. Keep it to two or three lines.</span></label>
+        <label class="field"><span class="lb">Cover photo</span>
+          <div style="border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);height:130px">
+            <img src="${me.img}" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+          <span class="hint">Members see this first. A photo of the space works better than a logo.</span></label>
+        <button class="btn btn-primary" data-save>Save changes</button>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:18px">
+        <div class="hd"><h3>Verification</h3></div>
+        <div class="bd">
+          <div class="kv" style="margin-bottom:11px"><span class="k">Status</span>
+            <span class="v"><span class="badge badge-verified">${ico('check',10)} Verified</span></span></div>
+          <div class="kv" style="margin-bottom:11px"><span class="k">Approved</span><span class="v">${esc(me.verified)}</span></div>
+          <div class="kv" style="margin-bottom:11px"><span class="k">Companies House</span><span class="v">14882073</span></div>
+          <div class="kv"><span class="k">Reviewed by</span><span class="v">Apex admin team</span></div>
+          <p style="font-size:.79rem;color:var(--ink-2);line-height:1.6;margin-top:14px;padding-top:14px;border-top:1px solid var(--line-2)">
+            Every business on Apex is checked by a person before it goes live. Members only ever see verified listings.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="hd"><h3>What members see</h3></div>
+        <div class="bd">
+          <div style="border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line)">
+            <div style="height:110px;overflow:hidden"><img src="${me.img}" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+            <div style="padding:14px">
+              <div style="font-size:.98rem;font-weight:800;letter-spacing:-.02em">${esc(me.name)}</div>
+              <div style="font-size:.76rem;color:var(--ink-3);font-weight:600;margin-top:4px">
+                <span style="color:var(--gold);font-weight:800">${ico('star',11)} ${me.rating}</span>
+                &middot; ${me.reviews} reviews &middot; ${esc(me.area)}</div>
+              <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+                <span class="badge badge-verified">${ico('check',10)} Verified</span>
+                <span class="badge badge-member">${dealsOf(ME).length} member deals</span>
+              </div>
+            </div>
+          </div>
+          <a class="btn btn-ghost btn-block" style="margin-top:14px" href="app.html">Open the member app</a>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+/* ==========================================================
+   VERIFY LOGIC
+   ========================================================== */
+function lookupCode(raw){
+  const code = raw.trim().toUpperCase();
+  if(!/^APX-[A-Z0-9]{4}-\d{4}$/.test(code)) return { state:'malformed' };
+  const held = MEMBER.wallet.find(w => w.code === code);
+  if(held){
+    const d = deal(held.deal);
+    if(d.biz !== ME) return { state:'wrongbiz', biz:biz(d.biz), d };
+    if(held.status === 'redeemed') return { state:'used', d, w:held };
+    return { state:'ok', d, w:held };
+  }
+  const owned = dealsOf(ME).find(d => makeCode(d.id) === code);
+  if(owned) return { state:'ok', d:owned, w:{ code, saved:0, on:'19 Aug 2026' } };
+  const any = DEALS.find(d => makeCode(d.id) === code);
+  if(any) return { state:'wrongbiz', biz:biz(any.biz), d:any };
+  return { state:'invalid' };
+}
+function renderVerify(res, code){
+  if(res.state === 'ok'){
+    const saving = res.w.saved || 30;
+    return `<div class="vresult ok">
+      <div class="top"><span class="mk">${ico('check',24)}</span>
+        <div><div class="h">Valid code &mdash; apply the discount</div>
+          <div class="p">Active Apex member &middot; code has not been used</div></div></div>
+      <div class="panel">
+        <div class="memberchip"><img src="${MEMBER.avatar}" alt="">
+          <div><div style="font-size:.88rem;font-weight:800">${esc(MEMBER.name)}</div>
+            <div style="font-size:.75rem;color:var(--ink-3);font-weight:600">Apex Standard &middot; member since March 2026</div></div>
+        </div>
+        <div class="kv"><span class="k">Deal</span><span class="v">${esc(res.d.title)}</span></div>
+        <div class="kv"><span class="k">Discount to apply</span>
+          <span class="v" style="color:var(--gold);font-family:var(--serif);font-size:1.25rem">${esc(res.d.value)}</span></div>
+        <div class="kv"><span class="k">Code</span><span class="v tnum">${code}</span></div>
+        <div class="kv"><span class="k">Unlocked</span><span class="v">${esc(res.w.on)}</span></div>
+        <div class="kv"><span class="k">Valid until</span><span class="v">${esc(res.d.ends)}</span></div>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:16px"
+        data-redeem="${code}" data-deal="${res.d.id}" data-saved="${saving}">
+        ${ico('check',16)} Mark as redeemed</button>
+    </div>`;
+  }
+  if(res.state === 'used') return `<div class="vresult used">
+      <div class="top"><span class="mk">${ico('clock',22)}</span>
+        <div><div class="h">This code has already been used</div>
+          <div class="p" style="color:var(--ink-2)">Redeemed on ${esc(res.w.on)}</div></div></div>
+      <div class="panel"><div class="kv"><span class="k">Deal</span><span class="v">${esc(res.d.title)}</span></div>
+        <div class="kv"><span class="k">Code</span><span class="v tnum">${esc(res.w.code)}</span></div></div>
+      <p style="font-size:.8rem;color:var(--ink-2);margin-top:14px;line-height:1.55">
+        Each code can only be redeemed once. Do not apply the discount again.</p>
+    </div>`;
+  if(res.state === 'wrongbiz') return `<div class="vresult bad">
+      <div class="top"><span class="mk">${ico('x',22)}</span>
+        <div><div class="h">This code is for another business</div>
+          <div class="p">Issued for ${esc(res.biz.name)}</div></div></div>
+      <p style="font-size:.8rem;color:var(--ink-2);line-height:1.55">
+        Codes only work at the business that created the deal. Do not apply a discount.</p></div>`;
+  if(res.state === 'malformed') return `<div class="vresult bad">
+      <div class="top"><span class="mk">${ico('x',22)}</span>
+        <div><div class="h">That doesn't look like an Apex code</div>
+          <div class="p">Codes are in the format APX-XXXX-0000</div></div></div></div>`;
+  return `<div class="vresult bad">
+      <div class="top"><span class="mk">${ico('x',22)}</span>
+        <div><div class="h">Code not recognised</div>
+          <div class="p">No active member holds this code</div></div></div>
+      <p style="font-size:.8rem;color:var(--ink-2);line-height:1.55">
+        Ask the member to reopen the deal in their Apex app and read the code again. Do not apply a discount.</p></div>`;
+}
+
+/* ==========================================================
+   RENDER + EVENTS
+   ========================================================== */
+function paint(){
+  const m = META[W.page];
+  el('ptitle').textContent = m.t;
+  el('psub').textContent = m.s;
+  el('topact').innerHTML = TOPACT[W.page] || '';
+  el('content').innerHTML = PAGES[W.page]();
+  document.querySelectorAll('.side .nav').forEach(b => b.classList.toggle('on', b.dataset.nav === W.page));
+  requestAnimationFrame(() => document.querySelectorAll('[data-w]').forEach(i => i.style.width = i.dataset.w));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function nav(p){ W.page = p; paint(); }
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-nav],[data-verify],[data-usecode],[data-redeem],[data-toggledeal],[data-newdeal],[data-createdeal],[data-closemodal],[data-post],[data-focuspost],[data-newrole],[data-adtype],[data-admonths],[data-buyad],[data-endad],[data-save],[data-contact],[data-cv]');
+  if(!t) return;
+  const d = t.dataset;
+
+  if(d.closemodal !== undefined){ closeModal(); return; }
+  if(d.nav){ nav(d.nav); return; }
+
+  if(d.verify){
+    const inp = el(d.verify), code = inp.value.trim().toUpperCase();
+    const host = el(d.verify === 'qcode' ? 'qresult' : 'vresult');
+    if(!code){ inp.classList.add('err'); inp.focus(); setTimeout(()=>inp.classList.remove('err'),1200); return; }
+    const res = lookupCode(code);
+    inp.classList.toggle('err', res.state !== 'ok');
+    host.innerHTML = renderVerify(res, code);
+    host.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  if(d.usecode){
+    nav('verify');
+    setTimeout(() => { const i = el('vcode'); i.value = d.usecode; i.focus();
+      el('vresult').innerHTML = renderVerify(lookupCode(d.usecode), d.usecode); }, 60);
+    return;
+  }
+  if(d.redeem){
+    const held = MEMBER.wallet.find(w => w.code === d.redeem);
+    if(held) held.status = 'redeemed';
+    W.redemptions.unshift({ code:d.redeem, deal:d.deal, saved:parseFloat(d.saved) });
+    const dl = W.deals.find(x => x.id === d.deal); if(dl) dl.redeemed++;
+    closeModal();
+    el(W.page === 'verify' ? 'vresult' : 'qresult').innerHTML =
+      `<div class="vresult ok"><div class="top"><span class="mk">${ico('check',24)}</span>
+        <div><div class="h">Redeemed</div><div class="p">Discount applied and logged against this deal</div></div></div>
+        <p style="font-size:.81rem;color:var(--ink-2);line-height:1.6">
+          ${esc(MEMBER.name)} saved ${money(parseFloat(d.saved))}. This now shows in your dashboard and in their app.</p></div>`;
+    wtoast('Code redeemed and logged');
+    return;
+  }
+  if(d.toggledeal){
+    const dl = W.deals.find(x => x.id === d.toggledeal); dl.live = !dl.live;
+    paint(); wtoast(dl.live ? 'Deal is live again' : 'Deal paused — members can no longer unlock it');
+    return;
+  }
+  if(d.newdeal !== undefined){
+    openModal(`<div class="mh"><h3>Create a deal</h3><button class="btn btn-ghost btn-sm" data-closemodal>${ico('x',15)}</button></div>
+      <div class="mb">
+        <div class="row2">
+          <label class="field"><span class="lb">Offer type</span>
+            <select class="sel" id="ndtype"><option>Percentage off</option><option>Fixed amount off</option>
+              <option>Two for one</option><option>Free add-on</option></select></label>
+          <label class="field"><span class="lb">Value</span><input class="inp" id="ndval" placeholder="e.g. 25% OFF"></label>
+        </div>
+        <label class="field"><span class="lb">Headline</span>
+          <input class="inp" id="ndtitle" placeholder="Any colour service, midweek">
+          <span class="hint">This is what members see on the card. Say what they get, not how generous you are.</span></label>
+        <label class="field"><span class="lb">Terms</span>
+          <textarea class="ta" id="ndterms" placeholder="When it applies, what it excludes, any booking requirement…"></textarea></label>
+        <div class="row2">
+          <label class="field"><span class="lb">Ends</span><input class="inp" id="ndends" value="30 Sept"></label>
+          <label class="field"><span class="lb">Limit per member</span>
+            <select class="sel"><option>Once</option><option>Once a month</option><option>Unlimited</option></select></label>
+        </div>
+      </div>
+      <div class="mf"><button class="btn btn-ghost" data-closemodal>Cancel</button>
+        <button class="btn btn-primary" data-createdeal>Create deal</button></div>`);
+    return;
+  }
+  if(d.createdeal !== undefined){
+    const v = (el('ndval').value || '20% OFF').toUpperCase();
+    const ti = el('ndtitle').value || 'New member offer';
+    W.deals.unshift({ id:'new'+W.deals.length, biz:ME, value:v, title:ti, ends:el('ndends').value || '30 Sept',
+      img:me.img, terms:el('ndterms').value || 'Standard terms apply.', unlocked:0, redeemed:0, live:true });
+    closeModal(); nav('deals'); wtoast('Deal created — it is live for members now');
+    return;
+  }
+  if(d.focuspost !== undefined){ nav('posts'); setTimeout(()=>el('postbox').focus(),80); return; }
+  if(d.post !== undefined){
+    const v = el('postbox').value.trim();
+    if(!v){ el('postbox').focus(); return; }
+    W.posts.unshift({ id:'np'+W.posts.length, biz:ME, time:'Just now', text:v });
+    paint(); wtoast(`Published to ${me.followers.toLocaleString()} followers`, 'mega');
+    return;
+  }
+  if(d.newrole !== undefined){
+    openModal(`<div class="mh"><h3>Post a role</h3><button class="btn btn-ghost btn-sm" data-closemodal>${ico('x',15)}</button></div>
+      <div class="mb">
+        <label class="field"><span class="lb">Job title</span><input class="inp" placeholder="Senior Colour Technician"></label>
+        <div class="row2">
+          <label class="field"><span class="lb">Type</span><select class="sel"><option>Full time</option><option>Part time</option><option>Self-employed</option></select></label>
+          <label class="field"><span class="lb">Pay</span><input class="inp" placeholder="£32,000 – £38,000"></label>
+        </div>
+        <label class="field"><span class="lb">About the role</span><textarea class="ta" placeholder="What the job involves and who it suits…"></textarea></label>
+        <div style="background:var(--harbor-tint);border-radius:var(--r-md);padding:14px">
+          <p style="font-size:.79rem;color:var(--harbor);font-weight:600;line-height:1.55">
+            Members register interest and share their profile. You contact anyone you like directly &mdash;
+            there are no applications or messaging inside Apex.</p></div>
+      </div>
+      <div class="mf"><button class="btn btn-ghost" data-closemodal>Cancel</button>
+        <button class="btn btn-primary" data-closemodal>Post role</button></div>`);
+    return;
+  }
+  if(d.adtype){ W.adType = d.adtype; paint(); return; }
+  if(d.admonths){ W.adMonths = Math.min(2, Math.max(1, W.adMonths + parseInt(d.admonths))); paint(); return; }
+  if(d.buyad !== undefined){
+    const price = W.adType === 'placement' ? 120 : 75;
+    W.adLive = { type:W.adType, months:W.adMonths, total:price*W.adMonths };
+    paint(); wtoast('Campaign live — your listing is being promoted now', 'sparkle');
+    return;
+  }
+  if(d.endad !== undefined){ W.adLive = null; paint(); wtoast('Campaign ended'); return; }
+  if(d.save !== undefined){ wtoast('Profile saved — members see the update straight away'); return; }
+  if(d.contact){ wtoast(`${d.contact}'s contact details copied`, 'users'); return; }
+  if(d.cv){ wtoast(`Opening ${d.cv}'s Apex Network profile`, 'user'); return; }
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && e.target.classList.contains('codeinput')){
+    e.preventDefault();
+    document.querySelector(`[data-verify="${e.target.id}"]`).click();
+  }
+  if(e.key === 'Escape') closeModal();
+});
+
+nav('dashboard');
+</script>
+</body>
+</html>

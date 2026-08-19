@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apex · Member App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/apex.css" />
+<link rel="stylesheet" href="assets/app.css" />
+</head>
+<body class="stage">
+
+<svg style="display:none">
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 018 0v3"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 12.5V4.5a1.5 1.5 0 011.5-1.5h8l8.5 8.5-9.5 9.5z"/><circle cx="8" cy="8" r="1.6"/></symbol>
+  <symbol id="i-case" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12.5" rx="2.5"/><path d="M8.5 7.5V5.5a2 2 0 012-2h3a2 2 0 012 2v2M3 13h18"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3.5 10.5L12 4l8.5 6.5V20a1 1 0 01-1 1h-15a1 1 0 01-1-1z"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3.5h12a1 1 0 011 1V21l-7-4.5L5 21V4.5a1 1 0 011-1z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0115 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2l2.6 5.7 6.2.7-4.6 4.2 1.3 6.1L12 16.8l-5.5 3.1 1.3-6.1L3.2 9.6l6.2-.7z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20s-7.5-4.7-7.5-9.7A4.3 4.3 0 0112 7.4a4.3 4.3 0 017.5 2.9c0 5-7.5 9.7-7.5 9.7z"/></symbol>
+  <symbol id="i-heart-f" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.4s-7.9-4.9-7.9-10.2A4.6 4.6 0 0112 7a4.6 4.6 0 017.9 3.2c0 5.3-7.9 10.2-7.9 10.2z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v12M8 7l4-3.5L16 7M5 13v6.5a1 1 0 001 1h12a1 1 0 001-1V13"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 9a6 6 0 1112 0c0 4 1.5 5.5 1.5 5.5h-15S6 13 6 9z"/><path d="M10 18a2 2 0 004 0"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l7.5 3v5.5c0 4.6-3.1 8.2-7.5 9.5-4.4-1.3-7.5-4.9-7.5-9.5V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9L5.3 5.3"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8.5" r="3.4"/><path d="M2.6 20a6.4 6.4 0 0112.8 0"/><path d="M16.5 5.5a3.4 3.4 0 010 6.6M18 20a6.4 6.4 0 00-2.2-4.8"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></symbol>
+  <symbol id="i-peak" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5L12 5l8 12.5"/><path d="M8.6 17.5L12 12l3.4 5.5"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3.5l2 5.3 5.3 2-5.3 2-2 5.3-2-5.3-5.3-2 5.3-2z"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 8.5V6a1 1 0 011-1h16a1 1 0 011 1v2.5a2.5 2.5 0 000 5V18a1 1 0 01-1 1H4a1 1 0 01-1-1v-4.5a2.5 2.5 0 000-5z"/><path d="M14 5v14" stroke-dasharray="2 2.4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="4.5"/><path d="M11.8 11.8L20 20M17 17l2-2M14.5 14.5l2-2"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.9-3-.8-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.6 2.3 2.8 2.2 1.1 0 1.5-.7 2.9-.7 1.3 0 1.7.7 2.9.7 1.2 0 2-1.1 2.7-2.2.9-1.2 1.2-2.4 1.2-2.5 0 0-2.4-.9-2.4-3.6zM14.2 5.9c.6-.8 1-1.8.9-2.9-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-.9 2.8 1 .1 2-.5 2.7-1.3z"/></symbol>
+  <symbol id="i-google" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.2c0 5-3.6 8.3-8.7 8.3A8.5 8.5 0 1112.3 3.5c2.3 0 4.2.8 5.7 2.2l-2.4 2.3a4.9 4.9 0 00-3.3-1.3 5.3 5.3 0 100 10.6c3.3 0 4.6-2.1 4.9-3.6h-4.9v-3H21z"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5h4a1 1 0 011 1v13a1 1 0 01-1 1h-4"/><path d="M10 8l-4 4 4 4M6 12h9"/></symbol>
+</svg>
+
+<div class="stage-head">
+  <img class="stage-logo" src="assets/img/logo-lockup.png" alt="Apex — Members Network">
+  <div class="kick">Members network &middot; London</div>
+  <h1>The Apex<br><em>member app</em>.</h1>
+  <p>Search the directory for free. Take a membership and every offer in London opens up &mdash;
+     unlocked with a code you show at the counter. This is the whole journey, from sign-up
+     to the moment a business verifies it.</p>
+
+  <div class="store-badges">
+    <span class="store-badge">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.85-.17 1.66-.86 3.13-.75 1.24.1 2.19.53 2.87 1.35-2.55 1.65-2.14 5.1.42 6.22-.5 1.46-1.16 2.9-2.5 5.35zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+      <span><span class="sb-top">Download on the</span><span class="sb-bot">App Store</span></span>
+    </span>
+    <span class="store-badge">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 1.8c-.3.3-.5.8-.5 1.4v17.6c0 .6.2 1.1.5 1.4l.1.1 9.9-9.9v-.2L3.7 1.7l-.1.1zm13.2 13.5-3.3-3.3v-.2l3.3-3.3.1 0 3.9 2.2c1.1.6 1.1 1.7 0 2.3l-3.9 2.2-.1.1zm-.8.7L12.6 12.6 3.6 21.6c.4.4 1 .4 1.7 0l10.7-6.1v.5zM3.6 2.4l9 9L16 8 5.3 2c-.7-.4-1.3-.3-1.7.4z"/></svg>
+      <span><span class="sb-top">Get it on</span><span class="sb-bot">Google Play</span></span>
+    </span>
+  </div>
+
+  <div class="stage-controls">
+    <span class="t">Demonstration controls</span>
+    <span class="statechip" id="statechip"><i></i><span id="statetext">Free account</span></span>
+    <button class="btn btn-ghost btn-sm" id="estbtn">Established member</button>
+    <button class="btn btn-ghost btn-sm" id="resetbtn">Reset demo</button>
+  </div>
+</div>
+
+<div class="device">
+  <div class="notch"></div>
+  <div class="viewport">
+    <div id="app"></div>
+    <div class="sheetwrap" id="sheet"></div>
+    <div id="toasts"></div>
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script>
+/* ==========================================================
+   APEX member app · demo interaction layer
+   ========================================================== */
+const ico = (n,s=20,cls='') => `<svg width="${s}" height="${s}" class="${cls}"><use href="#i-${n}"/></svg>`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money = n => '£' + n.toFixed(2);
+
+/* ---------- state ---------- */
+let S;
+function freshState(){
+  return {
+    plan:'free',
+    quotaUsed:0,
+    saved:0,
+    wallet:[],
+    following:new Set(['rosewood','casa-pellegrino','ironworks','bellevue']),
+    savedDeals:new Set(['d12','d44']),
+    interests:new Set(),
+    stack:[{n:'welcome'}],
+    tab:'home',
+    dealFilter:'all',
+    jobFilter:'all',
+    query:'',
+    bizTab:'overview',
+    savedTab:'codes',
+    signup:{ name:'', email:'', area:'Clapham', picks:new Set(['dining','beauty']) },
+    planPick:'standard',
+    justUnlocked:null
+  };
+}
+/* Presenter mode: an established member, several months in */
+function seedMemberHistory(){
+  S.wallet = MEMBER.wallet.map(w => ({...w}));
+  S.quotaUsed = MEMBER.quotaUsedSeed;
+  MEMBER.following.forEach(f => S.following.add(f));
+  recalc();
+}
+
+const quotaTotal = () => S.plan === 'unlimited' ? Infinity : 15;
+const redeemedTotal = () => S.wallet.filter(w => w.status === 'redeemed').reduce((t,w) => t + w.saved, 0);
+const pendingTotal  = () => S.wallet.filter(w => w.status === 'active').reduce((t,w) => t + w.saved, 0);
+function recalc(){ S.saved = redeemedTotal(); }
+const isMember   = () => S.plan !== 'free';
+const unlocked   = id => S.wallet.some(w => w.deal === id);
+const walletOf   = id => S.wallet.find(w => w.deal === id);
+
+/* deterministic code + saving so the demo is stable across resets */
+function hash(str, seed){                       // FNV-1a — spreads far better than *31
+  let h = (seed === undefined ? 2166136261 : seed) >>> 0;
+  for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return h >>> 0;
+}
+function makeCode(id){
+  const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ';          // no I or O — they read as 1 and 0 at the counter
+  const h1 = hash('apex-code-' + id), h2 = hash('apex-code-' + id, 3221225473);
+  const a = A[h1 % 24] + A[(h1 >>> 9) % 24] + ((h1 >>> 18) % 10) + ((h1 >>> 24) % 10);
+  const b = (h2 % 10) + '' + ((h2 >>> 8) % 10) + ((h2 >>> 16) % 10) + ((h2 >>> 24) % 10);
+  return `APX-${a}-${b}`;
+}
+function estSaving(d){
+  const h = hash('saving-' + d.id), v = d.value;
+  let m = v.match(/£(\d+)/);
+  if(m) return parseFloat(m[1]) + (h % 4);                       // fixed-amount offers
+  m = v.match(/(\d+)%/);
+  if(m){ const spend = 40 + (h % 80); return Math.round(spend * parseInt(m[1]) / 100 * 100) / 100; }
+  if(/2 FOR 1/.test(v)) return 14 + (h % 26);
+  if(/3 FOR/.test(v))   return 21 + (h % 12);
+  if(/BUY/.test(v))     return 9  + (h % 12);
+  if(/FREE/.test(v))    return 8  + (h % 20);
+  return 12 + (h % 15);
+}
+const endingSoon = d => !!d.ending;
+
+/* ---------- navigation ---------- */
+const cur = () => S.stack[S.stack.length-1];
+let animating = false;
+function go(n, p){ if(animating) return; S.stack.push({n, p}); render('push'); }
+function back(){ if(animating || S.stack.length < 2) return; S.stack.pop(); render('pop'); }
+function setTab(t){
+  if(animating) return;
+  S.tab = t; S.stack = [{n:t}]; render('fade');
+}
+function replace(n, p){ S.stack[S.stack.length-1] = {n, p}; render('fade'); }
+
+function render(mode){
+  const host = document.getElementById('app');
+  const old  = host.querySelector('.screen');
+  const el   = document.createElement('div');
+  el.className = 'screen' + (cur().n === 'home' ? ' immersive' : '');
+  el.innerHTML = SCREENS[cur().n](cur().p);
+  host.appendChild(el);
+  syncChip();
+
+  if(old && mode === 'push'){
+    animating = true;
+    el.classList.add('enter-r'); old.classList.add('exit-l');
+    setTimeout(() => { old.remove(); el.classList.remove('enter-r'); animating = false; }, 340);
+  } else if(old && mode === 'pop'){
+    animating = true;
+    el.classList.add('enter-l'); old.classList.add('exit-r');
+    host.insertBefore(el, old);
+    setTimeout(() => { old.remove(); el.classList.remove('enter-l'); animating = false; }, 340);
+  } else if(old){
+    old.remove();
+  }
+  const sc = el.querySelector('.scroll');
+  if(sc) sc.scrollTop = 0;
+  el.querySelectorAll('[data-count]').forEach(countUp);
+  const fill = () => el.querySelectorAll('[data-w]').forEach(b => b.style.width = b.dataset.w);
+  requestAnimationFrame(fill); setTimeout(fill, 80);
+
+  // chrome dissolves over the hero and solidifies on scroll
+  const chromed = el.querySelector('[data-chrome]');
+  if(chromed){
+    const fb = el.querySelector('#fbar'), wordEl = el.querySelector('#fbword');
+    const trip = parseInt(chromed.dataset.chrome);
+    const onScroll = () => {
+      const solid = chromed.scrollTop > trip;
+      fb.classList.toggle('solid', solid);
+      if(wordEl) wordEl.src = solid ? WORD_DARK : WORD_LIGHT;
+    };
+    chromed.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  }
+}
+
+/* ---------- chrome ---------- */
+function syncChip(){
+  const chip = document.getElementById('statechip'), txt = document.getElementById('statetext');
+  if(!isMember()){ chip.classList.remove('paid'); txt.textContent = 'Free account'; }
+  else {
+    chip.classList.add('paid');
+    txt.textContent = S.plan === 'unlimited' ? 'Apex Unlimited' : 'Apex Standard';
+  }
+}
+function toast(msg, icon='check'){
+  const host = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = ico(icon,17) + `<span>${esc(msg)}</span>`;
+  host.appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, 2300);
+}
+function openSheet(html){
+  const w = document.getElementById('sheet');
+  w.className = 'sheetwrap on';
+  w.innerHTML = `<div class="scrim" data-closesheet></div><div class="sheet"><div class="grab"></div>${html}</div>`;
+}
+function closeSheet(){
+  const w = document.getElementById('sheet');
+  if(!w.classList.contains('on')) return;
+  w.classList.add('closing');
+  setTimeout(() => { w.className = 'sheetwrap'; w.innerHTML = ''; }, 280);
+}
+
+function countUp(el){
+  const to = parseFloat(el.dataset.count), dp = parseInt(el.dataset.dp||0), pre = el.dataset.prefix||'';
+  const fmt = v => pre + v.toLocaleString('en-GB',{minimumFractionDigits:dp,maximumFractionDigits:dp});
+  el.textContent = fmt(to);          // correct even if the animation never runs
+  const dur = 1250, t0 = performance.now();
+  const tick = now => {
+    const k = Math.min(1, (now-t0)/dur), e = 1 - Math.pow(1-k, 3);
+    el.textContent = fmt(to*e);
+    if(k < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ---------- shared partials ---------- */
+const statusbar = () => `<div class="statusbar"><span>9:41</span><span class="dots"><b></b><b></b><b></b><b></b></span></div>`;
+
+function tabbar(){
+  const t = (id,icon,label,pip) => `
+    <button class="tb ${S.tab===id?'on':''}" data-tab="${id}">
+      <span class="dot"></span>${ico(icon,21)}${pip?`<span class="pip">${pip}</span>`:''}<span>${label}</span>
+    </button>`;
+  const active = S.wallet.filter(w => w.status === 'active').length;
+  return `<div class="tabbar">
+    ${t('home','home','Home')}${t('deals','tag','Deals')}${t('network','case','Network')}
+    ${t('saved','bookmark','Saved', active || '')}${t('profile','user','You')}
+  </div>`;
+}
+function navbar(title, right=''){
+  return `<div class="navbar">
+    <button class="backbtn" data-back>${ico('left',19)}</button>
+    <span class="ttl">${esc(title)}</span><span style="flex:1"></span>${right}
+  </div>`;
+}
+function dealCard(d, feat){
+  const b = biz(d.biz), lock = !unlocked(d.id), w = walletOf(d.id);
+  return `<div class="deal ${lock?'locked':''} ${feat?'feat':''}" data-go="deal" data-p="${d.id}">
+    <div class="media">
+      <img src="${d.img}" alt="">
+      <div class="veil"></div>
+      <div class="value">${esc(d.value)}</div>
+      ${lock ? `<span class="lockchip">${ico('lock',13)}${isMember()?'Tap to unlock':'Members only'}</span>` : ''}
+      <div class="cnr">
+        ${d.hot ? `<span class="badge badge-member">Popular</span>` : ''}
+        ${endingSoon(d) ? `<span class="badge badge-ends">Ends soon</span>` : ''}
+        ${w ? `<span class="badge badge-live">${w.status === 'redeemed' ? 'Redeemed' : 'Code ready'}</span>` : ''}
+      </div>
+    </div>
+    <div class="body">
+      <div class="biz"><span class="logo"><img src="${b.img}" alt=""></span><span class="bn">${esc(b.name)}</span></div>
+      <h4>${esc(d.title)}</h4>
+      <div class="meta"><span>${esc(b.area)} &middot; ${b.dist} mi</span><span>Ends ${esc(d.ends)}</span></div>
+    </div>
+  </div>`;
+}
+function dealRow(d){
+  const b = biz(d.biz), lock = !unlocked(d.id);
+  return `<button class="row" data-go="deal" data-p="${d.id}" style="width:100%;text-align:left">
+    <span class="thumb"><img src="${d.img}" alt=""></span>
+    <span class="g"><span class="n" style="display:block">${esc(d.title)}</span>
+      <span class="m">${esc(b.name)} &middot; ${esc(b.area)}</span></span>
+    <span class="v ${lock?'lk':''}">${esc(d.value)}</span>
+  </button>`;
+}
+function bizRow(b){
+  const n = dealsOf(b.id).length;
+  return `<button class="row" data-go="business" data-p="${b.id}" style="width:100%;text-align:left">
+    <span class="thumb"><img src="${b.img}" alt=""></span>
+    <span class="g"><span class="n" style="display:block">${esc(b.name)}</span>
+      <span class="m"><span class="stars">${ico('star',11)} ${b.rating}</span><span>${esc(b.area)} &middot; ${b.dist} mi</span></span></span>
+    <span class="badge badge-member">${n} deal${n>1?'s':''}</span>
+  </button>`;
+}
+function postCard(p){
+  const b = biz(p.biz);
+  return `<div class="post">
+    <div class="hd">
+      <button class="lg" data-go="business" data-p="${b.id}"><img src="${b.img}" alt=""></button>
+      <div><div class="n">${esc(b.name)}</div><div class="tm">${esc(p.time)}</div></div>
+    </div>
+    <p>${esc(p.text)}</p>
+    ${p.img ? `<div class="pimg"><img src="${p.img}" alt=""></div>` : ''}
+    <div class="acts" style="padding-top:12px">
+      <button data-like="${p.id}">${ico('heart',16)}<span>Like</span></button>
+      <button>${ico('share',16)}<span>Share</span></button>
+    </div>
+  </div>`;
+}
+function roleCard(j, showBiz){
+  const b = biz(j.biz);
+  return `<button class="rolecard" data-go="job" data-p="${j.id}" style="width:100%;text-align:left;display:block">
+    <div style="display:flex;align-items:flex-start;gap:11px">
+      <span style="flex:1;min-width:0">
+        <span class="badge badge-network" style="margin-bottom:7px">${ico('case',10)} Apex Network</span>
+        <h4>${esc(j.title)}</h4>
+        <div class="m">${showBiz ? esc(b.name)+' &middot; ' : ''}${esc(j.type)} &middot; ${esc(b.area)}</div>
+      </span>
+      <span style="font-size:.68rem;color:var(--ink-3);font-weight:700;white-space:nowrap">${esc(j.posted)}</span>
+    </div>
+    <div class="tg"><span>${esc(j.pay)}</span>
+      ${S.interests.has(j.id) ? `<span style="background:var(--success-tint);color:var(--success)">Interest sent</span>` : ''}
+    </div>
+  </button>`;
+}
+function jobCard(j){
+  const b = biz(j.biz);
+  return `<button class="job" data-go="job" data-p="${j.id}">
+    <div class="hd">
+      <span class="lg"><img src="${b.img}" alt=""></span>
+      <span style="flex:1"><span style="display:block" class="badge badge-network">Apex Network</span></span>
+      <span style="font-size:.68rem;color:var(--ink-3);font-weight:700">${esc(j.posted)}</span>
+    </div>
+    <h4>${esc(j.title)}</h4>
+    <div class="bn">${esc(b.name)} &middot; ${esc(b.area)}</div>
+    <div class="tags" style="margin-top:10px">
+      <span class="tag">${esc(j.type)}</span><span class="tag">${esc(j.pay)}</span>
+      ${S.interests.has(j.id) ? `<span class="tag" style="background:var(--success-tint);color:var(--success)">Interest sent</span>` : ''}
+    </div>
+  </button>`;
+}
+function savingsLine(){
+  const pend = pendingTotal();
+  if(S.saved <= 0 && pend <= 0) return 'Unlock your first deal to start tracking what you save.';
+  if(S.saved <= 0) return `${money(pend)} unlocked and ready to use in store.`;
+  const x = (S.saved/120).toFixed(1);
+  return `That's ${x}&times; your &pound;120 annual membership` + (pend > 0 ? ` &middot; ${money(pend)} more ready to use` : '');
+}
+function quotaStrip(){
+  if(S.plan === 'unlimited')
+    return `<div class="quota"><span style="color:var(--gold);font-weight:800">Unlimited unlocks</span></div>`;
+  const left = quotaTotal() - S.quotaUsed;
+  return `<div class="quota">
+    <span>${left} of ${quotaTotal()} unlocks left</span>
+    <span class="track"><i data-w="${(S.quotaUsed/quotaTotal()*100).toFixed(0)}%" style="width:0"></i></span>
+  </div>`;
+}
+
+/* ==========================================================
+   SCREENS
+   ========================================================== */
+const SCREENS = {};
+
+/* ---------------- WELCOME / AUTH ---------------- */
+SCREENS.welcome = () => `${statusbar()}
+  <div class="authwrap" style="top:0">
+    <div class="authhero">
+      <div class="bg"><img src="assets/img/hero-london.jpg" alt=""></div>
+      <div class="veil"></div>
+      <div class="in">
+        <img class="seal" src="${SEAL}" alt="">
+        <div class="kicker">Exclusive access &middot; London</div>
+        <h1>London,<br><em>by membership</em>.</h1>
+        <p>${DEALS.length} offers held by ${BUSINESSES.length} verified houses,
+           released only to members.</p>
+        <div class="acts">
+          <button class="btn btn-foil btn-block" data-go="signup">Create your account</button>
+          <button class="btn btn-ghost btn-block" data-go="signin"
+            style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)">I already have an account</button>
+        </div>
+        <div class="legal">By continuing you agree to the Apex terms and privacy policy.</div>
+      </div>
+    </div>
+  </div>`;
+
+SCREENS.signin = () => `${statusbar()}
+  <div class="authwrap">
+    <div class="authtop pad"><button class="backbtn" data-back>${ico('left',19)}</button></div>
+    <div class="authform">
+      <div class="authhead">
+        <img class="seal" src="${SEAL}" alt="">
+        <h2>Welcome back</h2>
+        <p>Sign in to reach your deals and codes.</p>
+      </div>
+      <label class="ifield"><span class="lb">Email</span>
+        <span class="box">${ico('mail',18)}<input type="email" value="sajjad.kassamali@gmail.com" readonly></span></label>
+      <label class="ifield"><span class="lb">Password</span>
+        <span class="box">${ico('key',18)}<input type="password" value="demoaccount" readonly>
+          ${ico('eye',18)}</span>
+        <span class="hint">Demonstration screen &mdash; the fields are filled in for you and nothing is submitted.</span></label>
+      <div style="text-align:right;margin:-4px 0 18px">
+        <span style="font-size:.78rem;font-weight:700;color:var(--forest)">Forgotten your password?</span></div>
+      <button class="btn btn-primary btn-block" data-signin>Sign in</button>
+      <div class="authdiv"><i></i><span>or</span><i></i></div>
+      <button class="ssobtn" data-signin>${ico('apple',18)} Continue with Apple</button>
+      <button class="ssobtn" data-signin>${ico('google',18)} Continue with Google</button>
+      <div class="authfoot">New to Apex? <b data-go="signup">Create an account</b></div>
+    </div>
+  </div>`;
+
+SCREENS.signup = () => `${statusbar()}
+  <div class="authwrap">
+    <div class="authtop pad"><button class="backbtn" data-back>${ico('left',19)}</button></div>
+    <div class="authform">
+      <div class="stepdots"><i class="on"></i><i></i></div>
+      <div class="authhead" style="padding-top:4px">
+        <img class="seal" src="${SEAL}" alt="">
+        <h2>Join Apex</h2>
+        <p>Browsing is free. Membership unlocks the offers.</p>
+      </div>
+      <label class="ifield"><span class="lb">Full name</span>
+        <span class="box">${ico('user',18)}<input value="Sajjad Kassamali" readonly></span></label>
+      <label class="ifield"><span class="lb">Email</span>
+        <span class="box">${ico('mail',18)}<input type="email" value="sajjad.kassamali@gmail.com" readonly></span></label>
+      <label class="ifield"><span class="lb">Password</span>
+        <span class="box">${ico('key',18)}<input type="password" value="demoaccount" readonly>${ico('eye',18)}</span>
+        <span class="hint">Demonstration screen &mdash; the fields are filled in for you and no account is created.</span></label>
+      <button class="btn btn-primary btn-block" style="margin-top:6px" data-go="signup2">Continue</button>
+      <div class="authdiv"><i></i><span>or</span><i></i></div>
+      <button class="ssobtn" data-go="signup2">${ico('apple',18)} Continue with Apple</button>
+      <button class="ssobtn" data-go="signup2">${ico('google',18)} Continue with Google</button>
+      <div class="authfoot">Already a member? <b data-go="signin">Sign in</b></div>
+    </div>
+  </div>`;
+
+SCREENS.signup2 = () => {
+  const areas = ['Clapham','Battersea','Balham','Brixton','Peckham','Dulwich','Fulham','Islington'];
+  return `${statusbar()}
+  <div class="authwrap">
+    <div class="authtop pad"><button class="backbtn" data-back>${ico('left',19)}</button></div>
+    <div class="authform">
+      <div class="stepdots"><i class="on"></i><i class="on"></i></div>
+      <div class="authhead" style="padding-top:4px">
+        <h2>Where are you,<br>and what do you like?</h2>
+        <p>We'll put the nearest offers first. You can change this whenever you like.</p>
+      </div>
+      <div class="ifield"><span class="lb">Your area</span>
+        <div class="pickgrid">
+          ${areas.map(a => `<button class="pick ${S.signup.area===a?'on':''}" data-area="${a}">${a}</button>`).join('')}
+        </div>
+      </div>
+      <div class="ifield" style="margin-top:20px"><span class="lb">What are you after?</span>
+        <div class="pickgrid">
+          ${CATEGORIES.map(c => `<button class="pick ${S.signup.picks.has(c.id)?'on':''}" data-pick="${c.id}">${esc(c.name)}</button>`).join('')}
+        </div>
+        <span class="hint">${S.signup.picks.size} selected &mdash; pick as many as you like.</span>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:8px" data-createaccount>Create my account</button>
+      <p style="text-align:center;font-size:.72rem;color:var(--ink-3);margin-top:13px;line-height:1.55">
+        Free to join. Membership is &pound;10 a month whenever you want it.</p>
+    </div>
+  </div>`;
+};
+
+/* ---------------- HOME ---------------- */
+const SEAL = 'assets/img/logo-seal.png';
+const WORD_LIGHT = 'assets/img/logo-word-light.png';
+const WORD_DARK  = 'assets/img/logo-word.png';
+
+function floatbar(){
+  return `<div class="topchrome" id="fbar">${statusbar()}<div class="floatbar">
+    <img class="seal" src="${SEAL}" alt="">
+    <div>
+      <img class="wordimg" id="fbword" src="${WORD_LIGHT}" alt="APEX">
+      <div class="loc">${ico('pin',11)} ${esc(MEMBER.location)}</div>
+    </div>
+    <span class="grow"></span>
+    <button class="gbtn" data-go="search">${ico('search',17)}</button>
+    <button class="gbtn" data-go="feed">${ico('bell',17)}</button>
+    <button class="av" data-tab="profile"><img src="${MEMBER.avatar}" alt=""></button>
+  </div></div>`;
+}
+
+function tabchrome(title){
+  return `<div class="topchrome" id="fbar">${statusbar()}
+    <div class="floatbar">
+      <img class="seal" src="${SEAL}" style="width:30px;height:30px" alt="">
+      <span class="chrometitle">${esc(title)}</span>
+      <span class="grow"></span>
+      <button class="gbtn" data-go="search">${ico('search',17)}</button>
+      <button class="av" data-tab="profile"><img src="${MEMBER.avatar}" alt=""></button>
+    </div></div>`;
+}
+
+SCREENS.home = () => {
+  const featured = deal('d05'), fbiz = biz(featured.biz);
+  const near     = DEALS.filter(d => d.hot && d.id !== featured.id).slice(0,3);
+  const feed     = POSTS.filter(p => S.following.has(p.biz)).slice(0,2);
+  const seenBiz  = new Set();
+  const teasers  = DEALS.filter(d => {
+    if(unlocked(d.id) || d.id === featured.id || seenBiz.has(d.biz)) return false;
+    seenBiz.add(d.biz); return true;
+  }).slice(0,8);
+  const ready    = S.wallet.filter(w => w.status === 'active');
+  const plan     = isMember() ? PLANS.find(x => x.id === S.plan) : null;
+  const pct      = S.plan === 'unlimited' ? 100 : Math.round(S.quotaUsed / 15 * 100);
+
+  /* ---------- the top of the screen, by membership state ---------- */
+  const memberTop = () => `
+    <div class="hero tall" style="min-height:430px">
+      <div class="bg"><img src="assets/img/hero-london.jpg" alt=""></div>
+      <div class="veil"></div>
+      <div class="inner" style="padding-bottom:78px">
+        <div class="kicker">Exclusive access &middot; London</div>
+        <h1>Good evening,<br><em>${esc(MEMBER.first)}</em>.</h1>
+        <div class="foilrule"><i></i><b></b><i></i></div>
+        <div class="sub" style="margin-top:0">${DEALS.length} offers are open to you tonight across ${BUSINESSES.length} verified houses.</div>
+      </div>
+    </div>
+
+    <div class="pad" style="margin-top:-62px;position:relative;z-index:6">
+      <div class="card-hero rise">
+        <img class="wmark" src="${SEAL}" alt="">
+        <div class="top">
+          <img class="seal" src="${SEAL}" alt="">
+          <div><img class="wordimg" src="${WORD_LIGHT}" alt="APEX">
+            <div class="tier">${esc(plan.name.replace('Apex ',''))}</div></div>
+          <div class="mno"><div class="k">Member no.</div><div class="v tnum">04182</div></div>
+        </div>
+        <div class="savelb">Saved with Apex</div>
+        <div class="savebig tnum" data-count="${S.saved}" data-dp="2" data-prefix="£">£0.00</div>
+        <div class="meter"><i data-w="${Math.min(100, S.saved/120*100).toFixed(0)}%" style="width:0"></i></div>
+        <div class="foot">
+          <div class="s">${savingsLine()}</div>
+          <div class="q">${S.plan==='unlimited' ? 'Unlimited' : (15 - S.quotaUsed) + ' left'}</div>
+        </div>
+      </div>
+    </div>
+
+    ${ready.length ? `
+    <div class="sech2 pad" style="margin-bottom:11px">
+      <div class="g"><div class="k">Ready at the counter</div><div class="t">Your live codes</div></div>
+      <button class="a" data-tab="saved">All codes</button>
+    </div>
+    <div class="rail">
+      ${ready.map(w => { const d = deal(w.deal), b = biz(d.biz); return `
+        <button class="teaser" style="width:158px;height:112px" data-go="deal" data-p="${d.id}">
+          <img src="${d.img}" alt=""><span class="sc"></span>
+          <span class="val" style="filter:none;font-size:1.32rem;top:30%">${esc(d.value)}</span>
+          <span class="nm">${esc(b.name)}<br><span style="opacity:.75;letter-spacing:.08em">${w.code}</span></span>
+        </button>`; }).join('')}
+    </div>` : ''}`;
+
+  const freeTop = () => `
+    <div class="hero tall">
+      <div class="bg"><img src="assets/img/hero-dining.jpg" alt=""></div>
+      <div class="veil"></div>
+      <div class="inner">
+        <img src="${SEAL}" style="width:62px;margin-bottom:16px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))" alt="">
+        <div class="kicker">By membership only &middot; London</div>
+        <h1>${DEALS.length} offers you<br><em>cannot see yet</em>.</h1>
+        <div class="foilrule"><i></i><b></b><i></i></div>
+        <div class="sub" style="margin-top:0">Every one of them is held by a verified London business,
+          and released only to members. Ten pounds a month.</div>
+        <button class="btn btn-foil btn-block" style="margin-top:20px" data-go="plans">
+          ${ico('lock',16)} Request membership &middot; &pound;10</button>
+      </div>
+    </div>
+
+    <div class="overlap">
+      <div class="teaserail">
+        ${teasers.map(d => { const b = biz(d.biz); return `
+          <button class="teaser" data-go="deal" data-p="${d.id}">
+            <img src="${d.img}" alt=""><span class="sc"></span>
+            <span class="val">${esc(d.value)}</span>
+            <span class="lk">${ico('lock',13)}</span>
+            <span class="nm">${esc(b.name)}</span>
+          </button>`; }).join('')}
+      </div>
+    </div>
+
+    <div class="pad" style="margin-top:20px">
+      <div class="proof">
+        <div class="p"><div class="v tnum" data-count="12480" data-dp="0">0</div><div class="k">Members</div></div>
+        <div class="p"><div class="v tnum" data-count="104" data-dp="0" data-prefix="£">£0</div><div class="k">Saved<br>a month</div></div>
+        <div class="p"><div class="v tnum" data-count="${BUSINESSES.length}" data-dp="0">0</div><div class="k">Verified<br>houses</div></div>
+      </div>
+    </div>`;
+
+  /* ---------- everything below the fold is shared ---------- */
+  return `${floatbar()}
+  <div class="scroll" id="homescroll" data-chrome="${isMember() ? 250 : 430}">
+    ${isMember() ? memberTop() : freeTop()}
+
+    <div class="sech2 pad">
+      <div class="g"><div class="k">${isMember() ? 'Curated for you' : 'This week at Apex'}</div>
+        <div class="t">The one to take tonight</div></div>
+    </div>
+    <div class="editorial" data-go="deal" data-p="${featured.id}">
+      <img class="bgi" src="${featured.img}" alt=""><span class="sc"></span>
+      <span class="vtag ${unlocked(featured.id)?'':'lockedtag'}">
+        ${unlocked(featured.id)?'':ico('lock',16)}<span>${esc(featured.value)}</span></span>
+      <div class="in">
+        <div class="kicker">${esc(fbiz.area)} &middot; ${esc(cat(fbiz.cat).name)}</div>
+        <h3>${esc(featured.title)}</h3>
+        <p>${esc(fbiz.name)} &mdash; ${esc(fbiz.about.split('.')[0])}.</p>
+        <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+          <span class="badge badge-verified">${ico('check',10)} Verified</span>
+          <span class="badge badge-member">${unlocked(featured.id) ? 'Code ready' : 'Members only'}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pad">
+      <div class="sech2"><div class="g"><div class="k">Eight worlds</div><div class="t">Browse the directory</div></div>
+        <button class="a" data-go="browse">See all</button></div>
+      <div class="mosaic">
+        ${CATEGORIES.slice(0,5).map((c,i) => `
+          <button class="m ${i===0?'big':''}" data-go="category" data-p="${c.id}">
+            <img src="${c.img}" alt=""><span class="sc"></span>
+            <span class="ct">${dealCount(c.id)} deals</span>
+            <span class="nm">${esc(c.name)}</span>
+          </button>`).join('')}
+      </div>
+
+      <div class="sech2"><div class="g"><div class="k">Within two miles</div><div class="t">Near you tonight</div></div>
+        <button class="a" data-tab="deals">See all</button></div>
+      ${near.map((d,i) => dealCard(d, i===0)).join('')}
+
+      <div class="sech2"><div class="g"><div class="k">Apex Network</div><div class="t">${JOBS.length} roles at member houses</div></div>
+        <button class="a" data-tab="network">Open</button></div>
+      <div class="netband" style="margin-bottom:0">
+        <span style="color:var(--harbor);flex:0 0 auto">${ico('case',19)}</span>
+        <p>The same businesses are hiring. Register interest and they see your profile &mdash;
+           they contact you directly, off the platform.</p>
+      </div>
+
+      ${feed.length ? `
+      <div class="sech2"><div class="g"><div class="k">The feed</div><div class="t">From houses you follow</div></div>
+        <button class="a" data-go="feed">See all</button></div>
+      ${feed.map(postCard).join('')}` : ''}
+
+      ${isMember() ? '' : `
+      <div class="invite" style="margin-top:22px">
+        <img class="wmark" src="${SEAL}" alt="">
+        <div class="in">
+          <div class="kicker">Exclusive access &middot; Trusted connections</div>
+          <h3>Membership opens<br>every door on Apex.</h3>
+          <p>Ten pounds a month. Fifteen offers. Cancel whenever you like.</p>
+          <button class="btn btn-foil" data-go="plans">Become a member</button>
+        </div>
+      </div>`}
+    </div>
+  </div>
+  ${tabbar()}`;
+};
+
+/* ---------------- BROWSE ALL CATEGORIES ---------------- */
+SCREENS.browse = () => `${statusbar()}${navbar('Browse categories')}
+  <div class="scroll"><div class="pad pb">
+    <div class="catgrid">
+      ${CATEGORIES.map(c => `
+        <button class="cattile" data-go="category" data-p="${c.id}">
+          <img src="${c.img}" alt=""><span class="sc"></span>
+          <span class="ct">${dealCount(c.id)} deals</span><span class="nm">${esc(c.name)}</span>
+        </button>`).join('')}
+    </div>
+  </div></div>${tabbar()}`;
+
+/* ---------------- DEALS ---------------- */
+SCREENS.deals = () => {
+  const all  = S.dealFilter === 'all' ? DEALS : DEALS.filter(d => biz(d.biz).cat === S.dealFilter);
+  const c    = S.dealFilter === 'all' ? null : cat(S.dealFilter);
+  const feat = all.find(d => d.hot) || all[0];
+  const rest = all.filter(d => d !== feat);
+  const soon = all.filter(d => d.ending).length;
+  const houses = new Set(all.map(d => d.biz)).size;
+  const fbiz = feat ? biz(feat.biz) : null;
+  return `${tabchrome('Apex Deals')}
+  <div class="scroll" data-chrome="150">
+    <div class="tabhero">
+      <div class="bg"><img src="${c ? c.img : 'assets/img/cat-dining.jpg'}" alt=""></div>
+      <div class="veil"></div>
+      <div class="in">
+        <div class="kicker">${c ? esc(c.name) : 'Every category'} &middot; London</div>
+        <h2>${all.length} offers,<br>open tonight.</h2>
+        <div class="statline">
+          <div class="s"><div class="v tnum">${houses}</div><div class="k">Houses</div></div>
+          <div class="s"><div class="v tnum">${all.filter(d=>d.hot).length}</div><div class="k">Popular</div></div>
+          <div class="s"><div class="v tnum">${soon}</div><div class="k">Ending soon</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chipbar">
+      <div class="chips">
+        <button class="chip ${S.dealFilter==='all'?'on':''}" data-dfilter="all">All ${DEALS.length}</button>
+        ${CATEGORIES.map(x => `<button class="chip ${S.dealFilter===x.id?'on':''}" data-dfilter="${x.id}">${esc(x.name)}</button>`).join('')}
+      </div>
+    </div>
+
+    ${feat ? `
+    <div class="pad">
+      <div class="sech2" style="margin-top:4px"><div class="g">
+        <div class="k">The pick of them</div><div class="t">Worth going out for</div></div></div>
+    </div>
+    <div class="editorial" data-go="deal" data-p="${feat.id}">
+      <img class="bgi" src="${feat.img}" alt=""><span class="sc"></span>
+      <span class="vtag ${unlocked(feat.id)?'':'lockedtag'}">
+        ${unlocked(feat.id)?'':ico('lock',16)}<span>${esc(feat.value)}</span></span>
+      <div class="in">
+        <div class="kicker">${esc(fbiz.area)} &middot; ${fbiz.dist} mi</div>
+        <h3>${esc(feat.title)}</h3>
+        <p>${esc(fbiz.name)}</p>
+        <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap">
+          <span class="badge badge-verified">${ico('check',10)} Verified</span>
+          <span class="badge badge-member">${unlocked(feat.id) ? 'Code ready' : 'Members only'}</span>
+        </div>
+      </div>
+    </div>` : ''}
+
+    <div class="pad pb">
+      <div class="sech2"><div class="g"><div class="k">${rest.length} more</div>
+        <div class="t">${c ? esc(c.name) : 'Everything else'}</div></div></div>
+      ${rest.length ? rest.map(d => dealCard(d)).join('')
+        : `<div class="empty"><div class="ic">${ico('tag',24)}</div><h4>Nothing else here yet</h4>
+           <p>Try another category — there are ${DEALS.length} live offers across London.</p></div>`}
+    </div>
+  </div>${tabbar()}`;
+};
+
+/* ---------------- CATEGORY ---------------- */
+SCREENS.category = (id) => {
+  const c = cat(id);
+  const bs = BUSINESSES.filter(b => b.cat === id);
+  const ds = DEALS.filter(d => biz(d.biz).cat === id);
+  const seg = S.catSeg || 'deals';
+  return `${statusbar()}
+  <div class="floatnav"><button class="iconbtn" data-back>${ico('left',19)}</button></div>
+  <div class="scroll">
+    <div class="cover" style="height:150px">
+      <img src="${c.img}" alt=""><span class="sc"></span>
+      <div style="position:absolute;left:20px;bottom:16px;color:#fff">
+        <div style="font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;opacity:.82">Category</div>
+        <div style="font-family:var(--serif);font-size:1.85rem;line-height:1.1;margin-top:3px;
+          text-shadow:0 2px 12px rgba(0,0,0,.5)">${esc(c.name)}</div>
+      </div>
+    </div>
+    <div class="tabs" style="margin-top:0">
+      <button class="${seg==='deals'?'on':''}" data-catseg="deals">${ds.length} deals</button>
+      <button class="${seg==='biz'?'on':''}" data-catseg="biz">${bs.length} businesses</button>
+    </div>
+    <div class="pad pb" style="padding-top:16px">
+      ${seg==='deals' ? ds.map(dealCard).join('') : bs.map(bizRow).join('')}
+    </div>
+  </div>${tabbar()}`;
+};
+
+/* ---------------- SEARCH ---------------- */
+SCREENS.search = () => {
+  const q = S.query.trim().toLowerCase();
+  let bres = [], dres = [], jres = [];
+  if(q){
+    bres = BUSINESSES.filter(b => (b.name+' '+b.area+' '+b.about).toLowerCase().includes(q)).slice(0,6);
+    dres = DEALS.filter(d => (d.title+' '+d.value+' '+biz(d.biz).name).toLowerCase().includes(q)).slice(0,8);
+    jres = JOBS.filter(j => (j.title+' '+biz(j.biz).name).toLowerCase().includes(q)).slice(0,4);
+  }
+  const none = q && !bres.length && !dres.length && !jres.length;
+  return `${statusbar()}
+  <div class="navbar">
+    <button class="backbtn" data-back>${ico('left',19)}</button>
+    <span class="searchfield" style="flex:1">
+      ${ico('search',17)}<input id="q" placeholder="Search deals, businesses or roles" value="${esc(S.query)}" autocomplete="off">
+      ${S.query?`<button data-clearq>${ico('x',15)}</button>`:''}
+    </span>
+  </div>
+  <div class="scroll"><div class="pad pb">
+    ${!q ? `
+      <div class="eyebrow" style="margin:6px 0 11px">Popular right now</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+        ${['Sunday roast','Car valet','Pilates','Barber','Boiler service','Cinema'].map(t =>
+          `<button class="chip" data-setq="${esc(t)}">${esc(t)}</button>`).join('')}
+      </div>
+      <div class="eyebrow" style="margin:0 0 11px">Trending businesses</div>
+      ${['casa-pellegrino','ironworks','waypoint'].map(i => bizRow(biz(i))).join('')}
+    ` : none ? `
+      <div class="empty"><div class="ic">${ico('search',24)}</div>
+        <h4>Nothing found for &ldquo;${esc(S.query)}&rdquo;</h4>
+        <p>Try a business name, a category or a type of role.</p></div>
+    ` : `
+      ${dres.length ? `<div class="eyebrow" style="margin:6px 0 8px">Deals &middot; ${dres.length}</div>${dres.map(dealRow).join('')}` : ''}
+      ${bres.length ? `<div class="eyebrow" style="margin:22px 0 8px">Businesses &middot; ${bres.length}</div>${bres.map(bizRow).join('')}` : ''}
+      ${jres.length ? `<div class="eyebrow" style="margin:22px 0 8px">Apex Network &middot; ${jres.length}</div>${jres.map(jobCard).join('')}` : ''}
+    `}
+  </div></div>`;
+};
+
+/* ---------------- BUSINESS ---------------- */
+SCREENS.business = (id) => {
+  const b = biz(id), ds = dealsOf(id), ps = postsOf(id), js = jobsOf(id);
+  const following = S.following.has(id), t = S.bizTab;
+  return `${statusbar()}
+  <div class="floatnav">
+    <button class="iconbtn" data-back>${ico('left',19)}</button><span style="flex:1"></span>
+    <button class="iconbtn">${ico('share',18)}</button>
+  </div>
+  <div class="scroll">
+    <div class="cover"><img src="${b.img}" alt=""><span class="sc"></span></div>
+    <div class="bizhead">
+      <div class="bizlogo"><img src="${b.img}" alt=""></div>
+      <div class="bizname">${esc(b.name)}</div>
+      <div class="bizmeta">
+        <span class="stars">${ico('star',12)} ${b.rating}</span><span>${b.reviews} reviews</span>
+        <span>&middot;</span><span>${esc(b.area)} &middot; ${b.dist} mi</span>
+      </div>
+      <div class="bizmeta" style="margin-top:9px">
+        <span class="badge badge-verified">${ico('check',10)} Verified ${esc(b.verified)}</span>
+        <span class="badge badge-member">${ds.length} member deal${ds.length>1?'s':''}</span>
+      </div>
+      <div style="display:flex;gap:9px;margin-top:15px">
+        <button class="btn ${following?'btn-ghost':'btn-primary'}" style="flex:1" data-follow="${id}">
+          ${following ? ico('check',15)+' Following' : 'Follow'}
+        </button>
+        <button class="btn btn-ghost">${ico('pin',15)} Directions</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="${t==='overview'?'on':''}" data-biztab="overview">Overview</button>
+      <button class="${t==='deals'?'on':''}" data-biztab="deals">Deals &middot; ${ds.length}</button>
+      <button class="${t==='posts'?'on':''}" data-biztab="posts">Posts &middot; ${ps.length}</button>
+      <button class="${t==='jobs'?'on':''}" data-biztab="jobs">Network${js.length?` &middot; ${js.length}`:''}</button>
+    </div>
+    <div class="pad pb" style="padding-top:16px">
+      ${t==='overview' ? `
+        <p style="font-size:.87rem;color:var(--ink-2);line-height:1.62;margin-bottom:18px">${esc(b.about)}</p>
+        <div class="statrow" style="margin-bottom:22px">
+          <div class="s"><div class="v tnum">${b.followers.toLocaleString()}</div><div class="k">Followers</div></div>
+          <div class="s"><div class="v tnum">${ds.length}</div><div class="k">Live deals</div></div>
+          <div class="s"><div class="v tnum">${b.rating}</div><div class="k">Rating</div></div>
+        </div>
+        <div class="sech" style="margin-top:0">
+          <span class="t">Apex Deals &middot; ${ds.length}</span>
+          ${ds.length>2?`<button class="a" data-biztab="deals">See all</button>`:''}</div>
+        ${ds.slice(0,2).map(dealCard).join('')}
+
+        <div class="sech"><span class="t">Apex Network &middot; ${js.length}</span>
+          ${js.length?`<button class="a" data-biztab="jobs">See all</button>`:''}</div>
+        ${js.length ? `
+          <div class="netband">
+            <span style="color:var(--harbor);flex:0 0 auto">${ico('case',18)}</span>
+            <p>${esc(b.name)} is hiring through Apex Network. Register interest and they see your
+               profile &mdash; they contact you directly.</p>
+          </div>
+          ${js.map(j => roleCard(j)).join('')}
+        ` : `
+          <div style="border:1px dashed var(--line);border-radius:var(--r-lg);padding:20px;text-align:center;margin-bottom:4px">
+            <div style="color:var(--ink-3);margin-bottom:8px">${ico('case',22)}</div>
+            <div style="font-size:.85rem;font-weight:700;margin-bottom:3px">No open roles right now</div>
+            <div style="font-size:.78rem;color:var(--ink-3);line-height:1.5">
+              Follow ${esc(b.name)} and you'll see it here first when they post one.</div>
+          </div>`}
+
+        <div class="sech"><span class="t">Announcements &middot; ${ps.length}</span>
+          ${ps.length>1?`<button class="a" data-biztab="posts">See all</button>`:''}</div>
+        ${ps.length ? postCard(ps[0]) : `<p style="font-size:.82rem;color:var(--ink-3);line-height:1.55">
+          ${esc(b.name)} hasn't posted yet.</p>`}
+      ` : t==='deals' ? ds.map(dealCard).join('')
+        : t==='posts' ? (ps.length ? ps.map(postCard).join('') :
+            `<div class="empty"><div class="ic">${ico('bell',24)}</div><h4>No announcements yet</h4><p>Follow ${esc(b.name)} to hear first when they post.</p></div>`)
+        : (js.length ? `
+            <div class="netband">
+              <span style="color:var(--harbor);flex:0 0 auto">${ico('case',18)}</span>
+              <p>Register interest and ${esc(b.name)} sees your Apex Network profile. There are no
+                 applications or messaging inside Apex &mdash; they contact you directly.</p>
+            </div>
+            ${js.map(j => roleCard(j)).join('')}`
+          : `<div class="empty"><div class="ic">${ico('case',24)}</div><h4>No open roles</h4>
+             <p>Follow ${esc(b.name)} to hear first when they post one.</p></div>`)}
+    </div>
+  </div>${tabbar()}`;
+};
+
+/* ---------------- DEAL ---------------- */
+SCREENS.deal = (id) => {
+  const d = deal(id), b = biz(d.biz), w = walletOf(id), lock = !w;
+  const saveMe = S.savedDeals.has(id);
+  const justNow = S.justUnlocked === id;
+  if(justNow) S.justUnlocked = null;
+  return `${statusbar()}
+  <div class="floatnav">
+    <button class="iconbtn" data-back>${ico('left',19)}</button><span style="flex:1"></span>
+    <button class="iconbtn" data-savedeal="${id}" style="color:${saveMe?'var(--alert)':'var(--ink)'}">
+      ${ico(saveMe?'heart-f':'heart',18)}
+    </button>
+  </div>
+  <div class="scroll">
+    <div class="cover dealcover ${lock?'locked':''}" style="height:230px">
+      <img src="${d.img}" alt=""><span class="sc"></span>
+      <div class="value ${lock?'':(justNow?'reveal':'')}" style="${lock?'filter:blur(5px);text-shadow:0 0 18px rgba(255,255,255,.55),0 2px 10px rgba(0,0,0,.6)':''};font-size:3.1rem">${esc(d.value)}</div>
+      ${lock ? `<span class="lockchip" style="bottom:18px">${ico('lock',13)} ${isMember()?'Unlock to reveal':'Members only'}</span>` : ''}
+    </div>
+    <div class="pad pb" style="padding-top:18px">
+    <button class="row" style="width:100%;text-align:left;padding-top:0;border-bottom:0" data-go="business" data-p="${b.id}">
+      <span class="thumb" style="width:46px;height:46px"><img src="${b.img}" alt=""></span>
+      <span class="g"><span class="n" style="display:block">${esc(b.name)}</span>
+        <span class="m"><span class="stars">${ico('star',11)} ${b.rating}</span><span>${esc(b.area)} &middot; ${b.dist} mi</span></span></span>
+      ${ico('right',17)}
+    </button>
+
+    <h2 style="font-size:1.32rem;font-weight:800;letter-spacing:-.026em;line-height:1.28;margin:16px 0 10px">${esc(d.title)}</h2>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px">
+      <span class="badge badge-verified">${ico('check',10)} Verified business</span>
+      <span class="badge ${endingSoon(d)?'badge-ends':'badge-live'}">${ico('clock',10)} Ends ${esc(d.ends)}</span>
+    </div>
+
+    ${w ? `
+      <div class="codebox ${justNow?'pop':''}">
+        <div class="lb">Your deal code</div>
+        <div class="cd tnum">${w.code}</div>
+        <div class="ex">Show this at ${esc(b.name)} &middot; valid until ${esc(d.ends)}</div>
+      </div>
+      <div style="display:flex;gap:9px;margin-top:12px">
+        <button class="btn btn-ghost" style="flex:1" data-copy="${w.code}">Copy code</button>
+        <button class="btn btn-primary" style="flex:1" data-go="business" data-p="${b.id}">${ico('pin',15)} Directions</button>
+      </div>
+      <div style="margin-top:16px">${quotaStrip()}</div>
+      <div style="background:var(--success-tint);border-radius:var(--r-md);padding:13px 15px;margin-top:16px;
+        display:flex;gap:10px;align-items:flex-start">
+        ${ico('shield',17,'')}<div style="font-size:.79rem;color:var(--success);font-weight:600;line-height:1.5">
+          ${w.status==='redeemed' ? `Redeemed on ${esc(w.on)}. You saved ${money(w.saved)} on this deal.`
+          : `Worth about ${money(estSaving(d))}. The business verifies your code when you pay.`}</div>
+      </div>
+    ` : isMember() ? `
+      <div style="border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:18px;box-shadow:var(--sh-sm)">
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:13px">
+          <span style="width:38px;height:38px;border-radius:12px;background:var(--gold-tint);color:var(--gold);
+            display:grid;place-items:center">${ico('lock',19)}</span>
+          <div><div style="font-size:.9rem;font-weight:800">Unlock this deal</div>
+            <div style="font-size:.74rem;color:var(--ink-3);font-weight:600">Worth about ${money(estSaving(d))}</div></div>
+        </div>
+        <button class="btn btn-gold btn-block" data-unlock="${id}">${ico('lock',16)} Unlock deal</button>
+        <div style="margin-top:14px">${quotaStrip()}</div>
+      </div>
+    ` : `
+      <div class="jointile" style="min-height:172px">
+        <img class="bgi" src="assets/img/hero-membership.jpg" alt=""><div class="scrim"></div>
+        <div class="inner">
+          <div class="kick">Members only</div>
+          <h3 style="font-size:1.45rem">Unlock this and ${DEALS.length-1} more</h3>
+          <p>From &pound;10 a month. Cancel any time.</p>
+          <button class="btn btn-gold" data-go="plans">See membership</button>
+        </div>
+      </div>
+    `}
+
+    <div class="sech"><span class="t">The details</span></div>
+    <p style="font-size:.85rem;color:var(--ink-2);line-height:1.62">${esc(d.terms)}</p>
+
+    <div class="sech"><span class="t">How it works</span></div>
+    <div class="listcard">
+      <div class="it"><span class="ic">1</span><span class="g"><span class="n">Unlock the deal</span>
+        <span class="s">You get a code that is unique to you</span></span></div>
+      <div class="it"><span class="ic">2</span><span class="g"><span class="n">Show it in store</span>
+        <span class="s">Read out or show your code when you pay</span></span></div>
+      <div class="it"><span class="ic">3</span><span class="g"><span class="n">The business verifies it</span>
+        <span class="s">They confirm your membership and apply the discount</span></span></div>
+    </div>
+
+    <div class="sech"><span class="t">More from ${esc(b.name)}</span></div>
+    ${dealsOf(b.id).filter(x => x.id !== id).slice(0,2).map(dealRow).join('') || `<p style="font-size:.82rem;color:var(--ink-3)">No other live deals right now.</p>`}
+  </div></div>`;
+};
+
+/* ---------------- PLANS ---------------- */
+SCREENS.plans = () => `${statusbar()}
+  <div class="navbar"><button class="backbtn" data-back>${ico('left',19)}</button><span class="ttl">Membership</span></div>
+  <div class="scroll"><div class="pad pb">
+    <div style="text-align:center;margin:6px 0 22px">
+      <img src="${SEAL}" style="width:70px;margin:0 auto 16px" alt="">
+      <div class="kicker" style="color:var(--gold);text-shadow:none">Exclusive access &middot; London</div>
+      <div style="font-family:var(--serif);font-size:2.1rem;line-height:1.16;letter-spacing:-.015em;margin-top:8px">
+        Unlock every offer<br>across London</div>
+      <p style="font-size:.85rem;color:var(--ink-2);margin-top:9px">Members save an average of &pound;104 a month.</p>
+    </div>
+
+    <div class="calc" style="margin-bottom:22px">
+      <div class="hd"><span class="t">If you use 15 deals a month</span><span class="v tnum">£104</span></div>
+      <div class="bars">
+        ${[16,22,30,26,44,38,58,50,66,72,60,84].map((h,i) =>
+          `<span class="${i>8?'hi':''}" style="height:${h}%;animation-delay:${i*40}ms"></span>`).join('')}
+      </div>
+      <div class="lg"><span>Your £10 membership</span><span style="color:var(--gold)">10&times; back</span></div>
+    </div>
+
+    ${PLANS.map(p => `
+      <button class="plan ${S.planPick===p.id?'sel':''}" data-plan="${p.id}">
+        ${p.featured?`<span class="flag">Best value</span>`:''}
+        <div class="nm">${esc(p.name)}</div>
+        <div class="pr tnum">${p.price} <small>${esc(p.per)}</small></div>
+        <div class="an">or ${esc(p.annual)} &middot; two months free</div>
+        <ul>${p.lines.map(l => `<li>${ico('check',14)}<span>${esc(l)}</span></li>`).join('')}</ul>
+        <div class="note">${esc(p.note)}</div>
+      </button>`).join('')}
+
+    <button class="btn btn-primary btn-block" style="margin-top:6px" data-go="checkout">
+      Continue with ${esc(PLANS.find(p => p.id === S.planPick).name)}
+    </button>
+    <p style="text-align:center;font-size:.72rem;color:var(--ink-3);margin-top:13px;line-height:1.55">
+      Cancel any time. Your unlocks reset on the first of each month.</p>
+  </div></div>`;
+
+/* ---------------- CHECKOUT ---------------- */
+SCREENS.checkout = () => {
+  const p = PLANS.find(x => x.id === S.planPick);
+  return `${statusbar()}
+  <div class="navbar"><button class="backbtn" data-back>${ico('left',19)}</button><span class="ttl">Confirm membership</span></div>
+  <div class="scroll"><div class="pad pb">
+    <div class="memcard" style="margin-bottom:18px">
+      <img class="wmark" src="${SEAL}" alt="">
+      <div class="top">
+        <img src="${SEAL}" style="width:34px;height:34px;flex:0 0 auto" alt="">
+        <div style="margin-left:2px"><img src="${WORD_LIGHT}" style="height:14px;display:block" alt="APEX">
+          <div class="tier" style="margin-top:4px">${esc(p.name.replace('Apex ',''))}</div></div>
+      </div>
+      <div class="nm">${esc(MEMBER.name)}</div>
+      <div class="rw">
+        <div><div class="k">Member since</div><div class="v">Today</div></div>
+        <div style="text-align:right"><div class="k">Unlocks</div><div class="v">${esc(p.unlocks)}</div></div>
+      </div>
+    </div>
+
+    <div class="listcard">
+      <div class="it"><span class="ic">${ico('ticket',17)}</span>
+        <span class="g"><span class="n">${esc(p.name)}</span><span class="s">${esc(p.unlocks)}</span></span>
+        <span style="font-weight:800;font-size:.88rem">${p.price}</span></div>
+      <div class="it"><span class="ic">${ico('card',17)}</span>
+        <span class="g"><span class="n">Visa ending 4417</span><span class="s">Billed monthly, cancel any time</span></span>
+        <span style="font-size:.74rem;font-weight:700;color:var(--forest)">Change</span></div>
+      <div class="it"><span class="ic">${ico('clock',17)}</span>
+        <span class="g"><span class="n">First payment today</span><span class="s">Then ${p.price} on the 19th of each month</span></span></div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:4px 2px 18px">
+      <span style="font-size:.9rem;font-weight:800">Total today</span>
+      <span style="font-family:var(--serif);font-size:1.9rem" class="tnum">${p.price}</span>
+    </div>
+
+    <button class="btn btn-primary btn-block" data-join="${p.id}">Confirm and join Apex</button>
+    <div style="display:flex;gap:9px;align-items:flex-start;margin-top:15px;color:var(--ink-3)">
+      ${ico('shield',16)}<p style="font-size:.73rem;line-height:1.55">Payments are processed securely. This is a demonstration screen &mdash; no card is charged.</p>
+    </div>
+  </div></div>`;
+};
+
+/* ---------------- JOINED ---------------- */
+SCREENS.joined = () => {
+  const p = PLANS.find(x => x.id === S.plan);
+  return `${statusbar()}
+  <div class="scroll"><div class="pad" style="padding-top:56px;text-align:center">
+    <img class="pop" src="${SEAL}" style="width:96px;margin:0 auto 18px" alt="">
+    <div class="rise" style="font-family:var(--serif);font-size:2.15rem;line-height:1.18">Welcome to Apex</div>
+    <p class="rise rise-2" style="font-size:.88rem;color:var(--ink-2);margin:10px auto 26px;max-width:30ch">
+      You're on ${esc(p.name)}. Every offer in London just opened up.</p>
+
+    <div class="memcard rise rise-3" style="text-align:left;margin-bottom:20px">
+      <img class="wmark" src="${SEAL}" alt="">
+      <div class="top">
+        <img src="${SEAL}" style="width:34px;height:34px;flex:0 0 auto" alt="">
+        <div style="margin-left:2px"><img src="${WORD_LIGHT}" style="height:14px;display:block" alt="APEX">
+          <div class="tier" style="margin-top:4px">${esc(p.name.replace('Apex ',''))}</div></div>
+      </div>
+      <div class="nm">${esc(MEMBER.name)}</div>
+      <div class="rw">
+        <div><div class="k">Member since</div><div class="v">19 Aug 2026</div></div>
+        <div style="text-align:right"><div class="k">Unlocks</div><div class="v">${esc(p.unlocks)}</div></div>
+      </div>
+    </div>
+
+    <div class="statrow rise rise-3" style="margin-bottom:22px">
+      <div class="s"><div class="v tnum">${DEALS.length}</div><div class="k">Deals open</div></div>
+      <div class="s"><div class="v tnum">${BUSINESSES.length}</div><div class="k">Businesses</div></div>
+      <div class="s"><div class="v tnum">${JOBS.length}</div><div class="k">Roles</div></div>
+    </div>
+
+    <div class="rise rise-4">
+      <button class="btn btn-gold btn-block" data-gohome-unlock>Unlock your first deal</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:10px" data-tab="home">Go to home</button>
+    </div>
+  </div></div>`;
+};
+
+/* ---------------- NETWORK ---------------- */
+SCREENS.network = () => {
+  const all   = S.jobFilter === 'all' ? JOBS : JOBS.filter(j => j.type === S.jobFilter);
+  const types = [...new Set(JOBS.map(j => j.type))];
+  const feat  = all[0], fbiz = feat ? biz(feat.biz) : null;
+  const rest  = all.slice(1);
+  const houses = new Set(all.map(j => j.biz)).size;
+  return `${tabchrome('Apex Network')}
+  <div class="scroll" data-chrome="150">
+    <div class="tabhero">
+      <div class="bg"><img src="assets/img/hero-membership.jpg" alt=""></div>
+      <div class="veil" style="background:linear-gradient(to top,rgba(11,32,46,.96) 3%,rgba(11,32,46,.68) 48%,rgba(11,32,46,.46) 100%)"></div>
+      <div class="in">
+        <div class="kicker" style="color:#9CC4E4">Opportunity &middot; London</div>
+        <h2>${all.length} roles at<br>member houses.</h2>
+        <div class="statline">
+          <div class="s"><div class="v tnum">${houses}</div><div class="k" style="color:#9CC4E4">Hiring</div></div>
+          <div class="s"><div class="v tnum">${S.interests.size}</div><div class="k" style="color:#9CC4E4">Your interests</div></div>
+          <div class="s"><div class="v tnum">${types.length}</div><div class="k" style="color:#9CC4E4">Contract types</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chipbar">
+      <div class="chips">
+        <button class="chip ${S.jobFilter==='all'?'on':''}" data-jfilter="all">All ${JOBS.length}</button>
+        ${types.map(t => `<button class="chip ${S.jobFilter===t?'on':''}" data-jfilter="${esc(t)}">${esc(t)}</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="pad pb">
+      <div class="netband">
+        <span style="color:var(--harbor);flex:0 0 auto">${ico('users',19)}</span>
+        <p>Register interest and the business sees your profile. They contact you directly &mdash;
+           there are no applications or messaging inside Apex.</p>
+      </div>
+
+      ${feat ? `
+      <div class="rolefeat" data-go="job" data-p="${feat.id}">
+        <img class="bgi" src="${fbiz.img}" alt=""><span class="sc"></span>
+        <div class="in">
+          <span class="badge badge-network" style="background:rgba(255,255,255,.9)">${ico('case',10)} Newest role</span>
+          <h3>${esc(feat.title)}</h3>
+          <div class="m">${esc(fbiz.name)} &middot; ${esc(feat.type)} &middot; ${esc(feat.pay)}</div>
+        </div>
+      </div>` : ''}
+
+      <div class="sech2" style="margin-top:18px"><div class="g">
+        <div class="k">${rest.length} more</div><div class="t">Open right now</div></div></div>
+      ${rest.length ? rest.map(j => roleCard(j, true)).join('')
+        : `<div class="empty"><div class="ic">${ico('case',24)}</div><h4>No other roles</h4>
+           <p>Try a different contract type.</p></div>`}
+    </div>
+  </div>${tabbar()}`;
+};
+
+/* ---------------- JOB ---------------- */
+SCREENS.job = (id) => {
+  const j = byId(JOBS,id), b = biz(j.biz), sent = S.interests.has(id);
+  return `${statusbar()}${navbar('Role')}
+  <div class="scroll"><div class="pad pb">
+    <span class="badge badge-network" style="margin-bottom:12px">Apex Network</span>
+    <h2 style="font-size:1.4rem;font-weight:800;letter-spacing:-.028em;line-height:1.24;margin-bottom:12px">${esc(j.title)}</h2>
+    <button class="row" style="width:100%;text-align:left;border-bottom:0;padding-top:0" data-go="business" data-p="${b.id}">
+      <span class="thumb" style="width:46px;height:46px"><img src="${b.img}" alt=""></span>
+      <span class="g"><span class="n" style="display:block">${esc(b.name)}</span>
+        <span class="m"><span class="badge badge-verified">${ico('check',10)} Verified</span><span>${esc(b.area)}</span></span></span>
+      ${ico('right',17)}
+    </button>
+    <div class="tags" style="display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 20px">
+      <span class="tag" style="font-size:.72rem;font-weight:700;background:var(--sunk);padding:7px 12px;border-radius:999px">${esc(j.type)}</span>
+      <span class="tag" style="font-size:.72rem;font-weight:700;background:var(--sunk);padding:7px 12px;border-radius:999px">${esc(j.pay)}</span>
+      <span class="tag" style="font-size:.72rem;font-weight:700;background:var(--sunk);padding:7px 12px;border-radius:999px">Posted ${esc(j.posted)}</span>
+    </div>
+    <div class="sech" style="margin-top:0"><span class="t">About the role</span></div>
+    <p style="font-size:.87rem;color:var(--ink-2);line-height:1.65">${esc(j.desc)}</p>
+    <div class="sech"><span class="t">About ${esc(b.name)}</span></div>
+    <p style="font-size:.87rem;color:var(--ink-2);line-height:1.65">${esc(b.about)}</p>
+
+    <div style="border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:17px;
+      box-shadow:var(--sh-sm);margin-top:22px">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
+        <span class="avatar" style="width:42px;height:42px"><img src="${MEMBER.avatar}" alt=""></span>
+        <div><div style="font-size:.86rem;font-weight:800">${esc(MEMBER.name)}</div>
+          <div style="font-size:.73rem;color:var(--ink-3);font-weight:600">Profile and CV attached</div></div>
+      </div>
+      ${sent ? `
+        <div style="background:var(--success-tint);border-radius:var(--r-md);padding:13px;display:flex;gap:9px;align-items:center">
+          ${ico('check',17)}<span style="font-size:.81rem;font-weight:700;color:var(--success)">Interest sent &mdash; ${esc(b.name)} can now see your profile</span>
+        </div>`
+      : `<button class="btn btn-primary btn-block" data-interest="${id}">Register interest</button>
+         <p style="font-size:.72rem;color:var(--ink-3);margin-top:11px;line-height:1.55;text-align:center">
+           They'll get in touch directly if it's a fit. No applications or messaging through Apex.</p>`}
+    </div>
+  </div></div>`;
+};
+
+/* ---------------- SAVED / WALLET ---------------- */
+SCREENS.saved = () => {
+  const seg    = S.savedTab;
+  const active = S.wallet.filter(w => w.status === 'active');
+  const past   = S.wallet.filter(w => w.status === 'redeemed');
+  const saves  = [...S.savedDeals].map(id => deal(id)).filter(Boolean);
+
+  const ticket = w => {
+    const d = deal(w.deal), b = biz(d.biz), used = w.status === 'redeemed';
+    return `<div class="ticket ${used?'used':''}" data-go="deal" data-p="${d.id}">
+      <div class="top">
+        <span class="lg"><img src="${b.img}" alt=""></span>
+        <span class="g"><span class="n">${esc(b.name)}</span>
+          <span class="m">${esc(d.title)}</span></span>
+        <span class="v">${esc(d.value)}</span>
+      </div>
+      <div class="perf"></div>
+      <div class="stub">
+        <div class="k">${used ? 'Redeemed' : 'Show this at the counter'}</div>
+        <div class="cd tnum">${w.code}</div>
+        <div class="x">${used ? `${esc(w.on)} &middot; you saved ${money(w.saved)}` : `Valid until ${esc(d.ends)} &middot; worth about ${money(w.saved)}`}</div>
+      </div>
+    </div>`;
+  };
+
+  return `${tabchrome('Your wallet')}
+  <div class="scroll" data-chrome="150">
+    <div class="tabhero">
+      <div class="bg"><img src="assets/img/hero-shopping.jpg" alt=""></div>
+      <div class="veil"></div>
+      <div class="in">
+        <div class="kicker">Your wallet &middot; ${esc(MEMBER.location)}</div>
+        <h2>${active.length} code${active.length===1?'':'s'}<br>ready to use.</h2>
+        <div class="statline">
+          <div class="s"><div class="v tnum">${past.length}</div><div class="k">Redeemed</div></div>
+          <div class="s"><div class="v tnum" data-count="${S.saved}" data-dp="0" data-prefix="£">£0</div><div class="k">Saved</div></div>
+          <div class="s"><div class="v tnum">${saves.length}</div><div class="k">Kept for later</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chipbar">
+      <div class="chips">
+        <button class="chip ${seg==='codes'?'on':''}" data-savedtab="codes">My codes${S.wallet.length?` · ${S.wallet.length}`:''}</button>
+        <button class="chip ${seg==='deals'?'on':''}" data-savedtab="deals">Saved${saves.length?` · ${saves.length}`:''}</button>
+      </div>
+    </div>
+
+    <div class="pad pb">
+      ${seg==='codes' ? (S.wallet.length ? `
+          ${active.length ? `
+            <div class="sech2" style="margin-top:2px"><div class="g">
+              <div class="k">Ready at the counter</div><div class="t">Use these first</div></div></div>
+            ${active.map(ticket).join('')}` : ''}
+          ${past.length ? `
+            <div class="sech2"><div class="g">
+              <div class="k">${past.length} already used</div><div class="t">Your history</div></div></div>
+            ${past.map(ticket).join('')}` : ''}
+        ` : `<div class="empty"><div class="ic">${ico('ticket',24)}</div><h4>No codes yet</h4>
+          <p>Unlock a deal and the code appears here, ready to show in store.</p>
+          <button class="btn btn-primary" style="margin-top:16px" data-tab="deals">Browse deals</button></div>`)
+      : (saves.length ? `
+          <div class="sech2" style="margin-top:2px"><div class="g">
+            <div class="k">Kept for later</div><div class="t">You liked these</div></div></div>
+          ${saves.map(d => dealCard(d)).join('')}`
+        : `<div class="empty"><div class="ic">${ico('heart',24)}</div><h4>Nothing saved yet</h4>
+           <p>Tap the heart on any deal to keep it here for later.</p></div>`)}
+    </div>
+  </div>${tabbar()}`;
+};
+
+/* ---------------- PROFILE ---------------- */
+SCREENS.profile = () => {
+  const p = isMember() ? PLANS.find(x => x.id === S.plan) : null;
+  const redeemed = S.wallet.filter(w => w.status === 'redeemed').length;
+  const follows = [...S.following].map(id => biz(id)).filter(Boolean);
+  return `${statusbar()}
+  <div class="appbar"><div class="wm" style="letter-spacing:-.02em;font-size:1.15rem">Your account</div>
+    <div class="grow"></div><button class="iconbtn">${ico('cog',18)}</button></div>
+  <div class="scroll"><div class="pad pb">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <span class="avatar" style="width:62px;height:62px"><img src="${MEMBER.avatar}" alt=""></span>
+      <div><div style="font-size:1.1rem;font-weight:800;letter-spacing:-.02em">${esc(MEMBER.name)}</div>
+        <div style="font-size:.77rem;color:var(--ink-3);font-weight:600;margin-top:2px">
+          ${ico('pin',11)} ${esc(MEMBER.location)}</div></div>
+    </div>
+
+    ${isMember() ? `
+      <div class="memcard" style="margin-bottom:16px">
+        <img class="wmark" src="${SEAL}" alt="">
+      <div class="top">
+        <img src="${SEAL}" style="width:34px;height:34px;flex:0 0 auto" alt="">
+        <div style="margin-left:2px"><img src="${WORD_LIGHT}" style="height:14px;display:block" alt="APEX">
+          <div class="tier" style="margin-top:4px">${esc(p.name.replace('Apex ',''))}</div></div>
+      </div>
+        <div class="nm">${esc(MEMBER.name)}</div>
+        <div class="rw">
+          <div><div class="k">Member since</div><div class="v">19 Aug 2026</div></div>
+          <div style="text-align:right"><div class="k">Renews</div><div class="v">19 Sept 2026</div></div>
+        </div>
+      </div>
+
+      <div class="savings" style="margin-bottom:16px">
+        <div class="lb">Saved with Apex</div>
+        <div class="big tnum">${money(S.saved)}</div>
+        <div class="bar"><i data-w="${Math.min(100, S.saved/120*100).toFixed(0)}%" style="width:0"></i></div>
+        <div class="sub">${savingsLine()}</div>
+      </div>
+
+      <div style="border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:17px;
+        box-shadow:var(--sh-sm);margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+          <span style="font-size:.88rem;font-weight:800">This month's unlocks</span>
+          <span style="font-size:.76rem;font-weight:700;color:var(--ink-3)">Resets 1 Sept</span>
+        </div>
+        ${quotaStrip()}
+        ${S.plan==='standard' ? `<button class="btn btn-quiet btn-block btn-sm" style="margin-top:14px" data-upgrade>
+          ${ico('sparkle',15)} Go Unlimited for £24.99</button>` : ''}
+      </div>
+    ` : `
+      <div class="jointile" style="margin-bottom:16px;min-height:180px">
+        <img class="bgi" src="assets/img/hero-membership.jpg" alt=""><div class="scrim"></div>
+        <div class="inner">
+          <div class="kick">Free account</div>
+          <h3 style="font-size:1.5rem">You're missing ${DEALS.length} offers</h3>
+          <p>Members near you save an average of &pound;104 a month.</p>
+          <button class="btn btn-gold" data-go="plans">See membership</button>
+        </div>
+      </div>`}
+
+    <div class="statrow" style="margin-bottom:18px">
+      <div class="s"><div class="v tnum">${S.wallet.length}</div><div class="k">Unlocked</div></div>
+      <div class="s"><div class="v tnum">${redeemed}</div><div class="k">Redeemed</div></div>
+      <div class="s"><div class="v tnum">${follows.length}</div><div class="k">Following</div></div>
+    </div>
+
+    <div class="eyebrow" style="margin-bottom:10px">Businesses you follow</div>
+    <div class="rail" style="margin-bottom:18px">
+      ${follows.slice(0,10).map(b => `
+        <button class="cattile" style="width:96px;height:76px" data-go="business" data-p="${b.id}">
+          <img src="${b.img}" alt=""><span class="sc"></span><span class="nm" style="font-size:.66rem">${esc(b.name)}</span>
+        </button>`).join('') || `<p style="font-size:.82rem;color:var(--ink-3);padding-left:20px">Not following anyone yet.</p>`}
+    </div>
+
+    <div class="listcard">
+      <button class="it" data-tab="saved"><span class="ic">${ico('ticket',17)}</span>
+        <span class="g"><span class="n">My deal codes</span><span class="s">${S.wallet.length} in your wallet</span></span>${ico('right',16)}</button>
+      <button class="it"><span class="ic">${ico('card',17)}</span>
+        <span class="g"><span class="n">Payment method</span><span class="s">Visa ending 4417</span></span>${ico('right',16)}</button>
+      <button class="it"><span class="ic">${ico('bell',17)}</span>
+        <span class="g"><span class="n">Notifications</span><span class="s">Offers from businesses you follow</span></span>${ico('right',16)}</button>
+      <button class="it"><span class="ic">${ico('users',17)}</span>
+        <span class="g"><span class="n">Your Apex Network profile</span><span class="s">Visible to businesses you register interest with</span></span>${ico('right',16)}</button>
+      <button class="it"><span class="ic">${ico('shield',17)}</span>
+        <span class="g"><span class="n">Privacy and data</span><span class="s">Control what businesses can see</span></span>${ico('right',16)}</button>
+      <button class="it" data-signout><span class="ic">${ico('out',17)}</span>
+        <span class="g"><span class="n">Sign out</span><span class="s">Back to the welcome screen</span></span>${ico('right',16)}</button>
+    </div>
+  </div></div>${tabbar()}`;
+};
+
+/* ---------------- FEED ---------------- */
+SCREENS.feed = () => {
+  const list = POSTS.filter(p => S.following.has(p.biz));
+  return `${statusbar()}${navbar('From businesses you follow')}
+  <div class="scroll"><div class="pad pb" style="padding-top:8px">
+    ${list.length ? list.map(postCard).join('') :
+      `<div class="empty"><div class="ic">${ico('bell',24)}</div><h4>Nothing here yet</h4>
+       <p>Follow a business and their announcements appear here first.</p></div>`}
+  </div></div>`;
+};
+
+/* ==========================================================
+   ACTIONS
+   ========================================================== */
+function unlockDeal(id){
+  const d = deal(id), b = biz(d.biz);
+  if(S.plan !== 'unlimited' && S.quotaUsed >= quotaTotal()){
+    openSheet(`<h3 style="font-size:1.05rem;font-weight:800;margin-bottom:8px">You've used all 15 unlocks</h3>
+      <p style="font-size:.85rem;color:var(--ink-2);line-height:1.6;margin-bottom:18px">
+        Your allowance resets on 1 September. Go Unlimited to keep unlocking now.</p>
+      <button class="btn btn-gold btn-block" data-upgrade>Go Unlimited &middot; £24.99</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:10px" data-closesheet>Not now</button>`);
+    return;
+  }
+  openSheet(`
+    <div style="text-align:center;padding:4px 0 6px">
+      <div style="width:56px;height:56px;border-radius:18px;overflow:hidden;margin:0 auto 14px;border:1px solid var(--line)">
+        <img src="${d.img}" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+      <div style="font-family:var(--serif);font-size:2.3rem;color:var(--gold);line-height:1">${esc(d.value)}</div>
+      <h3 style="font-size:1rem;font-weight:800;margin:8px 0 4px;letter-spacing:-.018em">${esc(d.title)}</h3>
+      <p style="font-size:.8rem;color:var(--ink-3);font-weight:600">${esc(b.name)} &middot; ${esc(b.area)}</p>
+    </div>
+    <div style="background:var(--sunk);border-radius:var(--r-md);padding:14px;margin:18px 0 16px">
+      <div style="display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;margin-bottom:8px">
+        <span>You'll save about</span><span style="color:var(--forest)">${money(estSaving(d))}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--ink-2)">
+        <span>Unlocks remaining after this</span>
+        <span>${S.plan==='unlimited'?'Unlimited':(quotaTotal()-S.quotaUsed-1)+' of '+quotaTotal()}</span></div>
+    </div>
+    <button class="btn btn-gold btn-block" data-confirmunlock="${id}">${ico('lock',16)} Unlock and get my code</button>
+    <button class="btn btn-ghost btn-block" style="margin-top:10px" data-closesheet>Cancel</button>`);
+}
+function confirmUnlock(id){
+  const d = deal(id);
+  S.wallet.unshift({ deal:id, code:makeCode(id), on:'19 Aug 2026', saved:estSaving(d), status:'active' });
+  if(S.plan !== 'unlimited') S.quotaUsed++;
+  recalc();
+  S.justUnlocked = id;
+  closeSheet();
+  setTimeout(() => {
+    if(cur().n === 'deal' && cur().p === id) replace('deal', id);
+    else go('deal', id);
+    setTimeout(() => toast('Deal unlocked — your code is ready'), 420);
+  }, 240);
+}
+function enterApp(msg){
+  S.stack = [{n:'home'}]; S.tab = 'home';
+  render('fade');
+  setTimeout(() => toast(msg), 380);
+}
+function join(planId){
+  S.plan = planId;                 // brand new member: no history, nothing saved yet
+  S.stack = [{n:'joined'}]; S.tab = 'home';
+  render('fade');
+}
+
+/* ==========================================================
+   EVENTS
+   ========================================================== */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-go],[data-back],[data-tab],[data-dfilter],[data-jfilter],[data-biztab],[data-catseg],[data-savedtab],[data-plan],[data-join],[data-unlock],[data-confirmunlock],[data-closesheet],[data-follow],[data-savedeal],[data-interest],[data-like],[data-copy],[data-setq],[data-clearq],[data-upgrade],[data-gohome-unlock],[data-signin],[data-createaccount],[data-area],[data-pick],[data-signout]');
+  if(!t) return;
+  const d = t.dataset;
+
+  if(d.closesheet !== undefined){ closeSheet(); return; }
+  if(d.back !== undefined){ back(); return; }
+  if(d.tab){ closeSheet(); setTab(d.tab); return; }
+  if(d.go){ closeSheet(); go(d.go, d.p); return; }
+
+  if(d.dfilter){ S.dealFilter = d.dfilter; replace('deals'); return; }
+  if(d.jfilter){ S.jobFilter  = d.jfilter; replace('network'); return; }
+  if(d.biztab){ S.bizTab = d.biztab; replace('business', cur().p); return; }
+  if(d.catseg){ S.catSeg = d.catseg; replace('category', cur().p); return; }
+  if(d.savedtab){ S.savedTab = d.savedtab; replace('saved'); return; }
+  if(d.plan){ S.planPick = d.plan; replace('plans'); return; }
+
+  if(d.signin !== undefined){ enterApp('Signed in — welcome back'); return; }
+  if(d.createaccount !== undefined){ enterApp('Account created — browsing is on us'); return; }
+  if(d.area){ S.signup.area = d.area; replace('signup2'); return; }
+  if(d.pick){
+    S.signup.picks.has(d.pick) ? S.signup.picks.delete(d.pick) : S.signup.picks.add(d.pick);
+    replace('signup2'); return;
+  }
+  if(d.signout !== undefined){
+    S = freshState(); closeSheet(); render('fade'); toast('Signed out'); return;
+  }
+  if(d.join){ join(d.join); return; }
+  if(d.unlock){ unlockDeal(d.unlock); return; }
+  if(d.confirmunlock){ confirmUnlock(d.confirmunlock); return; }
+  if(d.upgrade !== undefined){
+    closeSheet(); S.plan = 'unlimited';
+    setTimeout(() => { replace(cur().n, cur().p); toast('You are now on Apex Unlimited', 'sparkle'); }, 260);
+    return;
+  }
+  if(d.gohomeUnlock !== undefined){ S.tab = 'deals'; S.stack = [{n:'deals'}]; render('fade'); return; }
+
+  if(d.follow){
+    const on = S.following.has(d.follow);
+    on ? S.following.delete(d.follow) : S.following.add(d.follow);
+    replace('business', d.follow);
+    toast(on ? 'Unfollowed' : `Following ${biz(d.follow).name} — you'll hear about offers first`);
+    return;
+  }
+  if(d.savedeal){
+    const on = S.savedDeals.has(d.savedeal);
+    on ? S.savedDeals.delete(d.savedeal) : S.savedDeals.add(d.savedeal);
+    replace('deal', d.savedeal);
+    toast(on ? 'Removed from saved' : 'Saved for later', 'heart');
+    return;
+  }
+  if(d.interest){
+    S.interests.add(d.interest);
+    replace('job', d.interest);
+    toast('Interest registered — the business can see your profile', 'users');
+    return;
+  }
+  if(d.like !== undefined){ t.classList.toggle('on'); t.querySelector('use').setAttribute('href', t.classList.contains('on') ? '#i-heart-f' : '#i-heart'); return; }
+  if(d.copy){ toast('Code copied to clipboard'); return; }
+  if(d.setq){ S.query = d.setq; replace('search'); setTimeout(() => { const i = document.getElementById('q'); if(i){ i.focus(); } }, 60); return; }
+  if(d.clearq !== undefined){ S.query = ''; replace('search'); return; }
+});
+
+/* live search typing */
+document.addEventListener('input', e => {
+  if(e.target.id !== 'q') return;
+  S.query = e.target.value;
+  const sel = e.target.selectionStart;
+  replace('search');
+  const i = document.getElementById('q');
+  if(i){ i.focus(); i.setSelectionRange(sel, sel); }
+});
+
+document.getElementById('resetbtn').addEventListener('click', () => {
+  S = freshState(); closeSheet(); render('fade'); toast('Reset to the sign-up screen');
+});
+document.getElementById('estbtn').addEventListener('click', () => {
+  S = freshState(); S.plan = 'standard'; seedMemberHistory();
+  S.stack = [{n:'home'}]; S.tab = 'home';
+  closeSheet(); render('fade'); toast('Viewing an established member, five months in');
+});
+
+/* boot */
+S = freshState();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apex · Demonstration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/apex.css" />
+<style>
+body{background:
+  radial-gradient(80% 55% at 10% 0%, #EFF4F1 0%, transparent 55%),
+  radial-gradient(70% 55% at 100% 100%, #F7EEDD 0%, transparent 55%), var(--paper);
+  min-height:100vh;padding:clamp(26px,5vw,70px) clamp(18px,4vw,44px)}
+.wrap{max-width:1120px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:clamp(30px,5vw,52px)}
+.brand .mk{width:50px;height:50px;border-radius:15px;background:var(--forest);display:grid;place-items:center;
+  color:var(--gold-2);box-shadow:var(--sh-md)}
+.brand .wm{font-size:1.9rem;font-weight:800;letter-spacing:.17em;line-height:1}
+.brand .tag{font-size:.62rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--forest);
+  background:var(--forest-tint);padding:6px 12px;border-radius:999px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.1rem,4.6vw,3.1rem);letter-spacing:-.018em;
+  line-height:1.13;max-width:19ch;margin-bottom:14px}
+h1 em{font-style:italic;color:var(--forest-2)}
+.lede{font-size:1rem;color:var(--ink-2);max-width:60ch;line-height:1.62;margin-bottom:clamp(28px,4vw,44px)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(292px,1fr));gap:18px;margin-bottom:clamp(30px,4vw,46px)}
+.c{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);overflow:hidden;
+  box-shadow:var(--sh-sm);display:flex;flex-direction:column;position:relative;
+  transition:transform .2s var(--ease),box-shadow .2s,border-color .2s}
+.c:hover{transform:translateY(-4px);box-shadow:var(--sh-md);border-color:rgba(169,122,49,.5)}
+/* a live, scaled preview of the real mockup rather than a stock photograph */
+.c .shot{height:196px;overflow:hidden;position:relative;background:var(--sunk);border-bottom:1px solid var(--line)}
+.c .shot iframe{position:absolute;top:0;left:0;width:1360px;height:900px;border:0;
+  transform:scale(.245);transform-origin:top left;pointer-events:none}
+.c .shot .sc{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,24,20,.62),rgba(10,24,20,0) 58%)}
+.c .shot .n{position:absolute;left:16px;bottom:12px;color:#fff;font-size:.6rem;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;text-shadow:0 1px 8px rgba(0,0,0,.75)}
+
+.c .go{display:flex;align-items:center;justify-content:center;gap:9px}
+.c .go svg{transition:transform .2s var(--ease)}
+.c:hover .go svg{transform:translateX(4px)}
+.c .bd{padding:20px;display:flex;flex-direction:column;flex:1}
+.c h3{font-size:1.08rem;font-weight:800;letter-spacing:-.022em;margin-bottom:7px}
+.c p{font-size:.85rem;color:var(--ink-2);line-height:1.6;flex:1;margin-bottom:16px}
+.c ul{list-style:none;margin-bottom:18px;display:grid;gap:7px}
+.c li{font-size:.79rem;color:var(--ink-2);font-weight:600;display:flex;gap:8px;align-items:flex-start}
+.c li svg{flex:0 0 auto;margin-top:2px;color:var(--forest)}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px;
+  box-shadow:var(--sh-sm);display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.note .t{font-size:.86rem;font-weight:800;margin-bottom:5px}
+.note p{font-size:.81rem;color:var(--ink-2);line-height:1.6}
+.note code{background:var(--gold-tint);color:var(--gold);padding:2px 7px;border-radius:5px;font-weight:800;
+  font-family:var(--sans);font-size:.78rem;letter-spacing:.06em}
+footer{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);font-size:.77rem;color:var(--ink-3);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<svg style="display:none">
+<symbol id="i-peak" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5L12 5l8 12.5"/><path d="M8.6 17.5L12 12l3.4 5.5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+</svg>
+<div class="wrap">
+  <div class="brand">
+    <img src="assets/img/logo-seal.png" style="width:56px;height:56px" alt="">
+    <img src="assets/img/logo-word.png" style="height:34px" alt="APEX">
+    <span class="tag">Demonstration build</span>
+  </div>
+
+  <h1>A members-only directory, <em>built three ways</em>.</h1>
+  <p class="lede">The same platform seen from all three sides: the member who pays for access, the business that
+    honours the offer, and the team that keeps the directory legitimate. Everything is clickable — 26 businesses,
+    46 live deals and 14 roles across London.</p>
+
+  <div class="cards">
+    <a class="c" href="app.html">
+      <div class="shot"><iframe src="app.html" title="" scrolling="no" loading="lazy"></iframe><span class="sc"></span><span class="n">Mobile</span></div>
+      <div class="bd">
+        <h3>Member app</h3>
+        <p>Opens on the welcome screen. Sign up, browse free, then unlock offers with a membership.</p>
+        <ul>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Sign up, sign in and onboarding</li>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Locked and unlocked states</li>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Membership, tiers and checkout</li>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Apex Deals, Network and wallet</li>
+        </ul>
+        <span class="btn btn-primary btn-block go">Open the member app<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <a class="c" href="business.html">
+      <div class="shot"><iframe src="business.html" title="" scrolling="no" loading="lazy"></iframe><span class="sc"></span><span class="n">Web</span></div>
+      <div class="bd">
+        <h3>Business portal</h3>
+        <p>Where a business runs its offers, posts to followers, hires, advertises — and verifies a member's code.</p>
+        <ul>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Deal code verification</li>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Self-serve advertising</li>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Performance and redemptions</li>
+        </ul>
+        <span class="btn btn-primary btn-block go">Open the business portal<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <a class="c" href="admin.html">
+      <div class="shot"><iframe src="admin.html" title="" scrolling="no" loading="lazy"></iframe><span class="sc"></span><span class="n">Web</span></div>
+      <div class="bd">
+        <h3>Admin console</h3>
+        <p>The verification queue that keeps the directory trustworthy, plus the commercial picture behind it.</p>
+        <ul>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Approve or reject applications</li>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Directory and moderation</li>
+          <li><svg width="14" height="14"><use href="#i-check"/></svg>Members, revenue, advertising</li>
+        </ul>
+        <span class="btn btn-primary btn-block go">Open the admin console<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+  </div>
+
+  <div class="note">
+    <div>
+      <div class="t">The demonstration to run on the call</div>
+      <p>Create an account, open a locked deal as a free member, take the membership, unlock it and read
+         the code. Then open the business portal and verify that same code at the counter.</p>
+    </div>
+    <div>
+      <div class="t">The code that links both sides</div>
+      <p>A member is holding <code>APX-9QM2-4417</code> for Rosewood Salon's 20% colour offer. Type it into the
+         business portal to see the verification, then mark it redeemed.</p>
+    </div>
+    <div>
+      <div class="t">Switching states</div>
+      <p><b>Reset demo</b> returns to the welcome screen for the full sign-up journey. <b>Established member</b>
+         skips straight in as a mature account with £312 of savings behind it.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:22px;font-size:.79rem;color:var(--ink-3);line-height:1.6;max-width:80ch">
+    All businesses, members and figures are fictional and created for this demonstration. Photography is
+    licence-free. Design direction is set out in the <a href="moodboard.html" style="color:var(--forest);font-weight:700;text-decoration:underline;text-underline-offset:3px">UI moodboard</a>.
+  </p>
+
+  <footer>
+    <span>Apex &middot; concept demonstration prepared by Nile Technologies</span>
+    <span>Light theme only &middot; Instrument Serif + Plus Jakarta Sans</span>
+  </footer>
+</div>
+</body>
+</html>

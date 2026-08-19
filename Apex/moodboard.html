@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apex · UI Design Direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  /* ---- ground & ink ---- */
+  --paper:#FBF9F6;
+  --surface:#FFFFFF;
+  --surface-2:#F5F2EC;
+  --ink:#16191D;
+  --ink-2:#4A5158;
+  --ink-3:#8B9299;
+  --line:#EAE5DD;
+  --line-2:#F2EEE7;
+
+  /* ---- brand ---- */
+  --forest:#0F3D33;
+  --forest-2:#17594B;
+  --forest-tint:#E6F0EC;
+
+  /* ---- Apex Deals ---- */
+  --gold:#A97A31;
+  --gold-2:#D2A254;
+  --gold-tint:#FBF1DE;
+
+  /* ---- Apex Network ---- */
+  --harbor:#24506E;
+  --harbor-tint:#E8EFF5;
+
+  /* ---- status ---- */
+  --success:#1C7A50;
+  --alert:#BE4429;
+
+  --r-sm:10px; --r-md:14px; --r-lg:20px; --r-xl:28px;
+  --sh-sm:0 2px 6px -2px rgba(24,20,14,.06), 0 1px 2px rgba(24,20,14,.04);
+  --sh-md:0 12px 28px -14px rgba(24,20,14,.18), 0 2px 6px -3px rgba(24,20,14,.06);
+  --sh-lg:0 30px 60px -30px rgba(24,20,14,.30);
+
+  --sans:'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;
+  --serif:'Instrument Serif',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--sans); background:var(--paper); color:var(--ink);
+  -webkit-font-smoothing:antialiased; padding:clamp(18px,3.5vw,52px); line-height:1.5;
+}
+.board{max-width:1180px;margin:0 auto}
+
+.eyebrow{font-size:.63rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+h2{font-family:var(--serif);font-weight:400;font-size:2rem;letter-spacing:-.01em;margin:.35rem 0 .3rem}
+.sect{margin:0 0 clamp(38px,5vw,64px)}
+.sect > .lede{color:var(--ink-2);font-size:.9rem;max-width:62ch;margin-bottom:1.5rem}
+.rule{height:1px;background:var(--line);margin:0 0 clamp(30px,4vw,48px)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-sm)}
+.grid{display:grid;gap:18px}
+
+/* ================= HEADER ================= */
+header{padding:clamp(24px,4vw,46px) 0 clamp(30px,4vw,50px)}
+.logo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.mark{width:52px;height:52px;border-radius:15px;background:var(--forest);display:grid;place-items:center;box-shadow:var(--sh-md)}
+.wordmark{font-size:2.05rem;font-weight:800;letter-spacing:.16em;line-height:1}
+.tagpill{font-size:.63rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 12px;border-radius:999px;background:var(--forest-tint);color:var(--forest)}
+header h1{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,4.2vw,3rem);
+  letter-spacing:-.015em;line-height:1.12;margin:24px 0 12px;max-width:20ch}
+header h1 em{font-style:italic;color:var(--forest-2)}
+header p{color:var(--ink-2);max-width:60ch;font-size:.98rem}
+.note{display:inline-flex;align-items:center;gap:9px;margin-top:22px;padding:10px 15px;
+  border-radius:var(--r-md);background:var(--surface);border:1px solid var(--line);
+  font-size:.82rem;color:var(--ink-2);box-shadow:var(--sh-sm)}
+.note b{color:var(--ink);font-weight:700}
+
+/* ================= PILLARS ================= */
+.pillars{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.pillar{padding:26px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);
+  box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+.pillar:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.pillar.deals:before{background:var(--gold)}
+.pillar.network:before{background:var(--harbor)}
+.pillar .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px}
+.pillar.deals .ic{background:var(--gold-tint);color:var(--gold)}
+.pillar.network .ic{background:var(--harbor-tint);color:var(--harbor)}
+.pillar h3{font-size:1.15rem;font-weight:800;letter-spacing:-.01em;margin-bottom:6px}
+.pillar p{font-size:.87rem;color:var(--ink-2)}
+
+/* ================= SWATCHES ================= */
+.sw-group{margin-bottom:22px}
+.sw-group .eyebrow{margin-bottom:10px;display:block}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px}
+.sw{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.sw .chip{height:76px}
+.sw .meta{padding:10px 12px}
+.sw .nm{font-size:.79rem;font-weight:700}
+.sw .hx{font-size:.68rem;color:var(--ink-3);font-weight:600;letter-spacing:.06em;margin-top:1px}
+
+/* ================= TYPE ================= */
+.type-card{padding:26px}
+.type-row{display:flex;gap:22px;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+.type-row:last-child{border-bottom:0;padding-bottom:0}
+.type-row .spec{font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);min-width:170px}
+.d1{font-family:var(--serif);font-size:2.6rem;line-height:1.05;letter-spacing:-.015em}
+.d2{font-family:var(--serif);font-size:1.7rem;line-height:1.1}
+.h1s{font-size:1.35rem;font-weight:800;letter-spacing:-.015em}
+.h2s{font-size:1rem;font-weight:700;letter-spacing:-.01em}
+.bd{font-size:.9rem;color:var(--ink-2)}
+.lb{font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.num{font-family:var(--serif);font-size:2.4rem;font-variant-numeric:tabular-nums;color:var(--forest)}
+
+/* ================= COMPONENTS ================= */
+.comp-grid{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.comp{padding:24px}
+.comp > .eyebrow{display:block;margin-bottom:16px}
+.stack{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font-family:var(--sans);font-size:.83rem;font-weight:700;padding:12px 20px;border-radius:999px;
+  border:1px solid transparent;cursor:pointer;letter-spacing:-.005em}
+.btn.primary{background:var(--forest);color:#fff}
+.btn.gold{background:var(--gold);color:#fff}
+.btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn.quiet{background:var(--forest-tint);color:var(--forest)}
+.chipx{font-size:.78rem;font-weight:600;padding:9px 14px;border-radius:999px;background:var(--surface-2);
+  color:var(--ink-2);border:1px solid var(--line);display:inline-flex;align-items:center;gap:7px}
+.chipx.on{background:var(--forest);color:#fff;border-color:var(--forest)}
+.badge{font-size:.63rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:5px}
+.badge.verified{background:var(--forest-tint);color:var(--forest)}
+.badge.member{background:var(--gold-tint);color:var(--gold)}
+.badge.live{background:#E7F4ED;color:var(--success)}
+.badge.ends{background:#FBEDEA;color:var(--alert)}
+.field{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:999px;
+  background:var(--surface-2);border:1px solid var(--line);color:var(--ink-3);font-size:.85rem}
+
+/* ================= PHONE ================= */
+.phones{display:flex;gap:clamp(20px,3vw,42px);flex-wrap:wrap;align-items:flex-start}
+.phone-wrap{flex:0 0 auto}
+.phone{width:332px;border-radius:42px;background:#1B1D21;padding:9px;box-shadow:var(--sh-lg)}
+.screen{border-radius:34px;overflow:hidden;background:var(--paper);height:686px;overflow-y:auto;position:relative}
+.screen::-webkit-scrollbar{width:0}
+.caption{text-align:center;margin-top:14px;font-size:.74rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3)}
+
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 4px;
+  font-size:.72rem;font-weight:700;color:var(--ink)}
+.appbar{padding:8px 20px 14px;display:flex;align-items:center;justify-content:space-between}
+.appbar .wm{font-size:1.02rem;font-weight:800;letter-spacing:.18em}
+.loc{display:flex;align-items:center;gap:5px;font-size:.75rem;font-weight:600;color:var(--ink-2)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--forest-tint);color:var(--forest);
+  display:grid;place-items:center;font-size:.72rem;font-weight:800}
+.sc-pad{padding:0 20px}
+
+.savings{background:var(--forest);border-radius:var(--r-lg);padding:18px 20px;color:#fff;margin-bottom:18px}
+.savings .lb2{font-size:.63rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.62}
+.savings .big{font-family:var(--serif);font-size:2.15rem;line-height:1.1;margin:2px 0 8px;font-variant-numeric:tabular-nums}
+.bar{height:5px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden}
+.bar i{display:block;height:100%;width:73%;background:var(--gold-2);border-radius:99px}
+.savings .sub{font-size:.72rem;opacity:.72;margin-top:8px}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px}
+.duo a{padding:16px 15px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);
+  text-decoration:none;display:block;box-shadow:var(--sh-sm)}
+.duo .ic2{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;margin-bottom:11px}
+.duo .t{font-size:.88rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.duo .s{font-size:.7rem;color:var(--ink-3);margin-top:2px;font-weight:500}
+
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 12px}
+.sec-h .t{font-size:.95rem;font-weight:800;letter-spacing:-.01em}
+.sec-h .a{font-size:.72rem;font-weight:700;color:var(--forest)}
+.cats{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px}
+.cats::-webkit-scrollbar{height:0}
+.cat{flex:0 0 auto;text-align:center;width:66px}
+.cat .b{width:56px;height:56px;border-radius:18px;background:var(--surface);border:1px solid var(--line);
+  display:grid;place-items:center;margin:0 auto 6px;color:var(--forest);box-shadow:var(--sh-sm)}
+.cat .n{font-size:.66rem;font-weight:600;color:var(--ink-2);line-height:1.2}
+
+/* deal cards */
+.deal{border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);
+  overflow:hidden;box-shadow:var(--sh-sm);margin-bottom:12px}
+.deal .top{height:96px;position:relative;display:grid;place-items:center}
+.deal .top.g1{background:linear-gradient(135deg,#F0E4CE,#E4D2AE)}
+.deal .top.g2{background:linear-gradient(135deg,#DDE8E4,#C3D8D0)}
+.deal .top.g3{background:linear-gradient(135deg,#E2E9F0,#C9D8E6)}
+.deal .body{padding:14px 16px 16px}
+.deal .biz{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.deal .blogo{width:26px;height:26px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:.6rem;font-weight:800;color:var(--ink-2)}
+.deal .bn{font-size:.75rem;font-weight:700;color:var(--ink-2)}
+.deal .h{font-size:.95rem;font-weight:800;letter-spacing:-.015em;line-height:1.3}
+.deal .m{font-size:.72rem;color:var(--ink-3);margin-top:5px;display:flex;gap:10px;font-weight:600}
+.lockwrap{position:absolute;inset:0;display:grid;place-items:center}
+.blurred{font-family:var(--serif);font-size:2.5rem;color:var(--gold);filter:blur(7px);opacity:.85;
+  font-variant-numeric:tabular-nums}
+.lockbtn{position:absolute;display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.94);
+  border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:.72rem;font-weight:800;
+  color:var(--forest);box-shadow:var(--sh-md)}
+.revealed{font-family:var(--serif);font-size:2.5rem;color:var(--gold);font-variant-numeric:tabular-nums}
+
+.codebox{margin-top:12px;border:1.5px dashed var(--gold);background:var(--gold-tint);
+  border-radius:var(--r-md);padding:13px 15px;text-align:center}
+.codebox .lb3{font-size:.6rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.codebox .cd{font-size:1.22rem;font-weight:800;letter-spacing:.16em;color:var(--ink);margin-top:4px;
+  font-variant-numeric:tabular-nums}
+.codebox .ex{font-size:.66rem;color:var(--ink-3);margin-top:5px;font-weight:600}
+.quota{display:flex;align-items:center;gap:8px;margin-top:11px;font-size:.7rem;font-weight:700;color:var(--ink-3)}
+.quota .q{flex:1;height:4px;background:var(--line);border-radius:99px;overflow:hidden}
+.quota .q i{display:block;height:100%;width:27%;background:var(--forest);border-radius:99px}
+
+/* feed */
+.post{border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);padding:15px;
+  box-shadow:var(--sh-sm);margin-bottom:12px}
+.post .hd{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.post .hd .blogo{width:32px;height:32px;border-radius:10px;background:var(--forest-tint);color:var(--forest);
+  display:grid;place-items:center;font-size:.65rem;font-weight:800}
+.post .hd .n{font-size:.8rem;font-weight:800}
+.post .hd .tm{font-size:.68rem;color:var(--ink-3);font-weight:600}
+.post p{font-size:.82rem;color:var(--ink-2);line-height:1.55}
+
+/* tabbar */
+.tabbar{position:sticky;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);
+  background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+  padding:10px 6px calc(10px + env(safe-area-inset-bottom));margin-top:8px}
+.tb{display:grid;place-items:center;gap:4px;color:var(--ink-3);font-size:.6rem;font-weight:700}
+.tb.on{color:var(--forest)}
+
+/* business profile */
+.cover{height:118px;background:linear-gradient(135deg,#E3EBE8,#CBDCD4);position:relative}
+.bizhead{padding:0 20px 16px;margin-top:-34px}
+.bizlogo{width:68px;height:68px;border-radius:20px;background:#fff;border:1px solid var(--line);
+  display:grid;place-items:center;font-family:var(--serif);font-size:1.5rem;color:var(--forest);
+  box-shadow:var(--sh-md);margin-bottom:11px}
+.bizname{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:7px}
+.bizmeta{font-size:.76rem;color:var(--ink-3);font-weight:600;margin-top:3px}
+.tabs{display:flex;gap:22px;padding:0 20px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tabs span{padding:11px 0;font-size:.82rem;font-weight:700;color:var(--ink-3);border-bottom:2px solid transparent}
+.tabs span.on{color:var(--forest);border-color:var(--forest)}
+
+/* ================= DESKTOP PREVIEW ================= */
+.desk{border-radius:var(--r-lg);border:1px solid var(--line);overflow:hidden;box-shadow:var(--sh-md);background:var(--surface)}
+.deskbar{display:flex;align-items:center;gap:8px;padding:11px 16px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.dot{width:9px;height:9px;border-radius:50%;background:#D6D0C6}
+.deskbar .u{margin-left:12px;font-size:.7rem;color:var(--ink-3);font-weight:600}
+.deskbody{display:grid;grid-template-columns:186px 1fr}
+.side{background:var(--surface-2);border-right:1px solid var(--line);padding:18px 12px}
+.side .wm2{font-size:.82rem;font-weight:800;letter-spacing:.18em;padding:0 10px 16px;color:var(--forest)}
+.side a{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;font-size:.79rem;
+  font-weight:600;color:var(--ink-2);text-decoration:none;margin-bottom:2px}
+.side a.on{background:var(--surface);color:var(--forest);font-weight:700;box-shadow:var(--sh-sm)}
+.main{padding:22px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{border:1px solid var(--line);border-radius:var(--r-md);padding:14px 15px;background:var(--surface)}
+.stat .k{font-size:.6rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.stat .v{font-family:var(--serif);font-size:1.6rem;margin-top:3px;font-variant-numeric:tabular-nums}
+.stat .d{font-size:.66rem;font-weight:700;color:var(--success);margin-top:1px}
+table{width:100%;border-collapse:collapse;font-size:.79rem}
+th{text-align:left;font-size:.6rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);padding:9px 12px;border-bottom:1px solid var(--line)}
+td{padding:12px;border-bottom:1px solid var(--line-2);color:var(--ink-2)}
+td b{color:var(--ink);font-weight:700}
+.verifybox{display:flex;gap:10px;align-items:center;margin-bottom:18px;padding:15px;
+  border:1px solid var(--line);border-radius:var(--r-md);background:var(--gold-tint);border-color:#EBDCBE}
+.verifybox input{flex:1;padding:11px 15px;border-radius:9px;border:1px solid var(--line);background:#fff;
+  font-family:var(--sans);font-size:.9rem;font-weight:700;letter-spacing:.14em;color:var(--ink)}
+
+/* ================= FOUNDATION / MISC ================= */
+.tok{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tokitem{padding:16px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface)}
+.tokitem .demo{height:44px;margin-bottom:11px;background:var(--forest-tint);border:1px solid #D5E4DD}
+.tokitem .nm2{font-size:.75rem;font-weight:800}
+.tokitem .vl{font-size:.67rem;color:var(--ink-3);font-weight:600;margin-top:1px}
+.principles{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.pr{padding:22px}
+.pr .n{font-family:var(--serif);font-size:1.5rem;color:var(--gold);line-height:1}
+.pr h4{font-size:.92rem;font-weight:800;margin:9px 0 6px;letter-spacing:-.01em}
+.pr p{font-size:.83rem;color:var(--ink-2)}
+footer{margin-top:20px;padding-top:26px;border-top:1px solid var(--line);
+  font-size:.76rem;color:var(--ink-3);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:640px){
+  .deskbody{grid-template-columns:1fr}.side{display:none}.stats{grid-template-columns:repeat(2,1fr)}
+  .phone{width:100%;max-width:332px}
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none">
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 018 0v3"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 12.5V4.5a1.5 1.5 0 011.5-1.5h8l8.5 8.5-9.5 9.5z"/><circle cx="8" cy="8" r="1.6"/></symbol>
+  <symbol id="i-case" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12.5" rx="2.5"/><path d="M8.5 7.5V5.5a2 2 0 012-2h3a2 2 0 012 2v2M3 13h18"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3.5 10.5L12 4l8.5 6.5V20a1 1 0 01-1 1h-15a1 1 0 01-1-1z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20s-7.5-4.7-7.5-9.7A4.3 4.3 0 0112 7.4a4.3 4.3 0 017.5 2.9c0 5-7.5 9.7-7.5 9.7z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0115 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 16v2.5M20 16v2.5M3 15.5v-3l1.8-4.2A2 2 0 016.6 7h10.8a2 2 0 011.8 1.3L21 12.5v3a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><circle cx="7" cy="13.5" r="1"/><circle cx="17" cy="13.5" r="1"/></symbol>
+  <symbol id="i-cup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M5 9h12v6a5 5 0 01-5 5H10a5 5 0 01-5-5z"/><path d="M17 10.5h1.5a2.5 2.5 0 010 5H17M8 3.5v2M12 3v2.5"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.1 5.4L19.5 10l-5.4 2.1L12 17.5l-2.1-5.4L4.5 10l5.4-1.6z"/><path d="M18.5 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16.5V20"/></symbol>
+  <symbol id="i-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M14.5 6.5a3.8 3.8 0 005 5l-8 8a2.5 2.5 0 01-3.5-3.5z"/><path d="M6 4l3 3-2 2-3-3z"/></symbol>
+  <symbol id="i-dumb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-mega" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 10v4a1 1 0 001 1h3l6 4V5L8 9H5a1 1 0 00-1 1z"/><path d="M18 9.5a4 4 0 010 5"/></symbol>
+  <symbol id="i-peak" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5L12 5l8 12.5"/><path d="M8.6 17.5L12 12l3.4 5.5"/></symbol>
+</svg>
+
+<div class="board">
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="logo-row">
+    <img src="assets/img/logo-seal.png" style="width:58px;height:58px" alt="">
+    <img src="assets/img/logo-word.png" style="height:34px" alt="APEX">
+    <span class="tagpill">UI Design Direction · v1</span>
+  </div>
+  <h1>Bright, warm and <em>quietly premium</em> — a members' club that feels like daylight.</h1>
+  <p>Apex sells access. The interface has to feel worth paying for without ever going dark, heavy or nightclub-ish. The premium signal comes from generous space, a restrained palette, a single serif used sparingly, and one disciplined gold accent reserved for the moments that matter — the deal, the unlock, the saving.</p>
+  <div class="note">
+    <svg width="17" height="17" style="color:var(--forest)"><use href="#i-check"/></svg>
+    <span><b>Light theme only.</b> Every surface — mobile app, business portal, admin — sits on warm paper. No dark mode anywhere.</span>
+  </div>
+</header>
+
+<!-- ============ PILLARS ============ -->
+<section class="sect">
+  <span class="eyebrow">01 · Brand Architecture</span>
+  <h2>Two pillars, one membership</h2>
+  <p class="lede">The whole product reads through two named destinations. It gives the app a clean home screen, gives Sajjad a positioning line, and gives every business one place to post value and one place to post opportunity.</p>
+  <div class="grid pillars">
+    <div class="pillar deals">
+      <div class="ic"><svg width="20" height="20"><use href="#i-tag"/></svg></div>
+      <h3>Apex Deals</h3>
+      <p>Exclusive member offers from verified local businesses. Unlocked with a personal deal code, redeemed in store. Accented in gold.</p>
+    </div>
+    <div class="pillar network">
+      <div class="ic"><svg width="20" height="20"><use href="#i-case"/></svg></div>
+      <h3>Apex Network</h3>
+      <p>Opportunities posted by the same businesses. Members register interest and share a profile; the business makes contact directly. Accented in harbour blue.</p>
+    </div>
+    <div class="pillar" style="border-left:4px solid var(--forest)">
+      <div class="ic" style="background:var(--forest-tint);color:var(--forest)"><svg width="20" height="20"><use href="#i-mega"/></svg></div>
+      <h3>The Feed</h3>
+      <p>Announcements from businesses a member follows. Keeps Apex a habit between purchases rather than a directory you visit once.</p>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<!-- ============ PALETTE ============ -->
+<section class="sect">
+  <span class="eyebrow">02 · Palette</span>
+  <h2>Warm paper, deep forest, one gold</h2>
+  <p class="lede">Forest green is the brand — it reads premium and trustworthy in light UI, and it deliberately avoids the sea of directory blues. Gold is rationed: it only ever appears on a deal, an unlock, or a saving. Harbour blue does the same job for Apex Network.</p>
+
+  <div class="sw-group">
+    <span class="eyebrow">Ground &amp; ink</span>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#FBF9F6"></div><div class="meta"><div class="nm">Paper</div><div class="hx">#FBF9F6</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFFFFF"></div><div class="meta"><div class="nm">Surface</div><div class="hx">#FFFFFF</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F5F2EC"></div><div class="meta"><div class="nm">Surface Sunk</div><div class="hx">#F5F2EC</div></div></div>
+      <div class="sw"><div class="chip" style="background:#EAE5DD"></div><div class="meta"><div class="nm">Hairline</div><div class="hx">#EAE5DD</div></div></div>
+      <div class="sw"><div class="chip" style="background:#16191D"></div><div class="meta"><div class="nm">Ink</div><div class="hx">#16191D</div></div></div>
+      <div class="sw"><div class="chip" style="background:#4A5158"></div><div class="meta"><div class="nm">Ink Muted</div><div class="hx">#4A5158</div></div></div>
+      <div class="sw"><div class="chip" style="background:#8B9299"></div><div class="meta"><div class="nm">Ink Soft</div><div class="hx">#8B9299</div></div></div>
+    </div>
+  </div>
+
+  <div class="sw-group">
+    <span class="eyebrow">Brand · Forest</span>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#0F3D33"></div><div class="meta"><div class="nm">Forest</div><div class="hx">#0F3D33</div></div></div>
+      <div class="sw"><div class="chip" style="background:#17594B"></div><div class="meta"><div class="nm">Forest Lift</div><div class="hx">#17594B</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E6F0EC"></div><div class="meta"><div class="nm">Forest Tint</div><div class="hx">#E6F0EC</div></div></div>
+    </div>
+  </div>
+
+  <div class="sw-group">
+    <span class="eyebrow">Apex Deals · Gold &nbsp;&nbsp;/&nbsp;&nbsp; Apex Network · Harbour</span>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#A97A31"></div><div class="meta"><div class="nm">Gold</div><div class="hx">#A97A31</div></div></div>
+      <div class="sw"><div class="chip" style="background:#D2A254"></div><div class="meta"><div class="nm">Gold Lift</div><div class="hx">#D2A254</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FBF1DE"></div><div class="meta"><div class="nm">Gold Tint</div><div class="hx">#FBF1DE</div></div></div>
+      <div class="sw"><div class="chip" style="background:#24506E"></div><div class="meta"><div class="nm">Harbour</div><div class="hx">#24506E</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E8EFF5"></div><div class="meta"><div class="nm">Harbour Tint</div><div class="hx">#E8EFF5</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1C7A50"></div><div class="meta"><div class="nm">Success</div><div class="hx">#1C7A50</div></div></div>
+      <div class="sw"><div class="chip" style="background:#BE4429"></div><div class="meta"><div class="nm">Expiring</div><div class="hx">#BE4429</div></div></div>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<!-- ============ TYPE ============ -->
+<section class="sect">
+  <span class="eyebrow">03 · Typography</span>
+  <h2>Instrument Serif &amp; Plus Jakarta Sans</h2>
+  <p class="lede">A high-contrast serif carries the expensive feeling — but only on hero numbers, the savings figure and section titles. Everything functional is Plus Jakarta Sans, which stays crisp at 11px on a phone. Money and codes are always tabular.</p>
+  <div class="card type-card">
+    <div class="type-row"><span class="spec">Display · Serif 42/1.05</span><span class="d1">You've saved £312</span></div>
+    <div class="type-row"><span class="spec">Display 2 · Serif 27</span><span class="d2">Members save an average of 10&times;</span></div>
+    <div class="type-row"><span class="spec">Heading · Jakarta 800</span><span class="h1s">Deals near you in London</span></div>
+    <div class="type-row"><span class="spec">Subhead · Jakarta 700</span><span class="h2s">30% off all detailing packages</span></div>
+    <div class="type-row"><span class="spec">Body · Jakarta 400</span><span class="bd">Show your deal code at the counter and the business will verify it instantly.</span></div>
+    <div class="type-row"><span class="spec">Label · Jakarta 700 caps</span><span class="lb">Members only · Ends in 3 days</span></div>
+    <div class="type-row"><span class="spec">Numeric · Serif tabular</span><span class="num">£10 · 15 · 4K7T</span></div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<!-- ============ FOUNDATIONS ============ -->
+<section class="sect">
+  <span class="eyebrow">04 · Foundations</span>
+  <h2>Soft geometry, almost no shadow</h2>
+  <p class="lede">Cards are defined by a warm hairline first and a shadow second. Radii are generous — this is a consumer app, not a dashboard — and elevation is used only to lift the things a member can act on.</p>
+  <div class="tok">
+    <div class="tokitem"><div class="demo" style="border-radius:10px"></div><div class="nm2">Radius SM</div><div class="vl">10px · chips, inputs</div></div>
+    <div class="tokitem"><div class="demo" style="border-radius:14px"></div><div class="nm2">Radius MD</div><div class="vl">14px · tiles, code box</div></div>
+    <div class="tokitem"><div class="demo" style="border-radius:20px"></div><div class="nm2">Radius LG</div><div class="vl">20px · cards, sheets</div></div>
+    <div class="tokitem"><div class="demo" style="border-radius:999px"></div><div class="nm2">Radius Full</div><div class="vl">Buttons &amp; pills</div></div>
+    <div class="tokitem"><div class="demo" style="border-radius:14px;box-shadow:var(--sh-sm);background:#fff"></div><div class="nm2">Elevation 1</div><div class="vl">Resting cards</div></div>
+    <div class="tokitem"><div class="demo" style="border-radius:14px;box-shadow:var(--sh-md);background:#fff"></div><div class="nm2">Elevation 2</div><div class="vl">Unlock, modals, FAB</div></div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<!-- ============ COMPONENTS ============ -->
+<section class="sect">
+  <span class="eyebrow">05 · Component Language</span>
+  <h2>The working parts</h2>
+  <div class="grid comp-grid">
+    <div class="card comp">
+      <span class="eyebrow">Buttons</span>
+      <div class="stack">
+        <button class="btn primary">Become a member</button>
+        <button class="btn gold">Unlock deal</button>
+      </div>
+      <div class="stack" style="margin-top:10px">
+        <button class="btn ghost">Follow</button>
+        <button class="btn quiet">Register interest</button>
+      </div>
+    </div>
+    <div class="card comp">
+      <span class="eyebrow">Category chips</span>
+      <div class="stack">
+        <span class="chipx on"><svg width="15" height="15"><use href="#i-grid"/></svg>All</span>
+        <span class="chipx"><svg width="15" height="15"><use href="#i-cup"/></svg>Dining</span>
+        <span class="chipx"><svg width="15" height="15"><use href="#i-car"/></svg>Motoring</span>
+        <span class="chipx"><svg width="15" height="15"><use href="#i-spark"/></svg>Beauty</span>
+        <span class="chipx"><svg width="15" height="15"><use href="#i-tv"/></svg>Tech</span>
+      </div>
+    </div>
+    <div class="card comp">
+      <span class="eyebrow">Status badges</span>
+      <div class="stack">
+        <span class="badge verified"><svg width="11" height="11"><use href="#i-check"/></svg>Verified</span>
+        <span class="badge member"><svg width="11" height="11"><use href="#i-lock"/></svg>Members only</span>
+        <span class="badge live">Live offer</span>
+        <span class="badge ends">Ends in 3 days</span>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <svg width="17" height="17"><use href="#i-search"/></svg>
+        Search deals, businesses or roles
+      </div>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<!-- ============ SIGNATURE MOMENT ============ -->
+<section class="sect">
+  <span class="eyebrow">06 · The Signature Moment</span>
+  <h2>Locked, then revealed</h2>
+  <p class="lede">This is the single most important interaction in the product. A free member sees the business, the offer headline and a blurred value behind a lock — enough to feel the loss, not enough to use it. The paid member gets the number, the code and a running quota. Everything about the treatment is designed to make the £10 feel obvious.</p>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(290px,1fr));max-width:760px">
+    <div>
+      <div class="deal">
+        <div class="top g1">
+          <div class="lockwrap"><span class="blurred">30% OFF</span></div>
+          <span class="lockbtn"><svg width="14" height="14"><use href="#i-lock"/></svg>Unlock with membership</span>
+        </div>
+        <div class="body">
+          <div class="biz"><span class="blogo">CV</span><span class="bn">Clapham Valet &amp; Detail</span><span class="badge verified" style="margin-left:auto"><svg width="10" height="10"><use href="#i-check"/></svg>Verified</span></div>
+          <div class="h">Full valet &amp; interior detail</div>
+          <div class="m"><span>Clapham · 1.2 mi</span><span>Ends in 6 days</span></div>
+          <button class="btn primary" style="width:100%;margin-top:13px">Become a member to unlock</button>
+        </div>
+      </div>
+      <div class="caption">Free member</div>
+    </div>
+    <div>
+      <div class="deal">
+        <div class="top g1"><span class="revealed">30% OFF</span></div>
+        <div class="body">
+          <div class="biz"><span class="blogo">CV</span><span class="bn">Clapham Valet &amp; Detail</span><span class="badge verified" style="margin-left:auto"><svg width="10" height="10"><use href="#i-check"/></svg>Verified</span></div>
+          <div class="h">Full valet &amp; interior detail</div>
+          <div class="m"><span>Clapham · 1.2 mi</span><span>Ends in 6 days</span></div>
+          <div class="codebox">
+            <div class="lb3">Your deal code</div>
+            <div class="cd">APX-4K7T-9822</div>
+            <div class="ex">Show in store · Valid until 24 Sept</div>
+          </div>
+          <div class="quota"><span>11 of 15 unlocks left</span><span class="q"><i></i></span></div>
+        </div>
+      </div>
+      <div class="caption">Paid member</div>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<!-- ============ MOBILE ============ -->
+<section class="sect">
+  <span class="eyebrow">07 · Mobile · Member App</span>
+  <h2>Home &amp; business profile</h2>
+  <p class="lede">The home screen answers three questions in one scroll: what am I saving, what can I find, and what's new from the businesses I follow. The profile stacks the business, its live deals and its announcements into one continuous page rather than burying them in tabs.</p>
+  <div class="phones">
+
+    <!-- HOME -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>&#9679;&#9679;&#9679;&#9679;</span></div>
+        <div class="appbar">
+          <div>
+            <div class="wm">APEX</div>
+            <div class="loc"><svg width="12" height="12"><use href="#i-pin"/></svg>London · Clapham</div>
+          </div>
+          <div class="avatar">SK</div>
+        </div>
+        <div class="sc-pad">
+          <div class="field" style="margin-bottom:18px;background:#fff">
+            <svg width="17" height="17"><use href="#i-search"/></svg>Search deals, businesses or roles
+          </div>
+
+          <div class="savings">
+            <div class="lb2">Saved with Apex this year</div>
+            <div class="big">&pound;312.40</div>
+            <div class="bar"><i></i></div>
+            <div class="sub">That's 2.6&times; your &pound;120 membership</div>
+          </div>
+
+          <div class="duo">
+            <a href="#"><div class="ic2" style="background:var(--gold-tint);color:var(--gold)"><svg width="18" height="18"><use href="#i-tag"/></svg></div>
+              <div class="t">Apex Deals</div><div class="s">248 live near you</div></a>
+            <a href="#"><div class="ic2" style="background:var(--harbor-tint);color:var(--harbor)"><svg width="18" height="18"><use href="#i-case"/></svg></div>
+              <div class="t">Apex Network</div><div class="s">61 open roles</div></a>
+          </div>
+
+          <div class="sec-h"><span class="t">Browse categories</span><span class="a">See all</span></div>
+          <div class="cats">
+            <div class="cat"><div class="b"><svg width="21" height="21"><use href="#i-cup"/></svg></div><div class="n">Dining</div></div>
+            <div class="cat"><div class="b"><svg width="21" height="21"><use href="#i-car"/></svg></div><div class="n">Motoring</div></div>
+            <div class="cat"><div class="b"><svg width="21" height="21"><use href="#i-spark"/></svg></div><div class="n">Beauty</div></div>
+            <div class="cat"><div class="b"><svg width="21" height="21"><use href="#i-tv"/></svg></div><div class="n">Tech</div></div>
+            <div class="cat"><div class="b"><svg width="21" height="21"><use href="#i-tool"/></svg></div><div class="n">Home</div></div>
+            <div class="cat"><div class="b"><svg width="21" height="21"><use href="#i-dumb"/></svg></div><div class="n">Fitness</div></div>
+          </div>
+
+          <div class="sec-h"><span class="t">Deals near you</span><span class="a">See all</span></div>
+          <div class="deal">
+            <div class="top g2"><span class="revealed" style="color:var(--forest)">2 FOR 1</span></div>
+            <div class="body">
+              <div class="biz"><span class="blogo">TH</span><span class="bn">The Hollybush Kitchen</span></div>
+              <div class="h">Two-for-one on all mains, Sun&ndash;Thu</div>
+              <div class="m"><span>Battersea · 0.8 mi</span><span class="badge ends">Ends Fri</span></div>
+            </div>
+          </div>
+          <div class="deal">
+            <div class="top g1">
+              <div class="lockwrap"><span class="blurred">25% OFF</span></div>
+              <span class="lockbtn"><svg width="13" height="13"><use href="#i-lock"/></svg>Unlock</span>
+            </div>
+            <div class="body">
+              <div class="biz"><span class="blogo">TZ</span><span class="bn">TechZone Accessories</span></div>
+              <div class="h">Quarter off every audio accessory</div>
+              <div class="m"><span>Wandsworth · 2.1 mi</span></div>
+            </div>
+          </div>
+
+          <div class="sec-h" style="margin-top:20px"><span class="t">From businesses you follow</span></div>
+          <div class="post">
+            <div class="hd"><span class="blogo">RS</span>
+              <div><div class="n">Rosewood Salon</div><div class="tm">2 hours ago</div></div>
+            </div>
+            <p>New autumn colour menu is live — members get their gloss treatment included through October.</p>
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <div class="tb on"><svg width="21" height="21"><use href="#i-home"/></svg>Home</div>
+          <div class="tb"><svg width="21" height="21"><use href="#i-tag"/></svg>Deals</div>
+          <div class="tb"><svg width="21" height="21"><use href="#i-case"/></svg>Network</div>
+          <div class="tb"><svg width="21" height="21"><use href="#i-heart"/></svg>Saved</div>
+          <div class="tb"><svg width="21" height="21"><use href="#i-user"/></svg>You</div>
+        </div>
+      </div></div>
+      <div class="caption">Home · member</div>
+    </div>
+
+    <!-- BUSINESS PROFILE -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen">
+        <div class="cover"></div>
+        <div class="bizhead">
+          <div class="bizlogo">R</div>
+          <div class="bizname">Rosewood Salon <span class="badge verified"><svg width="10" height="10"><use href="#i-check"/></svg>Verified</span></div>
+          <div class="bizmeta">Beauty &amp; Wellbeing · Clapham High St · 1.4 mi</div>
+          <div class="stack" style="margin-top:14px">
+            <button class="btn primary" style="flex:1">Following</button>
+            <button class="btn ghost">Directions</button>
+          </div>
+        </div>
+        <div class="tabs"><span class="on">Overview</span><span>Deals · 3</span><span>Posts</span><span>Roles · 1</span></div>
+        <div class="sc-pad" style="padding-bottom:26px">
+          <p style="font-size:.85rem;color:var(--ink-2);margin-bottom:18px">Independent salon on Clapham High Street since 2009. Colour specialists, six chairs, open seven days.</p>
+
+          <div class="sec-h"><span class="t">Current deals</span></div>
+          <div class="deal">
+            <div class="top g1" style="height:78px"><span class="revealed" style="font-size:2.1rem">20% OFF</span></div>
+            <div class="body">
+              <div class="h">Any colour service, midweek</div>
+              <div class="codebox" style="margin-top:10px">
+                <div class="lb3">Your deal code</div>
+                <div class="cd" style="font-size:1.1rem">APX-9QM2-4417</div>
+                <div class="ex">Show in salon · Valid until 30 Sept</div>
+              </div>
+            </div>
+          </div>
+          <div class="deal">
+            <div class="top g1" style="height:78px">
+              <div class="lockwrap"><span class="blurred" style="font-size:2.1rem">FREE</span></div>
+              <span class="lockbtn"><svg width="13" height="13"><use href="#i-lock"/></svg>Unlock</span>
+            </div>
+            <div class="body"><div class="h">Gloss treatment with any cut</div>
+              <div class="m"><span class="badge ends">Ends in 3 days</span></div></div>
+          </div>
+
+          <div class="sec-h" style="margin-top:20px"><span class="t">Announcements</span></div>
+          <div class="post">
+            <div class="hd"><span class="blogo">RS</span><div><div class="n">Rosewood Salon</div><div class="tm">2 hours ago</div></div></div>
+            <p>New autumn colour menu is live — members get their gloss treatment included through October.</p>
+          </div>
+          <div class="post">
+            <div class="hd"><span class="blogo">RS</span><div><div class="n">Rosewood Salon</div><div class="tm">5 days ago</div></div></div>
+            <p>Welcoming Nadia to the team — she's taking bookings from Thursday.</p>
+          </div>
+
+          <div class="sec-h" style="margin-top:20px"><span class="t">Open roles</span></div>
+          <div class="card" style="padding:15px;border-radius:var(--r-lg)">
+            <div class="badge" style="background:var(--harbor-tint);color:var(--harbor)">Apex Network</div>
+            <div class="h2s" style="margin:8px 0 4px">Senior Colour Technician</div>
+            <div style="font-size:.74rem;color:var(--ink-3);font-weight:600">Full time · Clapham</div>
+            <button class="btn quiet" style="width:100%;margin-top:12px">Register interest</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="caption">Business profile · member</div>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<!-- ============ DESKTOP ============ -->
+<section class="sect">
+  <span class="eyebrow">08 · Web · Business Portal &amp; Admin</span>
+  <h2>Same palette, denser grid</h2>
+  <p class="lede">The two web surfaces share the app's paper, forest and hairlines but tighten the spacing and lean on tabular data. Serif is reserved for the numbers that matter. Below: the business portal, including the deal-code verification the counter staff will actually use.</p>
+  <div class="desk">
+    <div class="deskbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="u">business.apex.co.uk / dashboard</span></div>
+    <div class="deskbody">
+      <div class="side">
+        <div class="wm2">APEX</div>
+        <a href="#" class="on"><svg width="16" height="16"><use href="#i-chart"/></svg>Dashboard</a>
+        <a href="#"><svg width="16" height="16"><use href="#i-tag"/></svg>My deals</a>
+        <a href="#"><svg width="16" height="16"><use href="#i-check"/></svg>Verify code</a>
+        <a href="#"><svg width="16" height="16"><use href="#i-case"/></svg>Apex Network</a>
+        <a href="#"><svg width="16" height="16"><use href="#i-mega"/></svg>Announcements</a>
+        <a href="#"><svg width="16" height="16"><use href="#i-grid"/></svg>Advertising</a>
+      </div>
+      <div class="main">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div class="h1s">Rosewood Salon</div>
+            <div style="font-size:.76rem;color:var(--ink-3);font-weight:600;margin-top:2px">Verified 14 Aug · Clapham High St</div>
+          </div>
+          <button class="btn primary">Create a deal</button>
+        </div>
+
+        <div class="verifybox">
+          <svg width="19" height="19" style="color:var(--gold)"><use href="#i-lock"/></svg>
+          <div style="font-size:.79rem;font-weight:700;white-space:nowrap">Verify a deal code</div>
+          <input value="APX-9QM2-4417" readonly />
+          <button class="btn gold">Verify</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><div class="k">Profile views</div><div class="v">1,284</div><div class="d">+18% this month</div></div>
+          <div class="stat"><div class="k">Deals unlocked</div><div class="v">316</div><div class="d">+42 this week</div></div>
+          <div class="stat"><div class="k">Codes redeemed</div><div class="v">147</div><div class="d">46% conversion</div></div>
+          <div class="stat"><div class="k">Followers</div><div class="v">892</div><div class="d">+31 this week</div></div>
+        </div>
+
+        <table>
+          <tr><th>Deal</th><th>Status</th><th>Unlocked</th><th>Redeemed</th><th>Ends</th></tr>
+          <tr><td><b>20% off any colour service</b></td><td><span class="badge live">Live</span></td><td>184</td><td>96</td><td>30 Sept</td></tr>
+          <tr><td><b>Free gloss with any cut</b></td><td><span class="badge ends">Ends in 3 days</span></td><td>92</td><td>38</td><td>22 Aug</td></tr>
+          <tr><td><b>Student Tuesdays · 15% off</b></td><td><span class="badge live">Live</span></td><td>40</td><td>13</td><td>Ongoing</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<!-- ============ PRINCIPLES ============ -->
+<section class="sect">
+  <span class="eyebrow">09 · Design Principles</span>
+  <h2>What we hold to</h2>
+  <div class="grid principles">
+    <div class="card pr"><div class="n">01</div><h4>Light, always</h4><p>Warm paper on every surface, in every app, on every screen. Premium comes from restraint and space, never from a dark theme.</p></div>
+    <div class="card pr"><div class="n">02</div><h4>Gold is earned</h4><p>The accent appears only on a deal, an unlock or a saving. If gold is everywhere it means nothing, and the paywall stops feeling special.</p></div>
+    <div class="card pr"><div class="n">03</div><h4>Show the value, hide the number</h4><p>A free member should always be able to see what they're missing and never be able to use it. Blur, don't remove.</p></div>
+    <div class="card pr"><div class="n">04</div><h4>Savings are the hero</h4><p>Every session reminds the member what the membership has returned. It's the strongest defence against cancellation we have.</p></div>
+    <div class="card pr"><div class="n">05</div><h4>No emoji, ever</h4><p>All iconography is custom stroke SVG at a consistent 1.6&ndash;1.7 weight. It is the difference between a product and a prototype.</p></div>
+    <div class="card pr"><div class="n">06</div><h4>One system, three surfaces</h4><p>Member app, business portal and admin share tokens, type and components. It reads as one company and it builds far faster.</p></div>
+  </div>
+</section>
+
+<footer>
+  <span>Apex · UI Design Direction v1 · Prepared by Nile Technologies</span>
+  <span>Light theme only · Instrument Serif + Plus Jakarta Sans</span>
+</footer>
+
+</div>
+</body>
+</html>
