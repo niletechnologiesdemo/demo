@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Programmes — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<section style="background:var(--surface-2);border-bottom:1px solid var(--line-2);padding:48px 0 42px">
+  <div class="wrap center">
+    <span class="eyebrow center no-rule">The programmes</span>
+    <h1 style="font-size:clamp(2.3rem,4.6vw,3.4rem)">Eight paths through it</h1>
+    <div class="ornament"><i></i></div>
+    <p class="lede" style="max-width:58ch;margin-inline:auto">Every one includes filmed sessions, live sessions with Daisy, a private circle and a Mood Journal template. Three sessions of each are free, with no card.</p>
+  </div>
+</section>
+<section class="sec-sm"><div class="wrap">
+  <div class="row wrapflex" id="filters" style="gap:8px;justify-content:center;margin-bottom:30px"></div>
+  <div class="grid g3" id="grid"></div>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <div class="center" style="margin-bottom:32px"><span class="eyebrow center no-rule">Side by side</span><h2>Compare the programmes</h2></div>
+  <div style="overflow-x:auto"><table style="width:100%;min-width:840px;border-collapse:collapse;background:var(--surface);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1)" id="table"></table></div>
+</div></section>
+
+<section class="sec night" style="background:var(--grad-plum)">
+  <div class="wrap center" style="position:relative;z-index:2">
+    <span class="eyebrow center no-rule" style="color:var(--gold-400)">Or take all of them</span>
+    <h2 class="balance">$39 a month for everything</h2>
+    <p class="lede" style="max-width:52ch;margin:1rem auto 2rem">Every programme, every live session, the full journal and all six circles. Cancel any time, and one seat a month is sponsored for someone who cannot pay.</p>
+    <a class="btn btn-gold btn-lg" href="membership.html">See membership</a>
+  </div>
+</section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+ORG.boot('programs');
+var CATS=['All','Recovery','Mind','Body','Spirit'], active=U.qs('cat')||'All';
+function draw(){
+  document.getElementById('filters').innerHTML=CATS.map(function(c){
+    return '<button class="chip '+(c===active?'on':'')+'" onclick="pick(\''+c+'\')">'+c
+    +'<span class="tiny" style="opacity:.7">'+(c==='All'?KG.programs.length:KG.programs.filter(function(g){return g.cat===c}).length)+'</span></button>';
+  }).join('');
+  var list=KG.programs.filter(function(g){ return active==='All'||g.cat===active; });
+  document.getElementById('grid').innerHTML=list.map(function(g){ return ORG.gcard(g); }).join('');
+  U.reveal();
+}
+window.pick=function(c){ active=c; draw(); };
+draw();
+document.getElementById('table').innerHTML=
+  '<thead><tr style="background:var(--plum-800);color:var(--gold-200)">'
+  +['Programme','Focus','Length','Sessions','Live','Rating','Price'].map(function(h,i){
+    return '<th style="padding:14px 16px;text-align:'+(i?'left':'left')+';font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600">'+h+'</th>'; }).join('')
+  +'</tr></thead><tbody>'
+  + KG.programs.map(function(g,i){
+    return '<tr style="border-top:1px solid var(--line-2);'+(i%2?'background:var(--surface-2)':'')+'">'
+    +'<td style="padding:14px 16px"><a href="program.html?g='+g.slug+'"><b style="font-family:\'Cormorant Garamond\',serif;font-size:1.15rem;color:var(--plum-800)">'+g.title+'</b>'
+    +'<span class="tiny muted" style="display:block">'+g.sub+'</span></a></td>'
+    +'<td style="padding:14px 16px"><span class="badge badge-gold">'+g.cat+'</span></td>'
+    +'<td style="padding:14px 16px;font-size:.86rem">'+g.weeks+' weeks</td>'
+    +'<td style="padding:14px 16px;font-size:.86rem">'+g.lessonCount+'</td>'
+    +'<td style="padding:14px 16px;font-size:.86rem">'+g.live+'</td>'
+    +'<td style="padding:14px 16px;font-size:.86rem">'+g.rating+'</td>'
+    +'<td style="padding:14px 16px"><b>'+U.money(g.price)+'</b><span class="tiny muted" style="display:block">or included</span></td></tr>';
+  }).join('')+'</tbody>';
+</script>
+</body></html>

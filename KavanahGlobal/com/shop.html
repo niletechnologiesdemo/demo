@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shop — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/com.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+
+<section style="background:var(--surface-2);border-bottom:1px solid var(--line-2);padding:34px 0 30px">
+  <div class="wrap">
+    <div class="tiny muted" style="margin-bottom:.7rem"><a href="index.html">Home</a> / <span id="crumb">Shop</span></div>
+    <div class="row-between wrapflex">
+      <div>
+        <h1 id="shoptitle" style="font-size:clamp(2.1rem,4vw,3rem)">Everything</h1>
+        <p class="muted" id="shopsub" style="margin:.4rem 0 0;max-width:56ch">Thirty-one things, each chosen because it does something. Every order funds the work at kavanahglobal.org.</p>
+      </div>
+      <div style="position:relative;min-width:280px">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-4)" data-ico="search"></span>
+        <input class="input" id="q" placeholder="Search candles, mala, journal…" style="padding-left:42px" oninput="render()">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec-sm"><div class="wrap shop-lay">
+  <aside class="filters">
+    <div class="row-between" style="margin-bottom:14px">
+      <h3 style="font-size:1.1rem">Filter</h3>
+      <button class="btn btn-ghost btn-xs" onclick="clearAll()">Clear all</button>
+    </div>
+    <div class="fgroup"><h4>Category</h4><div id="fcats"></div></div>
+    <div class="fgroup"><h4>Price</h4><div id="fprice"></div></div>
+    <div class="fgroup"><h4>Rating</h4><div id="frate"></div></div>
+    <div class="fgroup" style="border-bottom:0"><h4>What it funds</h4><div id="ffunds"></div></div>
+    <div class="card card-pad lux" style="margin-top:22px;background:linear-gradient(140deg,var(--gold-100),var(--plum-50))">
+      <span style="color:var(--gold-700)" data-ico="flame"></span>
+      <h4 style="margin:.5rem 0 .35rem;font-size:1.05rem">Free shipping over $75</h4>
+      <p class="tiny muted" style="margin:0">And every order, at any size, funds something at the .org.</p>
+    </div>
+  </aside>
+
+  <div>
+    <div class="shop-bar">
+      <span class="small muted"><b id="count">0</b> products</span>
+      <div class="row" style="gap:10px">
+        <div id="pills" class="row wrapflex" style="gap:6px"></div>
+        <select class="input" id="sort" onchange="render()" style="width:auto;min-width:186px">
+          <option value="feat">Sort — Featured</option>
+          <option value="new">Newest</option>
+          <option value="plow">Price: low to high</option>
+          <option value="phigh">Price: high to low</option>
+          <option value="rate">Best rated</option>
+          <option value="rev">Most reviewed</option>
+        </select>
+      </div>
+    </div>
+    <div class="pgrid" id="grid"></div>
+    <div id="empty" class="center hide" style="padding:70px 20px">
+      <span style="color:var(--gold-400)" data-ico="search"></span>
+      <h3 style="margin:.8rem 0 .4rem">Nothing matches that</h3>
+      <p class="muted small">Try clearing a filter, or search for something broader.</p>
+      <button class="btn btn-outline btn-sm" style="margin-top:1rem" onclick="clearAll()">Clear all filters</button>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec night" style="background:var(--grad-plum)">
+  <div class="glow" style="top:-180px;right:-100px"></div>
+  <div class="wrap center" style="position:relative;z-index:2">
+    <span class="eyebrow center no-rule" style="color:var(--gold-400)">Every order</span>
+    <h2 class="balance">You are not just buying a candle</h2>
+    <p class="lede" style="max-width:54ch;margin:1rem auto 2rem">Add anything to your bag and we will show you, before you pay, exactly what it funds at kavanahglobal.org.</p>
+    <a class="btn btn-gold btn-lg" href="impact.html">See the impact report<span data-ico="arrowRight"></span></a>
+  </div>
+</section>
+
+<div id="ftr-slot"></div>
+
+<script src="../assets/icons.js"></script>
+<script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script>
+<script src="../assets/com.js"></script>
+<script>
+var F = {cats:[], price:[], rate:0, funds:[]};
+var PRICE=[{k:'0-25',t:'Under $25',f:function(p){return p.price<25}},
+           {k:'25-50',t:'$25 – $50',f:function(p){return p.price>=25&&p.price<50}},
+           {k:'50-80',t:'$50 – $80',f:function(p){return p.price>=50&&p.price<80}},
+           {k:'80+',t:'$80 and above',f:function(p){return p.price>=80}}];
+var FUNDS=[{k:'shelter',t:'Nights of shelter'},{k:'breakfast',t:'Warm breakfasts'},{k:'seat',t:'Class seats'}];
+
+function countIf(fn){ return KG.products.filter(fn).length; }
+
+function buildFilters(){
+  document.getElementById('fcats').innerHTML = KG.categories.map(function(c){
+    return '<label class="fopt"><input type="checkbox" value="'+c.id+'" onchange="tog(\'cats\',this)">'
+    + '<span>'+c.name+'</span><span class="n">'+countIf(function(p){return p.cat===c.id})+'</span></label>';
+  }).join('');
+  document.getElementById('fprice').innerHTML = PRICE.map(function(r){
+    return '<label class="fopt"><input type="checkbox" value="'+r.k+'" onchange="tog(\'price\',this)">'
+    + '<span>'+r.t+'</span><span class="n">'+countIf(r.f)+'</span></label>';
+  }).join('');
+  document.getElementById('frate').innerHTML = [4.9,4.8,4.5].map(function(r){
+    return '<label class="fopt"><input type="radio" name="rate" value="'+r+'" onchange="F.rate=+this.value;render()">'
+    + U.stars(r)+'<span style="font-size:.8rem">&nbsp;'+r+' &amp; up</span>'
+    + '<span class="n">'+countIf(function(p){return p.rating>=r})+'</span></label>';
+  }).join('');
+  document.getElementById('ffunds').innerHTML = FUNDS.map(function(r){
+    return '<label class="fopt"><input type="checkbox" value="'+r.k+'" onchange="tog(\'funds\',this)">'
+    + '<span>'+r.t+'</span><span class="n">'+countIf(function(p){return p.funds.indexOf(r.k)>-1})+'</span></label>';
+  }).join('');
+}
+function tog(k,el){
+  var a=F[k], v=el.value, i=a.indexOf(v);
+  if(el.checked && i<0) a.push(v); else if(!el.checked && i>-1) a.splice(i,1);
+  render();
+}
+function clearAll(){
+  F={cats:[],price:[],rate:0,funds:[]};
+  document.getElementById('q').value='';
+  document.querySelectorAll('.filters input').forEach(function(i){ i.checked=false; });
+  history.replaceState(null,'','shop.html');
+  render();
+}
+window.tog=tog; window.clearAll=clearAll;
+
+function render(){
+  var q=(document.getElementById('q').value||'').toLowerCase().trim();
+  var list=KG.products.filter(function(p){
+    if(F.cats.length && F.cats.indexOf(p.cat)<0) return false;
+    if(F.price.length){
+      var ok=false; F.price.forEach(function(k){ PRICE.forEach(function(r){ if(r.k===k && r.f(p)) ok=true; }); });
+      if(!ok) return false;
+    }
+    if(F.rate && p.rating < F.rate) return false;
+    if(F.funds.length){
+      var ok2=false; F.funds.forEach(function(k){ if(p.funds.indexOf(k)>-1) ok2=true; });
+      if(!ok2) return false;
+    }
+    if(q){
+      var hay=(p.name+' '+p.blurb+' '+p.desc+' '+(p.tags||[]).join(' ')+' '+p.cat).toLowerCase();
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+  var s=document.getElementById('sort').value;
+  var order={feat:null,new:['p02','p12','p23','p17','p31','p10']};
+  if(s==='plow') list.sort(function(a,b){return a.price-b.price});
+  if(s==='phigh') list.sort(function(a,b){return b.price-a.price});
+  if(s==='rate') list.sort(function(a,b){return b.rating-a.rating});
+  if(s==='rev') list.sort(function(a,b){return b.reviews-a.reviews});
+  if(s==='new') list.sort(function(a,b){return order.new.indexOf(b.id)-order.new.indexOf(a.id)});
+
+  document.getElementById('count').textContent=list.length;
+  document.getElementById('grid').innerHTML=list.map(function(p){return COM.pcard(p)}).join('');
+  document.getElementById('empty').classList.toggle('hide', list.length>0);
+
+  var pills=[];
+  F.cats.forEach(function(c){ var o=KG.categories.filter(function(x){return x.id===c})[0]; pills.push([o.name,'cats',c]); });
+  F.price.forEach(function(c){ var o=PRICE.filter(function(x){return x.k===c})[0]; pills.push([o.t,'price',c]); });
+  F.funds.forEach(function(c){ var o=FUNDS.filter(function(x){return x.k===c})[0]; pills.push([o.t,'funds',c]); });
+  if(F.rate) pills.push([F.rate+' & up','rate',F.rate]);
+  document.getElementById('pills').innerHTML = pills.map(function(p){
+    return '<button class="chip on" onclick="drop(\''+p[1]+'\',\''+p[2]+'\')">'+p[0]+ico('close')+'</button>';
+  }).join('');
+  U.reveal(); U.Wish.sync();
+}
+function drop(k,v){
+  if(k==='rate'){ F.rate=0; document.querySelectorAll('[name=rate]').forEach(function(i){i.checked=false}); }
+  else { F[k]=F[k].filter(function(x){return x!==v}); document.querySelectorAll('.filters input[value="'+v+'"]').forEach(function(i){i.checked=false}); }
+  render();
+}
+window.drop=drop; window.render=render;
+
+COM.boot('shop');
+buildFilters();
+var pre=U.qs('cat');
+if(pre){
+  F.cats=[pre];
+  var c=KG.categories.filter(function(x){return x.id===pre})[0];
+  if(c){
+    document.getElementById('shoptitle').textContent=c.name;
+    document.getElementById('shopsub').textContent=c.blurb;
+    document.getElementById('crumb').textContent=c.name;
+    var box=document.querySelector('.filters input[value="'+pre+'"]'); if(box) box.checked=true;
+  }
+}
+if(location.hash==='#search') document.getElementById('q').focus();
+render();
+</script>
+</body>
+</html>

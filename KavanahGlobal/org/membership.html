@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Membership — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<section class="hero" style="min-height:clamp(420px,52vh,540px)">
+  <div class="hero-bg"><img src="../assets/img/member-hero.jpg" alt=""></div>
+  <div class="wrap hero-in">
+    <span class="eyebrow" style="color:var(--gold-300)">Membership</span>
+    <h1>Start free.<br><em>Stay if it helps.</em></h1>
+    <p>Three preview sessions on every programme with no card at all. If you want everything, it is $39 a month — and one full seat is sponsored every month for someone who cannot pay.</p>
+  </div>
+</section>
+
+<section class="sec-sm"><div class="wrap">
+  <div class="center" style="margin-bottom:34px">
+    <div class="daynight" style="margin-bottom:1.2rem">
+      <button class="on" id="bMonth" onclick="setCycle('m')">Monthly</button>
+      <button id="bYear" onclick="setCycle('y')">Yearly <span class="badge badge-ok" style="margin-left:.4rem">Save 17%</span></button>
+    </div>
+  </div>
+  <div class="plans" id="plans"></div>
+  <p class="tiny muted center" style="margin-top:1.4rem">All prices in USD. Cancel any time from your account — no phone call, no retention offer.</p>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <div class="center" style="margin-bottom:34px"><span class="eyebrow center no-rule">Compare</span><h2>What is in each</h2></div>
+  <div style="overflow-x:auto"><table style="width:100%;min-width:720px;border-collapse:collapse;background:var(--surface);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1)" id="cmp"></table></div>
+</div></section>
+
+<section class="sec"><div class="wrap split">
+  <div class="split-img rv"><img src="../assets/img/donate-1.jpg" alt="Giving"></div>
+  <div class="rv">
+    <span class="eyebrow">The part we are proudest of</span>
+    <h2>Every membership sponsors a seat</h2>
+    <p class="lede" style="margin-top:1rem">One full programme seat, every month, for someone who cannot pay for one. That is not a marketing line — it is a line item.</p>
+    <p>Nobody has to prove hardship, produce a document or explain themselves. They ask, and a seat is there. Last year 1,284 seats were funded this way and by the shop.</p>
+    <div class="card card-pad" style="background:var(--surface-2);margin-top:1.4rem">
+      <div class="row" style="gap:16px"><span style="color:var(--gold-700);flex:none" data-ico="award"></span>
+      <div><b style="font-size:1.5rem;font-family:'Cormorant Garamond',serif;color:var(--plum-800)">1,284 seats</b>
+      <p class="small muted" style="margin:.2rem 0 0">sponsored last year by members and by the shop</p></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap wrap-narrow">
+  <div class="center" style="margin-bottom:32px"><span class="eyebrow center no-rule">Questions</span><h2>The ones people actually ask</h2></div>
+  <div id="faq"></div>
+</div></section>
+
+<section class="sec night" style="background:var(--grad-plum)">
+  <div class="wrap center" style="position:relative;z-index:2">
+    <h2 class="balance">Fourteen days, no card</h2>
+    <p class="lede" style="max-width:46ch;margin:1rem auto 2rem">Try everything. If it has not helped by day fourteen, walk away and we will not email you about it.</p>
+    <a class="btn btn-gold btn-lg" href="dashboard.html">Start the trial</a>
+  </div>
+</section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+ORG.boot('membership');
+var cycle='m';
+function drawPlans(){
+  document.getElementById('bMonth').classList.toggle('on',cycle==='m');
+  document.getElementById('bYear').classList.toggle('on',cycle==='y');
+  document.getElementById('plans').innerHTML=KG.membership.map(function(m){
+    var price=m.price, per=m.per;
+    if(cycle==='y'&&m.id==='m2'){ price=390; per='year'; }
+    if(cycle==='m'&&m.id==='m3'){ price=39; per='month, billed yearly'; }
+    var isCurrent = m.id==='m2';
+    return '<div class="plan rv '+(m.popular?'pop':'')+'">'
+    +(m.popular?'<span class="plan-tag">Most people choose this</span>':'')
+    +'<h3 style="font-size:1.55rem;margin-bottom:.3rem">'+m.name+'</h3>'
+    +'<p class="small muted" style="margin-bottom:1rem">'+m.blurb+'</p>'
+    +'<div class="row" style="gap:.4rem;align-items:baseline"><span class="pp">'+(price?'$'+price:'Free')+'</span>'
+    +(price?'<span class="muted small">/ '+per+'</span>':'')+'</div>'
+    +(m.save&&cycle==='y'?'<span class="badge badge-ok" style="margin-top:.5rem">'+m.save+'</span>':'')
+    +'<ul>'+m.feats.map(function(f){ return '<li>'+ico('check')+'<span>'+f+'</span></li>'; }).join('')+'</ul>'
+    +(isCurrent
+      ? '<div class="btn btn-outline btn-block btn-lg is-disabled" style="opacity:1;pointer-events:none;border-color:var(--ok);color:var(--ok)">'+ico('checkCircle')+'Your current plan</div>'
+        +'<button class="btn btn-ghost btn-sm btn-block" style="margin-top:.4rem" onclick="U.toast(\'Membership settings opened\',\'settings\')">Manage</button>'
+      : '<button class="btn '+(m.popular?'btn-gold':'btn-outline')+' btn-block btn-lg" onclick="U.toast(\''+m.cta+'\',\'award\')">'+m.cta+'</button>')
+    +'</div>';
+  }).join('');
+  U.boot(); U.reveal();
+}
+window.setCycle=function(c){ cycle=c; drawPlans(); };
+drawPlans();
+
+var ROWS=[
+  ['Programmes','1 free preview each','All 8, unlimited','All 8, unlimited'],
+  ['Live sessions','Open Sunday Q&A only','All 14 a week','All 14 a week'],
+  ['Session recordings','—','90 days','90 days'],
+  ['Mood Journal','7 days of history','Full history + insights','Full history + insights'],
+  ['Community circles','The Front Step','All six','All six + priority in closed circles'],
+  ['1:1 with Daisy','—','—','Two sessions a year'],
+  ['Discount at kavanahglobal.com','—','15%','25%'],
+  ['Sponsors a seat','—','1 per month','1 per month'],
+  ['Sanctuary early access','—','—','Yes']
+];
+document.getElementById('cmp').innerHTML=
+  '<thead><tr style="background:var(--plum-800);color:var(--gold-200)">'
+  +['','Seeker','Practitioner','Circle'].map(function(h){
+    return '<th style="padding:14px 16px;text-align:left;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600">'+h+'</th>'; }).join('')
+  +'</tr></thead><tbody>'
+  + ROWS.map(function(r,i){
+    return '<tr style="border-top:1px solid var(--line-2);'+(i%2?'background:var(--surface-2)':'')+'">'
+    +'<td style="padding:13px 16px;font-size:.88rem;font-weight:600">'+r[0]+'</td>'
+    + r.slice(1).map(function(v){
+      return '<td style="padding:13px 16px;font-size:.86rem;color:var(--ink-2)">'
+      +(v==='—'?'<span class="muted">—</span>':(v==='Yes'?'<span style="color:var(--ok)">'+ico('check')+'</span>':v))+'</td>'; }).join('')
+    +'</tr>'; }).join('')+'</tbody>';
+
+document.getElementById('faq').innerHTML=[
+  ['Is this therapy?','No, and we will keep saying so. Everything here is education and peer support delivered by a teacher, not treatment delivered by a clinician. Many members use it alongside therapy; some of their therapists recommended it. If you are in crisis, please contact emergency services or a crisis line rather than us.'],
+  ['What if I cannot afford it?','Ask. Sponsored seats are funded every month by members and by the shop, and nobody is required to prove hardship or explain themselves. Email us or press the button on any programme page.'],
+  ['Can I cancel?','From your account, in two clicks, at any time. No phone call, no retention offer, no survey you have to finish first. You keep access until the end of the period you paid for.'],
+  ['Do I have to be Jewish?','No. The practice is rooted in Jewish contemplative tradition because that is Daisy\'s tradition, and it is open — deliberately and completely — to every faith and to none. Nothing here asks you to leave your own.'],
+  ['What happens in a closed circle?','Freedom and After the Storm are private to the people enrolled. They are never recorded, never transcribed, and moderators do not share what is said in them. That is a promise we would rather keep than break for a testimonial.'],
+  ['Is my journal private?','Yes. Entries are not visible to guides, moderators or other members. You can deliberately share one entry into a circle, and you can export or delete everything at any time.']
+].map(function(f,i){
+  return '<div class="acc-item '+(i===0?'on':'')+'"><button class="acc-head" onclick="this.parentNode.classList.toggle(\'on\')">'
+  +f[0]+ico('chevronDown')+'</button><div class="acc-body"><div><p style="margin:0">'+f[1]+'</p></div></div></div>';
+}).join('');
+U.boot(); U.reveal();
+</script>
+</body></html>

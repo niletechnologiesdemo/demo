@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thank you — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<section class="sec night" style="background:var(--grad-plum)">
+  <div class="glow" style="top:-200px;left:50%;transform:translateX(-50%)"></div>
+  <div class="wrap center" style="position:relative;z-index:2;max-width:720px">
+    <span style="color:var(--gold-300);display:inline-block;margin-bottom:1rem" data-ico="checkCircle"></span>
+    <span class="eyebrow center no-rule" style="color:var(--gold-400)">Order <b id="onum">KG-00000</b></span>
+    <h1 style="font-size:clamp(2.4rem,5vw,3.6rem)">Thank you. Truly.</h1>
+    <div class="ornament"><i></i></div>
+    <p class="lede" style="max-width:50ch;margin-inline:auto">A confirmation is on its way to your inbox. Your order leaves Queens within one working day.</p>
+  </div>
+</section>
+<section class="sec-sm"><div class="wrap" style="max-width:840px">
+  <div class="card lux card-pad rv" style="background:linear-gradient(140deg,var(--gold-100),var(--plum-50));text-align:center;padding:38px 30px">
+    <span style="color:var(--gold-700)" data-ico="flame"></span>
+    <h2 style="margin:.7rem 0 .5rem">What you just funded</h2>
+    <p class="small muted" style="max-width:44ch;margin:0 auto 1.4rem">This is not marketing language. It is the actual allocation from your order, and it will appear on your impact ledger.</p>
+    <div id="funded" class="grid g3" style="gap:14px"></div>
+  </div>
+  <div class="grid g2" style="margin-top:22px">
+    <div class="card card-pad"><h3 style="font-size:1.1rem;margin-bottom:.8rem">Your order</h3><div id="items"></div></div>
+    <div class="card card-pad">
+      <h3 style="font-size:1.1rem;margin-bottom:.8rem">What happens next</h3>
+      <div id="timeline"></div>
+    </div>
+  </div>
+  <div class="card card-pad rv" style="margin-top:22px;text-align:center;padding:34px">
+    <span class="eyebrow center no-rule">One more thing</span>
+    <h3 style="margin-bottom:.6rem">The other half of Kavanah is free to start</h3>
+    <p class="small muted" style="max-width:48ch;margin:0 auto 1.3rem">You have funded someone else's seat. There is one waiting for you too — three free preview sessions on every programme, no card needed.</p>
+    <div class="row" style="justify-content:center;gap:10px;flex-wrap:wrap">
+      <a class="btn btn-gold" href="../org/programs.html">Browse the programmes</a>
+      <a class="btn btn-outline" href="account.html">View my orders</a>
+    </div>
+  </div>
+</div></section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script>
+<script>
+COM.boot('shop');
+var o=U.LS.get('lastorder',null);
+document.getElementById('onum').textContent='KG-'+(24800+Math.floor(Math.random()*180));
+var funded=(o&&o.funded&&o.funded.length)?o.funded:['1 night of shelter'];
+if(o&&o.extra) funded.push('1 warm breakfast (round-up)');
+document.getElementById('funded').innerHTML=funded.map(function(f){
+  var icon = /shelter/.test(f)?'bed' : /breakfast/.test(f)?'coffee' : 'book';
+  return '<div class="card card-pad" style="background:rgba(255,255,255,.7)"><span style="color:var(--gold-700)">'+ico(icon)+'</span>'
+  +'<b style="display:block;margin-top:.5rem;font-size:1.02rem;color:var(--plum-800)">'+f+'</b></div>';
+}).join('');
+document.getElementById('items').innerHTML = (o&&o.items&&o.items.length? o.items.map(function(i){
+  var p=KG.byId(KG.products,i.id); if(!p) return '';
+  return '<div class="row" style="gap:12px;margin-bottom:12px"><img src="'+KG.img(p.imgs[0])+'" style="width:52px;height:52px;border-radius:var(--r-sm);object-fit:cover">'
+  +'<div style="flex:1"><b style="font-size:.88rem;display:block">'+p.name+'</b><span class="tiny muted">Qty '+i.q+(i.v?' · '+i.v:'')+'</span></div>'
+  +'<span style="font-size:.88rem;font-weight:600">'+U.money(p.price*i.q)+'</span></div>'; }).join('') : '<p class="small muted">Order details unavailable.</p>')
+  + (o? '<div class="sumrow total"><span>Paid</span><span>'+U.money(o.total)+'</span></div>':'');
+document.getElementById('timeline').innerHTML=[
+  ['checkCircle','Order received','Just now',1],
+  ['gift','Packed by hand in Queens','Within 1 working day',0],
+  ['truck','On its way','2–4 working days',0],
+  ['home','Delivered','With a note telling you what it funded',0]
+].map(function(t){
+  return '<div class="row" style="gap:12px;align-items:flex-start;margin-bottom:16px">'
+  +'<span style="color:'+(t[3]?'var(--ok)':'var(--ink-4)')+';flex:none">'+ico(t[0])+'</span>'
+  +'<div><b style="display:block;font-size:.88rem">'+t[1]+'</b><span class="tiny muted">'+t[2]+'</span></div></div>';
+}).join('');
+U.boot(); U.reveal();
+</script>
+</body></html>

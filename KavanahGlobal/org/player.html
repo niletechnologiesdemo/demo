@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Session — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div class="oshell">
+  <div id="rail-slot"></div>
+  <div class="omain">
+    <div id="top-slot"></div>
+    <div class="obody">
+      <div class="player" id="lay">
+        <div>
+          <div class="stage" id="stage"></div>
+          <div id="under"></div>
+        </div>
+        <div class="plist">
+          <div class="plist-h" id="plisth"></div>
+          <div class="plist-b" id="plistb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+var g = KG.bySlug(KG.programs, U.qs('g')) || KG.byId(KG.programs,'g1');
+var freeOnly = U.qs('free')==='1';
+var lessons = KG.flatLessons(g.id);
+var done = U.Enrol.done(g.id);
+var cur = Math.max(0, lessons.findIndex(function(l){ return done.indexOf(l.n)<0; }));
+if(U.qs('n')!=null) cur = Math.max(0, Math.min(lessons.length-1, +U.qs('n')));
+var playing=false, pct=0, timer=null;
+
+var TRANSCRIPT = [
+ "So the first thing I want to say is that nothing in this session is going to ask you to feel differently. I have never once managed to talk a person out of a feeling and I am not going to start now.",
+ "What we are going to do instead is change something you do. Small. Almost embarrassingly small. And then we are going to watch what the feeling does on its own.",
+ "There is a woman in the Tuesday circle — she has said I can tell you this — who had tried to stop four times before she came to us. Four times, and each time she started with a plan that would have been difficult for a person with no job and no children.",
+ "This time she moved the kettle. That is it. That is the intervention. Her evening used to begin at the cupboard beside the kettle, and now it begins somewhere else, and forty-one days later she is still counting.",
+ "I am not telling you that story because a kettle is magic. I am telling you it because we look for the large change and the large change almost never holds. The furniture holds.",
+ "So before the next session, I want you to find your kettle. Not the feeling. The object, the room, the hour, the piece of furniture where it actually begins."
+];
+var NOTES = [];
+
+function stage(){
+  var l=lessons[cur];
+  return '<img src="'+KG.img(l.th)+'" alt="">'
+  + '<div class="stage-ui">'
+  +   '<button class="playbtn" onclick="toggle()" id="pb">'+ico(playing?'pause':'play','','currentColor')+'</button>'
+  +   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;color:#fff;max-width:34ch;margin-inline:auto;line-height:1.25">'+l.t+'</div>'
+  +   '<div class="tiny" style="color:rgba(249,239,212,.6);margin-top:.4rem">'+g.title+' · '+l.module+'</div>'
+  + '</div>'
+  + '<div class="pbar">'
+  +   '<div class="ptrack" onclick="seek(event)"><i id="pfill" style="width:'+pct+'%"></i></div>'
+  +   '<div class="pctrl">'
+  +     '<button onclick="toggle()">'+ico(playing?'pause':'play','','currentColor')+'</button>'
+  +     '<button onclick="jump(-1)">'+ico('chevronLeft')+'</button>'
+  +     '<button onclick="jump(1)">'+ico('chevronRight')+'</button>'
+  +     '<span id="ptime">0:00</span><span style="opacity:.5">/ '+l.len+'</span>'
+  +     '<span class="spacer"></span>'
+  +     '<button onclick="U.toast(\'Playback speed 1.25x\',\'zap\')">1x</button>'
+  +     '<button onclick="U.toast(\'Captions on\',\'message\')">CC</button>'
+  +     '<button onclick="U.toast(\'Audio-only mode\',\'headphones\')">'+ico('headphones')+'</button>'
+  +   '</div></div>';
+}
+
+function under(){
+  var l=lessons[cur];
+  var isDone=U.Enrol.done(g.id).indexOf(l.n)>-1;
+  return '<div class="row-between wrapflex" style="margin:22px 0 6px;gap:14px">'
+  + '<div><div class="row" style="gap:8px;margin-bottom:.35rem"><span class="badge badge-gold">'+g.cat+'</span>'
+  +   '<span class="tiny muted">'+l.module+' · Session '+(l.n+1)+' of '+lessons.length+'</span>'
+  +   (l.free?'<span class="badge badge-ok">Free preview</span>':'')+'</div>'
+  +   '<h2 style="font-size:clamp(1.5rem,2.4vw,2rem)">'+l.t+'</h2></div>'
+  + '<div class="row" style="gap:8px">'
+  +   '<button class="btn btn-outline btn-sm" onclick="U.toast(\'Saved to your library\',\'bookmark\')">'+ico('bookmark')+'Save</button>'
+  +   '<button class="btn '+(isDone?'btn-outline':'btn-gold')+'" onclick="markDone()" id="donebtn">'
+  +   (isDone?ico('checkCircle')+'Completed':ico('check')+'Mark complete')+'</button></div></div>'
+  + '<div class="tabs" id="ptabs" style="margin:18px 0 20px"></div>'
+  + '<div id="pane"></div>';
+}
+
+var tab='about';
+function drawTabs(){
+  var tabs=[['about','About this session'],['notes','My notes'],['transcript','Transcript'],['work','Worksheet'],['disc','Discussion']];
+  document.getElementById('ptabs').innerHTML=tabs.map(function(t){
+    return '<button class="tab '+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'; }).join('');
+  var h='';
+  if(tab==='about'){
+    h='<div class="grid" style="grid-template-columns:1.4fr 1fr;gap:26px;align-items:start">'
+     +'<div><p class="lede">'+g.long+'</p>'
+     +'<h4 style="margin:1.4rem 0 .7rem;font-size:1.05rem">Before the next session</h4>'
+     +'<div class="card card-pad" style="background:var(--surface-2)">'
+     +'<p class="small" style="margin:0;line-height:1.75;color:var(--ink-2)">Find your kettle. Not the feeling — the object, the room, the hour or the piece of furniture where it actually begins. Write it in tonight\'s page.</p></div>'
+     +'<div class="care" style="margin-top:1.2rem">'+ico('info')+'<span>'+g.care+'</span></div></div>'
+     +'<div class="card card-pad"><h4 style="font-size:1rem;margin-bottom:.9rem">Your progress</h4>'
+     +'<div class="row" style="gap:12px;margin-bottom:.9rem"><span class="bar" style="flex:1"><i style="width:'+U.Enrol.progress(g.id)+'%"></i></span>'
+     +'<b class="small" style="color:var(--gold-700)">'+U.Enrol.progress(g.id)+'%</b></div>'
+     +'<p class="tiny muted" style="margin-bottom:1rem">'+U.Enrol.done(g.id).length+' of '+lessons.length+' sessions complete</p>'
+     +'<hr class="hairline" style="margin:.9rem 0">'
+     +'<h4 style="font-size:1rem;margin-bottom:.7rem">Next live session</h4>'
+     + (KG.live.filter(function(s){return s.prog===g.id})[0]
+        ? (function(s){ return '<b class="small" style="display:block">'+s.title+'</b>'
+            +'<span class="tiny muted">'+s.date+' at '+s.time+' '+s.tz+'</span>'
+            +'<a class="btn btn-outline btn-sm btn-block" style="margin-top:.8rem" href="live.html">Open the schedule</a>'; })(KG.live.filter(function(s){return s.prog===g.id})[0])
+        : '<p class="tiny muted">No live sessions this week.</p>')
+     +'</div></div>';
+  }
+  if(tab==='notes'){
+    h='<div style="max-width:720px"><div class="card card-pad" style="margin-bottom:14px">'
+     +'<label class="lbl" style="display:block;margin-bottom:.5rem">Add a note at '+fmt(pct)+'</label>'
+     +'<textarea class="input" id="noteinput" placeholder="Something you want to come back to."></textarea>'
+     +'<button class="btn btn-gold btn-sm" style="margin-top:.7rem" onclick="addNote()">Save note</button></div>'
+     + (NOTES.length? NOTES.map(function(n,i){
+         return '<div class="card card-pad" style="margin-bottom:10px"><div class="row-between" style="margin-bottom:.4rem">'
+         +'<span class="badge badge-gold">'+n.t+'</span>'
+         +'<button class="btn btn-ghost btn-xs" onclick="delNote('+i+')">Remove</button></div>'
+         +'<p class="small" style="margin:0;line-height:1.65">'+U.esc(n.b)+'</p></div>'; }).join('')
+        : '<p class="small muted">No notes on this session yet. Notes are timestamped and private to you.</p>')
+     +'</div>';
+  }
+  if(tab==='transcript'){
+    h='<div style="max-width:760px"><div class="row-between" style="margin-bottom:1rem">'
+     +'<span class="small muted">Auto-generated, reviewed by a person.</span>'
+     +'<button class="btn btn-outline btn-sm" onclick="U.toast(\'Transcript downloaded\',\'download\')">'+ico('download')+'Download</button></div>'
+     + TRANSCRIPT.map(function(t,i){
+        return '<div class="row" style="gap:16px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line-2)">'
+        +'<button class="badge badge-gold" style="flex:none" onclick="seekTo('+(i*16)+')">'+fmt(i*16)+'</button>'
+        +'<p class="small" style="margin:0;line-height:1.75;color:var(--ink-2)">'+t+'</p></div>'; }).join('')
+     +'</div>';
+  }
+  if(tab==='work'){
+    h='<div style="max-width:720px"><div class="card card-pad" style="margin-bottom:14px">'
+     +'<div class="row-between wrapflex" style="gap:12px"><div class="row" style="gap:12px">'
+     +'<span style="color:var(--gold-600)">'+ico('book')+'</span>'
+     +'<div><b style="display:block">'+g.title+' — Session '+(l_n()+1)+' worksheet</b>'
+     +'<span class="tiny muted">PDF · 4 pages · printable</span></div></div>'
+     +'<button class="btn btn-gold btn-sm" onclick="U.toast(\'Worksheet downloaded\',\'download\')">'+ico('download')+'Download</button></div></div>'
+     +'<div class="card card-pad"><h4 style="font-size:1.05rem;margin-bottom:1rem">Or answer it here</h4>'
+     + ['Where does it actually begin — the object, room or hour?',
+        'What is the smallest thing you could move?',
+        'What will you do instead, in that exact moment?'].map(function(q,i){
+        return '<div class="field"><label>'+(i+1)+'. '+q+'</label><textarea class="input" style="min-height:80px"></textarea></div>'; }).join('')
+     +'<button class="btn btn-gold" onclick="U.toast(\'Worksheet saved to your journal\',\'feather\')">Save to my journal</button></div></div>';
+  }
+  if(tab==='disc'){
+    var t0=KG.threads[0];
+    h='<div style="max-width:760px"><div class="card card-pad" style="margin-bottom:16px">'
+     +'<div class="row" style="gap:12px;align-items:flex-start">'+U.avatar(KG.user.handle,40)
+     +'<div style="flex:1"><textarea class="input" placeholder="Ask something about this session, or say what landed." style="min-height:78px"></textarea>'
+     +'<div class="row-between" style="margin-top:.6rem"><span class="tiny muted">Posting as '+KG.user.handle+' in the '+g.title+' circle</span>'
+     +'<button class="btn btn-gold btn-sm" onclick="U.toast(\'Posted to the circle\',\'send\')">Post</button></div></div></div></div>'
+     + KG.threads.slice(0,3).map(function(t){
+        return '<a class="thread" style="text-decoration:none" href="thread.html?t='+t.id+'">'
+        +'<div class="vote"><button>'+ico('chevronUp')+'</button><b>'+t.likes+'</b></div>'
+        +'<div class="thread-b"><h3>'+t.title+'</h3>'
+        +'<p class="small muted" style="margin:0;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+t.body.split('\n')[0]+'</p>'
+        +'<div class="thread-meta">'+U.avatar(t.author,20)+'<span>'+t.author+'</span><span>'+ico('clock')+t.ago+'</span>'
+        +'<span>'+ico('message')+t.replies+'</span></div></div></a>'; }).join('')
+     +'</div>';
+  }
+  document.getElementById('pane').innerHTML=h; U.boot();
+}
+function l_n(){ return lessons[cur].n; }
+
+function plist(){
+  document.getElementById('plisth').innerHTML=
+    '<div class="row-between" style="margin-bottom:.6rem"><b style="font-family:\'Cormorant Garamond\',serif;font-size:1.24rem;color:var(--plum-800)">'+g.title+'</b>'
+    +'<a class="tiny" style="color:var(--gold-700);font-weight:600" href="program.html?g='+g.slug+'">Details</a></div>'
+    +'<div class="row" style="gap:10px"><span class="bar" style="flex:1"><i style="width:'+U.Enrol.progress(g.id)+'%"></i></span>'
+    +'<span class="tiny" style="color:var(--gold-700);font-weight:600">'+U.Enrol.done(g.id).length+'/'+lessons.length+'</span></div>';
+  var mods=KG.modulesFor(g.id), d=U.Enrol.done(g.id), out='', n=0;
+  mods.forEach(function(m){
+    out += '<div style="padding:12px 18px 6px;background:var(--surface-2);border-top:1px solid var(--line-2)">'
+        +  '<b class="tiny" style="letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">'+m.t+'</b></div>';
+    m.ls.forEach(function(l){
+      var i=n++, isDone=d.indexOf(i)>-1, isCur=i===cur;
+      var locked = freeOnly && !l.free;
+      out += '<button class="les '+(isDone?'done':'')+'" style="width:100%;text-align:left;'+(isCur?'background:var(--plum-50)':'')+(locked?';opacity:.5':'')+'" onclick="'+(locked?'U.toast(\'Enrol to unlock this session\',\'lock\')':'goTo('+i+')')+'">'
+        +  '<span style="color:'+(isDone?'var(--ok)':isCur?'var(--gold-600)':'var(--ink-4)')+';flex:none">'
+        +  ico(locked?'lock':isDone?'checkCircle':isCur?'playCircle':'play')+'</span>'
+        +  '<div class="les-t"><b style="'+(isCur?'color:var(--plum-800);font-weight:600':'')+'">'+l.t+'</b><span>'+l.len+(l.free?' · free':'')+'</span></div>'
+        +  (isCur?'<span class="pill" style="background:var(--gold-100);color:var(--gold-800)">Now</span>':'')
+        +  '</button>';
+    });
+  });
+  document.getElementById('plistb').innerHTML=out;
+}
+
+function fmt(p){
+  var l=lessons[cur], total=parseInt(l.len.split(':')[0])*60+parseInt(l.len.split(':')[1]);
+  var s=Math.round(total*p/100);
+  return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+}
+function render(){
+  document.getElementById('stage').innerHTML=stage();
+  document.getElementById('under').innerHTML=under();
+  drawTabs(); plist(); U.boot();
+}
+function toggle(){
+  playing=!playing;
+  if(playing){ timer=setInterval(function(){
+      pct=Math.min(100,pct+0.6);
+      var f=document.getElementById('pfill'); if(f) f.style.width=pct+'%';
+      var t=document.getElementById('ptime'); if(t) t.textContent=fmt(pct);
+      if(pct>=100){ clearInterval(timer); playing=false; markDone(); }
+    },90); }
+  else clearInterval(timer);
+  document.getElementById('stage').innerHTML=stage();
+}
+function seek(e){
+  var r=e.currentTarget.getBoundingClientRect();
+  pct=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));
+  document.getElementById('pfill').style.width=pct+'%';
+  document.getElementById('ptime').textContent=fmt(pct);
+}
+function seekTo(sec){
+  var l=lessons[cur], total=parseInt(l.len.split(':')[0])*60+parseInt(l.len.split(':')[1]);
+  pct=Math.min(100, sec/total*100);
+  U.toast('Jumped to '+fmt(pct),'play');
+  if(document.getElementById('pfill')) document.getElementById('pfill').style.width=pct+'%';
+}
+function goTo(i){ clearInterval(timer); playing=false; pct=0; cur=i; NOTES=[]; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function jump(d){ goTo(Math.max(0,Math.min(lessons.length-1,cur+d))); }
+function markDone(){
+  U.Enrol.complete(g.id, lessons[cur].n);
+  U.toast('Session complete · '+U.Enrol.progress(g.id)+'% of '+g.title,'checkCircle');
+  render();
+  if(cur<lessons.length-1) setTimeout(function(){ goTo(cur+1); }, 900);
+}
+function addNote(){
+  var v=document.getElementById('noteinput').value.trim();
+  if(!v){ U.toast('Write something first','alert'); return; }
+  NOTES.unshift({t:fmt(pct),b:v}); drawTabs(); U.toast('Note saved','feather');
+}
+function delNote(i){ NOTES.splice(i,1); drawTabs(); }
+window.toggle=toggle; window.seek=seek; window.seekTo=seekTo; window.goTo=goTo; window.jump=jump;
+window.markDone=markDone; window.addNote=addNote; window.delNote=delNote;
+window.setTab=function(t){ tab=t; drawTabs(); };
+
+ORG.bootApp('player', g.title, (freeOnly?'Free preview · ':'')+lessons.length+' sessions',
+  '<a class="btn btn-outline btn-sm" href="program.html?g='+g.slug+'">Programme details</a>');
+render();
+if(window.innerWidth<1100) document.getElementById('lay').style.gridTemplateColumns='1fr';
+</script>
+</body></html>

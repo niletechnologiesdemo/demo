@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Donate — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<section class="hero" style="min-height:clamp(400px,48vh,500px)">
+  <div class="hero-bg"><img src="../assets/img/donate-3.jpg" alt=""></div>
+  <div class="wrap hero-in">
+    <span class="eyebrow" style="color:var(--gold-300)">Donate</span>
+    <h1>$18 is <em>one night</em><br>with the door locked.</h1>
+    <p>We publish our unit costs, so you can see exactly what a gift buys before you give it — and see it again on the impact report afterwards.</p>
+  </div>
+</section>
+
+<section class="sec-sm"><div class="wrap">
+  <div class="grid" style="grid-template-columns:1.1fr .9fr;gap:44px;align-items:start" id="cols">
+    <div class="card lux" style="padding:clamp(24px,3vw,36px)">
+      <div class="daynight" style="margin-bottom:1.4rem">
+        <button class="on" id="bOnce" onclick="setKind('once')">Give once</button>
+        <button id="bMon" onclick="setKind('monthly')">Give monthly</button>
+      </div>
+      <h3 style="font-size:1.5rem;margin-bottom:.4rem" id="dtitle">Choose an amount</h3>
+      <p class="small muted" style="margin-bottom:1.4rem" id="dsub">Every amount is a real unit of something. Nothing is rounded up for marketing.</p>
+      <div class="grid g2" style="gap:12px;margin-bottom:14px" id="tiers"></div>
+      <div class="field"><label>Or another amount</label>
+        <div class="row" style="gap:8px"><span style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--plum-800)">$</span>
+        <input class="input" id="custom" type="number" min="1" placeholder="0" oninput="setCustom(this.value)"></div></div>
+      <div class="fundsbox" id="funds"></div>
+      <div class="row wrapflex" style="gap:12px;margin:1rem 0">
+        <label class="check"><input type="checkbox" checked><span class="small">Cover the processing fee so 100% reaches the work</span></label>
+      </div>
+      <div class="field"><label>Where should it go?</label>
+        <select class="input"><option>Where it is needed most</option><option>Shelter houses</option><option>Sponsored programme seats</option><option>The Sanctuary build</option></select></div>
+      <button class="btn btn-gold btn-block btn-lg" onclick="give()" id="givebtn">Give $18</button>
+      <div class="row" style="justify-content:center;gap:14px;margin-top:1rem;color:var(--ink-4)">
+        <span class="tiny row" style="gap:.35rem" data-ico="lock">Secure · Stripe</span>
+        <span class="tiny row" style="gap:.35rem" data-ico="shield">501(c)(3) · tax-deductible</span>
+      </div>
+      <p class="tiny muted center" style="margin-top:.8rem">This is a demonstration. No payment is taken.</p>
+    </div>
+    <div>
+      <div class="card card-pad rv" style="margin-bottom:18px">
+        <h4 style="font-size:1.15rem;margin-bottom:.9rem">What a gift buys</h4>
+        <div id="units"></div>
+      </div>
+      <div class="card card-pad rv" style="margin-bottom:18px">
+        <h4 style="font-size:1.15rem;margin-bottom:.9rem">Where the money goes</h4>
+        <div id="alloc"></div>
+        <a class="btn btn-outline btn-sm btn-block" style="margin-top:1rem" href="../com/impact.html">Read the impact report</a>
+      </div>
+      <div class="card card-pad rv" style="background:var(--surface-2)">
+        <h4 style="font-size:1.1rem;margin-bottom:.6rem">Your receipt</h4>
+        <p class="small muted" style="line-height:1.65;margin:0">Kavanah Global is a registered 501(c)(3) non-profit. A tax-deductible receipt is emailed immediately and again in January as an annual summary. Our Form 990 is available on request.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <div class="center" style="margin-bottom:38px"><span class="eyebrow center no-rule">Other ways</span><h2>Not everyone gives money</h2></div>
+  <div class="grid g4" id="ways"></div>
+</div></section>
+
+<section class="sec night" style="background:var(--grad-plum)">
+  <div class="wrap center" style="position:relative;z-index:2">
+    <span class="eyebrow center no-rule" style="color:var(--gold-400)">Or simply</span>
+    <h2 class="balance">Buy a candle</h2>
+    <p class="lede" style="max-width:50ch;margin:1rem auto 2rem">The shop at kavanahglobal.com is the largest single funder of everything on this site. Buying something you were going to buy anyway is a perfectly good way to give.</p>
+    <a class="btn btn-gold btn-lg" href="../com/shop.html">Visit the shop<span data-ico="arrowUpRight"></span></a>
+  </div>
+</section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+ORG.boot('donate');
+var kind='once', amt=18;
+function drawTiers(){
+  document.getElementById('bOnce').classList.toggle('on',kind==='once');
+  document.getElementById('bMon').classList.toggle('on',kind==='monthly');
+  document.getElementById('dtitle').textContent = kind==='once'?'Choose an amount':'Choose a monthly amount';
+  document.getElementById('dsub').textContent = kind==='once'
+    ? 'Every amount is a real unit of something. Nothing is rounded up for marketing.'
+    : 'Monthly giving is what lets us keep a bed open in February as well as December.';
+  document.getElementById('tiers').innerHTML=KG.donationTiers.map(function(t){
+    return '<button class="dtier '+(amt===t.amt?'on':'')+'" onclick="setAmt('+t.amt+')">'
+    +'<b>$'+t.amt+(kind==='monthly'?'<span style="font-size:.8rem;font-family:Inter;color:var(--ink-3)">/mo</span>':'')+'</b>'
+    +'<span class="small" style="display:block;font-weight:600;margin:.3rem 0 .15rem">'+t.t+'</span>'
+    +'<span class="tiny muted" style="line-height:1.5;display:block">'+t.d+'</span></button>';
+  }).join('');
+  var nights=Math.floor(amt/18), bfs=Math.floor((amt%18)/6);
+  document.getElementById('funds').innerHTML=ico('flame')
+    +'<div><b>$'+amt+(kind==='monthly'?' a month':'')+' funds</b>'
+    +'<p>'+(nights?nights+' night'+(nights>1?'s':'')+' of shelter':'')
+    +(nights&&bfs?' and ':'')+(bfs?bfs+' warm breakfast'+(bfs>1?'s':''):'')
+    +(!nights&&!bfs?'part of a night of shelter — it all adds up':'')
+    +(kind==='monthly'?', every month':'')+'.</p></div>';
+  document.getElementById('givebtn').textContent='Give $'+amt+(kind==='monthly'?' a month':'');
+}
+window.setKind=function(k){ kind=k; drawTiers(); };
+window.setAmt=function(a){ amt=a; document.getElementById('custom').value=''; drawTiers(); };
+window.setCustom=function(v){ amt=Math.max(1,+v||1); document.querySelectorAll('.dtier').forEach(function(b){b.classList.remove('on')}); drawTiers(); };
+window.give=function(){ U.toast('Thank you. $'+amt+(kind==='monthly'?' a month':'')+' — receipt on its way.','heart'); };
+drawTiers();
+
+document.getElementById('units').innerHTML=KG.impact.perDollar.map(function(d){
+  return '<div class="row" style="gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line-2)">'
+  +'<span style="color:var(--gold-600);flex:none">'+ico(d.icon)+'</span>'
+  +'<div style="flex:1"><b class="small" style="display:block">'+d.n+' — '+d.t+'</b>'
+  +'<span class="tiny muted" style="line-height:1.55">'+d.d+'</span></div></div>';
+}).join('');
+
+document.getElementById('alloc').innerHTML=[
+  ['Shelter houses',46],['Programmes and sponsored seats',28],['The Sanctuary build',14],['Outreach and new offices',8],['Administration',4]
+].map(function(a){
+  return '<div style="margin-bottom:13px"><div class="row-between" style="margin-bottom:.3rem">'
+  +'<span class="tiny" style="color:var(--ink-2)">'+a[0]+'</span><b class="tiny">'+a[1]+'%</b></div>'
+  +'<div class="bar" style="height:6px"><i style="width:'+a[1]+'%"></i></div></div>';
+}).join('');
+
+document.getElementById('ways').innerHTML=[
+  ['users','Volunteer a shift','Overnight, breakfast, laundry or driving. Induction and background check first.','Volunteer'],
+  ['gift','Sponsor a seat','$480 puts one person through the full twelve weeks of Freedom.','Sponsor'],
+  ['award','Corporate matching','Many employers double a gift. It takes about four minutes to check.','Check my employer'],
+  ['anchor','A gift in your will','The Sanctuary is being built to outlast all of us, including its founder.','Talk to us']
+].map(function(w){
+  return '<div class="card card-pad rv" style="display:flex;flex-direction:column">'
+  +'<span style="color:var(--gold-600)">'+ico(w[0])+'</span>'
+  +'<h4 style="margin:.7rem 0 .4rem;font-size:1.15rem">'+w[1]+'</h4>'
+  +'<p class="small muted" style="line-height:1.6;flex:1">'+w[2]+'</p>'
+  +'<button class="btn btn-outline btn-sm" style="margin-top:1rem" onclick="U.toast(\''+w[3]+' — form opens here\',\'mail\')">'+w[3]+'</button></div>';
+}).join('');
+U.boot(); U.reveal();
+if(window.innerWidth<950) document.getElementById('cols').style.gridTemplateColumns='1fr';
+</script>
+</body></html>

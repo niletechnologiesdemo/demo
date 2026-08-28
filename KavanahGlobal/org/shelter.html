@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shelter Services — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+
+<section class="hero" style="min-height:clamp(440px,56vh,580px)">
+  <div class="hero-bg"><img src="../assets/img/shelter-3.jpg" alt=""></div>
+  <div class="wrap hero-in">
+    <span class="eyebrow" style="color:var(--gold-300)">Shelter services · New York</span>
+    <h1>A bed, a locked door,<br><em>and breakfast in the morning.</em></h1>
+    <p>Two houses open tonight. Arrive between 7pm and 11pm, or call. There is no form to fill in at the door and nobody will ask you to explain how you got here.</p>
+    <div class="hero-cta">
+      <a class="btn btn-gold btn-lg" href="tel:+15160000000">Call (516) 000-0000</a>
+      <a class="btn btn-outline-gold btn-lg" href="#request">Request a bed tonight</a>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--plum-900);color:var(--gold-100);padding:20px 0">
+  <div class="wrap row-between wrapflex" style="gap:16px">
+    <div class="row" style="gap:12px"><span style="color:var(--gold-300)" data-ico="bed"></span>
+      <span class="small"><b style="color:#fff">14 of 18 beds free tonight</b> · Astoria house · updated 6:40 PM</span></div>
+    <div class="row" style="gap:12px"><span style="color:var(--gold-300)" data-ico="clock"></span>
+      <span class="small">Intake open 7:00 PM – 11:00 PM, every night of the year</span></div>
+  </div>
+</section>
+
+<section class="sec"><div class="wrap">
+  <div class="center" style="margin-bottom:44px">
+    <span class="eyebrow center no-rule">How a night works</span>
+    <h2 class="balance">From the door to the morning</h2>
+    <div class="ornament"><i></i></div>
+  </div>
+  <div class="grid g4" id="steps"></div>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <div class="grid g2" style="gap:32px">
+    <div class="card card-pad rv" style="padding:32px">
+      <span style="color:var(--ok)" data-ico="checkCircle"></span>
+      <h3 style="margin:.7rem 0 1rem">What we ask for</h3>
+      <div id="ask"></div>
+    </div>
+    <div class="card card-pad rv" style="padding:32px">
+      <span style="color:var(--err)" data-ico="close"></span>
+      <h3 style="margin:.7rem 0 1rem">What we never ask for</h3>
+      <div id="noask"></div>
+    </div>
+  </div>
+  <div class="care" style="max-width:840px;margin:28px auto 0">
+    <span data-ico="shield"></span>
+    <span><b>Your information.</b> We record only what is needed to keep the house safe and to hold your bed. It is not shared with immigration authorities, landlords, employers or family, and it is deleted after twelve months unless you ask us to keep it.</span>
+  </div>
+</div></section>
+
+<section class="sec" id="request"><div class="wrap">
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:44px;align-items:start" id="rcols">
+    <div>
+      <span class="eyebrow">Request a bed</span>
+      <h2 style="margin-bottom:.7rem">Tell us you are coming</h2>
+      <p class="lede" style="margin-bottom:1.2rem">You do not have to do this — you can simply arrive. But telling us means the bed is held with your name on it and somebody is expecting you.</p>
+      <div class="care crisis" style="margin-bottom:1.4rem">
+        <span data-ico="alert"></span>
+        <span><b>If you are in danger right now, do not use this form.</b> Call 911. For the Suicide &amp; Crisis Lifeline call or text 988. For domestic violence, the National Hotline is 1-800-799-7233.</span>
+      </div>
+      <div class="stack" style="gap:16px">
+        <div class="row" style="gap:14px"><span style="color:var(--gold-600);flex:none" data-ico="phone"></span>
+          <div><b class="small" style="display:block">(516) 000-0000</b><span class="tiny muted">Answered by a person, 24 hours</span></div></div>
+        <div class="row" style="gap:14px"><span style="color:var(--gold-600);flex:none" data-ico="pin"></span>
+          <div><b class="small" style="display:block">Astoria, Queens</b><span class="tiny muted">Nearest subway: Astoria Blvd (N, W)</span></div></div>
+        <div class="row" style="gap:14px"><span style="color:var(--gold-600);flex:none" data-ico="clock"></span>
+          <div><b class="small" style="display:block">7:00 PM – 11:00 PM</b><span class="tiny muted">Later than 11? Call and we will wait up.</span></div></div>
+      </div>
+    </div>
+    <form class="card card-pad" style="padding:30px" onsubmit="event.preventDefault();U.toast('Bed held. Someone will call you within the hour.','bed');this.reset()">
+      <h3 style="font-size:1.25rem;margin-bottom:1.1rem">Hold a bed for tonight</h3>
+      <div class="field"><label>A name we can call you</label><input class="input" required placeholder="First name, or any name">
+        <span class="hint">It does not have to be your legal name.</span></div>
+      <div class="field"><label>A phone number, if you have one</label><input class="input" type="tel" placeholder="Optional">
+        <span class="hint">Only used to confirm the bed. Never shared.</span></div>
+      <div class="row wrapflex" style="gap:12px">
+        <div class="field" style="flex:1;min-width:150px"><label>How many people?</label>
+          <select class="input"><option>Just me</option><option>Two of us</option><option>A family — 3</option><option>A family — 4 or more</option></select></div>
+        <div class="field" style="flex:1;min-width:150px"><label>Roughly what time?</label>
+          <select class="input"><option>7 – 8 PM</option><option>8 – 9 PM</option><option>9 – 10 PM</option><option>10 – 11 PM</option><option>After 11 PM</option></select></div>
+      </div>
+      <div class="field"><label>Anything we should know? (optional)</label>
+        <textarea class="input" style="min-height:88px" placeholder="Mobility, a service animal, medication that needs refrigerating, anything at all."></textarea></div>
+      <label class="check" style="margin-bottom:1rem"><input type="checkbox" required>
+        <span>I understand this is a request, and that a bed is confirmed by phone or at the door.</span></label>
+      <button class="btn btn-gold btn-block btn-lg">Request a bed</button>
+      <p class="tiny muted center" style="margin-top:.8rem">This is a demonstration form. Nothing is sent.</p>
+    </form>
+  </div>
+</div></section>
+
+<section class="sec night" id="locations">
+  <div class="glow" style="top:-180px;right:-140px"></div>
+  <div class="wrap" style="position:relative;z-index:2">
+    <div class="center" style="margin-bottom:40px">
+      <span class="eyebrow center no-rule" style="color:var(--gold-400)">Where we are</span>
+      <h2>Four places, two open now</h2>
+      <div class="ornament"><i></i></div>
+    </div>
+    <div id="locs"></div>
+  </div>
+</section>
+
+<section class="sec"><div class="wrap split rev">
+  <div class="split-img rv"><img src="../assets/img/donate-2.jpg" alt="Volunteers"></div>
+  <div class="rv">
+    <span class="eyebrow">Help</span>
+    <h2>The houses run on 184 volunteers</h2>
+    <p class="lede" style="margin-top:1rem">Overnight shifts, breakfast shifts, laundry, driving, and the person who sits at the desk so that somebody is awake.</p>
+    <p>Every volunteer completes a safeguarding induction and a background check before a first shift. Most started as guests.</p>
+    <div class="row wrapflex" style="gap:10px;margin-top:1.4rem">
+      <button class="btn btn-plum" onclick="U.toast('Volunteer application opened','users')">Volunteer</button>
+      <a class="btn btn-outline" href="donate.html">Donate instead</a>
+    </div>
+  </div>
+</div></section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+ORG.boot('shelter');
+document.getElementById('steps').innerHTML=[
+  ['pin','You arrive','Between 7 and 11pm, at the door in Astoria. Ring the bell. Somebody answers it.','shelter-3'],
+  ['bed','A bed and a locked door','Clean linen, a locker for your things, and staff at the desk until morning.','shelter-1'],
+  ['coffee','Breakfast and a shower','Hot food from 6:30am, towels, and somewhere to wash before the day starts.','shelter-2'],
+  ['compass','Whatever comes next','No pressure at all. If and when you want to talk about a programme, we are here. If you never do, the bed is still there tomorrow.','shelter-4']
+].map(function(s,i){
+  return '<div class="card rv" style="overflow:hidden">'
+  +'<div style="aspect-ratio:16/10;overflow:hidden"><img src="'+KG.img(s[3])+'" alt="" style="width:100%;height:100%;object-fit:cover" loading="lazy"></div>'
+  +'<div style="padding:22px"><div class="row" style="gap:10px;margin-bottom:.5rem">'
+  +'<span style="color:var(--gold-600)">'+ico(s[0])+'</span>'
+  +'<span class="tiny" style="letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:600">Step '+(i+1)+'</span></div>'
+  +'<h4 style="font-size:1.2rem;margin-bottom:.4rem">'+s[1]+'</h4>'
+  +'<p class="small muted" style="margin:0;line-height:1.6">'+s[2]+'</p></div></div>';
+}).join('');
+
+document.getElementById('ask').innerHTML=[
+  'A name we can call you — it does not have to be your legal one',
+  'Whether you are alone or with family, so we put you in the right room',
+  'Anything that affects your safety in the building — mobility, medication, a service animal',
+  'That you do not bring alcohol or drugs into the house'
+].map(function(x){ return '<div class="row" style="gap:10px;align-items:flex-start;padding:9px 0"><span style="color:var(--ok);flex:none;margin-top:1px">'+ico('check')+'</span><span class="small" style="line-height:1.6">'+x+'</span></div>'; }).join('');
+
+document.getElementById('noask').innerHTML=[
+  'Immigration status. Ever. We do not record it and we do not report it.',
+  'Proof of address, income, benefits or identity',
+  'Why you need a bed, or what happened',
+  'Whether you are sober — a bed is not a reward for sobriety',
+  'Whether you are religious, or which religion'
+].map(function(x){ return '<div class="row" style="gap:10px;align-items:flex-start;padding:9px 0"><span style="color:var(--err);flex:none;margin-top:1px">'+ico('close')+'</span><span class="small" style="line-height:1.6">'+x+'</span></div>'; }).join('');
+
+document.getElementById('locs').innerHTML=KG.locations.map(function(l){
+  return '<div class="locard rv" style="background:rgba(255,255,255,.045);border-color:rgba(217,177,74,.18)">'
+  +'<img src="'+KG.img(l.img)+'" alt="" loading="lazy">'
+  +'<div style="padding:24px">'
+  +'<div class="row" style="gap:8px;margin-bottom:.5rem"><span class="badge '+(l.status==='Open'?'badge-ok':'badge-dark')+'">'+l.status+'</span>'
+  +'<span class="badge badge-dark">'+l.type+'</span></div>'
+  +'<h3 style="color:#fff;font-size:1.35rem;margin-bottom:.2rem">'+l.name+'</h3>'
+  +'<p class="tiny" style="color:var(--gold-300);margin:0 0 .7rem">'+l.addr+'</p>'
+  +'<p class="small" style="color:rgba(249,239,212,.66);line-height:1.6;margin:0 0 .8rem">'+l.blurb+'</p>'
+  +'<div class="row wrapflex" style="gap:18px;font-size:.76rem;color:rgba(249,239,212,.6)">'
+  +'<span class="row" style="gap:.35rem">'+ico('clock')+l.hours+'</span>'
+  +(l.beds?'<span class="row" style="gap:.35rem">'+ico('bed')+l.beds+' beds</span>':'')+'</div>'
+  +'</div></div>';
+}).join('');
+U.boot(); U.reveal();
+if(window.innerWidth<900) document.getElementById('rcols').style.gridTemplateColumns='1fr';
+</script>
+</body></html>

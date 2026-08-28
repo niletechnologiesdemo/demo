@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Today — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div class="oshell">
+  <div id="rail-slot"></div>
+  <div class="omain">
+    <div id="top-slot"></div>
+    <div class="obody">
+
+      <div class="card lux rv" style="background:var(--grad-plum);color:var(--gold-100);padding:clamp(24px,3vw,38px);margin-bottom:24px;position:relative;overflow:hidden">
+        <div class="glow" style="top:-220px;right:-120px"></div>
+        <div class="row-between wrapflex" style="position:relative;z-index:2;gap:24px">
+          <div style="max-width:56ch">
+            <span class="eyebrow no-rule" style="color:var(--gold-400)" id="greetlbl">Tuesday, 25 August</span>
+            <h2 style="color:#fff;font-size:clamp(1.8rem,3.2vw,2.6rem);margin-bottom:.5rem" id="greet">Good morning, Maya</h2>
+            <p style="color:rgba(249,239,212,.8);font-size:1rem;line-height:1.7;margin:0" id="greetsub"></p>
+            <div class="row wrapflex" style="gap:10px;margin-top:1.4rem">
+              <a class="btn btn-gold" href="journal.html">Morning check-in</a>
+              <a class="btn btn-outline-gold" href="player.html">Continue Freedom</a>
+            </div>
+          </div>
+          <div style="text-align:center;flex:none">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(3.4rem,6vw,5rem);font-weight:600;line-height:1;background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent" id="streaknum">41</div>
+            <div class="tiny" style="letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,212,.6)">Day streak</div>
+            <div class="heat" style="margin-top:14px;width:180px;grid-template-columns:repeat(7,1fr)" id="miniheat"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tiles rv" style="margin-bottom:28px" id="tiles"></div>
+
+      <div class="grid" style="grid-template-columns:1.4fr 1fr;gap:24px;align-items:start" id="cols">
+        <div>
+          <div class="row-between" style="margin-bottom:14px"><h3 style="font-size:1.3rem">Continue your practice</h3>
+            <a class="btn btn-ghost btn-sm" href="programs.html">All programmes</a></div>
+          <div id="continue" style="margin-bottom:28px"></div>
+
+          <div class="row-between" style="margin-bottom:14px"><h3 style="font-size:1.3rem">Your live sessions</h3>
+            <a class="btn btn-ghost btn-sm" href="live.html">Full schedule</a></div>
+          <div id="upcoming" style="margin-bottom:28px"></div>
+
+          <div class="row-between" style="margin-bottom:14px"><h3 style="font-size:1.3rem">From your circles</h3>
+            <a class="btn btn-ghost btn-sm" href="community.html">Open community</a></div>
+          <div id="circlefeed"></div>
+        </div>
+
+        <div>
+          <div class="card card-pad rv" style="margin-bottom:18px">
+            <div class="row-between" style="margin-bottom:1rem"><h4 style="font-size:1.1rem">This week in the journal</h4>
+              <a class="tiny" style="color:var(--gold-700);font-weight:600" href="journal.html">Open</a></div>
+            <div id="moodchart"></div>
+            <div id="insight"></div>
+          </div>
+
+          <div class="card card-pad rv" style="margin-bottom:18px">
+            <h4 style="font-size:1.1rem;margin-bottom:.9rem">Today's practice</h4>
+            <div id="checklist"></div>
+          </div>
+
+          <div class="card card-pad lux rv" style="background:linear-gradient(140deg,var(--gold-100),var(--plum-50))">
+            <span style="color:var(--gold-700)" data-ico="flame"></span>
+            <h4 style="margin:.6rem 0 .4rem;font-size:1.1rem">Your membership sponsored a seat</h4>
+            <p class="small muted" style="line-height:1.6;margin-bottom:1rem">Every Practitioner membership funds one full programme seat a month for someone who cannot pay. Yours went to the Still Waters cohort this month.</p>
+            <a class="btn btn-outline btn-sm" href="../com/impact.html">See the impact report</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+ORG.bootApp('dashboard','Today','Tuesday, 25 August 2026',
+  '<a class="btn btn-outline btn-sm" href="journal.html">'+ico('feather')+'Check in</a>');
+
+var streak=U.Journal.streak();
+document.getElementById('streaknum').textContent=streak;
+var h=new Date().getHours();
+document.getElementById('greet').textContent=(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', Maya';
+document.getElementById('greetsub').textContent = h<12
+  ? 'You have written in the journal forty-one mornings in a row. Freedom Module 3 is waiting, and the 1pm sit has places.'
+  : 'The evening sit is at 9pm and there are places. Your night page is still blank.';
+
+/* mini heatmap */
+var jr=U.Journal.all();
+document.getElementById('miniheat').innerHTML=Array.from({length:28},function(_,i){
+  var v=[0,.35,.55,.75,1][Math.min(4,(i*7+3)%5)];
+  var on = i>2;
+  return '<i style="background:'+(on?'rgba(217,177,74,'+(0.25+v*0.7)+')':'rgba(255,255,255,.1)')+'" title="'+(on?'Checked in':'Missed')+'"></i>';
+}).join('');
+
+/* tiles */
+document.getElementById('tiles').innerHTML=[
+  ['flame',streak,'Day streak','gold'],
+  ['playCircle',KG.user.sits,'Sessions completed',''],
+  ['clock',(KG.user.minutes/60).toFixed(0)+'h','Time in practice',''],
+  ['feather',jr.length+22,'Journal entries','']
+].map(function(t){
+  return '<div class="tile '+t[3]+'"><span class="ti">'+ico(t[0])+'</span><b>'+t[1]+'</b><span>'+t[2]+'</span></div>';
+}).join('');
+
+/* continue */
+document.getElementById('continue').innerHTML=KG.user.enrolled.map(function(e){
+  var g=KG.byId(KG.programs,e.prog); var pr=U.Enrol.progress(g.id);
+  return '<a class="card card-hover rv" style="display:flex;gap:16px;padding:14px;margin-bottom:12px;align-items:center" href="player.html?g='+g.slug+'">'
+  +'<img src="'+KG.img(g.cover)+'" style="width:118px;height:78px;border-radius:var(--r-sm);object-fit:cover;flex:none">'
+  +'<div style="flex:1;min-width:0">'
+  +'<div class="row" style="gap:8px;margin-bottom:.25rem"><span class="badge badge-gold">'+g.cat+'</span>'
+  +'<span class="tiny muted">'+e.module+'</span></div>'
+  +'<b style="display:block;font-family:\'Cormorant Garamond\',serif;font-size:1.24rem;color:var(--plum-800);line-height:1.2">'+g.title+'</b>'
+  +'<span class="small muted" style="display:block;margin:.15rem 0 .5rem">Next: '+e.next+'</span>'
+  +'<div class="row" style="gap:10px"><span class="bar" style="flex:1"><i style="width:'+pr+'%"></i></span>'
+  +'<span class="tiny" style="color:var(--gold-700);font-weight:600;flex:none">'+pr+'%</span></div></div>'
+  +'<span class="btn btn-gold btn-icon" style="flex:none">'+ico('play')+'</span></a>';
+}).join('');
+
+/* upcoming */
+document.getElementById('upcoming').innerHTML=KG.live.filter(function(s){ return U.Rsvp.has(s.id); })
+  .concat(KG.live.slice(2,3)).slice(0,3).map(function(s){ return ORG.sess(s,true); }).join('');
+
+/* circle feed */
+document.getElementById('circlefeed').innerHTML=KG.threads.slice(0,3).map(function(t){
+  var c=KG.byId(KG.circles,t.circle);
+  return '<a class="card card-hover rv" style="display:block;padding:16px;margin-bottom:10px" href="thread.html?t='+t.id+'">'
+  +'<div class="row" style="gap:8px;margin-bottom:.4rem"><span class="badge badge-plum">'+(c?c.name:'')+'</span>'
+  +(t.pinned?'<span class="badge badge-gold">Pinned</span>':'')+'</div>'
+  +'<b style="display:block;font-size:1.02rem;margin-bottom:.3rem">'+t.title+'</b>'
+  +'<p class="small muted" style="margin:0;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+t.body.split('\n')[0]+'</p>'
+  +'<div class="thread-meta">'+U.avatar(t.author,20)+'<span>'+t.author+'</span><span>'+ico('clock')+t.ago+'</span>'
+  +'<span>'+ico('message')+t.replies+'</span><span>'+ico('thumb')+t.likes+'</span></div></a>';
+}).join('');
+
+/* mood chart */
+(function(){
+  var days=jr.slice(0,7).reverse();
+  var W=300,H=120,pad=18;
+  var pts=days.map(function(d,i){
+    var v=(d.pm?d.pm.m:d.am.m);
+    var x=pad+i*((W-pad*2)/Math.max(1,days.length-1));
+    var y=H-pad-((v-1)/4)*(H-pad*2);
+    return [x,y,v,d.d];
+  });
+  var path=pts.map(function(p,i){ return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1); }).join(' ');
+  var area=path+' L'+pts[pts.length-1][0].toFixed(1)+' '+(H-pad)+' L'+pts[0][0].toFixed(1)+' '+(H-pad)+' Z';
+  document.getElementById('moodchart').innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="Mood over the last seven days">'
+  +'<defs><linearGradient id="ma" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9B14A" stop-opacity=".34"/><stop offset="1" stop-color="#D9B14A" stop-opacity="0"/></linearGradient></defs>'
+  +'<path d="'+area+'" fill="url(#ma)"/>'
+  +'<path d="'+path+'" fill="none" stroke="#A87C16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  + pts.map(function(p){ return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.6" fill="#FFFDF8" stroke="#A87C16" stroke-width="2"><title>'+p[3]+': '+KG.moods[p[2]-1].label+'</title></circle>'; }).join('')
+  + pts.map(function(p,i){ return '<text x="'+p[0].toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" font-size="8.5" fill="#A296AA" font-family="Inter">'+['M','T','W','T','F','S','S'][i]+'</text>'; }).join('')
+  +'</svg>';
+})();
+document.getElementById('insight').innerHTML=
+  '<div class="care" style="margin-top:1rem;padding:12px 14px;font-size:.8rem">'+ico('bulb')
+  +'<span><b>Pattern noticed.</b> Across the last 14 days your mood is 1.4 points higher on days you slept 7 hours or more. It is the strongest signal in your journal.</span></div>';
+
+document.getElementById('checklist').innerHTML=[
+  ['Morning page written','feather',1],
+  ['Freedom — one session','playCircle',1],
+  ['12-minute sit','flame',0],
+  ['Night page','moon',0]
+].map(function(c){
+  return '<label class="check" style="padding:.5rem 0;'+(c[2]?'opacity:.55':'')+'">'
+  +'<input type="checkbox" '+(c[2]?'checked':'')+' onchange="U.toast(this.checked?\'Marked done\':\'Unmarked\',\'check\')">'
+  +'<span class="row" style="gap:.5rem"><span style="color:var(--gold-600)">'+ico(c[1])+'</span>'+c[0]+'</span></label>';
+}).join('');
+
+U.boot(); U.reveal();
+if(window.innerWidth<1000) document.getElementById('cols').style.gridTemplateColumns='1fr';
+</script>
+</body></html>

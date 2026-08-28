@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Writings — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<section style="background:var(--surface-2);border-bottom:1px solid var(--line-2);padding:52px 0 46px">
+  <div class="wrap center">
+    <span class="eyebrow center no-rule">Writings</span>
+    <h1 style="font-size:clamp(2.3rem,4.6vw,3.4rem)">From Daisy's desk</h1>
+    <div class="ornament"><i></i></div>
+    <p class="lede" style="max-width:54ch;margin-inline:auto">She writes everything herself, paints the images by hand, and posts them before six in the morning. One arrives in your inbox every Sunday.</p>
+  </div>
+</section>
+<section class="sec-sm"><div class="wrap">
+  <div class="row wrapflex" id="cats" style="gap:8px;margin-bottom:28px;justify-content:center"></div>
+  <div id="featured" style="margin-bottom:34px"></div>
+  <div class="g3 grid" id="grid"></div>
+</div></section>
+<section class="sec-sm"><div class="wrap">
+  <div class="news night lux">
+    <div class="glow" style="top:-180px;left:50%;transform:translateX(-50%)"></div>
+    <div style="position:relative;z-index:2">
+      <span class="eyebrow center no-rule" style="color:var(--gold-400)">The Sunday letter</span>
+      <h2 class="balance">One piece of writing a week</h2>
+      <p class="lede" style="max-width:46ch;margin-inline:auto">Free, and always will be. Around eleven thousand people read it.</p>
+      <form onsubmit="event.preventDefault();U.toast('You are on the list. Look for Sunday.','mail');this.reset()">
+        <input class="input" type="email" required placeholder="you@email.com"><button class="btn btn-gold">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</div></section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script>
+<script>
+COM.boot('writings');
+var CATS=['All'].concat(KG.posts.map(function(p){return p.cat}).filter(function(v,i,a){return a.indexOf(v)===i}));
+var active='All';
+function draw(){
+  document.getElementById('cats').innerHTML=CATS.map(function(c){
+    return '<button class="chip '+(c===active?'on':'')+'" onclick="pick(\''+c+'\')">'+c+'</button>'; }).join('');
+  var list=KG.posts.filter(function(p){ return active==='All'||p.cat===active; });
+  var f=list[0];
+  document.getElementById('featured').innerHTML = f ? '<a class="card card-hover" style="display:grid;grid-template-columns:1.1fr 1fr;overflow:hidden" href="#'+f.id+'" onclick="U.toast(\'Full article view\',\'book\')">'
+    +'<div style="min-height:300px;overflow:hidden"><img src="'+KG.img(f.img)+'" alt="" style="width:100%;height:100%;object-fit:cover"></div>'
+    +'<div style="padding:clamp(24px,3vw,44px);display:flex;flex-direction:column;justify-content:center">'
+    +'<span class="badge badge-gold" style="align-self:flex-start">'+f.cat+'</span>'
+    +'<h2 style="margin:.8rem 0 .6rem;font-size:clamp(1.6rem,2.6vw,2.2rem)">'+f.t+'</h2>'
+    +'<p class="lede" style="font-size:1rem">'+f.ex+'</p>'
+    +'<div class="wmeta" style="margin-top:1rem">'+f.by+' <span>·</span> '+f.date+' <span>·</span> '+f.read+' read</div></div></a>' : '';
+  document.getElementById('grid').innerHTML=list.slice(1).map(function(w){
+    return '<a class="wcard rv" id="'+w.id+'" href="#'+w.id+'" onclick="U.toast(\'Full article view\',\'book\')">'
+    +'<div class="wcard-img"><img src="'+KG.img(w.img)+'" alt="" loading="lazy"></div>'
+    +'<div class="wcard-body"><span class="badge badge-gold">'+w.cat+'</span><h3>'+w.t+'</h3>'
+    +'<p class="small muted" style="line-height:1.6">'+w.ex+'</p>'
+    +'<div class="wmeta">'+w.date+' <span>·</span> '+w.read+' read</div></div></a>';
+  }).join('');
+  U.reveal();
+}
+window.pick=function(c){ active=c; draw(); };
+draw();
+</script>
+</body></html>

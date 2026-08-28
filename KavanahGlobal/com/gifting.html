@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gifting — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<section class="hero" style="min-height:clamp(440px,54vh,560px)">
+  <div class="hero-bg"><img src="../assets/img/com-gift.jpg" alt=""></div>
+  <div class="wrap hero-in">
+    <span class="eyebrow" style="color:var(--gold-300)">Gifting</span>
+    <h1>A gift that is<br><em>also a gift to someone else.</em></h1>
+    <p>Every card and every set arrives with a note telling the person what their gift funded. It is, we are told, the part people keep.</p>
+  </div>
+</section>
+
+<section class="sec"><div class="wrap">
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:48px;align-items:start">
+    <div class="card card-pad lux" style="background:var(--grad-plum);color:var(--gold-100);padding:34px">
+      <span class="eyebrow no-rule" style="color:var(--gold-400)">Digital gift card</span>
+      <h2 style="color:#fff;margin-bottom:.6rem">Send light, instantly</h2>
+      <p style="color:rgba(249,239,212,.78);font-size:.94rem;line-height:1.7">Delivered by email at a time you choose, redeemable on anything in the shop and on any programme at kavanahglobal.org.</p>
+      <div class="row wrapflex" style="gap:8px;margin:1.4rem 0" id="amts"></div>
+      <div class="field"><label style="color:var(--gold-200)">Their email</label><input class="input" id="gmail" placeholder="them@email.com" style="background:rgba(255,255,255,.08);border-color:rgba(217,177,74,.3);color:#fff"></div>
+      <div class="field"><label style="color:var(--gold-200)">Your message</label><textarea class="input" id="gmsg" placeholder="Thinking of you." style="background:rgba(255,255,255,.08);border-color:rgba(217,177,74,.3);color:#fff;min-height:84px"></textarea></div>
+      <button class="btn btn-gold btn-block btn-lg" onclick="sendGift()">Send gift card — <span id="gamt">$50</span></button>
+    </div>
+    <div>
+      <span class="eyebrow">Curated</span>
+      <h2 style="margin-bottom:.6rem">Ready-made sets</h2>
+      <p class="muted" style="margin-bottom:1.6rem">Boxed in linen, tied by hand, with a card written by a person rather than a printer.</p>
+      <div id="sets"></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <div class="center" style="margin-bottom:38px"><span class="eyebrow center no-rule">Gift a programme</span>
+  <h2>Some people need a seat, not a candle</h2>
+  <p class="lede" style="max-width:54ch;margin:1rem auto 0">You can buy someone a full wellness programme at kavanahglobal.org — or sponsor one anonymously for a person who cannot pay.</p></div>
+  <div class="grid g3" id="giftprogs"></div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <div class="center" style="margin-bottom:34px"><span class="eyebrow center no-rule">Also popular</span><h2>Most-gifted this month</h2></div>
+  <div class="pgrid g4" style="grid-template-columns:repeat(4,1fr)" id="popular"></div>
+</div></section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script>
+<script>
+COM.boot('gifting');
+var amt=50;
+document.getElementById('amts').innerHTML=[25,50,100,250].map(function(a){
+  return '<button class="chip '+(a===amt?'on':'')+'" onclick="setAmt('+a+')" style="'+(a===amt?'':'background:rgba(255,255,255,.07);border-color:rgba(217,177,74,.3);color:var(--gold-200)')+'">$'+a+'</button>';
+}).join('');
+window.setAmt=function(a){ amt=a; document.getElementById('gamt').textContent='$'+a;
+  document.getElementById('amts').innerHTML=[25,50,100,250].map(function(x){
+    return '<button class="chip '+(x===amt?'on':'')+'" onclick="setAmt('+x+')" style="'+(x===amt?'':'background:rgba(255,255,255,.07);border-color:rgba(217,177,74,.3);color:var(--gold-200)')+'">$'+x+'</button>'; }).join('');
+};
+window.sendGift=function(){
+  var e=document.getElementById('gmail').value;
+  if(!e){ U.toast('Add their email address first','alert'); return; }
+  U.toast('Gift card for $'+amt+' scheduled to '+e,'gift');
+};
+document.getElementById('sets').innerHTML=[
+  ['p04','The Sanctuary Trio','Morning, evening and night. Our most-gifted box.'],
+  ['p27','The Ninety Days','The journal, a pillar candle and Forty-Two Days.'],
+  ['p24','The Quiet Set','Mala beads, an eye pillow and the singing bowl.']
+].map(function(s){
+  var p=KG.byId(KG.products,s[0]);
+  return '<a class="card card-hover" style="display:flex;gap:16px;padding:14px;margin-bottom:12px;align-items:center" href="product.html?p='+p.slug+'">'
+  +'<img src="'+KG.img(p.imgs[0])+'" style="width:96px;height:96px;border-radius:var(--r-sm);object-fit:cover;flex:none">'
+  +'<div style="flex:1"><b style="display:block;font-size:1.02rem;font-family:\'Cormorant Garamond\',serif;font-size:1.2rem">'+s[1]+'</b>'
+  +'<p class="small muted" style="margin:.2rem 0 .5rem;line-height:1.5">'+s[2]+'</p>'
+  +'<span class="price" style="font-size:.98rem">'+U.money(p.price)+'</span></div>'
+  +'<span style="color:var(--ink-4)">'+ico('chevronRight')+'</span></a>';
+}).join('');
+document.getElementById('giftprogs').innerHTML=['g5','g2','g1'].map(function(id){
+  var g=KG.byId(KG.programs,id);
+  return '<div class="card rv" style="overflow:hidden">'
+  +'<div style="aspect-ratio:16/10;overflow:hidden"><img src="'+KG.img(g.cover)+'" alt="" style="width:100%;height:100%;object-fit:cover"></div>'
+  +'<div style="padding:20px"><span class="badge badge-gold">'+g.cat+'</span>'
+  +'<h3 style="margin:.6rem 0 .3rem;font-size:1.3rem">'+g.title+'</h3>'
+  +'<p class="small muted" style="line-height:1.55;margin-bottom:.9rem">'+g.sub+'</p>'
+  +'<div class="row-between"><span class="price">'+U.money(g.price)+'</span>'
+  +'<button class="btn btn-outline btn-sm" onclick="U.toast(\'Gift '+g.title+' — recipient details next\',\'gift\')">Gift this</button></div></div></div>';
+}).join('');
+document.getElementById('popular').innerHTML=['p04','p28','p08','p20'].map(function(id){return COM.pcard(KG.byId(KG.products,id))}).join('');
+U.boot(); U.reveal(); U.Wish.sync();
+</script>
+</body></html>

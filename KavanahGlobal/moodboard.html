@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design Board — Kavanah Global</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/com.css">
+<link rel="stylesheet" href="assets/org.css">
+<style>
+  .sw{border-radius:var(--r-md);overflow:hidden;box-shadow:var(--sh-1);border:1px solid var(--line-2)}
+  .sw .chipc{height:88px}
+  .sw .meta{padding:10px 12px;background:var(--surface)}
+  .sw b{display:block;font-size:.8rem}
+  .sw code{font-size:.68rem;color:var(--ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .spec{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line-2);align-items:baseline}
+  .spec .lab{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+  .iconcell{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:14px 6px;border:1px solid var(--line-2);border-radius:var(--r-sm);background:var(--surface)}
+  .iconcell svg{width:22px;height:22px;color:var(--plum-700)}
+  .iconcell span{font-size:.6rem;color:var(--ink-3)}
+  .moodimg{border-radius:var(--r-md);overflow:hidden;aspect-ratio:1}
+  .moodimg img{width:100%;height:100%;object-fit:cover}
+</style>
+</head>
+<body>
+
+<section class="night" style="padding:clamp(40px,6vw,80px) 0;position:relative;overflow:hidden">
+  <div class="glow" style="top:-180px;left:10%"></div>
+  <div class="wrap" style="position:relative;z-index:2">
+    <div class="row-between wrapflex" style="gap:30px">
+      <div style="max-width:60ch">
+        <span class="eyebrow no-rule" style="color:var(--gold-400)">Design board</span>
+        <h1 style="color:#fff;font-size:clamp(2.4rem,5vw,3.8rem)">Royal purple,<br>ornate gold, one flame.</h1>
+        <div class="ornament" style="justify-content:flex-start"><i></i></div>
+        <p class="lede" style="color:rgba(249,239,212,.8)">Every colour, letterform and component in this platform is drawn directly from the Kavanah Global crest. Nothing here was invented for the sake of it.</p>
+        <div class="row wrapflex" style="gap:10px;margin-top:1.6rem">
+          <a class="btn btn-gold" href="index.html">Project home</a>
+          <a class="btn btn-outline-gold" href="com/index.html">The shop</a>
+          <a class="btn btn-outline-gold" href="org/index.html">The platform</a>
+        </div>
+      </div>
+      <div class="row" style="gap:18px;flex:none">
+        <img src="brand/kavanah-global-logo.jpg" alt="Kavanah Global crest" style="width:clamp(130px,17vw,190px);border-radius:var(--r-lg);box-shadow:var(--sh-4)">
+        <img src="brand/kavanah-sanctuary-logo.jpg" alt="Kavanah Global Sanctuary crest" style="width:clamp(130px,17vw,190px);border-radius:var(--r-lg);box-shadow:var(--sh-4)">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec"><div class="wrap">
+  <span class="eyebrow">01 — Palette</span>
+  <h2 style="margin-bottom:.5rem">Taken from the crest</h2>
+  <p class="lede" style="max-width:58ch;margin-bottom:2rem">The purple is the velvet of the crown and the silk behind it. The gold runs from the deep shadow in the lion's mane to the highlight on the star. The cream is candle wax and the amber is the flame.</p>
+  <div class="asec" style="margin-bottom:12px">Royal purple — structure, depth, night</div>
+  <div class="grid" style="grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:30px" id="plum"></div>
+  <div class="asec" style="margin-bottom:12px">Ornate gold — accent, emphasis, light</div>
+  <div class="grid" style="grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:30px" id="gold"></div>
+  <div class="asec" style="margin-bottom:12px">Parchment and flame — ground, warmth</div>
+  <div class="grid" style="grid-template-columns:repeat(6,1fr);gap:12px" id="neutral"></div>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <span class="eyebrow">02 — Gradients</span>
+  <h2 style="margin-bottom:1.6rem">Three surfaces do all the work</h2>
+  <div class="grid g3" id="grads"></div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <span class="eyebrow">03 — Typography</span>
+  <h2 style="margin-bottom:.5rem">A serif that answers the crest, a sans that gets out of the way</h2>
+  <p class="lede" style="max-width:60ch;margin-bottom:2rem">The wordmark on the crest is a high-contrast script. Cormorant Garamond is its closest workable relative — the same elegance, legible at any size. Inter carries every piece of interface text, where personality would only get in the way.</p>
+  <div class="grid" style="grid-template-columns:1.2fr 1fr;gap:40px">
+    <div>
+      <div class="card card-pad" style="margin-bottom:16px">
+        <div class="spec" style="border:0;padding-top:0"><span class="lab">Display</span>
+          <div><b style="font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:500;display:block;line-height:1.05">Let Light Shine</b>
+          <code style="font-size:.72rem;color:var(--ink-3)">Cormorant Garamond · 500 · -0.01em</code></div></div>
+      </div>
+      <div class="card card-pad" style="margin-bottom:16px" id="scale"></div>
+      <div class="card card-pad">
+        <span class="lab" style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700">Body — Inter</span>
+        <p style="margin-top:.9rem;font-size:1rem;line-height:1.75;color:var(--ink-2)">Kavanah means intention — the direction of the heart before the act. In Jewish practice it is what separates an action performed from an action meant. The same words, said twice, are not the same thing.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card card-pad" style="margin-bottom:16px">
+        <span class="eyebrow">Eyebrow / label</span>
+        <p class="small muted" style="margin:0">Inter 600 · 0.72rem · letter-spacing 0.22em · uppercase · gold-700, with a 26px rule</p>
+      </div>
+      <div class="card card-pad" style="margin-bottom:16px">
+        <span class="lab" style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700">Gold text treatment</span>
+        <div class="goldtext" style="font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:600;line-height:1.1;margin-top:.5rem">4,286 nights</div>
+        <p class="tiny muted" style="margin:.4rem 0 0">Reserved for numbers that matter and for one word in a headline. Never a paragraph.</p>
+      </div>
+      <div class="card card-pad">
+        <span class="lab" style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700">Ornament</span>
+        <div class="ornament"><i></i></div>
+        <p class="tiny muted" style="margin:0">A hairline rule to a gold lozenge. Echoes the filigree beneath the shield. Used once per section, never twice.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <span class="eyebrow">04 — Components</span>
+  <h2 style="margin-bottom:1.6rem">The kit</h2>
+  <div class="grid g2" style="gap:20px">
+    <div class="card card-pad">
+      <span class="lab" style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700;display:block;margin-bottom:1rem">Buttons</span>
+      <div class="row wrapflex" style="gap:8px;margin-bottom:12px">
+        <button class="btn btn-gold">Primary gold</button>
+        <button class="btn btn-plum">Plum</button>
+        <button class="btn btn-outline">Outline</button>
+        <button class="btn btn-ghost">Ghost</button>
+      </div>
+      <div class="row wrapflex" style="gap:8px">
+        <button class="btn btn-gold btn-sm">Small</button>
+        <button class="btn btn-gold btn-xs">Extra small</button>
+        <button class="btn btn-gold btn-lg">Large</button>
+      </div>
+    </div>
+    <div class="card card-pad">
+      <span class="lab" style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700;display:block;margin-bottom:1rem">Badges &amp; chips</span>
+      <div class="row wrapflex" style="gap:8px;margin-bottom:12px">
+        <span class="badge badge-gold">Bestseller</span><span class="badge badge-plum">Recovery</span>
+        <span class="badge badge-ok">Open</span><span class="badge badge-warn">In progress</span><span class="badge badge-err">Closed</span>
+      </div>
+      <div class="row wrapflex" style="gap:8px">
+        <button class="chip on">Selected</button><button class="chip">Candles</button><button class="chip">Under $40</button>
+      </div>
+    </div>
+    <div class="card card-pad">
+      <span class="lab" style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700;display:block;margin-bottom:1rem">Inputs</span>
+      <div class="field"><label>Email</label><input class="input" placeholder="you@email.com"></div>
+      <div class="field" style="margin-bottom:0"><label>Programme</label><select class="input"><option>Freedom</option><option>Still Waters</option></select></div>
+    </div>
+    <div class="card card-pad">
+      <span class="lab" style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700;display:block;margin-bottom:1rem">Progress, rating, notice</span>
+      <div class="bar" style="margin-bottom:12px"><i style="width:64%"></i></div>
+      <div style="margin-bottom:12px" id="stars"></div>
+      <div class="care" style="margin:0"><span data-ico="info"></span><span>Education and peer support. Not medical treatment.</span></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <span class="eyebrow">05 — Iconography</span>
+  <h2 style="margin-bottom:.5rem">Drawn, never borrowed</h2>
+  <p class="lede" style="max-width:58ch;margin-bottom:2rem">A single stroke-based set at 1.6px on a 24px grid. No emoji anywhere in the product — a wellness platform dealing with addiction and grief cannot afford to look like a chat app.</p>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px" id="icons"></div>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <span class="eyebrow">06 — Photography</span>
+  <h2 style="margin-bottom:.5rem">Warm, low, and never staged-happy</h2>
+  <p class="lede" style="max-width:60ch;margin-bottom:2rem">Candlelight, low sun, linen, worn wood, water, weather. People are shown in practice or in profile, never grinning at a camera. The palette of the photography is the palette of the crest: purple shadow, gold light, cream ground.</p>
+  <div class="grid" style="grid-template-columns:repeat(6,1fr);gap:12px" id="mood"></div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <span class="eyebrow">07 — Two brands, one system</span>
+  <h2 style="margin-bottom:1.6rem">How .com and .org stay apart, and together</h2>
+  <div class="grid g2" style="gap:24px">
+    <div class="card card-pad lux" style="padding:30px">
+      <span class="badge badge-gold">kavanahglobal.com</span>
+      <h3 style="margin:.8rem 0 .6rem">The shop</h3>
+      <div id="comrules"></div>
+    </div>
+    <div class="card card-pad lux" style="padding:30px">
+      <span class="badge badge-plum">kavanahglobal.org</span>
+      <h3 style="margin:.8rem 0 .6rem">The platform</h3>
+      <div id="orgrules"></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec night" style="background:var(--grad-plum)">
+  <div class="wrap center" style="position:relative;z-index:2">
+    <h2 class="balance">See it built</h2>
+    <p class="lede" style="max-width:48ch;margin:1rem auto 2rem">Twenty-five pages and sixteen app screens, all running on this system.</p>
+    <div class="row" style="justify-content:center;gap:10px;flex-wrap:wrap">
+      <a class="btn btn-gold btn-lg" href="com/index.html">The shop</a>
+      <a class="btn btn-gold btn-lg" href="org/index.html">The platform</a>
+      <a class="btn btn-outline-gold btn-lg" href="app/index.html">The app</a>
+    </div>
+  </div>
+</section>
+
+<script src="assets/icons.js"></script><script src="assets/data.js"></script><script src="assets/ui.js"></script>
+<script>
+function swatches(el,list){
+  document.getElementById(el).innerHTML=list.map(function(s){
+    return '<div class="sw"><div class="chipc" style="background:'+s[1]+'"></div>'
+    +'<div class="meta"><b>'+s[0]+'</b><code>'+s[1]+'</code></div></div>'; }).join('');
+}
+swatches('plum',[['plum-950','#120616'],['plum-900','#1C0A28'],['plum-800','#2A0F3D'],['plum-700','#3A1454'],['plum-600','#4C1D6E'],['plum-500','#632A8C'],
+                 ['plum-400','#8248AC'],['plum-300','#A87BC8'],['plum-200','#CDB0E0'],['plum-100','#E9DCF1'],['plum-50','#F6F0FA'],['ink','#1C0A28']]);
+swatches('gold',[['gold-800','#6E4E0A'],['gold-700','#8A6410'],['gold-600','#A87C16'],['gold-500','#C79A24'],['gold-400','#D9B14A'],['gold-300','#E8C877'],
+                 ['gold-200','#F2DFA8'],['gold-100','#F9EFD4'],['flame','#FFA62B'],['flame-soft','#FFC46B'],['ok','#3F7D58'],['err','#9C2F3A']]);
+swatches('neutral',[['ivory (bg)','#FBF6EC'],['paper','#FFFDF8'],['cream','#F4EADA'],['sand','#EFE4D2'],['line','#E4D8C6'],['ink-3','#7A6B84']]);
+
+document.getElementById('grads').innerHTML=[
+  ['Ornate gold','var(--grad-gold)','Buttons, numbers, the lozenge. The sheen has five stops so it reads as metal rather than yellow.'],
+  ['Royal plum','var(--grad-plum)','Hero panels, the app rail, the crossbar between the two sites.'],
+  ['Night','var(--grad-night)','Full dark sections and the app navigation. Almost black, never actually black.']
+].map(function(g){
+  return '<div class="card" style="overflow:hidden"><div style="height:120px;background:'+g[1]+'"></div>'
+  +'<div style="padding:18px"><b style="display:block;margin-bottom:.3rem">'+g[0]+'</b>'
+  +'<span class="small muted" style="line-height:1.6">'+g[2]+'</span></div></div>';
+}).join('');
+
+document.getElementById('scale').innerHTML=[
+  ['H1','clamp(2.6rem, 5.4vw, 4.4rem)','Buy a candle'],
+  ['H2','clamp(2rem, 3.6vw, 3rem)','What a dollar does here'],
+  ['H3','clamp(1.4rem, 2.2vw, 1.9rem)','Continue your practice'],
+  ['Lede','clamp(1.05rem, 1.5vw, 1.22rem)','Somewhere to begin, and someone there at 11pm.'],
+  ['Body','1rem / 1.6','Ninety seconds a day, morning and night.'],
+  ['Small','0.875rem','41-day streak · Practitioner']
+].map(function(r){
+  return '<div class="spec"><span class="lab">'+r[0]+'<br><code style="font-size:.6rem;letter-spacing:0;text-transform:none">'+r[1]+'</code></span>'
+  +'<span style="font-family:'+(r[0][0]==='H'||r[0]==='Lede'?"'Cormorant Garamond',serif":"'Inter',sans-serif")+';font-size:'+
+    ({H1:'2.4rem',H2:'1.9rem',H3:'1.5rem',Lede:'1.15rem',Body:'1rem',Small:'.875rem'})[r[0]]+
+    ';line-height:1.2;color:var(--ink)">'+r[2]+'</span></div>';
+}).join('');
+
+document.getElementById('stars').innerHTML=U.stars(4.5)+' <span class="small muted">4.9 · 214 reviews</span>';
+
+document.getElementById('icons').innerHTML=['flame','candle','star6','crown','lotus','hands','leaf','feather','moon','sun','sunrise','bed','coffee','book','users','message','video','playCircle','calendar','clock','heart','gift','cart','shield','lock','globe','compass','chart','award','anchor','bulb','droplet']
+  .map(function(n){ return '<div class="iconcell">'+ico(n)+'<span>'+n+'</span></div>'; }).join('');
+
+document.getElementById('mood').innerHTML=['com-hero','org-hero','les-7','sanct-2','p-pillar-1','shelter-1','circ-6','les-1','donate-3','p-mala-2','sanct-3','les-12']
+  .map(function(n){ return '<div class="moodimg"><img src="'+KG.img(n)+'" alt="" loading="lazy"></div>'; }).join('');
+
+function rules(el,list){
+  document.getElementById(el).innerHTML=list.map(function(r){
+    return '<div class="row" style="gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line-2)">'
+    +'<span style="color:var(--gold-600);flex:none">'+ico(r[0])+'</span>'
+    +'<div><b class="small" style="display:block;margin-bottom:.1rem">'+r[1]+'</b>'
+    +'<span class="tiny muted" style="line-height:1.6">'+r[2]+'</span></div></div>'; }).join('');
+}
+rules('comrules',[
+  ['sun','Ivory ground','Products need light. The shop sits on parchment, with plum reserved for the header, the impact band and the footer.'],
+  ['cart','Gold is the buy action','Every primary commerce action is the gold gradient. Nothing else competes for it.'],
+  ['flame','The funds line is mandatory','Every product card and product page states what that item pays for. It is part of the component, not an option.'],
+  ['grid','Square product imagery','1:1 everywhere, second image on hover. Category tiles are 4:3.']
+]);
+rules('orgrules',[
+  ['moon','A rail, not a nav','Member areas use the dark plum rail. It signals "you are inside the thing" rather than "you are reading about it".'],
+  ['users','Handles, never names','No real name appears anywhere in the community UI. Avatars are initials on generated colour, never photographs.'],
+  ['info','Every programme carries a care line','A one-sentence statement of what the programme is and is not. It sits above the fold, not in a footer.'],
+  ['shield','Crisis information is never more than one screen away','988 and 911 appear in the footer of every page and inline on shelter, community and grief.']
+]);
+U.boot();
+</script>
+</body></html>

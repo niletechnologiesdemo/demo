@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/com.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<main id="main"></main>
+<div id="ftr-slot"></div>
+
+<script src="../assets/icons.js"></script>
+<script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script>
+<script src="../assets/com.js"></script>
+<script>
+var p = KG.bySlug(KG.products, U.qs('p')) || KG.products[0];
+var cat = KG.categories.filter(function(c){ return c.id===p.cat; })[0];
+var state = {img:0, variant: p.variants? p.variants.options[0] : null, qty:1};
+document.title = p.name + ' — Kavanah Global';
+
+var REVIEWS = [
+  {n:'Rachel D.',r:5,d:'2 weeks ago',t:'Exactly as described',b:'I bought this after reading the impact page and expected to be mildly disappointed by the product itself. I was not. It is genuinely well made.'},
+  {n:'Anthony P.',r:5,d:'1 month ago',t:'Bought a second one',b:'Ordered one, used it every day for three weeks, ordered another for my mother. That is the whole review.'},
+  {n:'Simone K.',r:4,d:'1 month ago',t:'Very good, shipping was slow',b:'No complaints about the item at all. Delivery took six days rather than the three I expected, which is why this is four rather than five.'},
+  {n:'Marcus W.',r:5,d:'2 months ago',t:'The packaging alone',b:'Arrived beautifully boxed with a handwritten card telling me what my order had funded. I did not expect to be moved by a receipt.'}
+];
+
+function gal(){
+  return '<div>'
+  + '<div class="gal-main"><img id="galmain" src="'+KG.img(p.imgs[state.img])+'" alt="'+U.esc(p.name)+'"></div>'
+  + (p.imgs.length>1? '<div class="gal-thumbs">'+p.imgs.map(function(im,i){
+      return '<button class="'+(i===state.img?'on':'')+'" onclick="setImg('+i+')"><img src="'+KG.img(im)+'" alt=""></button>'; }).join('')+'</div>':'')
+  + '</div>';
+}
+function info(){
+  return '<div class="pdp-info">'
+  + '<div class="tiny muted" style="margin-bottom:.7rem"><a href="index.html">Home</a> / <a href="shop.html">Shop</a> / <a href="shop.html?cat='+p.cat+'">'+cat.name+'</a></div>'
+  + (p.badge?'<span class="badge badge-gold" style="margin-bottom:.7rem">'+p.badge+'</span>':'')
+  + '<h1 style="font-size:clamp(2rem,3.4vw,2.7rem);margin-bottom:.5rem">'+p.name+'</h1>'
+  + '<div class="row" style="gap:.6rem;margin-bottom:1rem">'+U.stars(p.rating)
+  + '<span class="small muted">'+p.rating+' · '+p.reviews+' reviews</span></div>'
+  + '<p class="lede" style="font-size:1.05rem;margin-bottom:1.2rem">'+p.blurb+'</p>'
+  + '<div class="row" style="gap:.7rem;margin-bottom:1.4rem"><span class="price" style="font-size:1.7rem">'+U.money(p.price)+'</span>'
+  + (p.compare?'<s class="muted" style="font-size:1.05rem">'+U.money(p.compare)+'</s><span class="badge badge-ok">Save '+U.money(p.compare-p.price)+'</span>':'')
+  + '</div>'
+  + (p.variants? '<div class="field"><label>'+p.variants.label+'</label><div class="opts" id="opts">'
+      + p.variants.options.map(function(o,i){ return '<button class="opt '+(i===0?'on':'')+'" onclick="setVar(this,\''+U.esc(o)+'\')">'+o+'</button>'; }).join('')
+      + '</div></div>' : '')
+  + '<div class="row" style="gap:12px;margin:1.2rem 0">'
+  +   '<span class="qty"><button onclick="qty(-1)">'+ico('minus')+'</button><span id="qn">1</span><button onclick="qty(1)">'+ico('plus')+'</button></span>'
+  +   '<button class="btn btn-gold btn-lg" style="flex:1" onclick="addNow()">'+ico('cart')+'Add to bag — '+U.money(p.price)+'</button>'
+  +   '<button class="btn btn-outline btn-icon" data-wish="'+p.id+'" onclick="U.Wish.toggle(\''+p.id+'\')" aria-label="Save">'+ico('heart')+'</button>'
+  + '</div>'
+  + '<div class="fundsbox">'+ico('flame')
+  +   '<div><b>This order funds '+p.funds+'</b><p>Every dollar of profit from kavanahglobal.com goes to the non-profit. <a href="impact.html" style="color:var(--gold-700);font-weight:600;text-decoration:underline;text-underline-offset:2px">See the arithmetic</a>.</p></div></div>'
+  + '<div id="acc">'
+  +   accItem('Description', '<div>'+p.desc.split('\n').map(function(x){return '<p>'+x+'</p>'}).join('')+'</div>', 1)
+  +   accItem('Details &amp; specification', '<div><ul>'+p.details.map(function(d){return '<li>'+d+'</li>'}).join('')+'</ul></div>')
+  +   accItem('Shipping &amp; returns', '<div><p>Free US shipping over $75, otherwise $6.50. Orders leave Queens within one working day and arrive in 2–4 days.</p><p>Thirty days to return anything unused, for any reason or none. We pay return shipping on faulty items.</p></div>')
+  +   accItem('How it is made', '<div><p>Poured, stitched or assembled by hand in our Queens workshop, or by small partner makers we have visited in person. We publish our supplier list on the <a href="story.html" style="color:var(--gold-700)">story page</a>.</p></div>')
+  + '</div>'
+  + '<div class="trust">'
+  +   '<div>'+ico('truck')+'Free over $75</div><div>'+ico('shield')+'30-day returns</div><div>'+ico('flame')+'Funds the .org</div>'
+  + '</div></div>';
+}
+function accItem(t,b,open){
+  return '<div class="acc-item '+(open?'on':'')+'"><button class="acc-head" onclick="this.parentNode.classList.toggle(\'on\')">'
+  + t + ico('chevronDown') + '</button><div class="acc-body">'+b+'</div></div>';
+}
+
+function reviews(){
+  var dist=[78,15,5,1,1];
+  return '<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">'
+  + '<div class="grid" style="grid-template-columns:300px 1fr;gap:44px;align-items:start">'
+  + '<div class="card card-pad" style="position:sticky;top:100px">'
+  +   '<h3 style="font-size:1.3rem;margin-bottom:.4rem">'+p.rating+' out of 5</h3>'
+  +   U.stars(p.rating) + '<p class="small muted" style="margin:.5rem 0 1.2rem">Based on '+p.reviews+' reviews</p>'
+  +   dist.map(function(v,i){ return '<div class="row" style="gap:8px;margin-bottom:6px"><span class="tiny muted" style="width:34px">'+(5-i)+' star</span>'
+        + '<span class="bar" style="flex:1"><i style="width:'+v+'%"></i></span><span class="tiny muted" style="width:30px;text-align:right">'+v+'%</span></div>'; }).join('')
+  +   '<button class="btn btn-outline btn-sm btn-block" style="margin-top:1.2rem" onclick="U.toast(\'Review form would open here\',\'edit\')">Write a review</button>'
+  + '</div>'
+  + '<div>' + REVIEWS.map(function(r){
+      return '<div class="card card-pad" style="margin-bottom:14px"><div class="row-between" style="align-items:flex-start">'
+      + '<div class="row" style="gap:12px">'+U.avatar(r.n,42)
+      + '<div><b style="display:block;font-size:.92rem">'+r.n+'</b><span class="tiny muted">Verified purchase · '+r.d+'</span></div></div>'
+      + U.stars(r.r)+'</div>'
+      + '<h4 style="margin:.9rem 0 .3rem;font-size:1.05rem">'+r.t+'</h4>'
+      + '<p class="small" style="color:var(--ink-2);line-height:1.7;margin:0">'+r.b+'</p></div>';
+    }).join('')
+  + '<button class="btn btn-outline btn-block" onclick="U.toast(\'Loading more reviews…\',\'refresh\')">Show all '+p.reviews+' reviews</button></div>'
+  + '</div></div></section>';
+}
+
+function related(){
+  var rel = KG.products.filter(function(x){ return x.cat===p.cat && x.id!==p.id; }).slice(0,4);
+  while(rel.length<4){ var c=KG.products[Math.floor(rel.length*7+3)%KG.products.length]; if(c.id!==p.id && rel.indexOf(c)<0) rel.push(c); else break; }
+  return '<section class="sec"><div class="wrap">'
+  + '<div class="row-between" style="margin-bottom:28px;align-items:flex-end">'
+  + '<div><span class="eyebrow">More from '+cat.name+'</span><h2>Goes well with this</h2></div>'
+  + '<a class="btn btn-outline" href="shop.html?cat='+p.cat+'">See all</a></div>'
+  + '<div class="pgrid g4" style="grid-template-columns:repeat(4,1fr)">'+rel.map(function(x){return COM.pcard(x)}).join('')+'</div>'
+  + '</div></section>';
+}
+
+document.getElementById('main').innerHTML =
+  '<section class="sec-sm"><div class="wrap pdp">'+gal()+info()+'</div></section>' + reviews() + related();
+
+window.setImg=function(i){ state.img=i; document.getElementById('galmain').src=KG.img(p.imgs[i]);
+  document.querySelectorAll('.gal-thumbs button').forEach(function(b,j){ b.classList.toggle('on',j===i); }); };
+window.setVar=function(el,v){ state.variant=v; document.querySelectorAll('#opts .opt').forEach(function(b){ b.classList.remove('on'); }); el.classList.add('on'); };
+window.qty=function(d){ state.qty=Math.max(1,state.qty+d); document.getElementById('qn').textContent=state.qty; };
+window.addNow=function(){ U.Cart.add(p.id, state.qty, state.variant); COM.openCart(); };
+
+COM.boot('shop');
+</script>
+</body>
+</html>

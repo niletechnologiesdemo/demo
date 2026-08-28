@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div class="oshell">
+  <div id="rail-slot"></div>
+  <div class="omain">
+    <div id="top-slot"></div>
+    <div class="obody">
+
+      <div class="card lux rv" style="padding:clamp(20px,2.6vw,30px);margin-bottom:24px;background:linear-gradient(140deg,var(--gold-100),var(--plum-50))">
+        <div class="row-between wrapflex" style="gap:20px">
+          <div style="max-width:60ch">
+            <span class="eyebrow no-rule">You post as <b style="color:var(--plum-800)">Marigold</b></span>
+            <h3 style="font-size:1.5rem;margin-bottom:.4rem">Nobody here uses their real name</h3>
+            <p class="small" style="color:var(--ink-2);line-height:1.7;margin:0">That is deliberate. People do not write honestly about craving, relapse or grief under a name their employer can search. Your handle is yours, it never changes unless you change it, and no guide or moderator can see who is behind it.</p>
+          </div>
+          <div class="row" style="gap:10px;flex:none">
+            <button class="btn btn-outline btn-sm" onclick="U.toast('Change your handle in settings','edit')">Change handle</button>
+            <button class="btn btn-gold" onclick="U.openModal('newpost')" data-ico="pen">New post</button>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:1.3rem;margin-bottom:14px">Your circles</h3>
+      <div class="circles rv" style="margin-bottom:28px" id="circles"></div>
+
+      <div class="grid" style="grid-template-columns:1fr 320px;gap:26px;align-items:start" id="cols">
+        <div>
+          <div class="row-between wrapflex" style="margin-bottom:14px;gap:12px">
+            <h3 style="font-size:1.3rem" id="feedtitle">All conversations</h3>
+            <div class="row" style="gap:6px" id="sortchips"></div>
+          </div>
+          <div id="threads"></div>
+        </div>
+        <div>
+          <div class="card card-pad rv" style="margin-bottom:18px">
+            <h4 style="font-size:1.1rem;margin-bottom:.9rem">How this room works</h4>
+            <div id="rules"></div>
+          </div>
+          <div class="card card-pad rv" style="margin-bottom:18px">
+            <h4 style="font-size:1.1rem;margin-bottom:.9rem">Most present this week</h4>
+            <div id="people"></div>
+          </div>
+          <div class="card card-pad rv">
+            <div class="care crisis" style="margin:0"><span data-ico="alert"></span><span><b>This is peer support, not crisis care.</b> If you are in immediate danger call 911. For the Suicide &amp; Crisis Lifeline, call or text 988. Moderators are people, not clinicians, and they are not always awake.</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="newpost"><div class="modal-card">
+  <div class="drawer-head"><h3 style="font-size:1.3rem">New post</h3>
+    <button class="tool" onclick="U.closeAll()" data-ico="close"></button></div>
+  <div style="padding:24px">
+    <div class="field"><label>Which circle?</label><select class="input" id="npcircle"></select></div>
+    <div class="field"><label>Title</label><input class="input" placeholder="Say it plainly."></div>
+    <div class="field"><label>Your post</label><textarea class="input" style="min-height:150px" placeholder="Nobody here will tell you to look on the bright side."></textarea></div>
+    <label class="check"><input type="checkbox"><span>Ask for replies only — no advice unless I ask for it</span></label>
+    <div class="row" style="gap:10px;margin-top:1.2rem">
+      <button class="btn btn-outline" onclick="U.closeAll()">Cancel</button>
+      <button class="btn btn-gold" style="flex:1" onclick="U.closeAll();U.toast('Posted as Marigold','send')">Post as Marigold</button>
+    </div>
+    <p class="tiny muted center" style="margin-top:.9rem">Posting as Marigold · your real name is never shown</p>
+  </div>
+</div></div>
+
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+ORG.bootApp('community','Community','Six circles · 12,840 members',
+  '<div class="osearch">'+ico('search')+'<input class="input" placeholder="Search the circles…" oninput="setQ(this.value)"></div>');
+
+var circle=U.qs('c')||'all', sort='latest', q='';
+var SORTS=[['latest','Latest'],['top','Most held'],['unans','Unanswered'],['mine','Mine']];
+
+document.getElementById('circles').innerHTML=KG.circles.map(function(c){
+  return '<a class="circ" href="?c='+c.id+'"><img src="'+KG.img(c.img)+'" alt="" loading="lazy">'
+  +'<div class="circ-t"><h4>'+c.name+(c.locked?' '+ico('lock'):'')+'</h4><p>'+c.blurb+'</p>'
+  +'<div class="cm"><span>'+c.members.toLocaleString()+' members</span><span>'+c.posts.toLocaleString()+' posts</span>'
+  +(c.locked?'<span>Private</span>':'')+'</div></div></a>';
+}).join('');
+
+document.getElementById('npcircle').innerHTML=KG.circles.map(function(c){
+  return '<option>'+c.name+'</option>'; }).join('');
+
+function draw(){
+  var c=KG.byId(KG.circles,circle);
+  document.getElementById('feedtitle').textContent = c? c.name : 'All conversations';
+  document.getElementById('sortchips').innerHTML=SORTS.map(function(s){
+    return '<button class="chip '+(sort===s[0]?'on':'')+'" onclick="setSort(\''+s[0]+'\')">'+s[1]+'</button>'; }).join('')
+    + (c? '<a class="chip" href="?c=all">'+ico('close')+'Clear</a>':'');
+
+  var list=KG.threads.filter(function(t){
+    if(circle!=='all' && t.circle!==circle) return false;
+    if(sort==='unans' && t.replies>10) return false;
+    if(sort==='mine' && t.author!==KG.user.handle) return false;
+    if(q && (t.title+' '+t.body).toLowerCase().indexOf(q.toLowerCase())<0) return false;
+    return true;
+  });
+  if(sort==='top') list=list.slice().sort(function(a,b){ return b.likes-a.likes; });
+
+  document.getElementById('threads').innerHTML = list.length ? list.map(function(t){
+    var cc=KG.byId(KG.circles,t.circle);
+    return '<a class="thread rv" href="thread.html?t='+t.id+'">'
+    +'<div class="vote"><button onclick="event.preventDefault();event.stopPropagation();this.classList.toggle(\'on\');U.toast(\'Held\',\'thumb\')">'+ico('chevronUp')+'</button>'
+    +'<b>'+t.likes+'</b></div>'
+    +'<div class="thread-b"><div class="row" style="gap:8px;margin-bottom:.4rem;flex-wrap:wrap">'
+    +'<span class="badge badge-plum">'+(cc?cc.name:'')+'</span>'
+    +(t.pinned?'<span class="badge badge-gold">Pinned</span>':'')
+    +(cc&&cc.locked?'<span class="badge badge-dark" style="background:var(--surface-2);color:var(--ink-3);border-color:var(--line)">'+ico('lock')+'Private</span>':'')+'</div>'
+    +'<h3>'+t.title+'</h3>'
+    +'<p class="small muted" style="margin:0;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+t.body.split('\n')[0]+'</p>'
+    +'<div class="thread-meta">'+U.avatar(t.author,22)+'<span>'+t.author+'</span>'
+    +'<span>'+ico('clock')+t.ago+'</span><span>'+ico('message')+t.replies+' replies</span>'
+    +(t.reps.some(function(r){return r.badge==='Guide'})?'<span style="color:var(--gold-700);font-weight:600">'+ico('sparkle')+'Daisy replied</span>':'')
+    +'</div></div></a>';
+  }).join('') : '<div class="card card-pad center" style="padding:56px"><span style="color:var(--gold-400)">'+ico('message')+'</span>'
+    +'<h4 style="margin:.7rem 0 .3rem">Nothing here yet</h4><p class="small muted">Be the first to post in this circle.</p>'
+    +'<button class="btn btn-gold btn-sm" style="margin-top:1rem" onclick="U.openModal(\'newpost\')">Write a post</button></div>';
+  U.boot(); U.reveal();
+}
+window.setSort=function(s){ sort=s; draw(); };
+window.setQ=function(v){ q=v; draw(); };
+
+document.getElementById('rules').innerHTML=[
+  ['message','No advice unless it is asked for','The most common way a good circle goes wrong. If someone wants suggestions they will say so.'],
+  ['eyeOff','Handles, not names','Yours is private to you. Do not try to work out who anyone is, and never post another member\'s details.'],
+  ['heart','"Read" is a complete reply','Sometimes the whole thing a person needs is to know somebody saw it.'],
+  ['shield','Moderated by people who did the work','All six moderators finished a programme here. Daisy reads and replies most days.']
+].map(function(r){
+  return '<div class="row" style="gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line-2)">'
+  +'<span style="color:var(--gold-600);flex:none">'+ico(r[0])+'</span>'
+  +'<div><b class="small" style="display:block;margin-bottom:.15rem">'+r[1]+'</b>'
+  +'<span class="tiny muted" style="line-height:1.6">'+r[2]+'</span></div></div>';
+}).join('');
+
+document.getElementById('people').innerHTML=['QuietOak','Wren','Lantern','Marigold','BatchCookBex']
+  .map(function(n,i){
+  return '<div class="row" style="gap:10px;padding:.5rem 0">'+U.avatar(n,34)
+  +'<div style="flex:1"><b class="small" style="display:block">'+n+(n===KG.user.handle?' <span class="tiny muted">(you)</span>':'')+'</b>'
+  +'<span class="tiny muted">'+[42,38,31,27,24][i]+' replies this week</span></div>'
+  +(i===0?'<span class="badge badge-gold">Top</span>':'')+'</div>';
+}).join('');
+
+draw();
+if(window.innerWidth<1050) document.getElementById('cols').style.gridTemplateColumns='1fr';
+</script>
+</body></html>

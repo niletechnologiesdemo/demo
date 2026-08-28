@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Enrol — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body style="background:var(--surface)">
+<header style="border-bottom:1px solid var(--line-2);padding:16px 0;background:var(--bg)">
+  <div class="wrap row-between">
+    <a class="omark" href="index.html"><img src="" id="crest" alt="">
+      <span><span class="bn">Kavanah Global</span><span class="bs">The non-profit</span></span></a>
+    <span class="row tiny muted" style="gap:.4rem" data-ico="lock">Secure enrolment</span>
+  </div>
+</header>
+<section class="sec-sm"><div class="wrap">
+  <div class="steps" id="steps"></div>
+  <div class="co-lay" id="lay">
+    <div id="form"></div>
+    <div class="co-side" id="side"></div>
+  </div>
+</div></section>
+<footer style="border-top:1px solid var(--line-2);padding:24px 0;margin-top:40px">
+  <div class="wrap row-between wrapflex tiny muted">
+    <span>© 2026 Kavanah Global · A New York 501(c)(3)</span>
+    <span style="display:flex;gap:16px"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Safeguarding</a></span>
+  </div>
+</footer>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+var g = KG.bySlug(KG.programs, U.qs('g')) || KG.programs[0];
+document.getElementById('crest').src = KG.root + KG.brand.crestFile;
+document.title = 'Enrol in '+g.title+' — Kavanah Global';
+var step=1, plan='once', pay='card';
+var STEPS=['How you would like to join','Payment','Begin'];
+
+function drawSteps(){
+  document.getElementById('steps').innerHTML=STEPS.map(function(s,i){
+    var n=i+1, cls=n===step?'on':(n<step?'done':'');
+    return '<span class="step '+cls+'"><i>'+(n<step?'':n)+'</i>'+s+'</span>'+(i<STEPS.length-1?'<span class="step-sep"></span>':'');
+  }).join('');
+  document.querySelectorAll('.step.done i').forEach(function(e){ e.innerHTML=ico('check'); });
+}
+function price(){ return plan==='once'? g.price : 39; }
+
+function drawForm(){
+  var h='';
+  if(step===1){
+    h='<div class="card card-pad" style="padding:30px"><h3 style="font-size:1.35rem;margin-bottom:1.2rem">How would you like to join?</h3>'
+    + [['once','Just this programme','$'+g.price+' once','Lifetime access to '+g.title+', its live sessions and its circle. Nothing recurring.'],
+       ['member','Practitioner membership','$39 a month','All eight programmes, every live session, the full Mood Journal and all six circles. Cancel any time. Sponsors a seat for someone else each month.']]
+      .map(function(o){
+        return '<button class="dtier '+(plan===o[0]?'on':'')+'" style="margin-bottom:12px" onclick="setPlan(\''+o[0]+'\')">'
+        +'<div class="row-between wrapflex" style="gap:12px"><div style="flex:1;min-width:200px">'
+        +'<b style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;display:block;color:var(--plum-800)">'+o[1]+'</b>'
+        +'<span class="small muted" style="line-height:1.6;display:block;margin-top:.3rem">'+o[3]+'</span></div>'
+        +'<span style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;font-weight:600;color:var(--plum-800);white-space:nowrap">'+o[2]+'</span></div></button>';
+      }).join('')
+    + '<div class="fundsbox" style="margin:1.2rem 0">'+ico('flame')
+    + '<div><b>Cannot afford either?</b><p>Sponsored seats are funded every month by the shop and by members. Nobody is asked to prove hardship or explain themselves.'
+    + ' <a href="#" onclick="U.toast(\'Request sent. Someone will reply within a day.\',\'mail\');return false" style="color:var(--gold-700);font-weight:600;text-decoration:underline">Request a sponsored seat</a>.</p></div></div>'
+    + '<h4 style="margin:1.6rem 0 .8rem;font-size:1.05rem">Your details</h4>'
+    + '<div class="row wrapflex" style="gap:12px">'
+    + '<div class="field" style="flex:1;min-width:160px"><label>Name</label><input class="input" value="Maya Ellison"></div>'
+    + '<div class="field" style="flex:1;min-width:160px"><label>Email</label><input class="input" type="email" value="maya@example.com"></div></div>'
+    + '<div class="field"><label>Community handle</label><input class="input" value="Marigold">'
+    + '<span class="hint">This is the only name shown in the circles. Your real name is never displayed.</span></div>'
+    + '<div class="care" style="margin:1.2rem 0">'+ico('info')+'<span><b>Before you enrol.</b> '+g.care+'</span></div>'
+    + '<button class="btn btn-gold btn-lg btn-block" onclick="go(2)">Continue to payment '+ico('arrowRight')+'</button></div>';
+  }
+  if(step===2){
+    h='<div class="card card-pad" style="padding:30px"><h3 style="font-size:1.35rem;margin-bottom:1.2rem">Payment</h3>'
+    + '<div class="pay-tabs">'+[['card','Card'],['apple','Apple Pay'],['paypal','PayPal']].map(function(o){
+        return '<button class="pay-tab '+(pay===o[0]?'on':'')+'" onclick="setPay(\''+o[0]+'\')">'+o[1]+'</button>'; }).join('')+'</div>'
+    + (pay==='card'
+       ? '<div class="field"><label>Card number</label><input class="input" placeholder="4242 4242 4242 4242"></div>'
+         +'<div class="row wrapflex" style="gap:12px">'
+         +'<div class="field" style="flex:1;min-width:140px"><label>Expiry</label><input class="input" placeholder="MM / YY"></div>'
+         +'<div class="field" style="flex:1;min-width:140px"><label>CVC</label><input class="input" placeholder="123"></div></div>'
+         +'<div class="field"><label>Name on card</label><input class="input" placeholder="Maya Ellison"></div>'
+       : '<div class="card card-pad center" style="background:var(--surface-2);margin-bottom:1rem"><p class="small muted" style="margin:0">You will be redirected to '+(pay==='apple'?'Apple Pay':'PayPal')+' to confirm.</p></div>')
+    + '<div class="fundsbox" style="margin:1.2rem 0">'+ico('gift')
+    + '<div><b>Add a sponsored seat?</b><p>$'+g.price+' puts someone else through '+g.title+' who could not otherwise pay for it.</p>'
+    + '<label class="check" style="margin-top:.5rem"><input type="checkbox" id="spons" onchange="drawSide()"><span>Yes, sponsor one seat</span></label></div></div>'
+    + '<label class="check" style="margin-bottom:1.2rem"><input type="checkbox" checked>'
+    + '<span>I understand this is education and peer support, not medical treatment or therapy.</span></label>'
+    + '<div class="row" style="gap:10px"><button class="btn btn-outline" onclick="go(1)">'+ico('arrowLeft')+'Back</button>'
+    + '<button class="btn btn-gold btn-lg" style="flex:1" onclick="finish()">'+ico('lock')+'Confirm and begin</button></div>'
+    + '<p class="tiny muted center" style="margin-top:1rem">This is a demonstration. No card is charged.</p></div>';
+  }
+  if(step===3){
+    h='<div class="card lux card-pad center" style="padding:44px 32px">'
+    + '<span style="color:var(--ok)">'+ico('checkCircle')+'</span>'
+    + '<h2 style="margin:.8rem 0 .5rem">You are in.</h2>'
+    + '<p class="lede" style="max-width:44ch;margin:0 auto 1.6rem">'+g.title+' is now on your dashboard, the '+g.title+' circle is open to you, and your first live session is this week.</p>'
+    + '<div class="grid g3" style="gap:12px;margin-bottom:1.8rem">'
+    + [['playCircle','Session 1','Start watching now'],['video','Live session',''+(KG.live.filter(function(s){return s.prog===g.id})[0]||{date:'This week'}).date],['users','Your circle','Say hello as Marigold']]
+      .map(function(x){ return '<div class="card card-pad" style="background:var(--surface-2)"><span style="color:var(--gold-700)">'+ico(x[0])+'</span>'
+        +'<b style="display:block;margin-top:.5rem;font-size:.95rem">'+x[1]+'</b><span class="tiny muted">'+x[2]+'</span></div>'; }).join('')
+    + '</div>'
+    + '<div class="row" style="justify-content:center;gap:10px;flex-wrap:wrap">'
+    + '<a class="btn btn-gold btn-lg" href="player.html?g='+g.slug+'">Start session 1</a>'
+    + '<a class="btn btn-outline btn-lg" href="dashboard.html">Go to my dashboard</a></div></div>';
+  }
+  document.getElementById('form').innerHTML=h; U.boot();
+}
+function drawSide(){
+  var sp=document.getElementById('spons'); var extra=(sp&&sp.checked)?g.price:0;
+  document.getElementById('side').innerHTML=
+    '<img src="'+KG.img(g.cover)+'" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--r-sm);margin-bottom:1rem">'
+    +'<span class="badge badge-gold">'+g.cat+'</span>'
+    +'<h3 style="font-size:1.4rem;margin:.6rem 0 .2rem">'+g.title+'</h3>'
+    +'<p class="small" style="color:var(--gold-700);font-weight:600;margin-bottom:.8rem">'+g.sub+'</p>'
+    +'<div class="stack" style="gap:8px;margin-bottom:1rem">'
+    +[[ 'calendar', g.weeks+' weeks'],['playCircle',g.lessonCount+' filmed sessions'],['video',g.live],['users','Private circle access'],['feather','Mood Journal template']]
+      .map(function(f){ return '<div class="row" style="gap:9px"><span style="color:var(--gold-600);flex:none">'+ico(f[0])+'</span><span class="small">'+f[1]+'</span></div>'; }).join('')
+    +'</div><hr class="hairline" style="margin:1rem 0">'
+    +'<div class="sumrow"><span>'+(plan==='once'?g.title:'Practitioner membership')+'</span><b>'+U.money(price())+(plan==='member'?'/mo':'')+'</b></div>'
+    +(extra?'<div class="sumrow" style="color:var(--gold-700)"><span>Sponsored seat</span><span>'+U.money(extra)+'</span></div>':'')
+    +'<div class="sumrow total"><span>Today</span><span>'+U.money(price()+extra)+'</span></div>'
+    +(plan==='member'?'<p class="tiny muted" style="margin-top:.6rem">Then $39 monthly. Cancel any time.</p>':'')
+    +'<div class="row" style="justify-content:center;gap:8px;margin-top:1rem;color:var(--ink-4)">'
+    +'<span class="tiny row" style="gap:.35rem">'+ico('lock')+'Secure · Stripe</span></div>';
+  U.boot();
+}
+function go(n){ step=n; drawSteps(); drawForm(); drawSide(); window.scrollTo({top:0,behavior:'smooth'}); }
+function finish(){ U.Enrol.add(g.id); go(3); U.toast('Enrolled in '+g.title,'checkCircle'); }
+window.go=go; window.finish=finish; window.drawSide=drawSide;
+window.setPlan=function(p){ plan=p; drawForm(); drawSide(); };
+window.setPay=function(p){ pay=p; drawForm(); };
+drawSteps(); drawForm(); drawSide();
+if(window.innerWidth<900) document.getElementById('lay').style.gridTemplateColumns='1fr';
+</script>
+</body></html>

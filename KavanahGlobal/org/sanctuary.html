@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Sanctuary — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+
+<section class="hero" style="min-height:clamp(520px,68vh,680px)">
+  <div class="hero-bg"><img src="../assets/img/sanct-1.jpg" alt=""></div>
+  <div class="wrap hero-in">
+    <img src="" id="kgs" alt="Kavanah Global Sanctuary crest" style="width:120px;height:120px;border-radius:50%;box-shadow:0 0 0 1px var(--gold-400),0 0 40px rgba(217,177,74,.25);margin-bottom:1.4rem">
+    <span class="eyebrow" style="color:var(--gold-300)">Kavanah Global Sanctuary · Hudson Valley</span>
+    <h1>Somewhere to stay<br><em>while you rebuild.</em></h1>
+    <p>Shelter gives someone a night. A programme gives them a practice. Neither gives them a place to live while the two take hold. That is what the Sanctuary is for.</p>
+    <div class="hero-cta">
+      <a class="btn btn-gold btn-lg" href="#register">Register interest</a>
+      <a class="btn btn-outline-gold btn-lg" href="donate.html">Fund the build</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec"><div class="wrap wrap-narrow center">
+  <span class="eyebrow center no-rule">The idea</span>
+  <h2 class="balance">The gap nobody funds</h2>
+  <div class="ornament"><i></i></div>
+  <p class="lede">A person leaves a shelter at seven in the morning and goes back into the exact set of streets, rooms and people that put them there. We have watched it happen for eleven years and we have run out of patience with it.</p>
+  <p style="color:var(--ink-2);line-height:1.85">The Sanctuary is twenty-four rooms on eleven acres in the Hudson Valley. Stays of two to twelve weeks. Your own room with a door that locks, three meals, daily practice, the full Freedom programme delivered in person, and land to walk on. No cost to the person staying — funded entirely by the shop, by members and by donors.</p>
+</div></section>
+
+<section class="sec" style="background:var(--surface-2);border-block:1px solid var(--line-2)"><div class="wrap">
+  <div class="center" style="margin-bottom:40px"><span class="eyebrow center no-rule">The place</span><h2>Eleven acres, twenty-four rooms</h2></div>
+  <div class="grid g3" id="gallery"></div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <div class="center" style="margin-bottom:44px"><span class="eyebrow center no-rule">A day there</span><h2>What a Tuesday looks like</h2></div>
+  <div class="wrap-narrow" style="padding:0" id="dayplan"></div>
+</div></section>
+
+<section class="sec night">
+  <div class="glow" style="top:-200px;left:-140px"></div>
+  <div class="wrap" style="position:relative;z-index:2">
+    <div class="center" style="margin-bottom:44px">
+      <span class="eyebrow center no-rule" style="color:var(--gold-400)">Where we are up to</span>
+      <h2>Building it in four phases</h2>
+      <div class="ornament"><i></i></div>
+    </div>
+    <div id="phases"></div>
+    <div class="card-dark rv" style="padding:30px;margin-top:32px;max-width:760px;margin-inline:auto;text-align:center">
+      <h3 style="color:#fff;margin-bottom:.6rem">$1,284,600 raised of $4.2M</h3>
+      <div class="bar dark" style="height:10px;margin:1.2rem 0 .8rem"><i style="width:30.6%"></i></div>
+      <p class="small" style="color:rgba(249,239,212,.66);margin:0 0 1.4rem">Fourteen per cent of every dollar the organisation receives goes here, plus direct gifts. First residents in spring 2027.</p>
+      <a class="btn btn-gold btn-lg" href="donate.html">Fund the build</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="register"><div class="wrap">
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:44px;align-items:start" id="rcols">
+    <div>
+      <span class="eyebrow">Register interest</span>
+      <h2 style="margin-bottom:.7rem">Rooms open in spring 2027</h2>
+      <p class="lede" style="margin-bottom:1.2rem">There will be twenty-four rooms and a great many more people than that. Registering now puts you on the list and tells us how to build the intake process.</p>
+      <div class="care" style="margin-bottom:1.2rem"><span data-ico="info"></span>
+        <span><b>This is not an application.</b> Nothing here is decided, nothing is promised, and registering does not commit you to anything. We will write to you when there is genuine news.</span></div>
+      <div class="stack" style="gap:14px">
+        <div class="row" style="gap:12px"><span style="color:var(--gold-600);flex:none" data-ico="key"></span>
+          <span class="small">Your own room, with a door that locks</span></div>
+        <div class="row" style="gap:12px"><span style="color:var(--gold-600);flex:none" data-ico="leaf"></span>
+          <span class="small">Eleven acres, and permission to do nothing on them</span></div>
+        <div class="row" style="gap:12px"><span style="color:var(--gold-600);flex:none" data-ico="users"></span>
+          <span class="small">The full Freedom programme, in person, in a room with other people</span></div>
+        <div class="row" style="gap:12px"><span style="color:var(--gold-600);flex:none" data-ico="heart"></span>
+          <span class="small">No cost to you. Ever. Not reduced — none.</span></div>
+      </div>
+    </div>
+    <form class="card card-pad" style="padding:30px" onsubmit="event.preventDefault();U.toast('Registered. We will write when there is real news.','mail');this.reset()">
+      <h3 style="font-size:1.25rem;margin-bottom:1.1rem">Put me on the list</h3>
+      <div class="row wrapflex" style="gap:12px">
+        <div class="field" style="flex:1;min-width:150px"><label>Name</label><input class="input" required placeholder="Any name"></div>
+        <div class="field" style="flex:1;min-width:150px"><label>Email</label><input class="input" type="email" required placeholder="you@email.com"></div>
+      </div>
+      <div class="field"><label>This is for</label>
+        <select class="input"><option>Myself</option><option>Someone I care about</option><option>A client or patient</option><option>I work in this field and want to follow along</option></select></div>
+      <div class="field"><label>Roughly when</label>
+        <select class="input"><option>As soon as it opens</option><option>Sometime in 2027</option><option>2028 or later</option><option>I do not know yet</option></select></div>
+      <div class="field"><label>Anything you want to tell us? (optional)</label><textarea class="input" style="min-height:88px"></textarea></div>
+      <label class="check" style="margin-bottom:1rem"><input type="checkbox" required>
+        <span>I understand this is a register of interest, not an application, and that nothing is promised.</span></label>
+      <button class="btn btn-gold btn-block btn-lg">Register interest</button>
+      <p class="tiny muted center" style="margin-top:.8rem">This is a demonstration form. Nothing is sent.</p>
+    </form>
+  </div>
+</div></section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+ORG.boot('sanctuary');
+document.getElementById('kgs').src = KG.root + KG.brand.sanctuaryFile;
+
+document.getElementById('gallery').innerHTML=[
+  ['sanct-2','The hall','Where the morning sit happens. Wood, light, and nothing else in it.'],
+  ['sanct-3','The paths','Eleven acres. Walking counts as practice here, and so does sitting still.'],
+  ['sanct-4','The water','A pond at the bottom of the meadow. In February it freezes and people still go down.'],
+  ['sanct-5','The long room','Meals, circles, and the place people end up at eleven at night.'],
+  ['sanct-6','The porch','Two chairs, facing out. Most of the real conversations happen here.'],
+  ['sanct-1','The land','Eleven acres in the Hudson Valley, ninety minutes from Queens.']
+].map(function(x){
+  return '<div class="card rv" style="overflow:hidden">'
+  +'<div style="aspect-ratio:4/3;overflow:hidden"><img src="'+KG.img(x[0])+'" alt="" style="width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)" loading="lazy"></div>'
+  +'<div style="padding:20px"><h4 style="font-size:1.2rem;margin-bottom:.3rem">'+x[1]+'</h4>'
+  +'<p class="small muted" style="margin:0;line-height:1.6">'+x[2]+'</p></div></div>';
+}).join('');
+
+document.getElementById('dayplan').innerHTML=[
+  ['6:30','Wake, and nobody makes you','sunrise'],
+  ['7:00','Morning sit in the hall — twenty minutes','flame'],
+  ['7:45','Breakfast, cooked by whoever is on the rota','coffee'],
+  ['9:00','Freedom session, in person, in a circle','users'],
+  ['11:00','Land time. Walk, dig, sit, sleep. Not optional, not directed.','leaf'],
+  ['13:00','Lunch','coffee'],
+  ['14:30','One-to-one, or the workshop, or neither','message'],
+  ['17:00','Movement — Move & Restore, or the pond','zap'],
+  ['18:30','Dinner, everybody at one table','users'],
+  ['20:00','Evening circle','flame'],
+  ['21:30','Night page, then the porch','moon']
+].map(function(d,i,a){
+  return '<div class="row rv" style="gap:20px;align-items:flex-start;padding:16px 0;'+(i<a.length-1?'border-bottom:1px solid var(--line-2)':'')+'">'
+  +'<b style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;color:var(--plum-800);width:66px;flex:none;text-align:right">'+d[0]+'</b>'
+  +'<span style="color:var(--gold-600);flex:none;margin-top:3px">'+ico(d[2])+'</span>'
+  +'<span style="font-size:1rem;color:var(--ink-2);line-height:1.6">'+d[1]+'</span></div>';
+}).join('');
+
+document.getElementById('phases').innerHTML='<div class="grid g4">'+[
+  ['Phase 1','Land secured','Complete','Eleven acres purchased outright in 2025. No mortgage, no covenant, no landlord.',1],
+  ['Phase 2','The main house','In progress','Kitchen, long room, hall and eight rooms. Structurally complete, fitting out through 2026.',0],
+  ['Phase 3','The wings','2027','Sixteen further rooms, the workshop, and accessible ground-floor accommodation.',0],
+  ['Phase 4','First residents','Spring 2027','Twelve people at a time to begin with, rising to twenty-four once the staffing is right.',0]
+].map(function(p){
+  return '<div class="card-dark rv" style="padding:24px">'
+  +'<span class="badge '+(p[4]?'badge-ok':'badge-dark')+'">'+p[2]+'</span>'
+  +'<div class="tiny" style="letter-spacing:.18em;text-transform:uppercase;color:var(--gold-400);margin:.9rem 0 .3rem;font-weight:700">'+p[0]+'</div>'
+  +'<h4 style="color:#fff;font-size:1.2rem;margin-bottom:.5rem">'+p[1]+'</h4>'
+  +'<p class="small" style="color:rgba(249,239,212,.62);margin:0;line-height:1.6">'+p[3]+'</p></div>';
+}).join('')+'</div>';
+U.boot(); U.reveal();
+if(window.innerWidth<900) document.getElementById('rcols').style.gridTemplateColumns='1fr';
+</script>
+</body></html>

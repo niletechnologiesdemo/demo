@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kavanah Global — the platform</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/com.css">
+<link rel="stylesheet" href="assets/org.css">
+<style>
+  .deck{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .dcard{border-radius:var(--r-xl);overflow:hidden;background:rgba(255,255,255,.045);border:1px solid rgba(217,177,74,.2);display:flex;flex-direction:column;transition:all var(--t);position:relative}
+  .dcard:hover{transform:translateY(-5px);border-color:rgba(217,177,74,.5);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .dcard .shot{aspect-ratio:16/10;overflow:hidden;position:relative;background:var(--plum-900)}
+  .dcard .shot img{width:100%;height:100%;object-fit:cover;opacity:.8;transition:transform .8s var(--ease)}
+  .dcard:hover .shot img{transform:scale(1.05)}
+  .dcard .shot::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(18,6,22,.9),transparent 60%)}
+  .dcard .db{padding:26px;display:flex;flex-direction:column;flex:1}
+  .pglist a{display:flex;align-items:center;gap:8px;padding:.42rem 0;font-size:.82rem;color:rgba(249,239,212,.66);transition:color var(--t-fast)}
+  .pglist a:hover{color:var(--gold-300)}
+  .pglist svg{width:14px;height:14px;color:var(--gold-500);flex:none}
+  @media(max-width:900px){.deck{grid-template-columns:1fr}}
+</style>
+</head>
+<body style="background:var(--plum-950)">
+<div class="night" style="min-height:100vh;position:relative">
+
+<div class="glow" style="top:-200px;left:6%"></div>
+<div class="glow" style="top:40%;right:-100px;opacity:.5"></div>
+
+<header style="padding:26px 0;position:relative;z-index:10">
+  <div class="wrap row-between wrapflex" style="gap:16px">
+    <span class="omark"><img src="brand/kavanah-global-logo.jpg" alt="">
+      <span><span class="bn" style="color:var(--gold-200)">Kavanah Global</span>
+      <span class="bs" style="color:var(--gold-500)">Let Light Shine</span></span></span>
+    <a class="btn btn-outline-gold btn-sm" href="moodboard.html">Design board</a>
+  </div>
+</header>
+
+<section style="padding:clamp(30px,5vw,70px) 0;position:relative;z-index:2">
+  <div class="wrap center" style="max-width:900px">
+    <span class="eyebrow center no-rule" style="color:var(--gold-400)">Concept build · August 2026</span>
+    <h1 style="color:#fff;font-size:clamp(2.6rem,6vw,4.6rem);line-height:1.05">Two companies.<br>One loop.<br><span class="goldtext">One app.</span></h1>
+    <div class="ornament"><i></i></div>
+    <p class="lede" style="color:rgba(249,239,212,.82);max-width:62ch;margin-inline:auto">
+      A commerce brand that funds a wellness non-profit, and a wellness non-profit that gives the commerce brand a reason to exist. Everything below is clickable and built on real data.
+    </p>
+    <div class="row" style="justify-content:center;gap:14px;flex-wrap:wrap;margin-top:2rem">
+      <div class="row" style="gap:.5rem;color:var(--gold-300);font-size:.82rem"><span data-ico="checkCircle"></span>25 web pages</div>
+      <div class="row" style="gap:.5rem;color:var(--gold-300);font-size:.82rem"><span data-ico="checkCircle"></span>16 app screens</div>
+      <div class="row" style="gap:.5rem;color:var(--gold-300);font-size:.82rem"><span data-ico="checkCircle"></span>31 products · 8 programmes</div>
+      <div class="row" style="gap:.5rem;color:var(--gold-300);font-size:.82rem"><span data-ico="checkCircle"></span>117 photographs</div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:0 0 clamp(40px,6vw,80px);position:relative;z-index:2">
+  <div class="wrap">
+    <div class="deck" id="deck"></div>
+  </div>
+</section>
+
+<section style="padding:clamp(30px,5vw,60px) 0;border-top:1px solid rgba(217,177,74,.16);position:relative;z-index:2">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:40px">
+      <span class="eyebrow center no-rule" style="color:var(--gold-400)">The idea in one line</span>
+      <h2 style="color:#fff">Every dollar spent on the left pays for the right</h2>
+    </div>
+    <div class="grid g4" id="loop"></div>
+  </div>
+</section>
+
+<footer style="padding:34px 0 60px;border-top:1px solid rgba(217,177,74,.16);position:relative;z-index:2">
+  <div class="wrap row-between wrapflex" style="gap:16px;color:rgba(249,239,212,.5);font-size:.8rem">
+    <span>Kavanah Global · concept build for Daisy Pearl · Nile Technologies</span>
+    <span>All content, products and figures are illustrative sample data.</span>
+  </div>
+</footer>
+
+<script src="assets/icons.js"></script><script src="assets/data.js"></script><script src="assets/ui.js"></script>
+<script>
+document.getElementById('deck').innerHTML=[
+  {t:'kavanahglobal.com',h:'The shop',img:'com-hero',
+   d:'A full e-commerce brand — 31 products across six categories, filtering, product pages, cart, three-step checkout, gift cards and a published impact report.',
+   href:'com/index.html', badge:'Commerce',
+   pages:[['Home','com/index.html','home'],['Shop','com/shop.html','grid'],['Product','com/product.html?p=let-light-shine-pillar','gift'],
+          ['Bag','com/cart.html','cart'],['Checkout','com/checkout.html','card'],['Order confirmed','com/order.html','checkCircle'],
+          ['Our Impact','com/impact.html','flame'],['The Story','com/story.html','book'],['Writings','com/writings.html','feather'],
+          ['Gifting','com/gifting.html','gift'],['Account','com/account.html','user']]},
+  {t:'kavanahglobal.org',h:'The platform',img:'org-hero',
+   d:'Eight wellness programmes with a real course player, a live-session schedule, a pseudonymous community, the Mood Journal, membership, shelter services and the Sanctuary.',
+   href:'org/index.html', badge:'Non-profit',
+   pages:[['Home','org/index.html','home'],['Programmes','org/programs.html','layers'],['Programme','org/program.html?g=freedom-addiction-recovery','book'],
+          ['Enrol','org/enroll.html?g=freedom-addiction-recovery','card'],['Today (dashboard)','org/dashboard.html','compass'],
+          ['Session player','org/player.html?g=freedom-addiction-recovery','playCircle'],['Live schedule','org/live.html','video'],
+          ['Mood Journal','org/journal.html','feather'],['Community','org/community.html','users'],['Thread','org/thread.html?t=t1','message'],
+          ['Membership','org/membership.html','award'],['Shelter services','org/shelter.html','bed'],
+          ['The Sanctuary','org/sanctuary.html','leaf'],['Donate','org/donate.html','heart']]},
+  {t:'One mobile app',h:'The super app',img:'app-shot',
+   d:'Shop and wellness in a single download — Today, Practice, Journal, Circles and Shop, plus the shelter line and a personal impact ledger. Sixteen working screens.',
+   href:'app/index.html', badge:'Phase 2',
+   pages:[['Interactive prototype','app/index.html','sparkle'],['Onboarding','app/index.html','user'],['Today','app/index.html','home'],
+          ['Mood Journal','app/index.html','feather'],['Journal insights','app/index.html','chart'],['Programmes','app/index.html','layers'],
+          ['Session player','app/index.html','playCircle'],['Live','app/index.html','video'],['Circles','app/index.html','users'],
+          ['Shop & bag','app/index.html','cart'],['Your impact','app/index.html','flame'],['Shelter tonight','app/index.html','bed']]}
+].map(function(c){
+  return '<div class="dcard"><div class="shot"><img src="'+KG.img(c.img)+'" alt=""></div>'
+  +'<div class="db"><span class="badge badge-dark" style="align-self:flex-start">'+c.badge+'</span>'
+  +'<h3 style="color:#fff;font-size:1.7rem;margin:.7rem 0 .15rem">'+c.h+'</h3>'
+  +'<span class="tiny" style="letter-spacing:.14em;text-transform:uppercase;color:var(--gold-500);font-weight:700;margin-bottom:.8rem">'+c.t+'</span>'
+  +'<p style="font-size:.88rem;color:rgba(249,239,212,.7);line-height:1.7;margin-bottom:1.2rem">'+c.d+'</p>'
+  +'<a class="btn btn-gold btn-block" href="'+c.href+'">Open '+c.h.toLowerCase()+'</a>'
+  +'<div class="hairline" style="margin:1.3rem 0 .6rem"></div>'
+  +'<div class="pglist">'+c.pages.map(function(p){
+      return '<a href="'+p[1]+'">'+ico(p[2])+p[0]+'</a>'; }).join('')+'</div>'
+  +'</div></div>';
+}).join('');
+
+document.getElementById('loop').innerHTML=[
+  ['cart','Someone buys a candle','A real product, from a real shop, at a fair price.'],
+  ['trending','The profit transfers','Net profit moves from the commercial company to the non-profit.'],
+  ['bed','A bed, a breakfast, a seat','$18 is one night. $6 is one breakfast. $40 is one class seat.'],
+  ['hands','Some of them stay','412 people who first came for a bed have since finished a programme.']
+].map(function(s,i){
+  return '<div class="card-dark" style="padding:24px;position:relative">'
+  +'<span style="position:absolute;top:18px;right:22px;font-family:\'Cormorant Garamond\',serif;font-size:2.4rem;color:rgba(217,177,74,.22);line-height:1;font-weight:600">'+(i+1)+'</span>'
+  +'<span style="color:var(--gold-400)">'+ico(s[0])+'</span>'
+  +'<h4 style="color:#fff;margin:.7rem 0 .4rem;font-size:1.16rem">'+s[1]+'</h4>'
+  +'<p style="font-size:.82rem;color:rgba(249,239,212,.62);line-height:1.6;margin:0">'+s[2]+'</p></div>';
+}).join('');
+U.boot();
+</script>
+</div>
+</body></html>

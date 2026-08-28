@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Programme — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css"><link rel="stylesheet" href="../assets/org.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<main id="main"></main>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script><script src="../assets/org.js"></script>
+<script>
+var g = KG.bySlug(KG.programs, U.qs('g')) || KG.programs[0];
+document.title = g.title + ' — Kavanah Global';
+var mods = KG.modulesFor(g.id);
+var enrolled = U.Enrol.has(g.id);
+var sessions = KG.live.filter(function(s){ return s.prog===g.id; });
+
+function hero(){
+  return '<section class="hero" style="min-height:clamp(440px,56vh,560px)">'
+  +'<div class="hero-bg"><img src="'+KG.img(g.cover)+'" alt=""></div>'
+  +'<div class="wrap hero-in">'
+  +'<div class="tiny" style="color:rgba(249,239,212,.6);margin-bottom:.8rem"><a href="index.html" style="color:inherit">Home</a> / <a href="programs.html" style="color:inherit">Programmes</a> / '+g.title+'</div>'
+  +'<div class="row" style="gap:8px;margin-bottom:.9rem"><span class="badge badge-gold">'+g.cat+'</span>'
+  +'<span class="badge badge-dark">'+g.level+'</span>'
+  +(g.badge?'<span class="badge badge-dark">'+g.badge+'</span>':'')+'</div>'
+  +'<h1 style="font-size:clamp(2.6rem,5.2vw,4rem)">'+g.title+'</h1>'
+  +'<p style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:clamp(1.2rem,2vw,1.6rem);color:var(--gold-300);margin:.2rem 0 1rem">'+g.sub+'</p>'
+  +'<p>'+g.blurb+'</p>'
+  +'<div class="row wrapflex" style="gap:20px;margin-top:1.4rem;color:rgba(249,239,212,.8);font-size:.86rem">'
+  +'<span class="row" style="gap:.4rem">'+ico('calendar')+g.weeks+' weeks</span>'
+  +'<span class="row" style="gap:.4rem">'+ico('playCircle')+g.lessonCount+' sessions</span>'
+  +'<span class="row" style="gap:.4rem">'+ico('video')+g.live+'</span>'
+  +'<span class="row" style="gap:.4rem">'+ico('users')+g.students.toLocaleString()+' enrolled</span>'
+  +'<span class="row" style="gap:.4rem">'+U.stars(g.rating)+g.rating+'</span>'
+  +'</div></div></section>';
+}
+
+function body(){
+  return '<section class="sec-sm"><div class="wrap" style="display:grid;grid-template-columns:1fr 360px;gap:44px;align-items:start" id="lay">'
+  + '<div>'
+  +   '<h2 style="margin-bottom:.8rem">About this programme</h2>'
+  +   '<p class="lede">'+g.long+'</p>'
+  +   '<div class="care" style="margin:1.4rem 0">'+ico('info')+'<span><b>What this is.</b> '+g.care+'</span></div>'
+  +   '<h3 style="margin:2.2rem 0 1rem">What you will be able to do</h3>'
+  +   '<div class="grid g2" style="gap:12px">'+g.outcomes.map(function(o){
+        return '<div class="row" style="gap:10px;align-items:flex-start;padding:12px 14px;background:var(--surface-2);border-radius:var(--r-sm)">'
+        +'<span style="color:var(--gold-600);flex:none;margin-top:1px">'+ico('check')+'</span>'
+        +'<span class="small" style="line-height:1.55">'+o+'</span></div>'; }).join('')+'</div>'
+  +   '<h3 style="margin:2.4rem 0 1rem">Curriculum</h3>'
+  +   '<p class="small muted" style="margin-bottom:1.2rem">'+mods.length+' modules · '+KG.flatLessons(g.id).length+' sessions · the first two are free to watch now.</p>'
+  +   '<div id="curric"></div>'
+  +   (sessions.length? '<h3 style="margin:2.4rem 0 1rem">Live sessions included</h3>'
+        +'<p class="small muted" style="margin-bottom:1.2rem">Every week, with Daisy. '+(sessions.some(function(s){return s.closed})?'Closed circles are never recorded.':'Most are recorded and stay in your library for 90 days.')+'</p>'
+        +'<div id="sess"></div>' : '')
+  +   '<h3 style="margin:2.4rem 0 1rem">Your guide</h3>'
+  +   '<div class="card card-pad" style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">'
+  +     U.avatar('Daisy Pearl',72)
+  +     '<div style="flex:1;min-width:240px"><b style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;color:var(--plum-800);display:block">Daisy Pearl</b>'
+  +     '<span class="tiny" style="letter-spacing:.14em;text-transform:uppercase;color:var(--gold-700);font-weight:600">Founder · Kavanah Global</span>'
+  +     '<p class="small" style="color:var(--ink-2);line-height:1.7;margin:.8rem 0 0">Writer, teacher and founder. She has taught in rooms in Queens and Long Island for over a decade, writes every word of the material herself, and paints the images by hand. She teaches every live session on this platform personally.</p>'
+  +     '<div class="row wrapflex" style="gap:16px;margin-top:.9rem;font-size:.78rem;color:var(--ink-3)">'
+  +       '<span class="row" style="gap:.3rem">'+ico('book')+'8 programmes</span>'
+  +       '<span class="row" style="gap:.3rem">'+ico('users')+'12,840 people</span>'
+  +       '<span class="row" style="gap:.3rem">'+ico('star')+'4.9 average</span></div></div></div>'
+  + '</div>'
+  + '<div id="side" style="position:sticky;top:96px"></div>'
+  + '</div></section>';
+}
+
+function sidebox(){
+  var freeCount = KG.flatLessons(g.id).filter(function(l){ return l.free; }).length;
+  return '<div class="card lux" style="padding:26px;overflow:hidden">'
+  + (enrolled
+     ? '<span class="badge badge-ok">Enrolled</span>'
+       +'<h3 style="margin:.7rem 0 .3rem;font-size:1.3rem">Pick up where you left off</h3>'
+       +'<div class="bar" style="margin:1rem 0 .5rem"><i style="width:'+U.Enrol.progress(g.id)+'%"></i></div>'
+       +'<p class="small muted" style="margin-bottom:1.2rem">'+U.Enrol.progress(g.id)+'% complete</p>'
+       +'<a class="btn btn-gold btn-block btn-lg" href="player.html?g='+g.slug+'">'+ico('play')+'Continue</a>'
+     : '<div class="row" style="gap:.5rem;align-items:baseline"><span style="font-family:\'Cormorant Garamond\',serif;font-size:2.8rem;font-weight:600;color:var(--plum-800);line-height:1">'+U.money(g.price)+'</span>'
+       +'<span class="muted small">one payment</span></div>'
+       +'<p class="small muted" style="margin:.6rem 0 1.2rem">Or included in Practitioner membership at $39/month.</p>'
+       +'<a class="btn btn-gold btn-block btn-lg" href="enroll.html?g='+g.slug+'">Enrol in '+g.title+'</a>'
+       +'<a class="btn btn-outline btn-block" style="margin-top:8px" href="player.html?g='+g.slug+'&free=1">'+ico('play')+'Watch '+freeCount+' free sessions</a>'
+       +'<p class="tiny muted center" style="margin-top:.8rem">No card needed for the free sessions</p>')
+  + '<hr class="hairline" style="margin:20px 0">'
+  + '<h4 style="font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:.9rem">What is included</h4>'
+  + '<div class="stack" style="gap:10px">'+g.includes.map(function(f){
+      return '<div class="row" style="gap:10px;align-items:flex-start"><span style="color:var(--gold-600);flex:none;margin-top:1px">'+ico('check')+'</span>'
+      +'<span class="small" style="line-height:1.5">'+f+'</span></div>'; }).join('')+'</div>'
+  + '<hr class="hairline" style="margin:20px 0">'
+  + '<div class="row-between"><span class="small muted">Lifetime access</span><span>'+ico('checkCircle')+'</span></div>'
+  + '<div class="row-between" style="margin-top:.5rem"><span class="small muted">Cancel any time</span><span>'+ico('checkCircle')+'</span></div>'
+  + '</div>'
+  + '<div class="card card-pad" style="margin-top:14px;background:var(--surface-2)">'
+  +   '<div class="row" style="gap:10px;align-items:flex-start"><span style="color:var(--gold-700);flex:none">'+ico('flame')+'</span>'
+  +   '<div><b class="small" style="display:block">Cannot afford this?</b>'
+  +   '<p class="tiny muted" style="margin:.2rem 0 .6rem;line-height:1.6">Sponsored seats are funded every month by the shop and by members. Ask, and nobody will ask you to prove anything.</p>'
+  +   '<button class="btn btn-outline btn-xs" onclick="U.toast(\'Request sent. Someone will reply within a day.\',\'mail\')">Request a sponsored seat</button></div></div></div>';
+}
+
+document.getElementById('main').innerHTML = hero() + body() + '<div id="related"></div>';
+
+document.getElementById('curric').innerHTML = mods.map(function(m,mi){
+  var mins = m.ls.reduce(function(a,l){ return a + parseInt(l.len.split(':')[0],10); },0);
+  return '<div class="mod '+(mi===0?'on':'')+'">'
+  +'<button class="mod-h" onclick="this.parentNode.classList.toggle(\'on\')">'
+  +'<span style="color:var(--gold-600)">'+ico('layers')+'</span>'
+  +'<b>'+m.t+'</b><span class="c">'+m.ls.length+' sessions · '+mins+' min</span>'+ico('chevronDown','chev')+'</button>'
+  +'<div class="mod-b">'+m.ls.map(function(l,li){
+    return '<div class="les"><img class="les-th" src="'+KG.img(l.th)+'" alt="" loading="lazy">'
+    +'<span style="color:var(--'+(l.free||enrolled?'gold-600':'ink-4')+')">'+ico(l.free||enrolled?'playCircle':'lock')+'</span>'
+    +'<div class="les-t"><b>'+l.t+'</b><span>'+l.len+'</span></div>'
+    +(l.free?'<span class="pill" style="background:var(--ok-bg);color:var(--ok)">Free</span>'
+      :(enrolled?'':'<span class="pill" style="background:var(--surface-2);color:var(--ink-4)">Locked</span>'))
+    +'</div>'; }).join('')+'</div></div>';
+}).join('');
+
+if(sessions.length) document.getElementById('sess').innerHTML = sessions.map(function(s){ return ORG.sess(s,true); }).join('');
+document.getElementById('side').innerHTML = sidebox();
+
+var rel = KG.programs.filter(function(x){ return x.id!==g.id; }).slice(0,3);
+document.getElementById('related').innerHTML =
+  '<section class="sec" style="background:var(--surface-2);border-top:1px solid var(--line-2)"><div class="wrap">'
+  +'<div class="center" style="margin-bottom:30px"><span class="eyebrow center no-rule">Also worth a look</span><h2>Other programmes</h2></div>'
+  +'<div class="grid g3">'+rel.map(function(x){ return ORG.gcard(x); }).join('')+'</div></div></section>';
+
+ORG.boot('programs');
+U.reveal();
+if(window.innerWidth<1000) document.getElementById('lay').style.gridTemplateColumns='1fr';
+</script>
+</body></html>

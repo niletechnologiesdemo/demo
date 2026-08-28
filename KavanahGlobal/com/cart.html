@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your bag — Kavanah Global</title>
+<link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/com.css">
+</head>
+<body>
+<div id="hdr-slot"></div>
+<section class="sec-sm"><div class="wrap">
+  <div class="tiny muted" style="margin-bottom:.7rem"><a href="index.html">Home</a> / Your bag</div>
+  <h1 style="font-size:clamp(2.1rem,4vw,3rem);margin-bottom:1.6rem">Your bag</h1>
+  <div class="co-lay">
+    <div id="items"></div>
+    <div class="co-side" id="side"></div>
+  </div>
+</div></section>
+<section class="sec" style="background:var(--surface-2);border-top:1px solid var(--line-2)"><div class="wrap">
+  <div class="row-between" style="margin-bottom:26px;align-items:flex-end">
+    <div><span class="eyebrow">You might also like</span><h2>Small things that pair well</h2></div>
+  </div>
+  <div class="pgrid g4" style="grid-template-columns:repeat(4,1fr)" id="also"></div>
+</div></section>
+<div id="ftr-slot"></div>
+<script src="../assets/icons.js"></script><script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script><script src="../assets/com.js"></script>
+<script>
+function draw(){
+  var items=U.Cart.all();
+  var box=document.getElementById('items'), side=document.getElementById('side');
+  if(!items.length){
+    box.innerHTML='<div class="card card-pad center" style="padding:70px 24px">'
+      +'<span style="color:var(--gold-400)" data-ico="cart"></span>'
+      +'<h3 style="margin:1rem 0 .4rem">Your bag is empty</h3>'
+      +'<p class="muted small" style="max-width:38ch;margin:0 auto 1.4rem">Nothing here yet. Every order, at any size, funds a night of shelter or a seat in a programme.</p>'
+      +'<a class="btn btn-gold" href="shop.html">Start shopping</a></div>';
+    side.innerHTML='';
+  } else {
+    box.innerHTML='<div class="card card-pad">'+items.map(function(i){
+      var p=KG.byId(KG.products,i.id); if(!p) return '';
+      return '<div class="citem"><a href="product.html?p='+p.slug+'"><img src="'+KG.img(p.imgs[0])+'" alt=""></a>'
+      +'<div class="citem-b"><div class="row-between" style="align-items:flex-start">'
+      +'<div><h4><a href="product.html?p='+p.slug+'">'+p.name+'</a></h4>'
+      +(i.v?'<span class="citem-v">'+i.v+'</span>':'')
+      +'<div class="funds" style="border:0;padding:0;margin:.45rem 0 0">'+ico('flame')+'Funds '+p.funds+'</div></div>'
+      +'<b class="price">'+U.money(p.price*i.q)+'</b></div>'
+      +'<div class="row-between" style="margin-top:.6rem"><span class="qty-sm">'
+      +'<button onclick="U.Cart.set(\''+i.id+'\','+JSON.stringify(i.v)+','+(i.q-1)+')">'+ico('minus')+'</button><span>'+i.q+'</span>'
+      +'<button onclick="U.Cart.set(\''+i.id+'\','+JSON.stringify(i.v)+','+(i.q+1)+')">'+ico('plus')+'</button></span>'
+      +'<button class="btn btn-ghost btn-xs" onclick="U.Cart.remove(\''+i.id+'\','+JSON.stringify(i.v)+')">Remove</button></div>'
+      +'</div></div>';
+    }).join('')+'</div>'
+    +'<div class="row" style="margin-top:16px;gap:10px"><a class="btn btn-outline btn-sm" href="shop.html">'+ico('arrowLeft')+'Keep shopping</a>'
+    +'<button class="btn btn-ghost btn-sm" onclick="U.Cart.clear()">Empty bag</button></div>';
+
+    var sub=U.Cart.total(), ship=sub>75?0:6.50, tax=sub*0.08875, funded=U.Cart.fundedSummary();
+    side.innerHTML='<h3 style="font-size:1.2rem;margin-bottom:1rem">Order summary</h3>'
+      +'<div class="sumrow"><span>Subtotal</span><b>'+U.money(sub)+'</b></div>'
+      +'<div class="sumrow"><span>Shipping</span><span>'+(ship?U.money(ship):'Free')+'</span></div>'
+      +'<div class="sumrow"><span>NY sales tax</span><span>'+U.money(tax)+'</span></div>'
+      +'<div class="sumrow total"><span>Total</span><span>'+U.money(sub+ship+tax)+'</span></div>'
+      +(sub<75?'<div class="hint" style="margin-top:.7rem">Add '+U.money(75-sub)+' for free shipping</div>'
+        +'<div class="bar" style="margin-top:.4rem"><i style="width:'+Math.min(100,sub/75*100)+'%"></i></div>':'')
+      +'<div class="fundsbox" style="margin:18px 0 14px">'+ico('flame')
+      +'<div><b>This bag funds</b><p>'+(funded.length?funded.join('<br>'):'—')+'</p></div></div>'
+      +'<a class="btn btn-gold btn-block btn-lg" href="checkout.html">Checkout '+ico('arrowRight')+'</a>'
+      +'<div class="row" style="justify-content:center;gap:16px;margin-top:14px;color:var(--ink-4)">'
+      +ico('lock')+'<span class="tiny">Secure checkout · Stripe</span></div>';
+  }
+  U.boot();
+}
+document.addEventListener('cart:change',draw);
+COM.boot('shop'); draw();
+document.getElementById('also').innerHTML=['p27','p17','p09','p22'].map(function(id){return COM.pcard(KG.byId(KG.products,id))}).join('');
+U.reveal(); U.Wish.sync();
+</script>
+</body></html>

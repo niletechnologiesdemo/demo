@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Kavanah App — one app for all of it</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/com.css">
+<link rel="stylesheet" href="../assets/org.css">
+<link rel="stylesheet" href="../assets/app.css">
+</head>
+<body style="background:var(--plum-950)">
+<div class="appstage">
+
+<header style="padding:22px 0;border-bottom:1px solid rgba(217,177,74,.16);position:relative;z-index:20">
+  <div class="wrap row-between wrapflex" style="gap:16px">
+    <a class="omark" href="../index.html"><img src="" id="crest" alt="">
+      <span><span class="bn" style="color:var(--gold-200)">Kavanah Global</span>
+      <span class="bs" style="color:var(--gold-500)">The mobile app</span></span></a>
+    <div class="row wrapflex" style="gap:10px">
+      <a class="btn btn-outline-gold btn-sm" href="../com/index.html">kavanahglobal.com</a>
+      <a class="btn btn-outline-gold btn-sm" href="../org/index.html">kavanahglobal.org</a>
+    </div>
+  </div>
+</header>
+
+<section style="padding:clamp(30px,5vw,56px) 0 20px;position:relative">
+  <div class="glow" style="top:-140px;left:8%"></div>
+  <div class="glow" style="bottom:-200px;right:6%;opacity:.55"></div>
+  <div class="wrap center" style="position:relative;z-index:2;max-width:820px;margin-bottom:clamp(24px,4vw,44px)">
+    <span class="eyebrow center no-rule" style="color:var(--gold-400)">iOS &amp; Android · Phase 2</span>
+    <h1 style="color:#fff;font-size:clamp(2.2rem,4.6vw,3.4rem)">One app. Both companies.</h1>
+    <div class="ornament"><i></i></div>
+    <p class="lede" style="color:rgba(249,239,212,.8);max-width:60ch;margin-inline:auto">
+      The programmes, the live sessions, the Mood Journal, the circles, the shelter line — and the shop that pays for all of it — in a single download. Tap anything below; every screen works.
+    </p>
+  </div>
+
+  <div class="showcase">
+    <div>
+      <div class="scr-list" id="scrlist"></div>
+    </div>
+
+    <div class="phone" id="phone"><div class="phone-screen" id="screen"></div></div>
+
+    <div>
+      <div style="max-width:320px">
+        <span class="eyebrow no-rule" style="color:var(--gold-400)">Why one app</span>
+        <h3 style="color:#fff;font-size:1.7rem;margin-bottom:.7rem">The loop only closes if it is one app</h3>
+        <p style="color:rgba(249,239,212,.72);font-size:.9rem;line-height:1.75">Split the shop and the wellness platform into two downloads and you get two half-used apps. Keep them together and every purchase shows the buyer a bed, and every member sees the shop that funded their seat.</p>
+        <div class="stack" style="gap:14px;margin-top:1.6rem" id="whys"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:clamp(30px,5vw,60px) 0 10px;border-top:1px solid rgba(217,177,74,.16);position:relative;z-index:2">
+  <div class="wrap" style="margin-bottom:26px">
+    <div class="row-between wrapflex" style="gap:16px;align-items:flex-end">
+      <div><span class="eyebrow no-rule" style="color:var(--gold-400)">The full set</span>
+        <h2 style="color:#fff">Every screen, side by side</h2></div>
+      <span class="small" style="color:rgba(249,239,212,.5)">Scroll sideways →</span>
+    </div>
+  </div>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<footer style="padding:34px 0 50px;border-top:1px solid rgba(217,177,74,.16);position:relative;z-index:2">
+  <div class="wrap row-between wrapflex" style="gap:16px;color:rgba(249,239,212,.5);font-size:.8rem">
+    <span>© 2026 Kavanah Global · Mobile concept · Phase 2</span>
+    <span style="display:flex;gap:18px">
+      <a href="../index.html" style="color:var(--gold-300)">Project home</a>
+      <a href="../com/index.html" style="color:var(--gold-300)">The shop</a>
+      <a href="../org/index.html" style="color:var(--gold-300)">The platform</a>
+    </span>
+  </div>
+</footer>
+
+<script src="../assets/icons.js"></script>
+<script src="../assets/data.js"></script>
+<script src="../assets/ui.js"></script>
+<script src="../assets/app.js"></script>
+<script>
+document.getElementById('crest').src = KG.root + KG.brand.crestFile;
+
+window.APP = {
+  cur:'today',
+  go:function(k){
+    if(!APP_SCREENS[k]) { APP.toast('Screen: '+k); return; }
+    APP.cur=k;
+    var s=document.getElementById('screen');
+    s.style.opacity='0';
+    setTimeout(function(){
+      s.innerHTML = APP_SCREENS[k]();
+      s.style.transition='opacity .22s var(--ease)';
+      s.style.opacity='1';
+      drawList();
+    },110);
+  },
+  toast:function(m){ U.toast(m); }
+};
+
+function drawList(){
+  document.getElementById('scrlist').innerHTML = APP_META.map(function(m){
+    if(m.g) return '<div class="scr-grp">'+m.g+'</div>';
+    return '<button class="scr-btn '+(APP.cur===m.k?'on':'')+'" onclick="APP.go(\''+m.k+'\')">'
+    + ico(m.i) + '<span style="flex:1"><b style="display:block;font-weight:inherit">'+m.t+'</b>'
+    + '<span style="font-size:.68rem;opacity:.62">'+m.d+'</span></span></button>';
+  }).join('');
+}
+
+document.getElementById('whys').innerHTML=[
+  ['flame','Purchases become beds','Buy a candle in the Shop tab; the Today tab shows the night it funded.'],
+  ['feather','The journal is the habit','Two ninety-second check-ins a day is what brings people back — nothing else does.'],
+  ['users','Support at 11pm','Circles are the reason people stay. A phone in a pocket is where 11pm happens.'],
+  ['bed','A shelter line in a pocket','Beds free tonight, one tap to call, one tap to hold a bed.']
+].map(function(w){
+  return '<div class="row" style="gap:12px;align-items:flex-start">'
+  +'<span style="color:var(--gold-400);flex:none">'+ico(w[0])+'</span>'
+  +'<div><b style="display:block;color:#fff;font-size:.88rem;margin-bottom:.15rem">'+w[1]+'</b>'
+  +'<span style="font-size:.78rem;color:rgba(249,239,212,.62);line-height:1.6">'+w[2]+'</span></div></div>';
+}).join('');
+
+/* gallery of every screen — rendered lazily, 16 live phone screens at once is too heavy */
+var gal = document.getElementById('gallery');
+gal.innerHTML = APP_META.filter(function(m){ return m.k; }).map(function(m){
+  return '<div class="frame-wrap" data-screen="'+m.k+'">'
+  + '<div class="shrink"><div class="phone noint"><div class="phone-screen"></div></div></div>'
+  + '<div class="cap">'+m.t+'<span>'+m.d+'</span></div></div>';
+}).join('');
+
+var galIO = new IntersectionObserver(function(entries){
+  entries.forEach(function(en){
+    if(!en.isIntersecting) return;
+    var w = en.target, k = w.getAttribute('data-screen');
+    if(w.dataset.built) return;
+    w.dataset.built = '1';
+    w.querySelector('.phone-screen').innerHTML = APP_SCREENS[k]();
+    galIO.unobserve(w);
+  });
+},{root:gal, rootMargin:'400px'});
+gal.querySelectorAll('.frame-wrap').forEach(function(w){ galIO.observe(w); });
+
+APP.go('today');
+U.boot();
+</script>
+</div>
+</body>
+</html>
