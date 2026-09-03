@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "mybrainai", "runtimeExecutable": "node", "runtimeArgs": [".claude/serve.js"], "port": 8752, "autoPort": true }
+  ]
+}
