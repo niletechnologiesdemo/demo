@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 65">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke: #9f9f9f;
+      }
+
+      .cls-1, .cls-3 {
+        stroke-width: 1.4px;
+      }
+
+      .cls-2, .cls-3, .cls-5 {
+        fill: none;
+      }
+
+      .cls-4 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <g id="Group_336" data-name="Group 336" transform="translate(-801 -165)">
+    <g id="Rectangle_109" data-name="Rectangle 109" class="cls-1" transform="translate(801 165)">
+      <rect class="cls-4" width="48" height="65" rx="3"/>
+      <rect class="cls-5" x="0.7" y="0.7" width="46.6" height="63.6" rx="2.3"/>
+    </g>
+    <g id="Rectangle_110" data-name="Rectangle 110" class="cls-1" transform="translate(804 171)">
+      <rect class="cls-4" width="42" height="51" rx="3"/>
+      <rect class="cls-5" x="0.7" y="0.7" width="40.6" height="49.6" rx="2.3"/>
+    </g>
+    <g id="Ellipse_113" data-name="Ellipse 113" class="cls-2" transform="translate(823 223)">
+      <ellipse class="cls-4" cx="2.5" cy="2.5" rx="2.5" ry="2.5"/>
+      <ellipse class="cls-5" cx="2.5" cy="2.5" rx="2" ry="2"/>
+    </g>
+    <g id="Rectangle_111" data-name="Rectangle 111" class="cls-1" transform="translate(808 176)">
+      <rect class="cls-4" width="11" height="12"/>
+      <rect class="cls-5" x="0.7" y="0.7" width="9.6" height="10.6"/>
+    </g>
+    <line id="Line_78" data-name="Line 78" class="cls-3" x2="32" transform="translate(808.5 194.5)"/>
+    <line id="Line_79" data-name="Line 79" class="cls-3" x2="32" transform="translate(808.5 197.5)"/>
+    <line id="Line_80" data-name="Line 80" class="cls-3" x2="22" transform="translate(808.5 201.5)"/>
+    <line id="Line_81" data-name="Line 81" class="cls-3" x2="22" transform="translate(808.5 204.5)"/>
+    <path id="Path_164" data-name="Path 164" class="cls-3" d="M-10608.873-9185.856l1.5-4.634,2.511,2.246-.991,1.5,4.063-.725-.631-1.411.631-1.612,3.639,2.246,2.957-.634" transform="translate(11437 9404)"/>
+    <g id="Group_326" data-name="Group 326" transform="translate(-0.5)">
+      <line id="Line_77" data-name="Line 77" class="cls-3" x2="12" transform="translate(822.5 168.5)"/>
+      <line id="Line_82" data-name="Line 82" class="cls-3" x2="3" transform="translate(817.5 168.5)"/>
+    </g>
+  </g>
+</svg>
