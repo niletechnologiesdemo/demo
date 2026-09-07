@@ -29,14 +29,14 @@ function scLanding() {
         <h5 class="fs-30 mb-15" style="line-height:36px">Provisioning &amp; Actualization</h5>
         <p class="fs-15 color-grey" style="line-height:24px">For GPA, ACE and CFR. Provision intake and bulk upload, validation and DOA approval,
           URN generation, Oracle posting, matching and actualization, ageing and reversal, the real-time flash.</p>
-        <p class="tile-meta">14 screens &nbsp;·&nbsp; 587 PD / 26.7 MM in the effort plan</p>
+        <p class="tile-meta">14 screens</p>
       </div>
       <div class="tile" style="min-height:auto;padding:44px 40px" onclick="go('/p/dashboard')">
         <p class="np-eyebrow mb-15">External</p>
         <h5 class="fs-30 mb-15" style="line-height:36px">Partner Portal</h5>
         <p class="fs-15 color-grey" style="line-height:24px">For vendors and partners. Category selection across PM and AP, single and bulk submission,
           OCR and IRN review, the validation checklist, rejection and correction, live status tracking.</p>
-        <p class="tile-meta">8 screens &nbsp;·&nbsp; 624 PD / 28.4 MM in the effort plan</p>
+        <p class="tile-meta">8 screens</p>
       </div>
     </div>
 
@@ -53,8 +53,8 @@ function scLanding() {
         <p class="fs-14 color-grey line-height-22">The Airtel Partner Portal design system — Tondo, the airtel-icons set and the existing
           stylesheets, unchanged. Only components the PO portal never needed were added.</p></div>
       <div><p class="np-eyebrow mb-12">Sourced from</p>
-        <p class="fs-14 color-grey line-height-22">BRD Non-PO 25 Aug 26, the Partner Portal spec v2, the consolidated process flows,
-          both effort plans and the GPA Input Tracking Sheet for April 2026.</p></div>
+        <p class="fs-14 color-grey line-height-22">BRD Non-PO 25 Aug 26, the Partner Portal specification v2, the consolidated
+          process flows and the GPA Input Tracking Sheet for April 2026.</p></div>
       <div><p class="np-eyebrow mb-12">Open questions are marked</p>
         <p class="fs-14 color-grey line-height-22">Where the documents leave something undecided the screen says so, referencing the
           question number in the Clarification Register rather than inventing an answer.</p></div>

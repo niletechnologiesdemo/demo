@@ -76,7 +76,7 @@ so `../ui-design-reference` stays untouched:
 ## Where the content comes from
 
 BRD Non-PO 25 Aug 26 · Partner Portal details v2 · consolidated process flows ·
-both effort plans · GPA Input Tracking Sheet Apr'26. Codes, GLs, scenario counts,
+GPA Input Tracking Sheet Apr'26. Codes, GLs, scenario counts,
 escalation thresholds and deferment percentages are the real ones from those documents.
 
 Where the source documents leave something undecided, the screen says so and cites the
