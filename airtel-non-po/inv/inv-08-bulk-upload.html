@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulk upload - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Bulk upload by category template (HLD 5.2, 6.2.1): locator-wise PM templates, AP bulk templates, debit-note files, bulk attachments. */
+  var S = Page.state(), R = INV.role('toco'), rid = R.id;
+  var BULK = INV.cats.filter(function (c) { return c.bulk && !c.oos; });
+  var def = { toco: 'central-toco', vendor: 'local-toco', tax: 'gst-dn', circle: 'll-eb' }[rid] || 'central-toco';
+  var cid = Page.param('cat') || def, c = INV.cat(cid);
+  if (!c.bulk) { cid = def; c = INV.cat(cid); }
+  var checked = S === 'checked' || S === 'submitted', attach = S === 'attach', pm = c.fam === 'PM', gstnc = cid === 'gst-dn';
+
+  var steps = UI.steps({ items: [
+    { label: 'Download the template', sub: 'Pre-populated with locator, vendor site, opex head, TDS and GST categories, payment term and GSTINs where they can be derived', state: 'done' },
+    { label: attach ? 'Upload invoice PDFs' : 'Upload the filled template and invoice PDFs', sub: pm ? 'One row per site line; Technical ID and ToCo ID cannot be blank' : 'One row per invoice', state: checked ? 'done' : 'current' },
+    { label: 'Review results', sub: 'Repeated locator lines merged; errors shown before final submission', state: checked && S !== 'submitted' ? 'current' : S === 'submitted' ? 'done' : '' },
+    { label: 'Submit valid invoices', sub: 'Each invoice gets its own reference number', state: S === 'submitted' ? 'done' : '' }] });
+
+  var pick = UI.section({ title: attach ? 'Bulk attachments' : 'Template', body: [UI.grid(3, [
+    UI.field({ label: 'Category', type: 'select', value: UI.esc(c.name) + ' (' + INV.FAM[c.fam] + ')', required: true }),
+    UI.field({ label: 'Circle', type: rid === 'circle' ? 'readonly' : 'select', value: rid === 'circle' ? 'UP East (your circle only)' : rid === 'toco' ? 'All circles (central ToCo vendor)' : 'Delhi', required: true, hint: rid === 'circle' ? 'Invoices of another circle cannot be uploaded' : '' }),
+    UI.field({ label: attach ? 'Link files by' : 'Submission month', type: 'select', value: attach ? (pm ? 'Group ID' : 'Invoice number') : 'Sep-2026', required: true })]),
+    attach ? UI.upload({ label: 'Invoice PDFs and supporting documents', required: true, hint: 'File names must start with the invoice number; PDFs are read by OCR and QR codes scanned in bulk', files: [
+      { name: 'IND_26_SEP_80412.pdf', meta: '1.2 MB', status: UI.status('Linked to NPO-2627-004851', 'ok') }, { name: 'IND_26_SEP_80430.pdf', meta: '1.4 MB', status: UI.status('Linked to NPO-2627-004866', 'ok') },
+      { name: 'IND_26_SEP_80431_annex.pdf', meta: '380 KB', status: UI.status('No matching invoice') }] })
+    : UI.row([UI.textlink({ label: 'Download template', icon: 'download', toast: 'Template download started' }), pm ? UI.textlink({ label: cid === 'bw-dom' ? 'Download circuits from the cost sheet' : 'Download last month\'s sites', icon: 'download', toast: 'Pre-filled rows downloaded' }) : '', UI.textlink({ label: 'Field rules for this template', icon: 'arrowRight', modal: 'rules' })]),
+    attach ? '' : UI.upload({ label: gstnc ? 'Tax team debit note file' : 'Filled template', required: true, hint: gstnc ? 'GSTR-2B and 6A reconciliation output in the debit note format; approvals uploaded with it' : 'Excel, up to 5,000 rows', files: checked ? [{ name: gstnc ? 'GSTNC_DN_Sep26_BAL.xlsx' : cid === 'central-toco' ? 'IND_Sep26_all_circles.xlsx' : UI.esc(c.name).replace(/ /g, '_') + '_Sep26.xlsx', meta: (pm ? '186 rows' : '24 rows') + ' &middot; 412 KB', status: UI.status('Checked', 'ok') }] : [] }),
+    attach || gstnc ? '' : UI.upload({ label: 'Invoice PDFs (bulk)', required: true, hint: 'Linked to template rows by invoice number. Only PDFs go to OCR.', files: checked ? [{ name: '9 PDF files', meta: '11.8 MB', status: UI.status('Read by OCR', 'ok') }] : [] }),
+    attach || gstnc ? '' : UI.options({ label: 'IRN QR codes', type: 'check', items: [{ label: 'Scan IRN QR codes in bulk for e-invoice suppliers', on: true }], hint: 'Invoice date, amount and GSTINs from the QR are compared with each invoice' })] });
+
+  var res = '';
+  if (checked && pm) res = UI.section({ title: 'Results', body: [
+    UI.kpis({ cols: 5, items: [{ value: '9', label: 'Invoices' }, { value: '186', label: 'Lines uploaded' }, { value: '171', label: 'Lines after merge', sub: '15 repeated locator lines merged' }, { value: '7', label: 'Valid invoices', active: true }, { value: '2', label: 'Invoices withheld' }] }),
+    UI.table({ dense: true, pager: false, columns: [{ key: 'inv', label: 'Invoice' }, { key: 'c', label: 'Circle' }, { key: 'l', label: 'Lines', num: true }, { key: 'a', label: 'Base (Rs)', num: true, money: true }, { key: 'r', label: 'Result' }, { key: '_acts', label: '' }],
+      rows: [
+        { inv: 'IND/26/SEP/80412', c: 'Delhi', l: '42 (45 before merge)', a: 1563754.58, r: UI.status('Valid', 'ok') + '<div class="k-small">Discount Rs 4,200.00 spread over 41 lines</div>' },
+        { inv: 'IND/26/SEP/80430', c: 'Haryana', l: '28', a: 912400, r: UI.status('Valid', 'ok') },
+        { inv: 'IND/26/SEP/80431', c: 'Punjab', l: '19', a: 655210, r: UI.status('Valid', 'ok') + '<div class="k-small">Potential duplicate in PM - will be re-attempted with bypass flag Y</div>' },
+        { inv: 'IND/26/SEP/80438', c: 'UP East', l: '24', a: 801330, r: UI.status('Withheld') + '<div class="k-small">Locator not found for 2 lines (circle + site ID + technical ID); whole invoice withheld</div>', _flag: true, _acts: [{ icon: 'eye', label: 'Locator exceptions', go: 'inv-15' }] },
+        { inv: 'IND/26/SEP/80440', c: 'Karnataka', l: '17', a: 590215, r: UI.status('Withheld') + '<div class="k-small">Base differs from OCR by Rs 38.00 (tolerance Rs 5)</div>', _flag: true, _acts: [{ icon: 'edit', label: 'Correct and upload again', toast: 'Download the rows, correct and upload again' }] },
+        { inv: '4 more invoices', c: '', l: '41', a: 2210640, r: UI.status('Valid', 'ok') }],
+      footLeft: [UI.textlink({ label: 'Download rows with errors', icon: 'download', toast: 'Error rows downloaded with the reason in the last column' })] }),
+    UI.note({ text: 'Lines with the same locator, invoice number, invoice date, start and end dates are merged: earliest start date, latest end date, total amount. Any error other than a duplicate or potential duplicate withholds the whole invoice; it is included in the next upload cycle once corrected. Locator lines carry a remark: Locator not found, Locator inactive or Processed.' })] });
+  else if (checked) res = UI.section({ title: 'Results', body: [
+    UI.kpis({ cols: 4, items: [{ value: gstnc ? '31' : '24', label: gstnc ? 'Debit notes' : 'Invoices' }, { value: gstnc ? '62' : '24', label: 'Lines' }, { value: gstnc ? '30' : '22', label: 'Valid', active: true }, { value: gstnc ? '1' : '2', label: 'With errors' }] }),
+    UI.table({ dense: true, pager: false, columns: [{ key: 'n', label: 'Row' }, { key: 'inv', label: gstnc ? 'Debit note' : 'Invoice' }, { key: 'v', label: 'Vendor' }, { key: 'a', label: 'Amount (Rs)', num: true }, { key: 'r', label: 'Result' }],
+      rows: gstnc ? [
+        { n: 2, inv: '<span class="k-urn wrap-any">GSTNONCOMPLIANCE-SEP26-B2-26-27-BAL-112</span>', v: 'Arora Realty Services', a: '-4,016.00', r: UI.status('Valid', 'ok') + '<div class="k-small">2 lines: CGST 2434234, SGST 2434235</div>' },
+        { n: 4, inv: '<span class="k-urn wrap-any">GSTNONCOMPLIANCE-SEP26-B2-26-27-BAL-113</span>', v: 'Aerial Telecom Solutions', a: '-2,13,014.00', r: UI.status('Valid', 'ok') },
+        { n: 9, inv: '<span class="k-urn wrap-any">GSTNONCOMPLIANCE-SEP26-B2-26-27-APBL-031</span>', v: 'Vendor 578990', a: '-8,400.00', r: UI.status('Error') + '<div class="k-small">Vendor site inactive in Oracle</div>', _flag: true }]
+        : [{ n: 2, inv: 'NXD/26-27/2291', v: 'Nxtra Data Ltd', a: '33,51,200.00', r: UI.status('Valid', 'ok') + '<div class="k-small">IUT 611 in segment 6</div>' },
+          { n: 3, inv: 'NXD/26-27/2292', v: 'Nxtra Data Ltd', a: '4,42,500.00', r: UI.status('Valid', 'ok') },
+          { n: 7, inv: 'XTL/26/0918', v: 'Xtelify Ltd', a: '12,980.00 USD', r: UI.status('Error') + '<div class="k-small">Exchange rate missing for a USD invoice</div>', _flag: true },
+          { n: 11, inv: 'NXD/26-27/2291', v: 'Nxtra Data Ltd', a: '33,51,200.00', r: UI.status('Error') + '<div class="k-small">Duplicate of row 2 - blocked</div>', _flag: true }] })] });
+  else if (attach) res = UI.alert({ tone: 'warn', title: '1 file has no matching invoice.', text: 'IND_26_SEP_80431_annex.pdf - rename it with the invoice number or remove it. Attachments are uploaded to OWCC by Group ID once the invoice is booked.' });
+
+  var rulesRows = pm ? [['Locator', UI.esc(c.locator)], ['Opex head', cid === 'bw-dom' ? 'Bandwidth cost sheet by circuit ID' : 'Best match of the OCR description against the opex head master'], ['Vendor site', 'Supplier GSTIN (+ operating unit for Central ToCo)'], ['Payment term', UI.esc(c.term)],
+    ['TDS section / category', 'TDS masters by opex head, supplier GSTIN and operating unit'], ['GST category', 'Within / outside state from CGST + SGST or IGST; state from the booking circle'], ['Amount tolerance', UI.esc(c.tol)], ['Invoice number / date', 'Must match OCR; upper case; 16 characters for GST invoices; no future dates']]
+    : [['Mandatory fields', 'As marked M in the category input format'], ['Vendor site, GL, item code', 'Quality Plan and the GPA item code list'], ['Payment term / pay group', UI.esc(c.term) + ' / ' + UI.esc(c.payGroup)], ['Duplicate check', 'Blocked if booked or under processing in AP']];
+  var rules = UI.modal({ id: 'rules', title: 'Field', accent: 'Rules', body: [UI.p(UI.esc(c.name) + ' template', { muted: true }), UI.kv({ cols: 2, items: rulesRows })], foot: [UI.button({ label: 'Close', variant: 'primary', close: true })] });
+
+  var done = UI.modal({ id: 'done', open: S === 'submitted', title: 'Bulk upload', accent: 'Submitted', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Batch', 'BLK-INV-26-1041'], ['Submitted', pm ? '7 invoices (reference numbers issued)' : '22 invoices'], ['Not submitted', pm ? '2 invoices - correct and upload again' : '2 rows'], ['Next', pm ? 'Validation, then booking in PM by locator' : 'Validation, then approval before booking']] })],
+    foot: [UI.button({ label: 'Track invoices', variant: 'primary', go: 'inv-09' })] });
+
+  var bar = UI.sticky({ left: [UI.textlink({ label: attach ? 'Link files' : 'Check the file', icon: 'arrowRight', state: attach ? 'attach' : 'checked' })],
+    totals: checked ? [[pm ? 'Valid invoices' : 'Valid rows', pm ? '7' : gstnc ? '30' : '22'], ['Amount', pm ? 'Rs 53,42,004.58' : gstnc ? 'Rs -2,02,880.00' : 'Rs 2,48,61,930.00']] : [['Valid', '-']],
+    right: [UI.button({ label: 'Cancel', variant: 'text', go: 'inv-03' }), checked ? UI.button({ label: pm ? 'Submit 7 valid invoices' : 'Submit valid rows', variant: 'primary', state: 'submitted' }) : UI.button({ label: attach ? 'Upload attachments' : 'Submit valid invoices', variant: attach ? 'primary' : 'disabled', toast: attach ? '2 files linked and stored' : '' })] });
+
+  Page.render({
+    id: 'inv-08', roleId: 'toco',
+    variants: { label: 'Template', param: 'cat', def: cid, items: BULK.map(function (x) { return { id: x.id, label: x.name.replace(' (landlord electricity)', '').replace(' (incl. broadband)', '').replace('GST non-compliance debit note', 'GST NC debit note').replace(' / Finance DN', '') }; }) },
+    states: [{ id: 'checked', label: 'File checked' }, { id: 'submitted', label: 'Submitted' }, { id: 'attach', label: 'Bulk attachments' }],
+    rail: { mode: 'form', title: 'Bulk', accent: 'Upload', back: INV.isPartner(R) ? 'inv-02' : 'inv-03', text: 'Upload many invoices of one category at a time. Every invoice is checked like a single submission; an invoice with any failing line is withheld as a whole and the rest go ahead.' },
+    html: steps + '<div class="k-gap"></div>' + pick + res + bar + rules + done
+  });
+})();
+</script>
+</body>
+</html>

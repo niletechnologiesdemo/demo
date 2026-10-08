@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work queues - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* PHD / AP back office: invoices waiting for review, the manual queue, Rush and Hold (HLD 4.3, 5.7, 5.9). */
+  var S = Page.state(), sel = S === 'selected';
+  var all = INV.invoices.filter(function (r) { return r.queue && r.queue !== 'booking'; });
+  var by = function (q) { return q === 'all' ? all : all.filter(function (r) { return r.queue === q; }); };
+  var overdue = all.filter(function (r) { return r.slaTone === 'red'; }).length;
+
+  var kpi = UI.kpis({ cols: 6, items: [
+    { value: String(by('validation').length), label: 'Under validation', sub: 'Automated checks running', tab: 'q:validation', active: true },
+    { value: String(by('manual').length), label: 'Manual queue', sub: 'OCR, checklist, duplicate, tolerance', tab: 'q:manual' },
+    { value: String(by('rush').length), label: 'Rush', sub: 'Same day / T+1', tab: 'q:rush' },
+    { value: String(by('hold').length), label: 'On hold', tab: 'q:hold' },
+    { value: String(all.length), label: 'All in queues', tab: 'q:all' },
+    { value: String(overdue), label: 'SLA breached', sub: 'Escalated to the AP team (L1)', tab: 'q:manual' }] });
+
+  var cols = [{ key: 'ref', label: 'Reference no.' }, { key: 'vendor', label: 'Partner / circle' }, { key: 'cat', label: 'Category' }, { key: 'total', label: 'Amount (Rs)', num: true },
+    { key: 'reason', label: 'Queue reason' }, { key: 'sla', label: 'SLA', tip: 'Normal T+2 / T+3, Property Manager T+2, Rush same day / T+1' }, { key: 'owner', label: 'Assigned to' }, { key: '_acts', label: '' }];
+  var mk = function (list) {
+    return list.map(function (r, i) {
+      return { _checked: sel && i < 3, _sel: sel && i < 3, _flag: r.slaTone === 'red',
+        ref: '<a class="k-link" href="' + INV.review(r.ref) + '">' + r.ref + '</a><div class="k-muted k-small">Received ' + UI.esc(r.recv || r.on) + '</div>',
+        vendor: '<div class="w-170">' + UI.esc(r.vshort) + '</div><div class="k-muted k-small">' + r.v + ' &middot; ' + UI.esc(r.circle) + '</div>',
+        cat: UI.esc(r.c.name) + '<div class="k-muted k-small">' + (r.fam === 'PM' ? 'PM' + (r.lines ? ' &middot; ' + r.lines + ' lines' : '') : r.fam === 'DN' ? 'Debit note' : 'AP') + '</div>',
+        total: INV.rs(r.total, r.cur), reason: r.reason ? UI.esc(r.reason) : '<span class="k-muted">Automated checks running</span>',
+        sla: UI.chip(UI.esc(r.sla || '-'), r.slaTone === 'red' ? 'red' : r.slaTone === 'warn' ? 'warn' : ''),
+        owner: r.owner ? UI.esc(r.owner) : '<span class="k-muted">Unassigned</span>',
+        _acts: [{ icon: 'eye', label: 'Review', go: INV.review(r.ref) }, { icon: 'user', label: 'Assign', modal: 'assign' }, { icon: 'pause', label: 'Put on hold', modal: 'hold' }] };
+    });
+  };
+  var tbl = function (q) { var l = S === 'empty' ? [] : by(q); return UI.table({ dense: true, select: true, columns: cols, rows: mk(l), total: l.length + ' invoices', empty: 'Nothing waiting in this queue.' }); };
+
+  var bulk = sel ? UI.alert({ tone: 'info', title: '3 invoices selected.', text: 'Apply an action to all selected invoices.', actions: [UI.button({ label: 'Assign', size: 'sm', modal: 'assign' }), UI.button({ label: 'Hold', size: 'sm', modal: 'hold' }), UI.button({ label: 'Clear', size: 'sm', variant: 'text', state: 'none' })] }) : '';
+
+  var assign = UI.modal({ id: 'assign', title: 'Assign', accent: 'Invoices', size: 'narrow', body: [UI.grid(1, [UI.field({ label: 'Assign to team', type: 'select', value: 'PHD team - UP', required: true }), UI.field({ label: 'Assign to user', type: 'select', value: 'B0PHD307' }), UI.field({ label: 'Remarks', type: 'area', placeholder: 'Optional note for the team' })])],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Assign', variant: 'primary', close: true, toast: 'Invoices assigned' })] });
+  var hold = UI.modal({ id: 'hold', title: 'Put on', accent: 'Hold', size: 'narrow', body: [UI.grid(1, [UI.field({ label: 'Hold reason', type: 'select', value: 'Awaiting supporting document', required: true }), UI.field({ label: 'Remarks', type: 'area', required: true, placeholder: 'Shown to the submitter with the status' })]),
+    UI.p('The submitter sees the status Hold with this reason. The SLA clock pauses while the invoice is on hold.', { muted: true, small: true })],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Put on hold', variant: 'primary', close: true, toast: 'Invoice placed on hold' })] });
+
+  Page.render({
+    id: 'inv-13', roleId: 'phd',
+    states: [{ id: 'selected', label: 'Rows selected for bulk action' }, { id: 'empty', label: 'Queues empty' }],
+    html: UI.page({ title: 'Work', accent: 'Queues', info: 'Invoices waiting for PHD / AP review, across the circles you are mapped to', sub: 'Pick up invoices that automated checks could not decide, review them and approve, send back or hold. Rush invoices first.' }) +
+      kpi + bulk +
+      UI.filters({ items: [UI.field({ label: 'Circle', type: 'select', value: 'All my circles' }), UI.field({ label: 'Category', type: 'select', value: 'All categories' }), UI.field({ label: 'Partner', type: 'lookup', placeholder: 'Name, code or GSTIN' }), UI.field({ label: 'SLA', type: 'select', value: 'All' }), UI.field({ label: 'Assigned to', type: 'select', value: 'Anyone' })] }) +
+      UI.tabs({ id: 'q', bar: false, tabs: [{ id: 'validation', body: [tbl('validation')] }, { id: 'manual', body: [UI.p('Invoices the system could not decide: OCR data incomplete, an amount outside tolerance, a potential duplicate, a visual checklist point (signature, invoice form), or a landlord GSTIN on the Tax team\'s non-compliant list.', { muted: true, small: true }), tbl('manual')] },
+        { id: 'rush', body: [tbl('rush')] }, { id: 'hold', body: [tbl('hold')] }, { id: 'all', body: [tbl('all')] }] }) +
+      UI.note({ text: 'An invoice that breaches its SLA is escalated first to the AP team (L1), then to the manager (L2) and finally to the Finance Head (L3). Rush invoices and their SLA position are also shown on the Rush dashboard.' }) +
+      UI.tbc('RPA bot for the PHD checklist validation, or a portal exception dashboard only') + assign + hold
+  });
+})();
+</script>
+</body>
+</html>

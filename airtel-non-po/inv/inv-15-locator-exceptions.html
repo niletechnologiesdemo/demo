@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Locator exceptions - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Property Manager lines whose locator is not found or inactive. The whole invoice is withheld until every line has an active locator (HLD 5.9, 6.2.2). */
+  var S = Page.state(), R = INV.role('phd'), circle = R.id === 'circle', done = S === 'retriggered';
+  var lines = [
+    { ref: 'NPO-2627-004702', inv: 'IND/26/AUG/77180', v: 'Indus Towers', cat: 'Central ToCo', circle: 'Delhi', line: 8, site: 'DL-11121-0981', tech: 'DLDEL0981', keys: 'Circle + site ID + technical ID; circle + site ID; circle + technical ID', res: 'Not found', where: 'Not in active or inactive PN report, nor the locator master', since: '22-Sep' },
+    { ref: 'NPO-2627-004702', inv: 'IND/26/AUG/77180', v: 'Indus Towers', cat: 'Central ToCo', circle: 'Delhi', line: 23, site: 'DL-11121-1004', tech: 'DLDEL1004', keys: 'Circle + site ID + technical ID', res: 'Not found', where: 'Site not set up in Oracle PM', since: '22-Sep' },
+    { ref: 'NPO-2627-004702', inv: 'IND/26/AUG/77180', v: 'Indus Towers', cat: 'Central ToCo', circle: 'Delhi', line: 37, site: 'DL-11108-0233', tech: 'DLDEL0233', keys: 'Circle + site ID', res: 'Inactive', where: 'Found only in the inactive PN report: 11108-MDEL-0233019', since: '22-Sep' },
+    { ref: 'NPO-2627-004733', inv: 'SGIS/26-27/0402', v: 'Shree Ganesh Infra', cat: 'Local ToCo', circle: 'UP East', line: 4, site: 'UPE-BBK-0077', tech: 'UPBBK0077', keys: 'ToCo master: site ID + BU code 121', res: 'Inactive', where: '12109-MBBK-0077318 inactive since 31-Jul-2026', since: '24-Sep' },
+    { ref: 'NPO-2627-004733', inv: 'SGIS/26-27/0402', v: 'Shree Ganesh Infra', cat: 'Local ToCo', circle: 'UP East', line: 6, site: 'UPE-BBK-0081', tech: 'UPBBK0081', keys: 'ToCo master: site ID + BU code 121', res: 'Inactive', where: '12109-MBBK-0081407 inactive since 31-Jul-2026', since: '24-Sep' }
+  ].filter(function (l) { return !circle || l.circle === 'UP East'; });
+
+  var kpi = UI.kpis({ cols: 4, items: [{ value: String(lines.filter(function (l) { return l.res === 'Not found'; }).length), label: 'Locator not found' }, { value: String(lines.filter(function (l) { return l.res === 'Inactive'; }).length), label: 'Locator inactive', sub: 'Activation needed' },
+    { value: circle ? '1' : '2', label: 'Invoices withheld', sub: 'Whole invoice, not partly booked' }, { value: done ? (circle ? '1' : '2') : '6', label: 'Re-triggered this week' }] });
+
+  var table = UI.table({ dense: true, select: true, columns: [{ key: 'inv', label: 'Invoice / line' }, { key: 'site', label: 'Site ID / technical ID' }, { key: 'keys', label: 'Looked up by' }, { key: 'res', label: 'Result' }, { key: 'since', label: 'Since', nowrap: true }, { key: '_acts', label: '' }],
+    rows: lines.map(function (l) { return { _flag: l.res === 'Not found' && !done,
+      inv: '<a class="k-link" href="' + INV.detail(l.ref) + '">' + l.ref + '</a><div class="k-muted k-small">' + UI.esc(l.inv) + ' &middot; line ' + l.line + '</div><div class="k-muted k-small">' + UI.esc(l.v) + ' &middot; ' + UI.esc(l.circle) + ' &middot; ' + l.cat + '</div>',
+      site: l.site + '<div class="k-muted k-small">' + l.tech + '</div>', keys: '<div class="w-200">' + UI.esc(l.keys) + '</div>',
+      res: done ? UI.status('Resolved', 'ok') : UI.status('Locator ' + l.res.toLowerCase()) + '<div class="k-small">' + UI.esc(l.where) + '</div>', since: l.since,
+      _acts: l.res === 'Inactive' ? [{ icon: 'send', label: 'Request activation', modal: 'activate' }] : [{ icon: 'link', label: 'Map locator', modal: 'map' }, { icon: 'send', label: 'Request site set-up', modal: 'activate' }] }; }),
+    total: lines.length + ' lines', empty: 'No locator exceptions.' });
+
+  var invoices = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'ref', label: 'Invoice withheld' }, { key: 'l', label: 'Lines with issues', num: true }, { key: 'a', label: 'Amount (Rs)', num: true }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: [INV.find('NPO-2627-004702'), INV.find('NPO-2627-004733')].filter(function (r) { return !circle || r.circle === 'UP East'; }).map(function (r) {
+      var n = lines.filter(function (l) { return l.ref === r.ref; }).length;
+      return { ref: '<a class="k-link" href="' + INV.detail(r.ref) + '">' + r.ref + '</a><div class="k-muted k-small">' + UI.esc(r.vshort) + ' &middot; ' + r.lines + ' lines</div>', l: done ? '0' : String(n), a: UI.inr(r.total, 2),
+        s: done ? INV.status('Under Validation') + '<div class="k-small">Re-triggered 01-Oct 10:20</div>' : INV.status('Hold'), _acts: done ? [] : [{ icon: 'refresh', label: 'Re-trigger (after every locator is active)', state: 'retriggered' }] };
+    }) });
+
+  var map = UI.modal({ id: 'map', title: 'Map', accent: 'Locator', size: 'narrow', body: [UI.grid(1, [UI.field({ label: 'Site', type: 'readonly', value: 'DL-11121-0981 &middot; DLDEL0981 (Delhi)' }),
+      UI.field({ label: 'Locator (PN Site Attribute report)', type: 'lookup', value: '11121-MDEL-0981552', required: true, hint: 'The BU code at the start of the locator must match the circle (Delhi, BU 111)' }), UI.options({ type: 'check', items: [{ label: 'Add this mapping to the locator master', on: true }] })]),
+      UI.p('The mapping is used for this line and, once approved in the locator master, for future invoices.', { muted: true, small: true })],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Save mapping', variant: 'primary', close: true, toast: 'Locator mapped - sent for master approval' })] });
+  var activate = UI.modal({ id: 'activate', title: 'Request', accent: 'Locator activation', size: 'narrow', body: [UI.grid(1, [UI.field({ label: 'Locator', type: 'readonly', value: '12109-MBBK-0077318 (inactive since 31-Jul-2026)' }), UI.field({ label: 'Send to', type: 'select', value: 'Circle PM team - UP East' }), UI.field({ label: 'Remarks', type: 'area', value: 'Site still billed by the ToCo for Aug-26; please reactivate or confirm decommissioning.', wrap: true })])],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Send request', variant: 'primary', close: true, toast: 'Activation requested' })] });
+
+  Page.render({
+    id: 'inv-15', roleId: 'phd', states: [{ id: 'retriggered', label: 'Locators fixed, invoices re-triggered' }],
+    html: UI.page({ title: 'Locator', accent: 'Exceptions', info: 'Locators are refreshed from the Oracle PN Site Attribute report every night', sub: 'Lines whose locator was not found or is inactive. The whole invoice is withheld with the remark on each line; once every locator is active, re-trigger the invoice.' }) +
+      kpi + UI.filters({ items: [UI.field({ label: 'Circle', type: circle ? 'readonly' : 'select', value: circle ? 'UP East (your circle)' : 'All circles' }), UI.field({ label: 'Result', type: 'select', value: 'Not found and inactive' }), UI.field({ label: 'Category', type: 'select', value: 'All PM categories' })] }) +
+      UI.section({ title: 'Lines', body: [table] }) + UI.section({ title: 'Invoices withheld', body: [invoices] }) +
+      UI.p('PN Site Attribute data last refreshed 01-Oct-2026 05:00. Airtel users can also resubmit ToCo invoices that failed for internal reasons, such as a locator not found or inactive.', { muted: true, small: true }) + map + activate
+  });
+})();
+</script>
+</body>
+</html>

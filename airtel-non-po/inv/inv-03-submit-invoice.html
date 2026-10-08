@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit invoice - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  var S = Page.state(), bulk = S === 'bulk' || S === 'attach', R = INV.role('vendor'), rid = R.id, partner = INV.isPartner(R);
+  // which families a role sees: partners only their own categories; Airtel users all; Tax team its debit notes
+  var allow = {
+    vendor: ['local-toco', 'bw-dom', 'll-eb', 'diesel', 'rush', 'advance', 'legal', 'others', 'credit'],
+    toco: ['central-toco'], landlord: ['ll-gst'], tax: ['gst-dn', 'gst-rev']
+  }[rid];
+  var ICON = { PM: 'tower', AP: 'invoice', DN: 'minus' };
+  var ok = function (c) { return !allow || allow.indexOf(c.id) >= 0; };
+
+  var card = function (c) {
+    var go = c.oos ? null : bulk ? (c.bulk ? 'inv-08?cat=' + c.id + (S === 'attach' ? '&state=attach' : '') : null) : c.page + '?cat=' + c.id;
+    return { left: true, icon: ICON[c.fam], title: c.name, text: UI.esc(c.text),
+      meta: [c.oos ? UI.status('Out of scope', 'grey') : '<span class="k-small">' + UI.esc(c.approval) + ' &middot; SLA ' + UI.esc(c.sla) + '</span>',
+        bulk && !c.bulk && !c.oos ? '<div class="k-small k-muted">Single entry only</div>' : '', c.tbc ? '<div>' + UI.tbc(c.tbc) + '</div>' : ''],
+      go: go || undefined, toast: go ? undefined : (c.oos ? 'MiFi invoices are out of scope' : 'No bulk template for this category - submit single invoices') };
+  };
+  var famTab = function (f, sub) {
+    var list = INV.cats.filter(function (c) { return c.fam === f && ok(c); });
+    return list.length ? { id: f, label: INV.FAM[f], count: list.length, body: [UI.p(sub, { muted: true }), UI.cards({ cols: list.length < 3 ? 2 : 3, items: list.map(card) })] } : null;
+  };
+  var tabs = [
+    famTab('PM', 'Booked locator-wise in the Oracle PM module first, then sent to the business owner for approval under the budget-head DOA. Upload the invoice PDF with the working sheet.'),
+    famTab('AP', 'Approved on the portal first (DOA, or force approval against an NFA or approval email), and only then booked in the Oracle AP module by operating unit.'),
+    famTab('DN', 'Debit notes, credit notes and reversals are approved before booking. ToCo notes are recorded in the ToCo credit / debit note form first, then booked in AP.')
+  ].filter(Boolean);
+
+  var mode = UI.section({ title: 'How do you want to submit?', body: [UI.options({ items: [
+    { label: 'Single invoice (online form)', on: !bulk, state: 'none' }, { label: 'Bulk upload (category template)', on: S === 'bulk', state: 'bulk' }, { label: 'Bulk attachments (PDFs for many invoices)', on: S === 'attach', state: 'attach' }] }),
+    UI.p(bulk ? 'Bulk templates exist for the locator-wise Property Manager categories, group company, IUC, bank charges, credit notes and debit notes. Choose a category to open its template.' : 'Choose a category to open its form. Fields from master data (locator, vendor site, opex head, TDS and GST categories, payment term) are filled in for you.', { muted: true, small: true })] });
+
+  var onBehalf = partner ? '' : UI.section({ title: 'Submitting for', body: [UI.grid(3, [
+    UI.field({ label: 'Circle', type: rid === 'circle' ? 'readonly' : 'select', value: rid === 'circle' ? 'UP East (your circle)' : 'Select circle', required: true, hint: rid === 'circle' ? 'Circle users can submit for their own circle only' : 'Central users and PHD / AP can submit for any circle' }),
+    UI.field({ label: 'Vendor or landlord (on behalf of)', type: 'lookup', placeholder: 'Name, vendor code or GSTIN', required: true, hint: 'Vendor must be active and the vendor site not inactive or blocked' }),
+    UI.field({ label: 'Submitted by', type: 'readonly', value: UI.esc(R.name) + ' &middot; ' + UI.esc(R.user) })]),
+    rid === 'phd' ? UI.alert({ tone: 'info', text: 'PHD / AP users submit ToCo invoices that failed for internal reasons (locator not found or inactive, upload error) on behalf of the vendor.' }) : ''] });
+
+  var matrix = UI.section({ title: 'Category matrix', sub: 'How each sub-category is booked (held as configuration)', collapsible: true, collapsed: true, body: [UI.table({ dense: true, pager: false, export: false,
+    columns: [{ key: 'f', label: 'Family' }, { key: 'n', label: 'Sub-category' }, { key: 'b', label: 'Booked in' }, { key: 't', label: 'Invoice type' }, { key: 'a', label: 'Approval' }, { key: 'p', label: 'Payment term' }, { key: 'g', label: 'Pay group' }, { key: 's', label: 'SLA' }],
+    rows: INV.cats.filter(ok).map(function (c) { return { f: INV.FAM[c.fam], n: UI.esc(c.name) + (c.oos ? ' <span class="k-muted">(out of scope)</span>' : ''), b: c.booked, t: c.invType, a: UI.esc(c.approval), p: UI.esc(c.term), g: UI.esc(c.payGroup), s: c.sla }; }) })] });
+
+  Page.render({
+    id: 'inv-03', roleId: 'vendor', states: [{ id: 'bulk', label: 'Bulk upload mode' }, { id: 'attach', label: 'Bulk attachments mode' }],
+    html: UI.page({ title: 'Submit', accent: 'Invoice', sub: 'Select the invoice category and sub-category. The category decides the form or template, the mandatory fields and documents, the approval route and the SLA.' }) +
+      UI.steps({ items: [{ label: 'Choose category', sub: 'Family and sub-category', state: 'current' }, { label: 'Fill the form or template', sub: 'Master data filled for you' }, { label: 'Validate', sub: 'Pre-checks before submission' }, { label: 'Submit', sub: 'Reference number issued' }] }) +
+      '<div class="k-gap"></div>' + onBehalf + mode +
+      (rid === 'landlord' ? UI.alert({ tone: 'info', title: 'Landlords submit GST invoices on rent already paid.', text: 'Choose the lease and the paid rent voucher; one voucher per GST invoice.', actions: [UI.textlink({ label: 'My leases & rent vouchers', icon: 'arrowRight', go: 'inv-12' })] }) : '') +
+      UI.tabs({ id: 'fam', tabs: tabs }) +
+      UI.alert({ tone: 'warn', title: 'Rush invoices', text: 'are limited to predefined scenarios and need a Rush reason. They run on a same day / T+1 SLA and are escalated if delayed.' }) + matrix
+  });
+})();
+</script>
+</body>
+</html>

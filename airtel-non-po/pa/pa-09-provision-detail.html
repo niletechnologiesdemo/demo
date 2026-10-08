@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Provision detail - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  var m = /[?&]urn=([^&]*)/.exec(location.search);
+  var p = (m && PA.find(decodeURIComponent(m[1]))) || PA.find('121·410387·AMCDG004·AUG-26');
+  var a = p.activity, isToco = !!p.locator, posted = !!p.erpDoc;
+
+  var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [
+    ['URN', '<span class="k-urn">' + UI.esc(p.urn) + '</span>'], ['Status', UI.status(p.status, PA.statusTone(p.status))],
+    ['Provision', 'Rs ' + UI.inr(p.amount, 2)], ['Open balance', 'Rs ' + UI.inr(p.balance, 2)],
+    ['Activity', UI.esc(a.id + ' ' + a.name)], ['Scenario', 'S' + p.scenario + ' ' + UI.esc(p.scenarioName)],
+    ['Vendor', UI.esc(p.vendor) + ' (' + p.vcode + ')'], ['BU', UI.esc(p.bu + ' ' + p.buName) + (isToco ? ' &middot; locator ' + p.locator : '')],
+    ['Service period', p.from + ' to ' + p.to], ['Age', p.age + ' days' + (p.escalation ? ' &middot; ' + p.escalation : '')],
+    ['Reversal mode', p.mode === 'Reversal' ? 'Reversal (Oracle reverses next period)' : 'Standing'], ['Source', UI.esc(p.source) + ' &middot; ' + UI.esc(p.maker)]] })] });
+
+  var journals = UI.table({ pager: false, export: false, dense: true, columns: [{ key: 'j', label: 'Journal' }, { key: 'c', label: 'Category' }, { key: 'l', label: 'Lines (Dr / Cr)' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'erp', label: 'Oracle document' }, { key: 's', label: 'Status' }],
+    rows: posted ? [
+      { j: 'Provision ' + p.month, c: p.rpt === 'RPT' ? 'Related party provision' : 'Provisional', l: p.bu + '-' + a.expGL + ' Dr / ' + p.bu + '-' + a.liabGL + ' Cr', amt: p.amount, erp: p.erpDoc, s: UI.status('Posted', 'ok') },
+      p.mode === 'Reversal' ? { j: 'Auto-reversal (Oracle)', c: 'Reversal', l: p.bu + '-' + a.liabGL + ' Dr / ' + p.bu + '-' + a.expGL + ' Cr', amt: p.amount, erp: p.erpDoc + '-R', s: UI.status('Reversed 01 of next month', 'grey') } : null,
+      p.actual && p.mode !== 'Reversal' ? { j: 'Actualization knock-off', c: 'Adjustment', l: p.bu + '-' + a.liabGL + ' Dr / ' + p.bu + '-' + a.expGL + ' Cr', amt: p.actual, erp: 'GL-26-0921114', s: UI.status('Posted', 'ok') } : null
+    ].filter(Boolean) : [], empty: 'Not yet posted to Oracle.' });
+
+  var inv = p.actual ? [
+    { inv: isToco ? 'IND/26/AUG/77120' : 'PPS/26-27/0811', path: isToco ? 'PM invoice (Infra report)' : 'AP invoice via Non-PO portal (URN selected)', booked: '18-Sep-2026', amt: p.actual * 0.6, match: 'Exact (URN)' },
+    { inv: isToco ? 'IND/26/AUG/77121' : 'PPS/26-27/0844', path: isToco ? 'PM invoice (Infra report)' : 'AP invoice booked in Oracle (key rebuilt)', booked: '26-Sep-2026', amt: p.actual * 0.4, match: isToco ? 'Exact (site key)' : 'Force match by B0GPA204 - reason recorded' }
+  ] : [];
+  var actual = UI.table({ pager: false, export: false, dense: true, columns: [{ key: 'inv', label: 'Invoice' }, { key: 'path', label: 'How it reached this URN' }, { key: 'booked', label: 'Booked' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'match', label: 'Match' }],
+    rows: inv, empty: 'No invoice matched yet.' });
+
+  var audit = UI.timeline({ columns: ['Event', 'Date', 'By', 'Detail'], rows: [
+    { status: 'Raised', state: 'done', date: p.raised || '-', action: UI.esc(p.maker) },
+    { status: 'Approved', state: 'done', date: p.raised || '-', action: 'B0CHK155', reason: 'Maker-checker' },
+    posted ? { status: 'Posted in Oracle', state: 'done', date: p.raised, action: 'B0GPM031 (GPA manager)', reason: p.erpDoc } : null,
+    p.actual ? { status: 'Invoice matched', state: 'done', date: '18-Sep-2026', action: 'Matching engine', reason: 'Exact URN match' } : null,
+    p.actual ? { status: 'Force match', state: 'done', date: '26-Sep-2026', action: 'B0GPA204', reason: 'Invoice without URN; vendor and item agree; period Aug-26' } : null,
+    p.escalation ? { status: 'Escalated', state: 'current', date: '29-Sep-2026', action: 'System', reason: UI.esc(p.escalation) } : null
+  ].filter(Boolean) });
+
+  var ageing = UI.kv({ cols: 3, items: [['Age today', p.age + ' days'], ['Ageing bucket', p.age <= 30 ? '0-30 days' : p.age <= 60 ? '31-60 days' : p.age <= 90 ? '61-90 days' : 'Over 90 days'], ['Escalation', p.escalation || 'None yet (90 / 180 / 270 / 365 days)'],
+    ['PBR reversal due', 'Close of ' + (p.month === 'AUG-26' ? 'Sep-27' : 'month 13') + ' (13-month window)'], ['On hold', p.hold ? 'Yes - ' + UI.esc(p.hold) : 'No'], ['YEP', p.yep ? 'Yes (FY 2025-26 service period)' : 'No']] });
+
+  var prepaid = p.act === 'ACT-0063' ? UI.p('Prepaid schedule applies.') : UI.alert({ tone: 'info', text: 'No prepaid portion: the matched invoices cover only this provision\'s service month. Future-period amounts on an invoice are moved to prepaid and released monthly (see Prepaid & deferment).' });
+
+  var actions = UI.btns([
+    UI.button({ label: 'Link PO', modal: 'po' }), UI.button({ label: 'Place on hold', modal: 'hold' }),
+    UI.button({ label: 'Request force closure', modal: 'closure' }), UI.button({ label: 'Request force reversal', modal: 'reversal' })]);
+
+  var modals = UI.modal({ id: 'closure', title: 'Request', accent: 'Force closure', size: 'narrow', body: [UI.p('Writes the open balance back to profit and loss and ends the URN. Needs CFR approval.', { muted: true }),
+      UI.grid(1, [UI.field({ label: 'Reason', type: 'select', value: 'No invoice expected', required: true }), UI.field({ label: 'Remarks', type: 'area', required: true }), UI.upload({ label: 'Evidence' })])],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Send to CFR', variant: 'primary', close: true, toast: 'Force closure request sent to CFR' })] }) +
+    UI.modal({ id: 'reversal', title: 'Request', accent: 'Force reversal', size: 'narrow', body: [UI.p('For a disputed provision. Reverses before the PBR window; a later invoice for the period is a hit. Needs CFR approval.', { muted: true }), UI.field({ label: 'Reason', type: 'area', required: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Send to CFR', variant: 'primary', close: true, toast: 'Force reversal request sent to CFR' })] }) +
+    UI.modal({ id: 'hold', title: 'Place on', accent: 'Hold', size: 'narrow', body: [UI.p('Held provisions are not reversed under the PBR window. GPA places holds; CFR approves where the PBR policy mapping requires it.', { muted: true }), UI.field({ label: 'Reason', type: 'area', required: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Place on hold', variant: 'primary', close: true, toast: 'Hold requested' })] }) +
+    UI.modal({ id: 'po', title: 'Link', accent: 'Purchase order', size: 'narrow', body: [UI.field({ label: 'Oracle PO', type: 'select', value: '4500918822 - Prism Power Systems - Rs 5,20,000.00', hint: 'List of values of Oracle POs for this vendor and BU' }),
+      UI.p('The provision stays on this platform and is settled when the PO is raised or when its PO-based invoice is booked in AP, so the cost is not provided twice.', { muted: true, small: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Link PO', variant: 'primary', close: true, toast: 'PO linked to the provision' })] });
+
+  Page.render({
+    id: 'pa-09', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst', navKey: 'pa-03',
+    html: UI.page({ title: 'Provision', accent: 'Detail', crumb: '<a data-go="pa-03">Provision register</a> &rsaquo; ' + UI.esc(p.urn), sub: 'Open any URN from the register. Try a TOCO URN, for example <a class="k-link" href="pa-09-provision-detail.html?urn=' + encodeURIComponent('111·412885·ELEC-AOR·AUG-26·11106') + '">111·412885·ELEC-AOR·AUG-26·11106</a>.' }) +
+      head + actions + '<div class="k-gap"></div>' +
+      UI.tabs({ id: 'pd', tabs: [
+        { id: 'journals', label: 'Journals', count: posted ? 2 : 0, body: [journals, UI.p('Oracle ledger balance and platform open balance can differ for reversal-mode provisions: Oracle reverses on the 1st, the platform keeps the URN open until actualized or aged out.', { muted: true, small: true })] },
+        { id: 'actual', label: 'Actualization', count: inv.length, body: [actual] },
+        { id: 'prepaid', label: 'Prepaid', body: [prepaid] },
+        { id: 'ageing', label: 'Ageing', body: [ageing] },
+        { id: 'audit', label: 'Audit trail', body: [audit] }] }) + modals
+  });
+})();
+</script>
+</body>
+</html>

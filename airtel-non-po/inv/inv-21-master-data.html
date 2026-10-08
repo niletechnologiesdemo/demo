@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Master data - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Masters used for enrichment and validation (HLD 7.4). Masters kept in Excel today become structured portal masters with named owners. */
+  var S = Page.state(), R = INV.role('p2p'), canEdit = R.id === 'p2p' || R.id === 'tax';
+  var ed = function () { return canEdit ? [{ icon: 'edit', label: 'Edit (maker-checker)', modal: 'edit' }, { icon: 'history', label: 'Change history', toast: 'Change history opens here' }] : [{ icon: 'history', label: 'Change history', toast: 'Change history opens here' }]; };
+  var addBtn = function (l) { return canEdit ? [UI.button({ label: l || 'Add row', icon: 'plus', size: 'sm', modal: 'edit' }), UI.button({ label: 'Upload Excel', icon: 'upload', size: 'sm', toast: 'Upload a corrected master file' })] : []; };
+
+  var catalogue = UI.table({ dense: true, pager: false, columns: [{ key: 'm', label: 'Master' }, { key: 'u', label: 'Used for' }, { key: 'o', label: 'Owner / source' }, { key: 'r', label: 'Refresh' }, { key: 'l', label: 'Last updated' }],
+    rows: [['PN Site Attribute (active and inactive)', 'Locator derivation and status', 'Oracle EBS', 'Nightly', '01-Oct 05:00'], ['Locator master; BU master', 'Fallback locator mapping; BU and state check', 'PHD team', 'On change', '29-Sep'],
+      ['ToCo master', 'Local ToCo locator from site ID and BU code', 'PHD team', 'On change', '27-Sep'], ['PM master', 'LL_EB locator, vendor site, payment term, tax categories', 'PHD team', 'On change', '26-Sep'],
+      ['Opex head master', 'Opex head from the invoice description', 'PHD team', 'On change', '22-Sep'], ['Vendor site master; CN / DN master', 'Vendor name, site, payment terms, GST category', 'PHD team', 'On change', '25-Sep'],
+      ['Alternate vendor names', 'Vendor name matching', 'AP and PHD teams', 'On change', '30-Sep'], ['AP master', 'Inventory organisation and location; GST tax categories', 'AP team', 'On change', '18-Sep'],
+      ['TDS section and TDS category', 'TDS derivation', 'Tax and AP teams', 'On change', '12-Sep'], ['GL code master; attribute file', 'Deduction nature and GL code for debit notes', 'PHD team and Finance', 'On change', '10-Sep'],
+      ['Bandwidth cost sheet', 'Circuit-wise locator, opex head, capacity, recurring charges, activation and disconnection', 'P2P team (monthly)', 'Monthly', '30-Sep'], ['Quality Plan', 'Vendor site, GL account and payment term for AP categories', 'AP team', 'On change', '15-Sep'],
+      ['Item code list by nature of expense', 'AP item codes mapped to budget heads', 'GPA team', 'On change', '20-Sep'], ['GST master data; GSTR-2A / 2B', 'Vendor validation; previous-year checks', 'Tax team', 'Monthly', '28-Sep'],
+      ['Non-compliant vendor list', 'Landlord GST screening', 'Tax team', 'On change', '25-Sep'], ['Suppliers and sites (IRN flag)', 'Vendor checks, IRN status', 'Oracle EBS', 'Nightly', '01-Oct 05:00']]
+      .map(function (r) { return { m: r[0], u: r[1], o: /Oracle/.test(r[2]) ? r[2] + ' <span class="k-muted k-small">(read only)</span>' : r[2], r: r[3], l: r[4] }; }) });
+
+  var pn = UI.table({ dense: true, columns: [{ key: 'c', label: 'Circle' }, { key: 's', label: 'Indus / Infratel site ID' }, { key: 't', label: 'Technical site ID' }, { key: 'l', label: 'Location ID (locator)' }, { key: 'st', label: 'Status' }],
+    rows: [{ c: 'Delhi', s: 'DL-11106-0412', t: 'DLDEL0412', l: '11106-MDEL-0412881', st: UI.status('Active', 'ok') }, { c: 'Delhi', s: 'DL-11108-0233', t: 'DLDEL0233', l: '11108-MDEL-0233019', st: UI.status('Inactive', 'grey') }, { c: 'UP East', s: 'UPE-LKO-0412', t: 'UPLKO0412', l: '12104-MLKO-0412207', st: UI.status('Active', 'ok') }],
+    total: '2,41,882 sites (active and inactive)' });
+  var opex = UI.table({ dense: true, columns: [{ key: 'v', label: 'Vendor reference' }, { key: 'd', label: 'Description (keywords)' }, { key: 'o', label: 'Opex head' }, { key: 't', label: 'TDS section' }, { key: '_acts', label: '' }],
+    rows: [{ v: 'Indus Towers', d: 'IP fee, rental, infra provider charges', o: 'Rent.Tower.IP', t: '194I', _acts: ed() }, { v: 'Indus Towers', d: 'EB, energy, electricity', o: 'Energy.EB.IP', t: '194C', _acts: ed() }, { v: 'Bharti Infratel', d: 'Diesel, DG', o: 'Diesel.DG.IP', t: '194C', _acts: ed() }, { v: 'Other ToCo', d: 'Security deposit', o: 'PrepaymentSD.Rent.3P', t: 'Not applied', _acts: ed() }],
+    footLeft: addBtn() });
+  var cost = UI.table({ dense: true, columns: [{ key: 'c', label: 'Circuit ID' }, { key: 'l', label: 'Locator / opex head' }, { key: 'cap', label: 'Capacity' }, { key: 'ch', label: 'MRC / QTRC / ARC (Rs)' }, { key: 'a', label: 'Activation / disconnection' }, { key: '_acts', label: '' }],
+    rows: [{ c: 'CKT-BLR-NOC-30070', l: '13101-NXKA-2709283<div class="k-muted k-small">Bandwidth.Domestic.NLD</div>', cap: '1 Gbps', ch: '21,500.00 / 64,500.00 / -', a: '12-Mar-2024 / -', _acts: ed() },
+      { c: 'CKT-MYS-11871', l: '13105-NXKA-1187120<div class="k-muted k-small">Bandwidth.Domestic.Metro</div>', cap: '500 Mbps', ch: '21,841.81 / - / -', a: '18-Nov-2025 / -', _acts: ed() },
+      { c: 'CKT-HBL-20981', l: '13107-NXKA-2098117', cap: '1 Gbps', ch: '19,900.00 / - / -', a: UI.status('Activation date missing'), _flag: true, _acts: ed() }], footLeft: addBtn('Add circuit') });
+  var qp = UI.table({ dense: true, columns: [{ key: 'c', label: 'Category' }, { key: 'v', label: 'Vendor / site rule' }, { key: 'g', label: 'GL account' }, { key: 'p', label: 'Payment term' }, { key: '_acts', label: '' }],
+    rows: [{ c: 'Rush', v: 'Supplier site from the input; must be active', g: 'By nature of expense', p: 'IMMEDIATE', _acts: ed() }, { c: 'Legal', v: 'Site LEGAL', g: '4212004', p: 'Statutory & Rush Payment', _acts: ed() }, { c: 'Bank charges', v: 'Site per bank account', g: '9000033', p: 'Statutory & Rush Payment', _acts: ed() }, { c: 'Landlord GST', v: 'From the base rent (lease) entry', g: '4651002', p: 'Controlled Expense - Property Manager Transactions', _acts: ed() }], footLeft: addBtn() });
+  var tds = UI.table({ dense: true, columns: [{ key: 'o', label: 'Opex head / nature' }, { key: 's', label: 'TDS section' }, { key: 'c', label: 'TDS category (by GSTIN + OU)' }, { key: '_acts', label: '' }],
+    rows: [{ o: 'Rent.Tower.IP', s: '194I', c: 'TDS_194I_2_<BU>', _acts: ed() }, { o: 'Energy.EB.IP', s: '194C', c: 'TDS_194C_2_<BU>', _acts: ed() }, { o: 'Legal and professional', s: '194J', c: 'TDS_194J_10_<BU>', _acts: ed() }], footLeft: addBtn() });
+  var alt = UI.table({ dense: true, columns: [{ key: 'n', label: 'Name on invoice' }, { key: 'o', label: 'Vendor in Oracle' }, { key: 'c', label: 'Code' }, { key: '_acts', label: '' }],
+    rows: [{ n: 'SGIS Pvt Ltd', o: 'Shree Ganesh Infra Services Pvt Ltd', c: '600124', _acts: ed() }, { n: 'Hotel Grand Residency (unit of Grand Hotels)', o: 'Grand Hotels and Resorts Ltd', c: '611902', _acts: ed() }], footLeft: addBtn() });
+  var tax = UI.table({ dense: true, columns: [{ key: 'g', label: 'GSTIN' }, { key: 'n', label: 'Supplier' }, { key: 'p', label: 'Period flagged' }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: [{ g: '27ABQPN7781K1Z2', n: 'N Patil (landlord)', p: 'Jun-26 to Aug-26', s: UI.status('Non-compliant'), _acts: ed() }, { g: '09AACFK2207M1ZQ', n: 'Kumar Properties', p: 'Aug-26', s: UI.status('Non-compliant'), _acts: ed() }, { g: '07AADPA2869E1Z1', n: 'Arora Realty Services', p: 'Jul-26', s: UI.status('Complied 22-Sep', 'ok'), _acts: ed() }],
+    total: '118 vendors', footLeft: R.id === 'tax' ? [UI.button({ label: 'Upload list', icon: 'upload', size: 'sm', toast: 'Upload the non-compliant vendor list' })] : [] });
+
+  var edit = UI.modal({ id: 'edit', open: S === 'edit', title: 'Edit', accent: 'Master row', body: [UI.grid(3, [UI.field({ label: 'Circuit ID', value: 'CKT-HBL-20981' }), UI.field({ label: 'Locator', type: 'lookup', value: '13107-NXKA-2098117' }), UI.field({ label: 'Opex head', type: 'select', value: 'Bandwidth.Domestic.NLD' }),
+      UI.field({ label: 'Capacity', value: '1 Gbps' }), UI.field({ label: 'MRC (Rs)', value: '19,900.00' }), UI.field({ label: 'Charge basis', type: 'select', value: 'MRC' }),
+      UI.field({ label: 'Activation date', type: 'date', value: '04/02/2026', required: true }), UI.field({ label: 'Disconnection date', type: 'date' }), UI.field({ label: 'Effective from', type: 'date', value: '01/10/2026' })]),
+      UI.p('Every change goes through maker-checker and is kept in the change history.', { muted: true, small: true })],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Submit for approval', variant: 'primary', close: true, toast: 'Change sent to the checker' })] });
+
+  Page.render({
+    id: 'inv-21', roleId: 'p2p', states: [{ id: 'edit', label: 'Editing a row' }],
+    html: UI.page({ title: 'Master', accent: 'Data', sub: 'Masters used to derive booking details and validate invoices. Masters from Oracle are synchronised and read-only here; masters kept in Excel today are maintained here with maker-checker and change history.' }) +
+      UI.alert({ tone: 'info', text: 'The P2P team provides the master lists and maintains them on the portal; access to update a master is limited to its owner (client note on the approved HLD).' }) +
+      UI.tabs({ id: 'm', tabs: [{ id: 'all', label: 'All masters', count: 16, body: [catalogue] }, { id: 'pn', label: 'PN Site Attribute', body: [UI.p('Synchronised from Oracle every night. Lookup keys: circle + site ID + technical ID; circle + site ID; circle + technical ID.', { muted: true, small: true }), pn] },
+        { id: 'opex', label: 'Opex head', body: [opex] }, { id: 'cost', label: 'Bandwidth cost sheet', body: [UI.p('Vendors cannot charge a circuit before its activation date or after its disconnection date (client note). Updated monthly by the P2P team.', { muted: true, small: true }), cost] },
+        { id: 'qp', label: 'Quality Plan', body: [qp] }, { id: 'tds', label: 'TDS', body: [tds] }, { id: 'alt', label: 'Alternate names', body: [alt] }, { id: 'tax', label: 'Tax team lists', body: [UI.p('Every landlord GST invoice is checked against this list; a match moves the invoice to the manual queue.', { muted: true, small: true }), tax] }] }) + edit
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Approvals inbox - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* AP invoices, debit notes and reversals are approved on the portal before booking (HLD 5.7). Property Manager invoices are approved in Oracle after booking. */
+  var S = Page.state(), R = INV.role('approver'), rid = R.id, empty = S === 'empty';
+  var waiting = INV.invoices.filter(function (r) { return r.status === 'Under Approval' && r.approval; });
+  var doa = waiting.filter(function (r) { return /^DOA/.test(r.approval); });
+  var force = waiting.filter(function (r) { return /^Force/.test(r.approval); });
+  var exc = waiting.filter(function (r) { return /^Exception/.test(r.approval); });
+  var mine = [{ ref: 'NPO-2627-004811', inv: 'SFS/2026/0888', vshort: 'SecureOne Facility', circle: 'Delhi', c: INV.cat('others'), total: 572300, cur: 'INR', approval: 'DOA level 1 - approved', on: '29-Sep-2026', recv: '27-Sep 10:00' },
+    { ref: 'NPO-2627-004780', inv: 'BSNL/MEG/2026/07/88', vshort: 'BSNL', circle: 'Meghalaya', c: INV.cat('bsnl'), total: 4130, cur: 'INR', approval: 'DOA level 1 - returned', on: '26-Sep-2026', recv: '25-Sep 09:30' }];
+
+  var cols = [{ key: 'ref', label: 'Reference / submitted' }, { key: 'inv', label: 'Invoice / vendor' }, { key: 'cat', label: 'Category' }, { key: 'amt', label: 'Amount (Rs)', num: true }, { key: 'ap', label: 'Approval' }, { key: 'sla', label: 'SLA' }, { key: '_acts', label: '' }];
+  var link = function (r) { return 'inv-17-approval-review.html?ref=' + encodeURIComponent(r.ref); };
+  var mk = function (list, act) {
+    return list.map(function (r, i) {
+      var sla = act ? (i === 0 ? 'Due today' : 'Due in ' + (i + 1) + 'd') : 'Decided';
+      return { ref: (act ? '<a class="k-link" href="' + link(r) + '">' + r.ref + '</a>' : r.ref) + '<div class="k-muted k-small">' + UI.esc(r.recv || r.on) + '</div>', inv: '<div class="w-200 wrap-any">' + UI.esc(r.inv) + '</div><div class="k-muted k-small">' + UI.esc(r.vshort) + ' &middot; ' + UI.esc(r.circle) + '</div>',
+        cat: UI.esc(r.c.name), amt: INV.rs(r.total, r.cur), ap: '<div class="w-200 wrap-any">' + UI.esc(r.approval) + (r.urn ? '<div class="k-muted k-small k-urn">URN ' + r.urn + '</div>' : '') + (r.why ? '<div class="k-muted k-small wrap-any">' + UI.esc(r.why) + '</div>' : '') + '</div>',
+        sla: UI.chip(sla, /today|Overdue/.test(sla) ? 'red' : ''), _acts: act ? [{ icon: 'eye', label: 'Review', go: link(r) }] : [] };
+    });
+  };
+  var table = function (list, act) { return UI.table({ dense: true, columns: cols, rows: mk(empty && act ? [] : list, act), total: (empty && act ? 0 : list.length) + ' items', empty: 'Nothing waiting for you.' }); };
+  var def = rid === 'phd' ? 'force' : rid === 'fin' ? 'exc' : 'doa';
+
+  Page.render({
+    id: 'inv-16', roleId: 'approver',
+    states: [{ id: 'empty', label: 'Nothing waiting' }, { id: 'delegation', label: 'Acting as delegate' }],
+    html: UI.page({ title: 'Approvals', accent: 'Inbox', info: 'Approvers are resolved from the HRMS hierarchy and the DOA matrix', sub: 'AP invoices, debit notes and reversals waiting for approval. Nothing is booked in Oracle AP until all its approvals are complete. You cannot approve an invoice you submitted.' }) +
+      (S === 'delegation' ? UI.alert({ tone: 'info', title: 'You are acting as delegate for B0APR030', text: 'until 07-Oct-2026. Approvals are recorded with both names.' }) : '') +
+      UI.kpis({ cols: 4, items: [{ value: empty ? '0' : String(doa.length), label: 'DOA approvals', sub: 'By invoice value and requester', tab: 'ap:doa', active: def === 'doa' }, { value: empty ? '0' : String(force.length), label: 'Force approvals', sub: 'NFA or approval email to check', tab: 'ap:force', active: def === 'force' },
+        { value: empty ? '0' : String(exc.length), label: 'Exception approvals', sub: 'BPA head / CFR', tab: 'ap:exc', active: def === 'exc' }, { value: '21', label: 'Decided by me', sub: 'This month', tab: 'ap:mine' }] }) +
+      UI.filters({ items: [UI.field({ label: 'Category', type: 'select', value: 'All categories' }), UI.field({ label: 'Circle', type: 'select', value: 'All' }), UI.field({ label: 'SLA', type: 'select', value: 'All' })] }) +
+      UI.tabs({ id: 'ap', bar: false, active: def, tabs: [
+        { id: 'doa', body: [UI.p('Routed under the DOA from the requester, opex or capex type, zone or location and the invoice value. Multi-level approvals go in order.', { muted: true, small: true }), table(doa, true)] },
+        { id: 'force', body: [UI.p('Categories approved outside the standard DOA route (ROW, SACFA, CAF, group company, IUC, bank charges, credit and debit notes, Govt vendor). An approved General NFA or the approval email is mandatory; the NFA amount must match the invoice.', { muted: true, small: true }), table(force, true)] },
+        { id: 'exc', body: [UI.p('Old-period invoices (activity more than one year old) need BPA head approval with a business justification; invoice numbers over 50 characters need CFR approval before trimming; a repeated invoice number from another financial year gets the FY appended after approval.', { muted: true, small: true }), table(exc, true)] },
+        { id: 'mine', body: [table(mine, false)] }] }) +
+      UI.alert({ tone: 'info', title: 'Property Manager invoices', text: 'are approved in Oracle after booking: Airtel Send for Approval moves them to the business owner\'s approver bin under the budget-head DOA. Their status is shown on the portal.', actions: [UI.textlink({ label: 'ERP booking monitor', icon: 'arrowRight', go: 'inv-18' })] }) +
+      UI.p('Approvals waiting beyond the SLA are escalated: AP team (L1), manager (L2), Finance Head (L3). A change after approval sets the invoice to Need re-approval.', { muted: true, small: true })
+  });
+})();
+</script>
+</body>
+</html>

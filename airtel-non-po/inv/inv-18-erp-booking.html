@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ERP booking monitor - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Booking in Oracle EBS through the open interfaces and the existing Airtel programs, in place of WebADI uploads (HLD 7.1, 7.3). */
+  var S = Page.state();
+  var pmFlow = UI.flow({ items: [{ label: 'Validated', text: '312 invoices', state: 'done' }, { label: 'PM upload', text: 'Bypass N, then Y on duplicate', state: 'done' }, { label: 'Booked in PM', text: '309 booked &middot; 3 withheld', state: 'done' },
+    { label: 'OWCC attachments', text: 'By Group ID &middot; up to 1 hour', state: 'current' }, { label: 'Send for Approval', text: 'Approver bin (budget-head DOA)' }] });
+  var apFlow = UI.flow({ items: [{ label: 'Approved on portal', text: '58 invoices', state: 'done' }, { label: 'Grouped by OU', text: '11 operating units', state: 'done' }, { label: 'Payable Open Interface Import-GST', text: 'With distributions and TDS', state: 'done' },
+    { label: 'Barcode', text: 'PN Opex Invoice Barcode Report', state: 'current' }, { label: 'Attachments', text: 'Invoice and approvals' }, { label: 'AP validation', text: 'Then payment' }] });
+
+  var batches = UI.table({ dense: true, columns: [{ key: 'b', label: 'Batch' }, { key: 'ou', label: 'Operating unit' }, { key: 'p', label: 'Path' }, { key: 'n', label: 'Invoices', num: true }, { key: 'a', label: 'Amount (Rs)', num: true }, { key: 'st', label: 'Step' }, { key: 's', label: 'Status' }],
+    rows: [
+      { b: 'PMB-26-1001-014<div class="k-muted k-small">01-Oct 10:00</div>', ou: 'BAL MO Delhi', p: 'PM upload', n: '42', a: '1,84,52,240.40', st: 'OWCC attachments (Group ID GRP-DEL-261001-03)', s: UI.status('Waiting for attachments') + '<div class="k-small">Send for Approval runs when visible in Oracle (max 1 hour)</div>' },
+      { b: 'PMB-26-1001-013<div class="k-muted k-small">01-Oct 10:00</div>', ou: 'BAL MO UP East', p: 'PM upload', n: '18', a: '24,61,860.00', st: 'Send for Approval', s: UI.status('Done', 'ok') },
+      { b: 'APB-26-1001-009<div class="k-muted k-small">01-Oct 09:30</div>', ou: 'APO', p: 'AP import', n: '6', a: '18,22,338.39', st: 'Barcode', s: UI.status('In progress') },
+      { b: 'APB-26-1001-008<div class="k-muted k-small">01-Oct 09:30</div>', ou: 'BAL MO Delhi', p: 'AP import', n: '4', a: '33,51,200.00', st: 'Attachments', s: UI.status('Done', 'ok') + '<div class="k-small">Barcodes BC2627DEL004853 ...</div>' },
+      { b: 'TCN-26-1001-002<div class="k-muted k-small">01-Oct 09:00</div>', ou: 'BAL MO Andhra Pradesh', p: 'ToCo CN / DN (two-stage)', n: '3', a: '-58,145.00', st: 'Stage 2 - AP import', s: UI.status('Done', 'ok') },
+      { b: 'APB-26-1001-007<div class="k-muted k-small">01-Oct 09:00</div>', ou: 'BAL MO UP East', p: 'AP import', n: '5', a: '3,12,640.00', st: 'Payable Open Interface Import-GST', s: UI.status('1 rejected'), _flag: true }] });
+
+  var errors = UI.table({ dense: true, columns: [{ key: 'inv', label: 'Invoice' }, { key: 'step', label: 'Step' }, { key: 'err', label: 'Oracle error' }, { key: 'act', label: 'Handling' }, { key: '_acts', label: '' }],
+    rows: [
+      { inv: 'NPO-2627-004863<div class="k-muted k-small">SKP/26-27/121 &middot; Rush &middot; UP East</div>', step: 'AP import (batch APB-26-1001-007)', err: 'Vendor site KANPUR-DG inactive at import', act: 'Whole invoice withheld; returned to the submitter with the Oracle error; re-approval needed if approved details change', _flag: true,
+        _acts: [{ icon: 'sync', label: 'Retry (keyed by the portal reference, cannot book twice)', toast: 'Retry queued for the next import run' }, { icon: 'send', label: 'Return to submitter', toast: 'Returned with the Oracle error' }] },
+      { inv: 'NPO-2627-004702<div class="k-muted k-small">IND/26/AUG/77180 &middot; Central ToCo &middot; Delhi</div>', step: 'PM upload', err: 'Potential Duplicate Invoices (line 12)', act: 'Re-attempted with validation bypass flag Y - booked', _acts: [] },
+      { inv: 'NPO-2627-004738<div class="k-muted k-small">IND/26/AUG/77190 &middot; Central ToCo &middot; Haryana</div>', step: 'PM upload', err: 'Locator 13304-MHAR-0118 inactive', act: 'Not a duplicate error: whole invoice removed from the upload and held as a locator exception', _acts: [{ icon: 'eye', label: 'Locator exceptions', go: 'inv-15' }] }] });
+
+  var toco = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'n', label: 'Note' }, { key: 's1', label: 'Stage 1 - ToCo CN / DN form' }, { key: 't', label: 'Transfer to CN / DN invoice form' }, { key: 's2', label: 'Stage 2 - AP' }],
+    rows: [{ n: 'GTL/AP/DUPLICATE/JUL26/DN<div class="k-muted k-small">Dispute Note &middot; -6,895.00</div>', s1: UI.status('Waiting for approval'), t: '-', s2: '-' },
+      { n: 'IND/26/JUL/74410/DNF<div class="k-muted k-small">Dispute Note &middot; -41,300.00</div>', s1: UI.status('Done', 'ok'), t: UI.status('Done', 'ok'), s2: UI.status('Booked', 'ok') + '<div class="k-small">DEBIT &middot; IMMEDIATE</div>' },
+      { n: 'IND/26/JUL/74388/REV<div class="k-muted k-small">Dispute Reversal Note &middot; 41,300.00</div>', s1: UI.status('Done', 'ok'), t: UI.status('Done', 'ok'), s2: UI.status('Booked', 'ok') + '<div class="k-small">STANDARD &middot; vendor term</div>' }] });
+
+  var monthEnd = UI.kv({ cols: 2, items: [['AP period SEP-26', 'Closed on 30-Sep-2026 20:00'], ['GL date for AP bookings now', '01-Oct-2026 (1st of the next month)'], ['Property Manager', 'No closing activity impact; bookings continue'], ['Hourly AP error report', 'Last run 11:00 - 1 invoice rejected']] });
+
+  Page.render({
+    id: 'inv-18', roleId: 'phd', states: [{ id: 'error', label: 'Errors' }],
+    html: UI.page({ title: 'ERP Booking', accent: 'Monitor', info: 'The portal writes to staging, a database package loads the Oracle interfaces and submits the import programs', sub: 'Every booking from the portal to Oracle EBS, by operating unit. Invoices are booked whole or not at all, and each booking is keyed to its portal reference so a retry cannot create a second invoice.' }) +
+      UI.kpis({ cols: 5, items: [{ value: '309', label: 'Booked in PM today' }, { value: '58', label: 'Booked in AP today' }, { value: '1', label: 'Waiting for OWCC', sub: 'Attachments lag' }, { value: '1', label: 'Rejected by Oracle', sub: 'Hourly report 11:00', tab: 'bk:errors' }, { value: 'Matched', label: 'Portal vs Oracle', sub: 'Daily reconciliation 05:30' }] }) +
+      UI.tabs({ id: 'bk', active: S === 'error' ? 'errors' : 'batches', tabs: [
+        { id: 'batches', label: 'Batches', count: 6, body: [UI.subhead('Property Manager'), pmFlow, UI.subhead('AP invoices and debit notes'), apFlow, UI.filters({ items: [UI.field({ label: 'Date', type: 'select', value: 'Today' }), UI.field({ label: 'Operating unit', type: 'select', value: 'All' }), UI.field({ label: 'Path', type: 'select', value: 'All' })] }), batches] },
+        { id: 'errors', label: 'Errors', count: 3, body: [UI.p('Consolidated AP error report after every hourly processing run, for root-cause analysis and reprocessing. In PM, only duplicate or potential duplicate errors are re-attempted (with flag Y); any other error removes the whole invoice from the upload.', { muted: true, small: true }), errors] },
+        { id: 'toco', label: 'ToCo CN / DN', count: 3, body: [UI.p('Airtel TOCO Credit/Debit notes mapping function, then Airtel Transfer TOCO WebAdi data to TOCO CNDN Invoice form, then the AP import.', { muted: true, small: true }), toco] },
+        { id: 'month', label: 'Month-end', body: [monthEnd, UI.tbc('Cut-off and GL date rules for portal bookings at month-end')] }] })
+  });
+})();
+</script>
+</body>
+</html>

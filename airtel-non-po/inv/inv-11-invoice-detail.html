@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoice detail - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* One invoice end to end. Open any reference from the tracker: inv-11-invoice-detail.html?ref=NPO-2627-004640 */
+  var R = INV.role('phd'), partner = INV.isPartner(R);
+  var defRef = partner ? (R.id === 'toco' ? 'NPO-2627-004640' : R.id === 'landlord' ? 'NPO-2627-004512' : 'NPO-2627-004521') : 'NPO-2627-004640';
+  var r = INV.find(Page.param('ref')) || INV.find(defRef), pm = r.fam === 'PM', vend = INV.vendors[r.v], ci = INV.circles[r.circle];
+  var seq = INV.LIFECYCLE[pm ? 'PM' : 'AP'], reached = function (s) { var i = seq.indexOf(r.status); return i >= 0 && i >= seq.indexOf(s) || r.status === 'Scheduled payment hold' && seq.indexOf(s) <= seq.indexOf('Validated') || r.status === 'Need re-approval' && seq.indexOf(s) <= seq.indexOf('Approved'); };
+  var booked = reached('Processed'), paid = r.status === 'Paid';
+
+  var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [
+    ['Reference', '<b>' + r.ref + '</b>'], ['Status', INV.status(r.status) + (r.reason ? '<div class="k-small">' + UI.esc(r.reason) + '</div>' : '')], ['Invoice', '<span class="wrap-any">' + UI.esc(r.inv) + '</span> &middot; ' + r.date], ['Amount', INV.rs(r.total, r.cur) + (r.gst ? ' <span class="k-muted k-small">(base ' + UI.inr(r.base, 2) + ')</span>' : '')],
+    ['Vendor', UI.esc(r.vendor) + ' (' + r.v + ')'], ['Category', UI.esc(r.c.name) + ' &middot; ' + INV.FAM[r.fam]], ['Circle', UI.esc(r.circle) + ' &middot; ' + UI.esc(ci.ou)], ['Service period', r.period || '-'],
+    ['Submitted', (r.recv || r.on) + (partner ? '' : ' by ' + (r.v === '600124' || r.v === '412885' || r.v === '700845' ? 'the partner' : 'B0UPE118 (circle user)'))], ['SLA', r.sla ? UI.esc(r.sla) : r.c.sla], ['Approval', UI.esc(r.c.approval)], ['Booked in', pm ? 'Oracle PM module (locator-wise)' : 'Oracle AP module']] })] });
+
+  var acts = partner ? (r.status === 'RFI' ? UI.btns([UI.button({ label: 'Respond', variant: 'primary', go: 'inv-10?state=respond' })]) : '')
+    : UI.btns([r.status === 'Under Validation' || r.status === 'Submitted' ? UI.button({ label: 'Open review', variant: 'primary', go: INV.review(r.ref) }) : '',
+      r.status === 'Hold' ? UI.button({ label: 'Re-trigger', toast: 'Invoice re-triggered for validation and booking' }) : UI.button({ label: 'Put on hold', modal: 'hold' }),
+      UI.button({ label: 'Download all documents', icon: 'download', toast: 'Documents downloaded' })].filter(Boolean));
+
+  var history = [UI.p(pm ? 'Property Manager: booked in Oracle first, then approved by the business owner under the budget-head DOA.' : 'AP: approved on the portal first, then booked in Oracle AP.', { muted: true, small: true }), UI.timeline({ rows: INV.timelineRows(r) })];
+
+  var doc = UI.docMock({ title: r.fam === 'DN' ? 'DEBIT NOTE' : r.cat === 'row' ? 'DEMAND NOTE' : 'TAX INVOICE', qr: vend.irn === 'Yes', stamp: r.vshort.split(' ')[0].toUpperCase(),
+    fields: [['Invoice No', r.inv], ['Date', r.date], ['Supplier GSTIN', r.gstin || '-'], ['Bill to', 'Bharti Airtel Ltd, ' + r.circle], ['Period', r.period || '-']],
+    lines: [[UI.esc(r.c.name) + ' charges', '997212', pm ? String(r.lines || 1) : '1', UI.inr(r.base, 2), UI.inr(r.base, 2)]], totals: [['Taxable', UI.inr(r.base, 2)], ['GST', UI.inr(r.gst, 2)], ['Total', UI.inr(r.total, 2)]] });
+  var docs = UI.split({ left: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'd', label: 'Document' }, { key: 's', label: 'Stored in' }, { key: 'w', label: 'Added' }],
+    rows: [{ d: 'Invoice copy (PDF)', s: booked ? (pm ? 'OWCC, Group ID ' + (r.group || 'GRP-' + r.ref.slice(-6)) : 'Oracle attachment') : 'Portal', w: r.recv || r.on },
+      pm ? { d: 'Working sheet / input sheet', s: 'Portal', w: r.recv || r.on } : { d: /Force/.test(r.c.approval) ? 'NFA / approval email' : 'Approval history (PDF)', s: booked ? 'DMS' : 'Portal', w: r.on }] })],
+    right: [UI.pdf({ selected: 'Invoice copy (PDF)', count: 'Page 1 of 2', doc: doc })] });
+
+  var lineRows = pm ? [
+    { l: 1, loc: r.v === '412885' ? '11106-MDEL-0412881' : '12104-MLKO-0412207', bh: 'Network rent', per: r.period, a: Math.round(r.base * 0.62 * 100) / 100, rem: UI.status(/Locator/.test(r.reason || '') ? 'Locator inactive' : 'Processed', /Locator/.test(r.reason || '') ? '' : 'ok') },
+    { l: 2, loc: r.v === '412885' ? '11106-MDEL-0412881' : '12104-MLKO-0412207', bh: 'Energy', per: r.period, a: Math.round(r.base * 0.38 * 100) / 100, rem: UI.status('Processed', 'ok') }]
+    : [{ l: 1, loc: ci.bu + '-' + (r.cat === 'legal' ? '4212004' : r.cat === 'others' ? '4664060' : '4651002'), bh: UI.esc(r.c.name), per: r.period, a: r.base, rem: r.urn ? 'URN ' + '<span class="k-urn">' + r.urn + '</span>' : '' }];
+  var lines = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'l', label: 'Line' }, { key: 'loc', label: pm ? 'Locator' : 'Account (BU-GL)' }, { key: 'bh', label: pm ? 'Budget head' : 'Nature' }, { key: 'per', label: 'Service period' }, { key: 'a', label: 'Base (Rs)', num: true, money: true }, { key: 'rem', label: pm ? 'Locator remark' : 'Provision' }],
+    rows: lineRows, foot: pm ? { l: (r.lines || 2) + ' lines' + (r.lines > 2 ? ' (2 shown)' : ''), a: r.base } : null });
+
+  var oracle = UI.kv({ cols: 3, items: pm ? [['Oracle PM invoice', r.oracle || 'Not yet booked'], ['Group ID (OWCC)', r.group || '-'], ['Attachments in OWCC', booked ? 'Uploaded; visible in Oracle after up to 1 hour' : '-'],
+      ['Airtel Send for Approval', reached('Under Approval') ? 'Run - invoice in the approver bin' : 'Waits until attachments are visible'], ['Validation bypass flag', r.v === '412885' ? 'N' : '-'], ['GL date', booked ? r.on : '-']]
+    : [['Oracle AP voucher', r.oracle || 'Not yet booked'], ['Barcode', r.barcode || (booked ? 'BC2627' + r.ref.slice(-6) : '-')], ['Import', booked ? 'Airtel Payable Open Interface Import-GST' : 'After approval'],
+      ['Invoice type / pay group', UI.esc(r.c.invType) + ' &middot; ' + UI.esc(r.c.payGroup)], ['Payment term', UI.esc(r.c.term)], ['Approvals attached', booked ? 'Yes (DMS)' : '-']] });
+
+  var approvals = UI.timeline({ columns: ['Approval', 'Date', 'By', 'Remarks'], rows: pm ? [
+      { status: 'Budget-head DOA (Oracle approver bin)', state: reached('Approved') ? 'done' : reached('Under Approval') ? 'current' : 'pending', date: reached('Approved') ? '16-Sep-2026' : '', action: reached('Approved') || reached('Under Approval') ? 'B0NWK118 (network rent budget head)' : '', reason: r.status === 'Need re-approval' ? UI.esc(r.reason) : '' }]
+    : [{ status: /Force/.test(r.c.approval) ? 'Force approval (NFA checked)' : 'DOA level 1', state: reached('Approved') ? 'done' : reached('Under Approval') ? 'current' : 'pending', date: reached('Approved') ? r.on : '', action: reached('Under Approval') || reached('Approved') ? (/Force/.test(r.c.approval) ? 'B0PHD307 (PHD / AP)' : 'B0APR219') : '' },
+      r.total > 500000 && !/Force/.test(r.c.approval) ? { status: 'DOA level 2', state: reached('Approved') ? 'done' : 'pending', action: 'B0APR030' } : null].filter(Boolean) });
+
+  var payment = UI.kv({ cols: 3, items: [['AP validation', reached('Validated') ? 'Validated' : 'Not yet'], ['Payment status', paid ? 'Paid' : r.status === 'Scheduled payment hold' ? 'Scheduled - held' : reached('Validated') ? 'Scheduled as per payment term' : '-'], ['Payment reference', r.paid || '-'],
+    ['Payment term', UI.esc(pm ? 'Controlled Expense - 30 days' : r.c.term)], ['Hold reason', r.status === 'Scheduled payment hold' ? UI.esc(r.reason) : '-'], ['TDS deducted', reached('Validated') ? 'Rs ' + UI.inr(Math.round(r.base * (pm ? 0.02 : 0.02)), 2) : '-']] });
+
+  var provision = r.urn ? UI.alert({ tone: 'info', title: 'Linked provision ' + r.urn + '.', text: 'The provision is actualized when this invoice is booked and validated in Oracle.', actions: [UI.textlink({ label: 'Open provision', icon: 'arrowRight', go: '../pa/pa-09-provision-detail.html?urn=' + encodeURIComponent(r.urn) })] })
+    : pm && r.v === '412885' ? UI.alert({ tone: 'info', title: 'TOCO site-level matching.', text: 'PM invoices are matched to DARTS provisions by parent BU, vendor, item code, service month and locator once they appear validated in the PM Infra report.', actions: [UI.textlink({ label: 'Matching workbench', icon: 'arrowRight', go: '../pa/pa-12-matching-workbench.html' })] })
+    : UI.p('No provision linked. The matching engine rebuilds the key from BU, vendor, item code and service month after booking.', { muted: true });
+
+  var audit = UI.timeline({ columns: ['Event', 'Date', 'By', 'Detail'], rows: [
+    { status: 'Submitted', state: 'done', date: r.recv || r.on, action: partner ? 'You' : 'Partner / circle user', reason: 'Reference ' + r.ref + ' issued' },
+    { status: 'OCR and IRN read', state: 'done', date: r.recv || r.on, action: 'System', reason: vend.irn === 'Yes' ? 'QR matched invoice' : 'No IRN (supplier not under e-invoicing)' },
+    { status: 'Checklist', state: 'done', date: r.recv || r.on, action: 'System + PHD', reason: '18 points; checks 12 and 13 reviewed by PHD' },
+    booked ? { status: 'Booked in Oracle', state: 'done', date: r.on, action: 'Integration', reason: r.oracle || '' } : null,
+    r.reason ? { status: r.status, state: 'current', date: r.on, action: 'PHD team', reason: UI.esc(r.reason) } : null].filter(Boolean) });
+
+  var tabs = [{ id: 'status', label: 'Status history', body: history }, { id: 'docs', label: 'Documents', body: [docs] }, { id: 'lines', label: pm ? 'Lines' : 'Distribution', count: pm ? r.lines || 2 : 1, body: [lines] }];
+  if (!partner) tabs.push({ id: 'oracle', label: 'Oracle booking', body: [oracle] }, { id: 'appr', label: 'Approvals', body: [approvals] });
+  tabs.push({ id: 'pay', label: 'Payment', body: [payment] });
+  if (!partner) tabs.push({ id: 'prov', label: 'Provision', body: [provision] }, { id: 'audit', label: 'Audit trail', body: [audit] });
+
+  var hold = UI.modal({ id: 'hold', title: 'Put on', accent: 'Hold', size: 'narrow', body: [UI.grid(1, [UI.field({ label: 'Hold reason', type: 'select', value: 'Awaiting supporting document', required: true }), UI.field({ label: 'Remarks', type: 'area', required: true, placeholder: 'Shown to the submitter with the status' })])],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Put on hold', variant: 'primary', close: true, toast: 'Invoice placed on hold' })] });
+
+  Page.render({
+    id: 'inv-11', roleId: 'phd', navKey: 'inv-09', stat: 'overall',
+    html: UI.page({ title: 'Invoice', accent: 'Detail', crumb: '<a data-go="inv-09">Invoice tracker</a> &rsaquo; ' + r.ref, sub: partner ? 'Status, documents and payment of your invoice.' : 'Open any reference from the tracker. Try a Property Manager invoice <a class="k-link" href="' + INV.detail('NPO-2627-004640') + '">NPO-2627-004640</a> or an AP invoice <a class="k-link" href="' + INV.detail('NPO-2627-004860') + '">NPO-2627-004860</a>.' }) +
+      head + acts + '<div class="k-gap"></div>' + UI.tabs({ id: 'id', tabs: tabs }) + hold
+  });
+})();
+</script>
+</body>
+</html>

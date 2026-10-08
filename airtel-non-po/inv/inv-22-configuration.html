@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoicing configuration - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Configurable rules (HLD 4.1 principle: tolerances, payment terms, item codes, pay groups, the reverse-charge list and SLA values are configuration). */
+  var S = Page.state(), R = INV.role('p2p'), canEdit = R.id === 'p2p';
+  var ed = canEdit ? [{ icon: 'edit', label: 'Edit (maker-checker)', modal: 'edit' }] : [];
+
+  var matrix = UI.table({ dense: true, columns: [{ key: 'f', label: 'Family' }, { key: 'n', label: 'Sub-category' }, { key: 't', label: 'Invoice type' }, { key: 'a', label: 'Approval' }, { key: 'p', label: 'Payment term' }, { key: 'g', label: 'Pay group' }, { key: 'pa', label: 'Pay alone' }, { key: 'b', label: 'Bulk' }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: INV.cats.map(function (c) { return { f: INV.FAM[c.fam], n: UI.esc(c.name), t: UI.esc(c.invType), a: UI.esc(c.approval), p: UI.esc(c.term), g: UI.esc(c.payGroup), pa: UI.esc(c.payAlone), b: c.bulk ? 'Yes' : 'No', s: c.oos ? UI.status('Out of scope', 'grey') : UI.status('Active', 'ok'), _acts: ed }; }),
+    footLeft: canEdit ? [UI.button({ label: 'Add sub-category', icon: 'plus', size: 'sm', modal: 'edit' })] : [], total: INV.cats.length + ' sub-categories' });
+
+  var tol = UI.table({ dense: true, pager: false, columns: [{ key: 'c', label: 'Sub-category' }, { key: 'r', label: 'Compared' }, { key: 't', label: 'Tolerance' }, { key: 'e', label: 'Effective from' }, { key: '_acts', label: '' }],
+    rows: [{ c: 'Central ToCo', r: 'Base after merge vs OCR', t: 'Rs 5 (Bharti Infratel Rs 20 either way)', e: '01-Apr-2026', _acts: ed }, { c: 'Local ToCo', r: 'Base after merge vs OCR', t: S === 'pending' ? 'Rs 2 &rarr; Rs 5 ' + UI.status('Waiting for checker') : 'Rs 2', e: S === 'pending' ? '01-Nov-2026 (proposed)' : '01-Apr-2026', _acts: ed },
+      { c: 'Bandwidth Domestic', r: 'Invoice vs OCR and pro-rated cost sheet charge', t: 'Rs 10', e: '01-Apr-2026', _acts: ed }, { c: 'Bandwidth International', r: 'Input vs invoice', t: 'Rs 2, or 0.2 for non-INR', e: '01-Apr-2026', _acts: ed }, { c: 'LL_EB', r: 'Input sheet, OCR and Oracle booking amount', t: 'Exact', e: '01-Apr-2026', _acts: ed }] });
+
+  var sla = UI.cols('1:1', [UI.box({ title: 'SLA by invoice type', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 't', label: 'Type' }, { key: 's', label: 'SLA' }], rows: [{ t: 'Normal', s: 'T+2 / T+3' }, { t: 'Property Manager', s: 'T+2' }, { t: 'Rush', s: 'Same day / T+1' }] })] })],
+    [UI.box({ title: 'Escalation', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'l', label: 'Level' }, { key: 'w', label: 'To' }, { key: 'a', label: 'After' }], rows: [{ l: 'L1', w: 'AP team', a: 'SLA breached' }, { l: 'L2', w: 'Manager', a: 'Configurable' }, { l: 'L3', w: 'Finance Head', a: 'Configurable' }] })] })]);
+
+  var rush = UI.table({ dense: true, pager: false, columns: [{ key: 's', label: 'Rush scenario' }, { key: 'e', label: 'Evidence required' }, { key: 'a', label: 'Approval' }, { key: '_acts', label: '' }],
+    rows: [{ s: 'Site outage - emergency service', e: 'Approval mail of the circle head', a: 'Force approval', _acts: ed }, { s: 'Statutory deadline', e: 'Demand or notice copy', a: 'Force approval', _acts: ed }, { s: 'Court order', e: 'Order copy, legal approval', a: 'DOA', _acts: ed }, { s: 'Customer escalation', e: 'NFA', a: 'DOA', _acts: ed }],
+    footLeft: canEdit ? [UI.button({ label: 'Add scenario', icon: 'plus', size: 'sm', modal: 'edit' })] : [] });
+
+  var lists = UI.cols('1:1', [UI.box({ title: 'Reverse-charge service list (checklist 17)', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 's', label: 'Service' }, { key: 'd', label: 'Max days before booking' }],
+      rows: [{ s: 'Legal services by an advocate', d: '45 ' + UI.tbc('60 days per Legal rules') }, { s: 'Services by Government (ROW, where applicable)', d: '45' }, { s: 'Sponsorship services', d: '45' }] })] })],
+    [UI.box({ title: 'Airtel offices and group entities (checklist 15)', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'e', label: 'Entity' }, { key: 'n', label: 'Offices' }], rows: [{ e: 'Bharti Airtel Ltd', n: '214' }, { e: 'Bharti Hexacom Ltd', n: '22' }, { e: 'Airtel Payments Bank Ltd', n: '31' }, { e: 'Nxtra Data Ltd', n: '12' }] })] })]);
+
+  var num = UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Rule' }, { key: 'w', label: 'Applied' }, { key: 'e', label: 'Example' }],
+    rows: [{ r: 'GST invoice number', w: 'At most 16 characters; only ( ) / - and \\ as special characters; converted to upper case', e: 'SGIS/26-27/0425' },
+      { r: 'Oracle limit', w: 'At most 50 characters; trimmed after OCR matching, CFR approval', e: '-' },
+      { r: 'Unique part at the end', w: 'Right-most 50 characters', e: 'OT/NGP/COMPLIANCE/CAFPENALTY/MONTHLY/DEC-25/AIRTEL' },
+      { r: 'Unique part at the start', w: 'Left-most 50 characters', e: 'E1/293/PALWANCHA/AIRTELOFC/ROADCUTTING/DEMANDNOTIC' },
+      { r: 'GST line of a demand note', w: '46 characters (right or left) + "/GST"', e: '3556/MUKHYAABHIYANTA(TAKNEEKEE)/MAVIVINILI/E-3/GST' },
+      { r: '48 / 49 series', w: 'Full number on the basic line; core characters + "/GST" on the GST line', e: '1364/MUKHYAABHI(TAKNIKI)/MAVIVINILI/E-3/NEWDEM/GST' },
+      { r: 'Same number in a different FY', w: 'FY appended after approval', e: 'MFL/0091/FY26-27' },
+      { r: 'Debit note suffixes', w: '/DN, /DNF, /REV; then /DN2, /DN3 ...', e: 'GTL/AP/DUPLICATE/JUL26/DN' }] });
+
+  var bypass = UI.stack([UI.kv({ cols: 2, items: [['Applies to', 'Central ToCo invoices uploaded to PM'], ['First attempt', 'Validation bypass flag N'], ['Second attempt', 'Flag Y, only when PM reports "Duplicate Invoices" or "Potential Duplicate Invoices"'], ['Any other error', 'Whole invoice removed from the upload and returned']] }),
+    UI.tbc('Control or approval required before a bypass'), UI.p('Every bypass is logged in the audit trail and the Duplicate bypass log report.', { muted: true, small: true })]);
+
+  var gstr = UI.kv({ cols: 2, items: [['Previous-year invoice received after 30 September', 'Checked in GSTR-2A; found: process, not found: reject with remarks'], ['Received 1 April to 30 September', 'Processed as usual'], ['Invoice more than one year old', 'Booked only if found in GSTR-2A / 2B; activity period over a year needs BPA head approval'], ['Applies to', 'Tax invoices only']] });
+
+  var edit = UI.modal({ id: 'edit', title: 'Edit', accent: 'Configuration', size: 'narrow', body: [UI.grid(1, [UI.field({ label: 'Setting', type: 'readonly', value: 'Local ToCo tolerance' }), UI.field({ label: 'New value', value: 'Rs 5' }), UI.field({ label: 'Effective from', type: 'date', value: '01/11/2026' }), UI.field({ label: 'Reason', type: 'area', required: true })]),
+    UI.p('Changes go to a checker and are effective-dated, so invoices already submitted keep the rule in force when they were submitted.', { muted: true, small: true })],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Submit for approval', variant: 'primary', close: true, toast: 'Change sent to the checker' })] });
+
+  Page.render({
+    id: 'inv-22', roleId: 'p2p', states: [{ id: 'pending', label: 'Change waiting for checker' }],
+    html: UI.page({ title: 'Invoicing', accent: 'Configuration', sub: 'Rules held as configuration so a sub-category can be added or a rule changed without altering the core flow. Values are provided by the business before build.' }) +
+      UI.tabs({ id: 'c', active: S === 'pending' ? 'tol' : 'matrix', tabs: [{ id: 'matrix', label: 'Category matrix', body: [matrix, UI.tbc('Add TDS rectification input in AP (same format as Rush, force approval) - client note')] }, { id: 'tol', label: 'Tolerances', body: [tol] }, { id: 'sla', label: 'SLA & escalation', body: [sla] },
+        { id: 'rush', label: 'Rush scenarios', body: [UI.p('Sample scenarios; the business provides the predefined Rush scenario list before build.', { muted: true, small: true }), rush] }, { id: 'lists', label: 'Checklist lists', body: [UI.p('Sample entries; the Finance and Tax teams provide the lists.', { muted: true, small: true }), lists] }, { id: 'num', label: 'Document numbers', body: [num] }, { id: 'bypass', label: 'Duplicate bypass', body: [bypass] }, { id: 'gstr', label: 'GSTR-2A / 2B', body: [gstr, UI.tbc('Whether one GSTR-2A rule or both apply (PM rule vs Central ToCo rule)')] }] }) + edit
+  });
+})();
+</script>
+</body>
+</html>

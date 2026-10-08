@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create provision - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  var S = Page.state();
+  var scen = S === 's2' ? 2 : S === 's4' ? 4 : S === 's10' ? 10 : 1;
+  var act = PA.activities.filter(function (a) { return a.scenario === scen; })[0];
+  var err = S === 'errors', dup = S === 'duplicate', cfr = S === 'cfr', ok = S === 'validated' || S === 'submitted', ret = S === 'returned';
+  var vcode = scen === 1 ? '410022' : scen === 2 ? '410387' : scen === 4 ? '410387' : '410455';
+  var vend = PA.vendors[vcode];
+  var month = 'SEP-26', bu = cfr ? '161' : '131', buName = cfr ? 'Mobile - Telangana (new BU)' : 'Mobile - Karnataka';
+  var amount = scen === 1 ? 492000 : scen === 2 ? 1500000 : scen === 4 ? 3600000 : 110000;
+  var urn = [bu, vcode, err ? 'SECURITY09' : act.item, month].join('·');
+
+  var legend = '<div class="k-legend-src"><span><i class="k-src green"></i>Entered by you</span><span><i class="k-src grey"></i>From master data (Oracle EBS / portal masters)</span><span><i class="k-src blue"></i>Generated or calculated by the system</span></div>';
+
+  var activity = UI.section({ title: 'Activity', collapsible: true, body: [UI.grid(3, [
+    UI.field({ label: 'Activity ID', type: 'lookup', value: act.id + ' &middot; ' + UI.esc(act.name), required: true, src: 'green', hint: 'Every activity has a unique ID in the activity master; the activity decides the scenario rules' }),
+    UI.field({ label: 'Scenario', type: 'readonly', value: 'S' + act.scenario + ' &middot; ' + UI.esc(PA.scenarios[act.scenario]), src: 'grey' }),
+    UI.field({ label: 'Approval route', type: 'readonly', value: act.route === 'Approval' ? 'Maker-checker approval (DOA)' : 'Notification only', src: 'grey' }),
+    UI.field({ label: 'Reversal mode', type: 'readonly', value: act.mode === 'Reversal' ? 'Reversal mode (Oracle reverses next period)' : 'Standing (adjustment / provisional)', src: 'grey', info: 'Recorded on the provision when it is created; it decides what actualization posts later' }),
+    UI.field({ label: 'Department', type: 'readonly', value: UI.esc(act.dept), src: 'grey' }),
+    UI.field({ label: 'Manager (checker)', type: 'readonly', value: 'B0CHK155 &middot; from HRMS', src: 'grey' })
+  ])] });
+
+  var details = UI.section({ title: 'Provision Details', collapsible: true, body: [UI.grid(3, [
+    UI.field({ label: 'Segment (BU)', type: 'select', value: bu + ' &middot; ' + buName, required: true, src: 'grey', hint: 'From your data scope; parent BU is used in the URN' }),
+    UI.field({ label: 'Vendor name', type: 'lookup', value: UI.esc(vend.name), required: true, src: 'green' }),
+    UI.field({ label: 'Vendor code', type: 'readonly', value: vcode, src: 'grey' }),
+    UI.field({ label: 'Group / non-group', type: 'readonly', value: vend.rpt === 'RPT' ? 'Group (related party)' : 'Non-group (non-RPT)', src: 'grey', hint: 'From the vendor master RPT flag and the BU vs legal entity master' }),
+    UI.field({ label: 'Input month', type: 'select', value: 'Sep-2026', required: true, src: 'green', error: S === 'closed' ? 'GL period SEP-26 is closed in Oracle for this ledger. Submission is blocked for this period.' : '' }),
+    UI.field({ label: 'Item code', type: 'lookup', value: err ? 'SECURITY09' : act.item, required: true, src: 'green', error: err ? 'Item code SECURITY09 does not exist in the item code master.' : '' }),
+    UI.field({ label: 'Item description', type: 'readonly', value: err ? '' : UI.esc(act.itemDesc), src: 'grey' }),
+    UI.field({ label: 'Expense GL', type: 'readonly', value: err ? '' : act.expGL, src: 'grey' }),
+    UI.field({ label: 'Liability GL', type: 'readonly', value: err ? '' : act.liabGL, src: 'grey' })
+  ]), err ? UI.alert({ tone: 'red', title: 'Item code not found.', text: 'Ask MDM to create it. The request is sent to the MDM team with the item details; you are notified when the code is created.', actions: [UI.button({ label: 'Notify MDM', size: 'sm', toast: 'Item code request raised to the MDM team' })] }) : ''] });
+
+  var calc = '';
+  if (scen === 2) calc = UI.section({ title: 'Scenario 2 - Distribution by Defined %', collapsible: true, body: [
+    UI.p('Segment-level year-to-date input from NSG is split to circles at the percentages in the allocation master (effective-dated). The liability is created at consolidated level.', { muted: true }),
+    UI.table({ pager: false, export: false, columns: [{ key: 'c', label: 'Circle (BU)' }, { key: 'p', label: 'Share %', num: true }, { key: 'a', label: 'Expense Dr (Rs)', num: true, money: true }],
+      rows: [{ c: '111 Delhi', p: '40.00', a: 600000 }, { c: '171 Orissa', p: '20.00', a: 300000 }, { c: '181 Punjab', p: '25.00', a: 375000 }, { c: '191 Haryana', p: '15.00', a: 225000 }],
+      foot: { c: 'Consolidated liability Cr', p: '100.00', a: 1500000 } }),
+    UI.p('Allocation master version effective 01-Apr-2026, maintained by business teams.', { muted: true, small: true })] });
+  if (scen === 4) calc = UI.section({ title: 'Scenario 4 - Partial Expense and Deferment', collapsible: true, body: [UI.grid(3, [
+    UI.field({ label: 'Period-to-date input (Rs)', value: '36,00,000.00', src: 'green', required: true }),
+    UI.field({ label: 'Deferment %', type: 'readonly', value: '72% (DG)', src: 'grey', hint: 'From deferment parameters (DG 72%, XFE 90%, OR 78%)' }),
+    UI.field({ label: 'Life of deferment', type: 'readonly', value: '35 months (DG promoter)', src: 'grey' }),
+    UI.field({ label: 'Expensed now (15 days)', type: 'readonly', value: '10,08,000.00', src: 'blue' }),
+    UI.field({ label: 'Current prepaid (next 12 months)', type: 'readonly', value: '8,88,686.00', src: 'blue' }),
+    UI.field({ label: 'Non-current prepaid', type: 'readonly', value: '17,03,314.00', src: 'blue' })]),
+    UI.p('Deferred amount is uploaded to the prepaid module. Entity split: Mobile, Homes, IPTV by circle; liability in Mobile books.', { muted: true, small: true })] });
+  if (scen === 10) calc = UI.section({ title: 'Scenario 10 - VTM', collapsible: true, body: [UI.grid(3, [
+    UI.field({ label: 'Subscriber count (updated by AIO)', type: 'readonly', value: '11,000', src: 'grey' }),
+    UI.field({ label: 'Average penalty % (last 12 months)', type: 'readonly', value: '1.00%', src: 'blue' }),
+    UI.field({ label: 'Provision (Rs)', type: 'readonly', value: '110.00 x 1,000 = 1,10,000.00', src: 'blue' }),
+    UI.field({ label: 'Activation channel split', type: 'readonly', value: 'Paper-based 62% &middot; Online 38%', src: 'grey' })])] });
+
+  var amt = UI.section({ title: 'Amount and Period', collapsible: true, body: [UI.grid(3, [
+    UI.field({ label: 'Quantity', value: '1', src: 'green' }),
+    UI.field({ label: 'Currency', type: 'select', value: 'INR', src: 'green' }),
+    UI.field({ label: 'Rate', value: UI.inr(amount, 2), src: 'green' }),
+    UI.field({ label: 'Amount (Rs)', value: UI.inr(amount, 2), required: true, src: 'green' }),
+    UI.field({ label: 'Period from', type: 'date', value: '01/09/2026', required: true, src: 'green' }),
+    UI.field({ label: 'Period to', type: 'date', value: '30/09/2026', required: true, src: 'green' }),
+    UI.field({ label: 'Provision basis', type: 'select', value: scen === 1 ? 'Monthly contract value' : 'As per scenario rule', required: true, src: 'green' }),
+    UI.field({ label: 'Annotation', value: 'Guarding services - Bengaluru offices', src: 'green' }),
+    UI.field({ label: 'Remarks', value: ret ? 'Revised after checker comments' : '', placeholder: 'Optional', src: 'green' })
+  ]), UI.upload({ label: 'Attachment', required: true, hint: 'Required for this activity: contract, work order or calculation sheet', files: ret || ok ? [{ name: 'Security_contract_2026.pdf', meta: '820 KB' }] : [] })] });
+
+  var checks;
+  if (err) checks = UI.alert({ tone: 'red', title: '2 issues stop this provision.', text: 'Item code SECURITY09 does not exist; mandatory attachment missing.' });
+  else if (dup) checks = UI.alert({ tone: 'warn', title: 'Potential duplicate.', text: 'URN 131·410022·SECURITY001·AUG-26 has the same vendor, item code and amount for the previous month. If this is correct, give a reason to continue; the override is recorded in the audit trail.', actions: [UI.button({ label: 'Override with reason', size: 'sm', modal: 'override' })] }) +
+    UI.alert({ tone: 'red', title: 'Exact duplicate blocked.', text: 'A provision with URN 131·410022·SECURITY001·SEP-26 already exists (Submitted on 30-Sep-2026). A URN carries no sequence number, so the same key cannot be raised twice.' });
+  else if (cfr) checks = UI.alert({ tone: 'warn', title: 'Routed to CFR approval.', text: 'BU 161 is a new BU for this activity. New provisions, or a new GL account, BU or OU, go to CFR for approval with your remarks before the checker.' });
+  else if (ret) checks = UI.alert({ tone: 'red', title: 'Returned by the checker on 30-Sep-2026.', text: 'Attach the retainer agreement; amount differs from the agreed monthly fee. Correct and resubmit.' });
+  else if (ok) checks = UI.alert({ tone: 'ok', title: 'All checks passed.', text: 'Mandatory fields and attachment present, master data valid and active, non-RPT, GL period SEP-26 open, no duplicate found.' });
+  else checks = UI.alert({ tone: 'info', text: 'Recurring provision suggestion: Security services for BU 131 was raised for Jul-26 and Aug-26 at Rs 4,85,000.00. Use the suggestion to pre-fill this form.', actions: [UI.textlink({ label: 'Use suggestion', icon: 'arrowRight', toast: 'Form pre-filled from the August provision' })] });
+
+  var preview = UI.section({ title: 'URN and Journal Preview', collapsible: true, body: [
+    UI.grid(3, [UI.field({ label: 'URN (assigned on submission)', type: 'readonly', value: '<span class="k-urn">' + urn + '</span>', src: 'blue' }),
+      UI.field({ label: 'Journal category', type: 'readonly', value: vend.rpt === 'RPT' ? 'Related party provision' : 'Provisional', src: 'blue' }),
+      UI.field({ label: 'RPT / YEP tags', type: 'readonly', value: vend.rpt + ' &middot; not YEP', src: 'blue' })]),
+    '<div class="k-tablewrap"><table class="k-je"><thead><tr><th>Line</th><th>Account (BU-GL)</th><th>Description</th><th class="num">Debit (Rs)</th><th class="num">Credit (Rs)</th></tr></thead><tbody>' +
+    '<tr><td>1</td><td>' + bu + '-' + act.expGL + '</td><td>' + UI.esc(act.itemDesc) + ' &middot; ' + month + '</td><td class="num">' + UI.inr(amount, 2) + '</td><td></td></tr>' +
+    '<tr><td>2</td><td>' + (scen === 2 ? '100' : bu) + '-' + act.liabGL + '</td><td>Provision liability ' + (scen === 2 ? '(consolidated)' : '') + '</td><td></td><td class="num">' + UI.inr(amount, 2) + '</td></tr></tbody></table></div>',
+    UI.p('Journals go to Oracle GL through the interface tables; the GPA manager posts them (final control gate). The URN is carried on every journal line.', { muted: true, small: true })] });
+
+  var submitted = UI.modal({ id: 'submitted', open: S === 'submitted', title: 'Provision', accent: 'Submitted', size: 'narrow', body: [
+    UI.kv({ cols: 2, items: [['URN', '<span class="k-urn">' + urn + '</span>'], ['Status', UI.status('Submitted')], ['Routed to', 'B0CHK155 (checker, from HRMS / DOA)'], ['Approval SLA', '2 working days, then escalated']] }),
+    UI.p('You will be notified when it is approved or returned. Self-approval is not allowed.', { muted: true })],
+    foot: [UI.button({ label: 'Create another', go: 'pa-04' }), UI.button({ label: 'View register', variant: 'primary', go: 'pa-03' })] });
+  var override = UI.modal({ id: 'override', title: 'Override', accent: 'Duplicate warning', size: 'narrow', body: [
+    UI.field({ label: 'Reason for raising this provision', type: 'area', required: true, placeholder: 'For example: second site added from 15-Sep-2026' }), UI.p('The override, your reason and the matched provision are recorded in the audit trail.', { muted: true, small: true })],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Continue', variant: 'primary', close: true, toast: 'Override recorded' })] });
+
+  var bar = UI.sticky({
+    left: [UI.textlink({ label: 'Check and preview', icon: 'arrowRight', state: 'validated' })],
+    totals: [['Provision amount', 'Rs ' + UI.inr(amount, 2)], ['Lines', scen === 2 ? '5' : '2']],
+    right: [UI.button({ label: 'Save draft', toast: 'Saved as draft' }),
+      err || dup || S === 'closed' ? UI.button({ label: 'Submit for approval', variant: 'disabled' }) : UI.button({ label: 'Submit for approval', variant: 'primary', state: 'submitted' })] });
+
+  Page.render({
+    id: 'pa-04', user: 'B0MKR412', role: 'Business user (maker)', viewAs: 'Business user (maker)',
+    states: [{ id: 'validated', label: 'Checks passed' }, { id: 'errors', label: 'Item code missing' }, { id: 'duplicate', label: 'Duplicate' }, { id: 'closed', label: 'GL period closed' },
+      { id: 'cfr', label: 'New BU - CFR route' }, { id: 'returned', label: 'Returned' }, { id: 's2', label: 'Scenario 2' }, { id: 's4', label: 'Scenario 4' }, { id: 's10', label: 'Scenario 10' }, { id: 'submitted', label: 'Submitted' }],
+    rail: { mode: 'form', title: 'Create Provision', accent: 'Non-PO', back: 'pa-03', text: 'Raise one provision. The activity decides the scenario, the approval route and the reversal mode.<br><br>Mandatory fields are marked <span class="k-link">*</span>.' },
+    html: '<div class="k-src-on">' + legend + checks + activity + details + calc + amt + preview + bar + '</div>' + submitted + override
+  });
+})();
+</script>
+</body>
+</html>

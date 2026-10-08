@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboards - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Invoicing dashboards (BRD 10 and 16; HLD 8.1). Figures are illustrative. */
+  var R = INV.role('apm'), circle = R.id === 'circle';
+  var whole = function (v) { return UI.inr(v, 0); }, pct = function (v) { return v + '%'; };
+
+  var status = [
+    UI.kpis({ cols: 8, items: [{ value: '1,284', label: 'Processed' }, { value: '23', label: 'Hold' }, { value: '41', label: 'Rejected' }, { value: '196', label: 'In-process' }, { value: '74', label: 'Pending with approver' }, { value: '58', label: 'Approved' }, { value: '912', label: 'Validated' }, { value: '3,406', label: 'Paid' }] }),
+    UI.cols('1:1', [UI.box({ title: 'Open invoices by circle and stage', body: [UI.chart({ type: 'stacked', title: 'Invoices', categories: ['Delhi', 'UP East', 'Karnataka', 'Maharashtra', 'Punjab', 'Others'], series: [{ name: 'In-process', data: [42, 38, 27, 31, 18, 40] }, { name: 'Pending approver', data: [16, 12, 9, 14, 6, 17] }, { name: 'Hold', data: [5, 6, 3, 4, 1, 4] }], fmt: whole })] })],
+      [UI.box({ title: 'Invoices received by family', body: [UI.chart({ type: 'line', title: 'Per week', categories: ['W35', 'W36', 'W37', 'W38', 'W39'], series: [{ name: 'Property Manager', data: [1180, 1242, 1198, 1310, 1288] }, { name: 'Rush / AP', data: [212, 236, 228, 251, 244] }, { name: 'Debit notes', data: [38, 41, 29, 52, 47] }], fmt: whole })] })])];
+  var rush = [
+    UI.kpis({ cols: 4, items: [{ value: '14', label: 'Rush open' }, { value: '3', label: 'Due today' }, { value: '1', label: 'Breached', sub: 'Escalated to L1' }, { value: '88%', label: 'Within SLA', sub: 'Sep-26 (same day / T+1)' }] }),
+    UI.cols('2:1', [UI.box({ title: 'Rush invoices within SLA', body: [UI.chart({ type: 'line', title: '% within SLA', categories: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'], series: [{ name: 'North', data: [81, 84, 86, 88, 90, 91] }, { name: 'South', data: [79, 82, 85, 84, 87, 86] }, { name: 'East and West', data: [76, 80, 83, 85, 86, 88] }], fmt: pct })] })],
+      [UI.box({ title: 'Rush reasons - Sep-26', body: [UI.chart({ type: 'bar', title: 'Invoices', categories: ['Site outage', 'Statutory deadline', 'Court order', 'Customer escalation'], series: [{ name: 'Rush', data: [31, 18, 6, 4] }], fmt: whole, labelWidth: 130 })] })])];
+  var ageing = [
+    UI.cols('1:1', [UI.box({ title: 'Open invoices by age and stage', body: [UI.chart({ type: 'stacked', title: 'Invoices', categories: ['0-2 days', '3-5 days', '6-10 days', 'Over 10 days'], series: [{ name: 'Validation', data: [131, 42, 15, 8] }, { name: 'Approval', data: [44, 19, 7, 4] }, { name: 'Booking', data: [52, 4, 1, 1] }], fmt: whole })] })],
+      [UI.box({ title: 'Average days to payment by family', body: [UI.chart({ type: 'bar', title: 'Days', categories: ['Property Manager', 'Rush / AP', 'Landlord GST', 'Debit notes'], series: [{ name: 'Days', data: [18.4, 9.2, 21.7, 6.1] }], fmt: function (v) { return UI.inr(v, 1); }, labelWidth: 120 })] })])];
+  var esc = [
+    UI.kpis({ cols: 3, items: [{ value: '9', label: 'At L1 (AP team)' }, { value: '2', label: 'At L2 (manager)' }, { value: '0', label: 'At L3 (Finance Head)' }] }),
+    UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Invoice' }, { key: 'c', label: 'Category / circle' }, { key: 's', label: 'Stage' }, { key: 'l', label: 'Level' }, { key: 'o', label: 'Over SLA by' }],
+      rows: [{ r: '<a class="k-link" href="' + INV.review('NPO-2627-004818') + '">NPO-2627-004818</a>', c: 'Others &middot; Karnataka', s: 'Manual queue', l: 'L2', o: '4 hours' }, { r: '<a class="k-link" href="' + INV.review('NPO-2627-004806') + '">NPO-2627-004806</a>', c: 'Diesel Knock off &middot; UP East', s: 'Manual queue', l: 'L1', o: '1 day' },
+        { r: 'NPO-2627-004781', c: 'Legal &middot; Delhi', s: 'DOA approval', l: 'L1', o: '6 hours' }] })];
+  var exc = [
+    UI.cols('1:1', [UI.box({ title: 'Manual queue by reason - Sep-26', body: [UI.chart({ type: 'bar', title: 'Invoices', categories: ['OCR incomplete', 'Amount outside tolerance', 'Signature / form review', 'Potential duplicate', 'Non-compliant landlord'], series: [{ name: 'Invoices', data: [64, 38, 52, 17, 9] }], fmt: whole, labelWidth: 160 })] })],
+      [UI.box({ title: 'Portal vs ERP - Sep-26', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'k', label: 'Check' }, { key: 'v', label: 'Count', num: true }, { key: 'r', label: 'Result' }],
+        rows: [{ k: 'Invoices booked by the portal', v: '5,712', r: UI.result('pass', 'Matched') }, { k: 'Direct invoices in Oracle (not from the portal)', v: '418', r: UI.result('warn', 'ERP only') }, { k: 'Portal booked, Oracle rejected', v: '3', r: UI.result('fail', 'In error queue') }, { k: 'Locator exceptions open', v: '5', r: UI.result('warn', 'Withheld') }] })] })])];
+
+  Page.render({
+    id: 'inv-19', roleId: 'apm',
+    html: UI.page({ title: 'Dashboards', sub: 'Processing status, Rush against SLA, pending and ageing, escalations and exceptions.' + (circle ? ' Shown for your circle (UP East).' : '') + ' Figures are illustrative.' }) +
+      UI.filters({ show: false, items: [UI.field({ label: 'Circle', type: circle ? 'readonly' : 'select', value: circle ? 'UP East' : 'All circles' }), UI.field({ label: 'Family', type: 'select', value: 'All' }), UI.field({ label: 'Period', type: 'select', value: 'Sep-2026' })] }) +
+      UI.tabs({ id: 'db', tabs: [{ id: 'status', label: 'Processing status', body: status }, { id: 'rush', label: 'Rush vs SLA', body: rush }, { id: 'age', label: 'Pending & ageing', body: ageing }, { id: 'esc', label: 'Escalations', body: esc }, { id: 'exc', label: 'Exceptions', body: exc }] })
+  });
+})();
+</script>
+</body>
+</html>

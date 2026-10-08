@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Approval review - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Approve one AP invoice, debit note or exception on the portal before it is booked (HLD 5.7). Open with ?ref= from the approvals inbox. */
+  var S = Page.state(), R = INV.role('approver');
+  var r = INV.find(Page.param('ref')) || INV.find('NPO-2627-004860'), vend = INV.vendors[r.v], ci = INV.circles[r.circle];
+  var kind = /^Force/.test(r.approval || '') ? 'force' : /^Exception/.test(r.approval || '') ? 'exc' : 'doa', done = S === 'approved';
+  var who = kind === 'force' ? 'PHD / AP analyst' : kind === 'exc' ? (/CFR|FY/.test(r.approval) ? 'CFR' : 'BPA head') : 'Business approver (DOA)';
+
+  var summary = UI.kv({ cols: 2, items: [['Reference', r.ref + ' &middot; ' + UI.esc(r.c.name)], ['Invoice', '<span class="wrap-any">' + UI.esc(r.inv) + '</span> &middot; ' + r.date], ['Vendor', UI.esc(r.vendor) + ' (' + r.v + ')'], ['Circle / BU', UI.esc(r.circle) + ' &middot; BU ' + ci.bu],
+    ['Amount', 'Rs ' + UI.inr(r.total, 2) + (r.gst ? ' (base ' + UI.inr(r.base, 2) + ' + GST ' + UI.inr(r.gst, 2) + ')' : '') + (r.rcm ? ' &middot; reverse charge' : '')], ['Service period', r.period],
+    ['Submitted', (r.recv || r.on) + ' by B0UPE204 (requester: circle operations)'], ['Booking after approval', UI.esc(r.c.invType) + ' &middot; ' + UI.esc(r.c.term) + ' &middot; ' + UI.esc(r.c.payGroup)]] });
+
+  var route;
+  if (kind === 'doa') route = UI.section({ title: 'Approval route (HRMS / DOA)', body: [UI.timeline({ columns: ['Level', 'Approver', 'Status', 'Remarks'], rows: [
+    { status: 'Validation (PHD / AP)', state: 'done', date: 'B0PHD307', action: 'Checks passed', reason: '18-point checklist, master data, duplicates' },
+    { status: 'DOA level 1', state: done ? 'done' : 'current', date: R.user + ' (you)', action: done ? 'Approved' : 'Waiting', reason: r.total > 500000 ? 'Up to Rs 5,00,000.00' : 'Full value' },
+    r.total > 500000 ? { status: 'DOA level 2', state: done ? 'current' : 'pending', date: 'B0APR030 (circle finance head)', action: done ? 'Waiting' : 'Pending', reason: 'Above Rs 5,00,000.00' } : null,
+    { status: 'Booking in Oracle AP', state: 'pending', date: 'Integration', action: 'After all approvals', reason: 'Payable Open Interface Import-GST' }].filter(Boolean) }),
+    UI.kv({ cols: 3, items: [['Requester', 'B0UPE204'], ['Opex / capex', 'Opex'], ['Zone / location', UI.esc(r.circle) + ' circle office']] })] });
+  else if (kind === 'force') route = UI.section({ title: 'Force approval evidence', body: [UI.checklist({ columns: ['#', 'Check', 'Against', 'Result', 'Detail'], rows: [
+    { check: r.cat === 'toco-dn' ? 'Circle request and approvals attached' : 'Approved General NFA attached', source: r.cat === 'toco-dn' ? 'Circle approval mail' : 'NFA copy', result: 'pass', detail: r.nfa ? 'General NFA ' + r.nfa : 'Approval mail 27-Sep-2026' },
+    { check: 'NFA type', source: 'General, not business NFA', result: 'pass', detail: r.cat === 'row' ? 'Business NFA Business/6031/88929 is for reference only' : '' },
+    { check: 'NFA amount matches the invoice (GST may be excluded)', source: 'NFA approved amount', result: 'pass', detail: 'Rs ' + UI.inr(Math.abs(r.base), 2) },
+    r.cat === 'row' ? { check: 'Booking within the NFA value cap', source: 'NFA Rs 25,00,000.00; used Rs 0.00', result: 'pass' } : null,
+    r.cat === 'row' ? { check: 'Reverse charge applicability', source: 'Authority on the demand note', result: 'pass', detail: 'Not eligible (user input confirmed)' } : null,
+    r.cat === 'toco-dn' ? { check: 'Original invoice booked for the vendor', source: 'Oracle AP', result: 'pass', detail: UI.esc(r.orig || '') } : null].filter(Boolean) }),
+    UI.p('Force approval is recorded with the NFA or approval email as evidence. Approver: ' + who + '. The submitter cannot force approve their own invoice.', { muted: true, small: true })] });
+  else route = UI.section({ title: 'Exception', body: [UI.alert({ tone: 'warn', title: UI.esc(r.approval.replace('Exception - ', '')) + '.', text: UI.esc(r.why || (r.reason ? r.reason + ' (' + r.period + ').' : '')) }),
+    UI.kv({ cols: 2, items: /CFR/.test(r.approval) ? [['Number on document', '<span class="wrap-any">' + UI.esc(r.inv) + '</span> (59 characters)'], ['Number in Oracle', 'E1/293/PALWANCHA/AIRTELOFC/ROADCUTTING/DEMANDNOTIC'], ['Rule', 'Unique part at the start: left 50 characters'], ['If GST applies', 'GST line uses left 46 + "/GST"']]
+      : /FY/.test(r.approval) ? [['Earlier invoice', 'MFL/0091 dated 12-Jun-2025, Paid'], ['Number in Oracle', 'MFL/0091/FY26-27'], ['Same vendor', 'Yes'], ['Same amount', 'No']]
+      : [['Activity period', r.period + ' (more than one year old)'], ['GSTR-2A / 2B', 'Found in GSTR-2B for Jun-2025'], ['Business justification', 'Circuit billing disputed until Aug-2026; resolved with the vendor on 02-Sep-2026'], ['Approver', 'BPA head, by mail today - captured on the portal']] })] });
+
+  var checks = UI.section({ title: 'Validation summary', collapsible: true, collapsed: true, body: [UI.checklist({ columns: ['#', 'Check', 'By', 'Result', 'Detail'], rows: [
+    { check: 'Invoice checklist (18 points)', source: 'System + PHD (visual 12, 13)', result: 'pass' }, { check: 'Vendor and vendor site active', source: 'Oracle supplier master', result: 'pass' },
+    { check: 'Duplicate (booked or under processing)', source: 'AP duplicate logic', result: 'pass' }, { check: 'GST and TDS categories', source: 'GST master, TDS masters', result: 'pass' }] })] });
+
+  var prov = r.urn ? UI.alert({ tone: 'info', title: 'Settles provision ' + r.urn + '.', text: 'Open balance Rs ' + UI.inr(r.base, 2) + '. The provision is actualized once the invoice is booked and validated.', actions: [UI.textlink({ label: 'Open provision', icon: 'arrowRight', go: '../pa/pa-09-provision-detail.html?urn=' + encodeURIComponent(r.urn) })] }) : '';
+
+  var doc = UI.docMock({ title: r.fam === 'DN' ? 'DEBIT NOTE REQUEST' : r.cat === 'row' ? 'DEMAND NOTE' : 'TAX INVOICE', qr: vend.irn === 'Yes', stamp: kind === 'force' ? 'APPROVED' : r.vshort.split(' ')[0].toUpperCase(),
+    fields: [['Number', r.inv], ['Date', r.date], ['Supplier', r.vendor], ['Bill to', 'Bharti Airtel Ltd, ' + r.circle], ['Period', r.period]],
+    lines: [[UI.esc(r.c.name), '-', '1', UI.inr(r.base, 2), UI.inr(r.base, 2)]], totals: [['Total', UI.inr(r.total, 2)]] });
+  var approveLabel = kind === 'force' ? 'Force approve' : kind === 'exc' ? 'Approve exception' : 'Approve';
+  var actions = '<div class="k-review-actions">' + UI.btns([UI.button({ label: 'Return', modal: 'return' }), UI.button({ label: 'Reject', modal: 'reject' }), UI.button({ label: approveLabel, variant: 'primary', state: 'approved' })], { end: true }) + '</div>';
+
+  var modals = UI.modal({ id: 'return', title: 'Return', accent: 'for correction', size: 'narrow', body: [UI.field({ label: 'Reason (shown to the submitter and PHD / AP)', type: 'area', required: true }), UI.p('Returned invoices go back as RFI; nothing has been created in Oracle.', { muted: true, small: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Return', variant: 'primary', close: true, toast: 'Returned with your reason' })] }) +
+    UI.modal({ id: 'reject', title: 'Reject', accent: 'Invoice', size: 'narrow', body: [UI.field({ label: 'Reason', type: 'area', required: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Reject', variant: 'primary', close: true, toast: 'Rejected - the submitter is notified' })] }) +
+    UI.modal({ id: 'done', open: done, title: kind === 'exc' ? 'Exception' : 'Invoice', accent: 'Approved', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Reference', r.ref], ['Status', INV.status(kind === 'doa' && r.total > 500000 ? 'Under Approval' : 'Approved')],
+      ['Next', kind === 'doa' && r.total > 500000 ? 'DOA level 2: B0APR030' : kind === 'exc' ? 'Back to its approval route, then booking' : 'Grouped by operating unit and booked in Oracle AP; barcode generated; approvals attached'], ['Recorded', R.user + ', ' + INV.today]] })],
+      foot: [UI.button({ label: 'Back to inbox', variant: 'primary', go: 'inv-16' })] });
+
+  Page.render({
+    id: 'inv-17', roleId: kind === 'force' ? 'phd' : kind === 'exc' ? 'fin' : 'approver', navKey: 'inv-16', keep: ['ref'],
+    states: [{ id: 'approved', label: 'Approved' }],
+    html: UI.page({ title: 'Review', accent: 'Approval', crumb: '<a data-go="inv-16">Approvals inbox</a> &rsaquo; ' + r.ref, sub: UI.esc(r.approval || '') + '. Try <a class="k-link" href="inv-17-approval-review.html?ref=NPO-2627-004834">DOA - legal</a>, <a class="k-link" href="inv-17-approval-review.html?ref=NPO-2627-004857">force - ROW</a>, <a class="k-link" href="inv-17-approval-review.html?ref=NPO-2627-004844">force - ToCo DN</a>, <a class="k-link" href="inv-17-approval-review.html?ref=NPO-2627-004791">exception - old period</a>.' }) +
+      UI.split({ left: [UI.section({ title: r.fam === 'DN' ? 'Debit note' : 'Invoice', body: [summary] }), route, prov, checks], right: [UI.pdf({ docs: ['Invoice PDF', 'NFA / approval email'], selected: kind === 'force' ? 'NFA / approval email' : 'Invoice PDF', count: 'Page 1 of 2', doc: doc }), actions] }) + modals
+  });
+})();
+</script>
+</body>
+</html>

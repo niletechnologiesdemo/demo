@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leases & rent vouchers - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Landlord-wise lease mapping from Oracle PM, rent vouchers paid in AP and GST already claimed (BRD Landlord GST 2, 6, 7, 13). */
+  var R = INV.role('landlord'), partner = INV.isPartner(R), vend = INV.vendors['700845'];
+
+  var picker = partner ? '' : UI.filters({ show: false, items: [UI.field({ label: 'Landlord', type: 'lookup', value: UI.esc(vend.name) + ' (700845)' }), UI.field({ label: 'Circle', type: 'readonly', value: 'Maharashtra' })] });
+
+  var leases = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'id', label: 'Lease' }, { key: 'site', label: 'Site (address)' }, { key: 'rent', label: 'Rent' }, { key: 'term', label: 'Term' }, { key: 's', label: 'Status' }],
+    rows: INV.leases.map(function (l) { return { id: l.id, site: UI.esc(l.site) + '<div class="k-muted k-small">Locator ' + l.locator + '</div>', rent: l.freq + ' &middot; Rs ' + UI.inr(l.rent, 2), term: l.from + ' to ' + l.to, s: UI.status(l.status, l.status === 'Active' ? 'ok' : 'grey') }; }) });
+
+  var vouchers = UI.table({ dense: true, columns: [{ key: 'no', label: 'Rent voucher' }, { key: 'lease', label: 'Lease' }, { key: 'p', label: 'Rent period' }, { key: 'a', label: 'Rent (Rs)', num: true, money: true }, { key: 'paid', label: 'Rent payment' }, { key: 'gst', label: 'GST invoice' }, { key: '_acts', label: '' }],
+    rows: INV.vouchers.map(function (v) {
+      var can = !v.claimed && !v.unpaid && !v.terminated, ref = (/NPO-\d+-\d+/.exec(v.gst) || [])[0];
+      return { no: v.no, lease: v.lease, p: v.period, a: v.amount, paid: v.unpaid ? UI.status('Not paid') + '<div class="k-small">' + UI.esc(v.paid.replace('Not paid ', '')) + '</div>' : UI.esc(v.paid),
+        gst: ref ? '<a class="k-link" href="' + INV.detail(ref) + '">' + ref + '</a><div class="k-muted k-small">' + UI.esc(v.gst.replace(/Claimed: NPO-\d+-\d+ /, '')) + '</div>' : can ? UI.status('Not claimed') : '<span class="k-muted">' + UI.esc(v.gst) + '</span>',
+        _acts: can ? [{ icon: 'plus', label: 'Submit GST invoice', go: 'inv-06' }] : [] };
+    }), total: INV.vouchers.length + ' vouchers' });
+
+  var claims = INV.mine('700845');
+  var gst = UI.table({ dense: true, pager: false, columns: [{ key: 'ref', label: 'Reference' }, { key: 'inv', label: 'GST invoice' }, { key: 'v', label: 'Voucher' }, { key: 'g', label: 'GST (Rs)', num: true, money: true }, { key: 's', label: 'Status' }],
+    rows: claims.map(function (r) { return { ref: '<a class="k-link" href="' + INV.detail(r.ref) + '">' + r.ref + '</a>', inv: r.inv + '<div class="k-muted k-small">' + r.date + '</div>', v: r.voucher, g: r.gst, s: INV.status(r.status) + (r.reason ? '<div class="k-muted k-small">' + UI.esc(r.reason) + '</div>' : '') }; }) });
+
+  Page.render({
+    id: 'inv-12', roleId: 'landlord', stat: 'overall',
+    html: UI.page({ title: 'Leases', accent: '& Rent Vouchers', sub: partner ? 'Your leases with Airtel, the rent paid against each, and the GST you have claimed. GST can be claimed only on rent already paid, once per voucher.' : 'Leases and rent vouchers of a landlord in your circle. Submit a GST invoice on behalf of a landlord who does not use the portal.' }) +
+      picker +
+      UI.alert({ tone: 'info', title: 'Voucher 716902 is paid and GST not yet claimed.', text: 'Hinjewadi Phase 2 site, Jul-2026 to Sep-2026 quarter, Rs 54,000.00.', actions: [UI.button({ label: 'Submit GST invoice', variant: 'primary', size: 'sm', go: 'inv-06' })] }) +
+      UI.section({ title: 'Leases', sub: 'From Oracle Property Manager', body: [leases] }) +
+      UI.section({ title: 'Rent vouchers', sub: 'Paid in Oracle AP', body: [vouchers, UI.p('A lease that is terminated, on hold or unpaid cannot take a GST invoice; the reason is shown when you try. Only one voucher can be used per GST invoice.', { muted: true, small: true })] }) +
+      UI.section({ title: 'GST invoices', body: [gst] })
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Users, roles & access - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* User access and roles (HLD 5.1, 9). Partners sign in with email, password and OTP; Airtel users with single sign-on. */
+  var partners = UI.table({ dense: true, columns: [{ key: 'p', label: 'Partner login' }, { key: 'v', label: 'Vendor codes mapped' }, { key: 't', label: 'Type' }, { key: 'm', label: 'Mobile for OTP' }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: [{ p: 'accounts@shreeganeshinfra.example<div class="k-muted k-small">Shree Ganesh Infra Services Pvt Ltd</div>', v: '600124', t: 'Vendor', m: '98XXXXX214', s: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { p: 'ap.billing@industowers.example<div class="k-muted k-small">Indus Towers Ltd</div>', v: '412885 (all circles)', t: 'Central ToCo vendor (centralised user)', m: '99XXXXX731', s: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { p: 'rkestates@example.in<div class="k-muted k-small">R K Estates</div>', v: '700845', t: 'Landlord', m: '97XXXXX508', s: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { p: 'billing@saikrupapower.example<div class="k-muted k-small">Sai Krupa Power Solutions</div>', v: '600402', t: 'Vendor', m: '94XXXXX377', s: UI.status('Vendor site blocked - login suspended'), _acts: ['edit'] },
+      { p: 'finance@metrofibre.example<div class="k-muted k-small">Metro Fibre Links Pvt Ltd</div>', v: '-', t: 'Vendor', m: '96XXXXX092', s: UI.status('Not mapped to a vendor code'), _flag: true, _acts: ['edit'] }] });
+  var users = UI.table({ dense: true, columns: [{ key: 'u', label: 'User (from SSO)' }, { key: 'r', label: 'Roles' }, { key: 's', label: 'Scope' }, { key: 'st', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: [{ u: 'B0UPE118<div class="k-muted k-small">Circle finance - UP East</div>', r: 'Circle user', s: 'UP East only', st: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { u: 'B0CEN021<div class="k-muted k-small">Central P2P</div>', r: 'Central user', s: 'All circles', st: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { u: 'B0PHD307<div class="k-muted k-small">PHD team - North</div>', r: 'PHD / AP analyst', s: 'Delhi, UP East, UP West, Punjab, Haryana', st: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { u: 'B0APM044<div class="k-muted k-small">AP operations</div>', r: 'AP manager (L1 / L2)', s: 'All circles', st: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { u: 'B0APR219<div class="k-muted k-small">Circle operations</div>', r: 'Business approver (DOA)', s: 'From the DOA matrix', st: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { u: 'B0TAX015<div class="k-muted k-small">Indirect tax</div>', r: 'Tax team', s: 'All entities', st: UI.status('Active', 'ok'), _acts: ['edit'] },
+      { u: 'B0P2P114<div class="k-muted k-small">P2P</div>', r: 'P2P master owner', s: 'Masters and configuration', st: UI.status('Active', 'ok'), _acts: ['edit'] }] });
+  var roles = UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Role' }, { key: 'can', label: 'Can' }, { key: 'cannot', label: 'Cannot' }],
+    rows: [{ r: 'Vendor / landlord (partner)', can: 'Submit and track own invoices; respond to information requests', cannot: 'See other partners\' invoices' },
+      { r: 'Central ToCo vendor', can: 'Bulk locator-wise invoices for all circles', cannot: 'Submit non-ToCo categories' },
+      { r: 'Circle user', can: 'Submit on behalf of vendors and landlords in own circle; fix locators', cannot: 'Upload invoices for another circle' },
+      { r: 'Central user', can: 'Submit invoices for any circle', cannot: 'Approve invoices' },
+      { r: 'PHD / AP analyst', can: 'Work queues, review, RFI, hold, reject; force approval with NFA evidence; resubmit failed ToCo invoices', cannot: 'Approve an invoice they submitted' },
+      { r: 'Business approver', can: 'Approve, return or reject AP invoices under the DOA', cannot: 'Approve an invoice they submitted' },
+      { r: 'Tax team', can: 'GST non-compliance debit notes and the non-compliant vendor list', cannot: 'Approve its own debit notes' },
+      { r: 'P2P master owner', can: 'Maintain masters and configuration (maker-checker)', cannot: 'Approve own changes' },
+      { r: 'Audit', can: 'Read reports and the audit trail', cannot: 'Change anything' }] });
+  Page.render({
+    id: 'inv-23', roleId: 'admin',
+    html: UI.page({ title: 'Users', accent: 'Roles & Access', sub: 'Partner logins mapped to vendor codes, Airtel users from single sign-on with their roles and circle scope. Approvers come from HRMS and the DOA matrix.' }) +
+      UI.alert({ tone: 'warn', title: 'To confirm:', text: 'admin and super-admin rights (P2P team to confirm which users), and access controls to be checked with GRC. Partner onboarding and credentials are managed by Airtel.' }) +
+      UI.tabs({ id: 'ur', tabs: [{ id: 'partners', label: 'Partners', count: 5, body: [UI.filters({ items: [UI.field({ label: 'Type', type: 'select', value: 'All partners' }), UI.field({ label: 'Partner', type: 'search', placeholder: 'Email, name or vendor code' })] }), partners] },
+        { id: 'users', label: 'Airtel users', count: 7, body: [UI.filters({ items: [UI.field({ label: 'Role', type: 'select', value: 'All roles' }), UI.field({ label: 'Circle', type: 'select', value: 'All' }), UI.field({ label: 'User', type: 'search', placeholder: 'OLM ID or name' })] }), users] },
+        { id: 'roles', label: 'Roles & segregation of duties', body: [roles, UI.p('The person who submits an invoice cannot approve it; every force approval carries an NFA or approval email; every action is in the audit trail.', { muted: true, small: true })] }] })
+  });
+})();
+</script>
+</body>
+</html>

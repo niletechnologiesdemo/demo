@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Partners get the PO Partner Portal overview; Airtel users get one work-page layout per role:
+     count tiles -> needs your attention -> one panel. The role comes from the Role selector; the default is the vendor. */
+  var S = Page.state(), R = INV.role('vendor'), rid = R.id, html;
+
+  if (INV.isPartner(R)) {
+    var code = rid === 'toco' ? '412885' : rid === 'landlord' ? '700845' : '600124';
+    var rows = S === 'empty' ? [] : INV.mine(code);
+    var action = rows.filter(function (r) { return r.status === 'RFI' || r.status === 'Hold'; });
+    var banner = action.length ? UI.alert({ tone: 'red', title: action.length + (action.length > 1 ? ' invoices need' : ' invoice needs') + ' your action.',
+      text: action.map(function (r) { return UI.esc(r.ref) + ' - ' + (r.status === 'RFI' ? 'information requested' : 'on hold') + ': ' + UI.esc(r.reason); }).join('<br>'),
+      actions: [UI.textlink({ label: 'Respond', icon: 'arrowRight', go: 'inv-10' })] }) : '';
+    if (rid === 'landlord' && S !== 'empty') banner += UI.alert({ tone: 'info', title: 'Rent paid, GST not yet claimed:', text: 'voucher 716902 (Hinjewadi Phase 2 site, Jul-2026 to Sep-2026 quarter, Rs 54,000.00).', actions: [UI.textlink({ label: 'Submit GST invoice', icon: 'arrowRight', go: 'inv-06' })] });
+    var kpi = UI.kpis({ cols: 8, items: INV.buckets(rows).map(function (b) { return { value: String(b.n), label: b.label, go: 'inv-09?state=' + b.key }; }) });
+
+    var table = UI.table({
+      dense: true,
+      columns: [{ key: '_acts', label: 'Action' }, { key: 'ref', label: 'Reference no.', tip: 'Issued by the portal when the invoice is accepted' }, { key: 'inv', label: 'Invoice no. / date' },
+        { key: 'cat', label: 'Category' }, { key: 'total', label: 'Invoice amount (Rs)', num: true, money: true },
+        { key: 'status', label: 'Status / hold or rejection reason' }, { key: 'info', label: 'Info required' }],
+      rows: rows.slice(0, 8).map(function (r) {
+        return { _acts: [{ icon: 'share', label: 'Invoice statuses', modal: 'statuses' }],
+          ref: r.ref ? '<a class="k-link" href="' + INV.detail(r.ref) + '">' + r.ref + '</a>' : '<span class="k-muted">Not submitted</span>',
+          inv: '<div class="w-160 wrap-any">' + UI.esc(r.inv) + '</div><div class="k-muted k-small">' + r.date + '</div>', cat: UI.esc(r.c.name), total: r.total,
+          status: '<div class="w-200">' + INV.status(r.status) + (r.reason ? '<div class="k-small">' + UI.esc(r.reason) + '</div>' : '') + '</div>',
+          info: r.status === 'RFI' ? '<span data-go="inv-10" data-tip="Respond to the information request">' + UI.icon('doc') + '</span>' : '' };
+      }),
+      empty: 'You have not submitted any non-PO invoice yet. Use Submit invoice to start.', total: rows.length + ' invoices' });
+
+    var sample = INV.find(rid === 'toco' ? 'NPO-2627-004702' : rid === 'landlord' ? 'NPO-2627-004839' : 'NPO-2627-004790');
+    var statuses = UI.modal({ id: 'statuses', title: 'Invoice', accent: 'Statuses', layout: 'panel', body: [
+      UI.p(UI.esc(sample.ref) + ' &middot; ' + UI.esc(sample.inv) + ' &middot; ' + UI.esc(sample.c.name) + ' (' + (sample.fam === 'PM' ? 'Property Manager: booked, then approved' : 'AP: approved, then booked') + ')', { muted: true }),
+      UI.timeline({ rows: INV.timelineRows(sample) })], foot: [UI.button({ label: 'Close', variant: 'primary', close: true })] });
+    var checks = UI.modal({ id: 'checks', title: 'What we check', accent: 'on every invoice', size: 'wide', body: [
+      UI.p('Every invoice is read and checked against these points before it moves on. An invoice that fails a check is returned to you with the reason.', { muted: true }),
+      UI.table({ pager: false, export: false, columns: [{ key: 'n', label: '#' }, { key: 'c', label: 'Check' }, { key: 'r', label: 'Rule applied' }],
+        rows: INV.checklist.map(function (c) { return { n: c[0], c: UI.esc(c[1]), r: UI.esc(c[2]) }; }) })], foot: [UI.button({ label: 'Close', variant: 'primary', close: true })] });
+
+    html = UI.page({ title: 'Non-PO Invoices', info: 'Invoices you raise on Airtel without a purchase order', sub: 'Submit invoices, respond to requests and follow each invoice from submission to payment.' }) +
+      banner + kpi +
+      UI.section({ title: 'Recent invoices', body: [UI.filters({ items: [UI.field({ label: 'Filter by status', type: 'select', value: 'All invoices' }), UI.field({ label: 'Category', type: 'select', value: 'All categories' }),
+        UI.field({ label: 'Invoice date from', type: 'date' }), UI.field({ label: 'Invoice date to', type: 'date' })] }), table] }) +
+      UI.section({ title: 'Help and templates', collapsible: true, body: [UI.row([
+        UI.textlink({ label: 'What we check on every invoice', icon: 'arrowRight', modal: 'checks' }),
+        UI.textlink({ label: 'Bulk upload templates', icon: 'download', toast: 'Template download started' }),
+        UI.textlink({ label: 'Invoice categories and SLAs', icon: 'arrowRight', go: 'inv-03' })])] }) + statuses + checks;
+    Page.render({ id: 'inv-02', roleId: 'vendor', stat: 'overall', states: [{ id: 'empty', label: 'New partner, no invoices yet' }], html: html });
+    return;
+  }
+
+  var whole = function (v) { return Math.round(v); };
+  var tbl = function (cols, r) { return UI.table({ dense: true, pager: false, export: false, columns: cols, rows: r }); };
+  var H = {
+    circle: {
+      sub: 'Invoices you submit for UP East, items returned to you and locator issues in your circle.',
+      tiles: [['6', 'Submitted this week', 'For 3 vendors and 1 landlord', 'inv-09'], ['1', 'Returned to me (RFI)', 'Respond and resubmit', 'inv-10'], ['2', 'Locator issues', 'Arrange or activate', 'inv-15'], ['1', 'On hold', '', 'inv-09?state=hold'], ['3', 'Landlord GST to submit', 'Rent paid, GST not claimed', 'inv-12']],
+      tasks: [['alert', 'Locator inactive: 2 sites on NPO-2627-004733 (Shree Ganesh Infra)', 'The whole invoice is held until the locators are activated; then re-trigger it', '24-Sep', 'inv-15', 1],
+        ['doc', 'RFI on NPO-2627-004790: invoice period not shown', 'Upload the corrected invoice copy received from the vendor', '26-Sep', 'inv-10', 1],
+        ['upload', 'LL_EB invoices for Sep-26: 18 sites in UP East', 'Use the EB reimbursement bulk template; you can upload for your own circle only', 'Due 05-Oct', 'inv-08?cat=ll-eb', 0]],
+      panel: ['UP East invoices by status', UI.chart({ type: 'column', title: 'Invoices this month', categories: ['In-process', 'Pending approver', 'Processed', 'Validated', 'Paid', 'Hold'], series: [{ name: 'Invoices', data: [9, 4, 6, 3, 18, 1] }], fmt: whole })]
+    },
+    central: {
+      sub: 'Invoices you submit for any circle.',
+      tiles: [['14', 'Submitted this month', 'Across 6 circles', 'inv-09'], ['5', 'In process', '', 'inv-09'], ['1', 'Information requested', '', 'inv-10'], ['0', 'Rejected', '', 'inv-09?state=rejected']],
+      tasks: [['doc', 'RFI on NPO-2627-004847 (Metro Fibre Links, Karnataka)', 'OCR could not read the invoice period; confirm the period from the cost sheet', '29-Sep', 'inv-10', 1],
+        ['upload', 'Group company invoices for Sep-26', 'Use the group company bulk template (IUT code in segment 6)', 'Due 07-Oct', 'inv-08?cat=group', 0]],
+      panel: ['Submitted by circle - Sep-26', UI.chart({ type: 'bar', title: 'Invoices', categories: ['Delhi', 'Karnataka', 'Maharashtra', 'UP East', 'Odisha', 'APO'], series: [{ name: 'Invoices', data: [4, 3, 2, 2, 2, 1] }], fmt: whole, labelWidth: 110 })]
+    },
+    phd: {
+      sub: 'Invoices waiting for PHD / AP review across your circles, force approvals and booking errors.',
+      tiles: [['5', 'Under validation', '', 'inv-13'], ['4', 'Manual queue', 'OCR, checklist, duplicate', 'inv-13?tab=q:manual'], ['1', 'Rush', 'Same day / T+1', 'inv-13?tab=q:rush'], ['3', 'Force approvals', 'NFA evidence to check', 'inv-16?tab=ap:force'], ['2', 'SLA breached', 'Escalated to L1', 'inv-13?tab=q:manual']],
+      tasks: [['alert', 'SLA breached: NPO-2627-004806 (Diesel Knock off, Sai Krupa Power)', 'OCR amount differs from the input sheet by Rs 340', 'Overdue 1d', INV.review('NPO-2627-004806'), 1],
+        ['flag', 'Rush: NPO-2627-004849 (Sai Krupa Power, UP East)', 'Site diesel outage - Rs 64,310.00', 'Due today 18:00', INV.review('NPO-2627-004849'), 1],
+        ['alert', 'Hourly AP error report 11:00: 1 invoice rejected by Oracle', 'Vendor site inactive at import - returned with the Oracle error', '11:05', 'inv-18?tab=bk:errors', 0],
+        ['check', 'Force approval: ROW demand note, Nagar Panchayat Rampura', 'Check General NFA General/6036/275856 against Rs 24,92,000.00', '30-Sep', 'inv-17-approval-review.html?ref=NPO-2627-004857', 0]],
+      panel: ['Invoices received by day', UI.chart({ type: 'stacked', title: 'Invoices', categories: ['25-Sep', '26-Sep', '29-Sep', '30-Sep', '01-Oct'], series: [{ name: 'Property Manager', data: [212, 188, 240, 305, 96] }, { name: 'Rush / AP', data: [41, 36, 52, 61, 18] }, { name: 'Debit notes', data: [6, 4, 9, 12, 2] }], fmt: whole })]
+    },
+    apm: {
+      sub: 'Team queues, SLA position and escalations (L1 AP team, L2 manager).',
+      tiles: [['14', 'Open in queues', '', 'inv-13'], ['2', 'SLA breached', 'At L1', 'inv-13?tab=q:manual'], ['1', 'Escalated to me (L2)', '', 'inv-24'], ['92%', 'Within SLA', 'Sep-26', 'inv-19'], ['3', 'Unassigned', '', 'inv-13']],
+      tasks: [['clock', 'L2 escalation: NPO-2627-004818 (Vertex Call Solutions)', 'Potential duplicate pending in the manual queue - overdue 4 hours', '01-Oct 09:00', INV.review('NPO-2627-004818'), 1],
+        ['users', '3 invoices unassigned in the manual queue', 'Assign to the circle PHD teams', '01-Oct', 'inv-13?tab=q:manual', 0]],
+      panel: ['Within SLA by invoice type - Sep-26', UI.chart({ type: 'bar', title: '% within SLA', categories: ['Normal (T+2 / T+3)', 'Property Manager (T+2)', 'Rush (same day / T+1)'], series: [{ name: 'Within SLA', data: [93, 91, 88] }], fmt: function (v) { return v + '%'; }, labelWidth: 170 })]
+    },
+    approver: {
+      sub: 'AP invoices waiting for your approval under the DOA. An AP invoice is booked in Oracle only after all its approvals are complete.',
+      tiles: [['3', 'Waiting for my approval', '', 'inv-16'], ['1', 'Due today', '', 'inv-16'], ['0', 'Overdue', '', 'inv-16'], ['21', 'Decided this month', '', 'inv-16?tab=ap:mine']],
+      tasks: [['check', 'Approve NPO-2627-004860: SecureOne Facility Services', 'Security services Sep-26 - Rs 5,72,300.00 - level 1 of 2', 'Due 02-Oct', 'inv-17-approval-review.html?ref=NPO-2627-004860', 1],
+        ['check', 'Approve NPO-2627-004834: Lexwise Legal LLP', 'Legal fees Aug-26 - Rs 3,50,000.00 under reverse charge', 'Due today', 'inv-17-approval-review.html?ref=NPO-2627-004834', 1],
+        ['check', 'Approve NPO-2627-004830: BSNL - Interconnect', 'Port charges Jul-26 - Rs 620.72', 'Due 03-Oct', 'inv-17-approval-review.html?ref=NPO-2627-004830', 0]],
+      panel: ['Approvals I decided', UI.chart({ type: 'stacked', title: 'By week', unit: 'invoices', categories: ['W36', 'W37', 'W38', 'W39'], series: [{ name: 'Approved', data: [5, 7, 4, 4] }, { name: 'Returned or rejected', data: [0, 1, 0, 0] }], fmt: whole })]
+    },
+    tax: {
+      sub: 'GST non-compliance debit notes and the non-compliant vendor list.',
+      tiles: [['1', 'Debit note file due', 'Sep-26 reconciliation', 'inv-08?cat=gst-dn'], ['46', 'Debit notes booked', 'Jul-26 file', 'inv-20'], ['1', 'Reversal requested', 'Vendor complied', 'inv-07?cat=gst-rev'], ['118', 'Non-compliant vendors', 'List updated 25-Sep', 'inv-21?tab=m:tax']],
+      tasks: [['upload', 'Upload the Sep-26 GST non-compliance debit note file', 'From the GSTR-2B and 6A reconciliation; approvals attached', 'Due 10-Oct', 'inv-08?cat=gst-dn', 1],
+        ['shield', '2 landlord GST invoices matched the non-compliant list', 'Moved to the manual queue for the PHD team', '29-Sep', 'inv-13?tab=q:manual', 0]],
+      panel: ['Debit note files', tbl([{ key: 'f', label: 'File' }, { key: 'n', label: 'Notes', num: true }, { key: 'v', label: 'Value (Rs)', num: true }, { key: 's', label: 'Status' }],
+        [{ f: 'Jul-26 (BAL, BHL, NXTRA)', n: '46', v: '3,18,402.00', s: UI.status('Booked', 'ok') }, { f: 'Aug-26 (BAL, APBL)', n: '31', v: '2,04,118.00', s: UI.status('Under approval') }, { f: 'Sep-26', n: '-', v: '-', s: UI.status('Due') }])]
+    },
+    fin: {
+      sub: 'Exception approvals and the final escalation level (L3).',
+      tiles: [['1', 'Old-period invoice', 'BPA head approval', 'inv-16?tab=ap:exc'], ['1', 'Number over 50 characters', 'CFR approval', 'inv-16?tab=ap:exc'], ['0', 'Escalated to L3', '', 'inv-24'], ['Rs 18.6 Cr', 'Paid this month', '', 'inv-19'], ['92%', 'Within SLA', 'Sep-26', 'inv-19']],
+      tasks: [['check', 'Approve old-period invoice NPO-2627-004791 (Metro Fibre Links)', 'Activity period Jun-2025, more than one year old - business justification attached', '27-Sep', 'inv-17-approval-review.html?ref=NPO-2627-004791', 1],
+        ['check', 'Approve trimming of a 63-character demand note number (ROW, MP)', 'Oracle accepts 50 characters; trimmed per the prefix / suffix rule', '30-Sep', 'inv-16?tab=ap:exc', 0]],
+      panel: ['Invoices paid by month', UI.chart({ type: 'column', title: 'Rs Cr', categories: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'], series: [{ name: 'Paid', data: [16.2, 17.1, 16.8, 18.0, 17.4, 18.6] }], fmt: function (v) { return UI.inr(v, 1); } })]
+    },
+    p2p: {
+      sub: 'Masters and invoicing configuration that derive booking details.',
+      tiles: [['01-Oct 05:00', 'PN Site Attribute refreshed', 'Nightly from Oracle', 'inv-21'], ['3', 'Circuits missing in cost sheet', 'Bandwidth Domestic', 'inv-21?tab=m:cost'], ['2', 'Locator master requests', 'From circle users', 'inv-15'], ['1', 'Configuration change', 'Waiting for checker', 'inv-22']],
+      tasks: [['db', 'Cost sheet: 3 circuits without activation date', 'Bandwidth invoices for these circuits cannot be validated', '30-Sep', 'inv-21?tab=m:cost', 1],
+        ['settings', 'Tolerance change for Local ToCo (Rs 2 to Rs 5) waiting for approval', 'Submitted by B0P2P120', '29-Sep', 'inv-22?tab=c:tol', 0]],
+      panel: ['Masters', tbl([{ key: 'm', label: 'Master' }, { key: 's', label: 'Source' }, { key: 'u', label: 'Updated' }],
+        [{ m: 'PN Site Attribute (active / inactive)', s: 'Oracle EBS', u: '01-Oct 05:00' }, { m: 'Opex head master', s: 'Portal (PHD)', u: '22-Sep' }, { m: 'Bandwidth cost sheet', s: 'Portal (P2P)', u: '30-Sep' }, { m: 'Quality Plan', s: 'Portal (AP)', u: '15-Sep' }])]
+    },
+    audit: {
+      sub: 'Read-only view of overrides and evidence for sampling.',
+      tiles: [['412', 'Force approvals (Sep-26)', 'NFA or approval email attached', 'inv-20?state=force'], ['7', 'Duplicate bypass (Central ToCo)', 'Re-attempted with flag Y', 'inv-20?state=bypass'], ['3', 'Exception approvals', 'Old period, long numbers', 'inv-20'], ['0', 'Booked before approval', 'AP invoices', 'inv-20']],
+      tasks: [['eye', 'Q2 sample: force approvals with NFA evidence', 'Filter by category and export', 'Due 15-Oct', 'inv-20?state=force', 1]],
+      panel: ['Overrides by month', UI.chart({ type: 'stacked', title: 'Count', categories: ['Jun', 'Jul', 'Aug', 'Sep'], series: [{ name: 'Duplicate bypass', data: [5, 9, 6, 7] }, { name: 'Exception approvals', data: [2, 4, 1, 3] }], fmt: whole })]
+    },
+    admin: {
+      sub: 'Partner logins, Airtel users, roles and access.',
+      tiles: [['1,284', 'Active partner logins', 'Mapped to vendor codes', 'inv-23'], ['356', 'Airtel users', 'From single sign-on', 'inv-23'], ['4', 'Access requests', 'Waiting', 'inv-23'], ['2', 'Partners without vendor mapping', '', 'inv-23']],
+      tasks: [['users', 'Access request: B0UPE133 (circle user, UP East)', 'Approved by line manager', '30-Sep', 'inv-23', 1], ['shield', 'Admin rights and access controls to confirm', 'P2P team to confirm admin rights; controls to be checked with GRC', '', 'inv-23', 0]],
+      panel: ['Users by role', tbl([{ key: 'r', label: 'Role' }, { key: 'n', label: 'Users', num: true }],
+        [{ r: 'Vendors and landlords (partners)', n: '1,284' }, { r: 'Circle users', n: '214' }, { r: 'Central users', n: '18' }, { r: 'PHD / AP', n: '46' }, { r: 'Approvers, Tax, Finance, P2P, Audit', n: '78' }])]
+    }
+  };
+  var h = H[rid] || H.phd;
+  var tiles = UI.kpis({ cols: h.tiles.length, items: h.tiles.map(function (t) { return { value: t[0], label: t[1], sub: t[2], go: t[3] }; }) });
+  var tasks = UI.list({ items: h.tasks.map(function (t) { return { icon: t[0], title: t[1], text: t[2], meta: t[3], go: t[4], unread: !!t[5] }; }) });
+  Page.render({ id: 'inv-02', roleId: 'vendor',
+    html: UI.page({ title: 'My Work', sub: h.sub }) + tiles + UI.cols('1:1', [UI.section({ title: 'Needs your attention', body: [tasks] })], [UI.section({ title: h.panel[0], body: [h.panel[1]] })]) });
+})();
+</script>
+</body>
+</html>

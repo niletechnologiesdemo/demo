@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data migration - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  var S = Page.state(), loaded = S === 'loaded';
+  Page.render({
+    id: 'pa-22', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
+    states: [{ id: 'loaded', label: 'Load complete' }],
+    html: UI.page({ title: 'Data', accent: 'Migration', sub: 'Brings open provisions held today in spreadsheets into the platform at go-live, so each one gets a URN and can be actualized and aged here.' }) +
+      UI.alert({ tone: 'warn', title: 'To confirm:', text: 'the extent of migration, and the template for provision data after go-live (open point).' }) +
+      UI.flow({ items: [{ label: 'Download template', text: 'Open provisions by activity', state: 'done' }, { label: 'Upload', text: '3 files', state: 'done' }, { label: 'Validate', text: 'Masters, URN uniqueness', state: 'done' }, { label: 'Reconcile', text: 'With Oracle liability balance', state: loaded ? 'done' : 'current' }, { label: 'Load', text: loaded ? '12,804 provisions' : 'Waiting', state: loaded ? 'done' : '' }] }) +
+      UI.table({ dense: true, pager: false, columns: [{ key: 'f', label: 'File' }, { key: 'r', label: 'Rows', num: true }, { key: 'v', label: 'Valid', num: true }, { key: 'e', label: 'Errors', num: true }, { key: 'val', label: 'Value (Rs Cr)', num: true }, { key: 'rec', label: 'Oracle liability (Rs Cr)', num: true }, { key: 's', label: 'Status' }],
+        rows: [{ f: 'Open provisions - Mobile.xlsx', r: '9,412', v: '9,398', e: '14', val: '312.4', rec: '312.6', s: UI.status(loaded ? 'Loaded' : 'Reconciling', loaded ? 'ok' : '') },
+          { f: 'Open provisions - TOCO.xlsx', r: '3,120', v: '3,120', e: '0', val: '96.1', rec: '96.1', s: UI.status(loaded ? 'Loaded' : 'Reconciled', 'ok') },
+          { f: 'Open provisions - Homes & DTH.xlsx', r: '286', v: '286', e: '0', val: '8.7', rec: '8.7', s: UI.status(loaded ? 'Loaded' : 'Reconciled', 'ok') }],
+        foot: { f: 'Total', r: '12,818', v: '12,804', e: '14', val: '417.2', rec: '417.4' } }) +
+      UI.p('Rs 0.2 Cr difference on the Mobile file is the 14 rows with errors (inactive vendor codes). Correct and reload them, or record the difference before sign-off.', { muted: true, small: true }) +
+      UI.btns([UI.textlink({ label: 'Download error rows', icon: 'download', toast: 'Error rows downloaded' }), loaded ? '' : UI.button({ label: 'Load valid rows', variant: 'primary', state: 'loaded' })], { end: true })
+  });
+})();
+</script>
+</body>
+</html>

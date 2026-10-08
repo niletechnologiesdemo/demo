@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notifications - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  var items = [
+    { icon: 'check', title: 'Approval needed: 111·410022·SECURITY001·SEP-26', text: 'Raised by B0MKR412 - Rs 4,85,000.00', meta: '30-Sep 16:42', unread: true, go: 'pa-08', t: 'Approvals' },
+    { icon: 'alert', title: 'Oracle import rejected: 131·410455·CCSVC002·SEP-26', text: 'GL period SEP-26 closed for ledger AIRTEL_IN_LEDGER - correct and retry', meta: '30-Sep 21:05', unread: true, go: 'pa-10?state=error', t: 'Posting failures' },
+    { icon: 'x', title: 'Provision returned: 101·410612·LEGAL007·SEP-26', text: 'Attach the retainer agreement; amount differs from the agreed monthly fee', meta: '30-Sep 17:20', unread: true, go: 'pa-04?state=returned', t: 'Returns' },
+    { icon: 'calendar', title: 'Reminder: 3 regular provisions not raised for Sep-26', text: 'Security services (BU 131), DG AMC (BU 151), Call centre services (BU 121)', meta: '28-Sep 09:00', go: 'pa-11', t: 'Reminders' },
+    { icon: 'clock', title: 'Escalation (180 days): 141·410455·CCSVC002·MAR-26', text: 'Open for 214 days - escalated to your manager', meta: '27-Sep 06:00', go: 'pa-14', t: 'Ageing escalations' },
+    { icon: 'link', title: 'PO 4500918822 raised for 111·410387·AMCDG004·JUL-26', text: 'Daily PO fetch - review and settle against the PO', meta: '01-Oct 06:00', unread: true, go: 'pa-15', t: 'PO after provision' },
+    { icon: 'check', title: 'Posted in Oracle: batch NPP-26-09-0117', text: '12 actualization journals - document GL-26-0930118', meta: '30-Sep 20:41', go: 'pa-10', t: 'Posting' }
+  ];
+  Page.render({
+    id: 'pa-20', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
+    html: UI.page({ title: 'Notifications', sub: 'Approvals, returns, reminders, ageing escalations and posting failures. Each is also sent by email.' }) +
+      UI.filters({ items: [UI.field({ label: 'Type', type: 'select', value: 'All types' }), UI.field({ label: 'Show', type: 'select', value: 'Unread first' })], show: false, actions: [UI.textlink({ label: 'Mark all as read', icon: 'check', toast: 'All marked as read' })] }) +
+      UI.list({ items: items.map(function (i) { return { icon: i.icon, title: i.title, text: i.text + ' &middot; <span class="k-muted">' + i.t + '</span>', meta: i.meta, unread: i.unread, go: i.go }; }) }) +
+      UI.section({ title: 'Email and dashboard settings', collapsible: true, collapsed: true, body: [UI.options({ label: 'Email me for', type: 'check', items: [{ label: 'Approvals', on: true }, { label: 'Returns', on: true }, { label: 'Reminders', on: true }, { label: 'Ageing escalations', on: true }, { label: 'Posting failures', on: true }] })] })
+  });
+})();
+</script>
+</body>
+</html>

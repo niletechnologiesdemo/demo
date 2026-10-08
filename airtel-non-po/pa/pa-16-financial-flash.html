@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Financial flash - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  var S = Page.state(), drill = S === 'drill';
+  var lines = [
+    { l: 'Network operating expenses', g: '4282xxx', tb: 41250.6, prov: 196.4, rev: -22.9, adj: 0 },
+    { l: 'Site rent and energy (TOCO)', g: '4271xxx / 4232xxx', tb: 38410.2, prov: 4682.3, rev: 0, adj: -14.6 },
+    { l: 'Customer service and call centre', g: '4652xxx', tb: 6120.8, prov: 21.4, rev: -18.8, adj: 0 },
+    { l: 'Admin and facilities', g: '4664xxx', tb: 2988.1, prov: 13.7, rev: -4.1, adj: 0 },
+    { l: 'Legal and professional', g: '4671xxx', tb: 1104.3, prov: 3.5, rev: 0, adj: -3.0 },
+    { l: 'IT and AMC (incl. allocations)', g: '4282037', tb: 5502.0, prov: 96.0, rev: 0, adj: 0 }
+  ];
+  var rows = lines.map(function (r) { var tot = r.tb + r.prov + r.rev + r.adj; return { l: (drill && r.l.indexOf('Admin') === 0 ? '<b>' : '') + r.l + '<div class="k-muted k-small">' + r.g + '</div>', tb: UI.inr(r.tb, 1), prov: UI.inr(r.prov, 1), rev: UI.inr(r.rev, 1), adj: UI.inr(r.adj, 1), tot: UI.inr(tot, 1), _go: 'pa-16?state=drill', _sel: drill && r.l.indexOf('Admin') === 0 }; });
+  var tot = lines.reduce(function (a, r) { return { tb: a.tb + r.tb, prov: a.prov + r.prov, rev: a.rev + r.rev, adj: a.adj + r.adj }; }, { tb: 0, prov: 0, rev: 0, adj: 0 });
+  var table = UI.table({ dense: true, pager: false, columns: [{ key: 'l', label: 'FSG line' }, { key: 'tb', label: 'Aug-26 closing TB (Rs lakh)', num: true }, { key: 'prov', label: '+ Provisions', num: true }, { key: 'rev', label: '- Reversals', num: true }, { key: 'adj', label: '+/- Adjustments', num: true }, { key: 'tot', label: 'Running (Rs lakh)', num: true }],
+    rows: rows, foot: { l: 'Total operating expenses', tb: UI.inr(tot.tb, 1), prov: UI.inr(tot.prov, 1), rev: UI.inr(tot.rev, 1), adj: UI.inr(tot.adj, 1), tot: UI.inr(tot.tb + tot.prov + tot.rev + tot.adj, 1) } });
+  var drillT = drill ? UI.section({ title: 'Admin and facilities - platform entries this month', body: [UI.table({ dense: true, pager: false, columns: [{ key: 'u', label: 'URN' }, { key: 't', label: 'Entry' }, { key: 'a', label: 'Rs lakh', num: true }, { key: 's', label: 'Status' }],
+    rows: [{ u: '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent('111·410022·SECURITY001·SEP-26') + '">111·410022·SECURITY001·SEP-26</a>', t: 'Provision', a: '4.9', s: UI.status('Submitted') },
+      { u: '<span class="k-urn">151·410022·SECURITY001·SEP-26</span>', t: 'Provision', a: '4.0', s: UI.status('Submitted') },
+      { u: '<span class="k-urn">121·410022·SECURITY001·AUG-25</span>', t: 'PBR reversal', a: '-4.1', s: UI.status('Reversed', 'grey') }] })] }) : '';
+
+  Page.render({
+    id: 'pa-16', user: 'B0BFN017', role: 'Business finance', viewAs: 'Business finance',
+    states: [{ id: 'drill', label: 'Drill-down to URN' }],
+    html: UI.page({ title: 'Financial', accent: 'Flash', info: 'Prior month trial balance and FSG replicated from Oracle daily, with platform entries overlaid', sub: 'See the running effect of this month\'s provisions, reversals and adjustments on profit and loss before month-end close.' }) +
+      UI.kv({ cols: 4, items: [['Base', 'Aug-26 closing trial balance and FSG'], ['Refreshed', '01-Oct-2026 05:30 from Oracle'], ['Scope', 'BAL &middot; Mobile, all circles'], ['Overlay', 'Your BUs\' platform entries for Sep-26']] }) + '<div class="k-gap"></div>' +
+      UI.filters({ items: [UI.field({ label: 'Entity', type: 'select', value: 'BAL' }), UI.field({ label: 'Segment', type: 'select', value: 'Mobile' }), UI.field({ label: 'Circle', type: 'select', value: 'All' }), UI.field({ label: 'View', type: 'select', value: 'FSG - operating expenses' })] }) +
+      table + drillT + UI.p('Select a line to see the provisions, reversals and adjustments behind it, down to each URN.', { muted: true, small: true })
+  });
+})();
+</script>
+</body>
+</html>

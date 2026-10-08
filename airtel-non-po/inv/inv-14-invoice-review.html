@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoice review - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* PHD / AP review of one invoice: document on the right, checks on the left (PO Portal review layout). Open with ?ref= from the work queues. */
+  var S = Page.state(), R = INV.role('phd');
+  var r = INV.find(Page.param('ref')) || INV.find('NPO-2627-004812'), pm = r.fam === 'PM', vend = INV.vendors[r.v], ci = INV.circles[r.circle];
+  var ref = r.ref, force = /Force/.test(r.c.approval);
+  var issue = { 'NPO-2627-004806': 'tol', 'NPO-2627-004847': 'period', 'NPO-2627-004839': 'sign', 'NPO-2627-004818': 'dup', 'NPO-2627-004702': 'loc', 'NPO-2627-004733': 'loc' }[ref] || '';
+
+  var summary = UI.kv({ cols: 3, items: [['Reference', ref], ['Category', UI.esc(r.c.name) + ' &middot; ' + (pm ? 'PM' : 'AP')], ['Received', UI.esc(r.recv || r.on) + ' &middot; SLA ' + UI.esc(r.sla || r.c.sla)],
+    ['Vendor', UI.esc(r.vendor) + ' (' + r.v + ')'], ['Circle / OU', UI.esc(r.circle) + ' &middot; ' + UI.esc(ci.ou)], ['Queue reason', r.reason ? UI.esc(r.reason) : 'Automated checks passed - confirm visual points']] });
+
+  var cmp = function (f, input, ocr, master, res, detail) { return { f: f, i: '<span class="wrap-any">' + input + '</span>', o: '<span class="wrap-any">' + ocr + '</span>', m: master, r: UI.result(res, res === 'pass' ? 'Match' : res === 'fail' ? 'Mismatch' : res === 'warn' ? 'Check' : 'Not used') + (master && master !== '-' ? '<div class="k-muted k-small">' + master + '</div>' : '') + (detail ? '<div class="k-small">' + detail + '</div>' : '') }; };
+  var rows = [
+    cmp('Invoice number', UI.esc(r.inv), UI.esc(r.inv), '-', 'pass', r.inv.length > 16 && !/row|caf|gst/.test(r.cat) ? 'Over 16 characters - allowed for non-GST documents only' : ''),
+    cmp('Invoice date', r.date, r.date, '-', 'pass'),
+    cmp('Invoice period', r.period || '-', issue === 'period' ? '<span class="k-muted">Not read</span>' : r.period || '-', '-', issue === 'period' ? 'fail' : 'pass', issue === 'period' ? 'OCR could not read the period; confirm from the invoice or send an RFI' : ''),
+    cmp('Supplier GSTIN', r.gstin || '-', r.gstin || '-', r.gstin ? 'GST master: ' + UI.esc(vend.short) : '-', r.gstin ? 'pass' : 'na'),
+    cmp('Airtel GSTIN (bill to)', ci.gstin, ci.gstin, 'Airtel office - ' + UI.esc(r.circle), 'pass'),
+    cmp('Base amount', UI.inr(r.base, 2), issue === 'tol' ? UI.inr(r.base + 340, 2) : UI.inr(r.base, 2), pm ? 'Tolerance ' + UI.esc(r.c.tol) : '-', issue === 'tol' ? 'fail' : 'pass', issue === 'tol' ? 'Difference Rs 340.00 exceeds the tolerance' : ''),
+    cmp('Total amount', UI.inr(r.total, 2), issue === 'tol' ? UI.inr(r.total + 401.2, 2) : UI.inr(r.total, 2), 'Base + GST', issue === 'tol' ? 'fail' : 'pass'),
+    cmp('IRN (QR)', vend.irn === 'Yes' ? 'Applicable' : 'Not applicable', vend.irn === 'Yes' ? 'QR read' : '-', 'Supplier master IRN flag: ' + vend.irn, vend.irn === 'Yes' ? 'pass' : 'na')];
+  var compare = UI.section({ title: 'Input vs OCR vs master', collapsible: true, body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'f', label: 'Field' }, { key: 'i', label: 'Input sheet / form' }, { key: 'o', label: 'OCR' }, { key: 'r', label: 'Result (master / Oracle)' }], rows: rows }),
+    UI.p('Where the input and OCR agree, the input value is used for booking; where they do not, the invoice is returned or kept in the manual queue.', { muted: true, small: true })] });
+
+  var visual = { 12: true, 13: true };
+  var chk = INV.checklist.map(function (c) {
+    var n = c[0], res = 'pass', txt = '', det = '';
+    if (n === 10 && vend.irn !== 'Yes') res = 'na';
+    if (n === 17 && !r.rcm) res = 'na';
+    if (n === 18 && r.cat !== 'credit') res = 'na';
+    if (n === 16 && r.cat === 'll-gst') res = 'na';
+    if (n === 14 && issue === 'period') { res = 'fail'; det = 'Period not found on the invoice copy'; }
+    if (n === 7 && issue === 'tol') { res = 'fail'; det = 'Line totals differ from the base total'; }
+    if (visual[n]) { res = issue === 'sign' && n === 12 ? 'manual' : 'manual'; txt = 'Confirm'; det = n === 12 ? (issue === 'sign' ? 'Stamp present, signature unclear - confirm against the copy' : 'Signed and stamped') : 'System generated'; }
+    return { no: n, check: UI.esc(c[1]) + '<div class="k-muted k-small">' + UI.esc(c[2]) + '</div>', source: '', result: res, resultText: txt, detail: det };
+  });
+  var checklist = UI.section({ title: 'Invoice checklist (18 points)', sub: 'Checks 12 and 13 need a visual confirmation', collapsible: true, body: [UI.checklist({ columns: ['#', 'Check and rule', '', 'Result', 'Detail'], rows: chk }),
+    UI.options({ type: 'check', items: [{ label: 'I have reviewed the signature (12) and invoice form (13) on the copy', on: S === 'approved' }] })] });
+
+  var cat = [];
+  if (r.cat === 'll-gst') cat = [{ check: 'Rent paid (voucher ' + r.voucher + ')', source: 'Oracle AP base rent entry', result: 'pass', detail: 'Paid 05-Sep-2026, Rs 18,000.00' }, { check: 'Voucher not used for GST before', source: 'Portal and Oracle', result: 'pass' },
+    { check: 'GST within 18% of rent', source: 'Rs 3,240.00 on Rs 18,000.00', result: 'pass' }, { check: 'Non-compliant vendor list', source: 'Tax team list', result: 'pass', detail: 'Not on the list' }, { check: 'Lease active', source: 'Oracle PM lease', result: 'pass' }];
+  else if (r.cat === 'central-toco') cat = [{ check: 'Discount spread (Indus / Infratel, type No change)', source: 'OCR invoice type and discount lines', result: 'pass', detail: 'Rs 4,200.00 over 41 lines' }, { check: 'Locator for every line', source: 'PN Site Attribute (active, inactive), locator master', result: issue === 'loc' ? 'fail' : 'pass', detail: issue === 'loc' ? '3 lines not found' : '42 of 42' },
+    { check: 'BU code in locator matches circle', source: 'BU master', result: 'pass' }, { check: 'Base within Rs 5 of OCR after merge', source: 'Central ToCo tolerance', result: 'pass' }, { check: 'Duplicate in PM', source: 'PM duplicate / potential duplicate', result: 'pass', detail: 'Upload first with bypass N' }];
+  else if (pm) cat = [{ check: 'Locator for every line', source: UI.esc(r.c.locator), result: issue === 'loc' ? 'fail' : 'pass', detail: issue === 'loc' ? UI.esc(r.reason) : (r.lines || 1) + ' of ' + (r.lines || 1) }, { check: 'Amount within tolerance', source: UI.esc(r.c.tol), result: issue === 'tol' ? 'fail' : 'pass' },
+    { check: 'Previous-year invoice received after 30 September', source: 'GSTR-2A / 2B', result: 'na', detail: 'Current-year invoice' }, { check: 'Duplicate invoice / duplicate line in PM', source: 'PM module controls', result: 'pass' }];
+  else cat = [{ check: 'Vendor site active, not blocked', source: 'Quality Plan / supplier master', result: 'pass' }, { check: force ? 'General NFA attached and amount matches' : 'DOA inputs complete (requester, opex / capex, zone)', source: force ? 'NFA copy' : 'HRMS / DOA matrix', result: 'pass' },
+    { check: 'Duplicate in AP (booked or under processing)', source: 'AP duplicate logic', result: issue === 'dup' ? 'warn' : 'pass', resultText: issue === 'dup' ? 'Potential' : '', detail: issue === 'dup' ? 'NPO-2627-004771: same vendor, amount Rs 28,20,200.00, Aug-26 - Paid 22-Sep' : '' },
+    { check: 'Invoice number within 50 characters', source: 'Oracle AP limit', result: 'pass' }];
+  var catSec = UI.section({ title: UI.esc(r.c.name) + ' checks', collapsible: true, body: [UI.checklist({ columns: ['#', 'Check', 'Against', 'Result', 'Detail'], rows: cat }),
+    issue === 'dup' ? UI.alert({ tone: 'warn', title: 'Potential duplicate.', text: 'Reject as a duplicate, or approve with a reason if the services are different (the reason is kept in the audit trail).', actions: [UI.textlink({ label: 'Open NPO-2627-004771', icon: 'arrowRight', toast: 'Opens the earlier invoice' })] }) : ''] });
+
+  var enrich = UI.section({ title: 'Booking details derived', collapsible: true, collapsed: true, body: [UI.kv({ cols: 3, items: pm ? [['Locator', r.v === '412885' ? '11106-MDEL-0412881 (+41)' : '12104-MLKO-0412207 (+' + ((r.lines || 1) - 1) + ')'], ['Opex head', 'Rent.Tower.IP / Energy.EB.IP'], ['Vendor site', vend.site], ['Payment term', 'Controlled Expense - 30 days'], ['GST category', 'WithinState_GST18'], ['TDS', '194I &middot; TDS_194I_2_' + ci.bu]]
+    : [['Vendor site', vend.site], ['GL / item code', 'From the Quality Plan'], ['Payment term', UI.esc(r.c.term)], ['Pay group', UI.esc(r.c.payGroup)], ['GST category', r.gst ? 'WithinState_GST18' : 'Not applied'], ['Inventory org / location', ci.bu + '-INV']] })] });
+
+  var doc = UI.docMock({ title: r.cat === 'll-gst' ? 'TAX INVOICE (GST ON RENT)' : 'TAX INVOICE', qr: vend.irn === 'Yes', stamp: issue === 'sign' ? '' : r.vshort.split(' ')[0].toUpperCase(),
+    fields: [['Invoice No', r.inv], ['Date', r.date], ['Supplier GSTIN', r.gstin || '-'], ['Bill to', 'Bharti Airtel Ltd, ' + r.circle], ['Period', issue === 'period' ? '' : r.period]],
+    lines: [[r.cat === 'll-gst' ? "GST on rent - voucher " + r.voucher : UI.esc(r.c.name) + ' charges', '997212', String(r.lines || 1), UI.inr(r.base, 2), UI.inr(r.base, 2)]], totals: [['Taxable', UI.inr(r.base, 2)], ['GST', UI.inr(r.gst, 2)], ['Total', UI.inr(issue === 'tol' ? r.total + 401.2 : r.total, 2)]] });
+  var approveLabel = pm ? 'Approve - book in PM' : r.cat === 'll-gst' ? 'Approve (PHD checklist)' : force ? 'Approve - to force approval' : 'Approve - send for DOA';
+  var actions = '<div class="k-review-actions">' + UI.btns([UI.button({ label: 'Upload', toast: 'Upload a supporting document' }), UI.button({ label: 'RFI', modal: 'rfi' }), UI.button({ label: 'Hold', modal: 'hold' }), UI.button({ label: 'Reject', modal: 'reject' }),
+    UI.button({ label: approveLabel, variant: issue === 'tol' || issue === 'period' || issue === 'loc' ? 'disabled' : 'primary', state: issue === 'tol' || issue === 'period' || issue === 'loc' ? '' : 'approved' })], { end: true }) + '</div>';
+
+  var modals = UI.modal({ id: 'rfi', open: S === 'rfi', title: 'Request', accent: 'Information', size: 'narrow', body: [UI.field({ label: 'Information needed (shown to the submitter)', type: 'area', required: true, value: issue === 'period' ? 'The invoice period is not legible on the copy. Please upload a copy that shows the service period, or confirm it.' : '', wrap: true }),
+      UI.options({ type: 'check', items: [{ label: 'Allow replacing the invoice copy', on: true }] }), UI.p('The invoice moves to RFI and the SLA pauses until the submitter responds.', { muted: true, small: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Send RFI', variant: 'primary', close: true, toast: 'RFI sent to the submitter' })] }) +
+    UI.modal({ id: 'reject', title: 'Reject', accent: 'Invoice', size: 'narrow', body: [UI.field({ label: 'Rejection reason', type: 'select', value: issue === 'dup' ? 'Duplicate invoice' : 'Checklist failure', required: true }), UI.field({ label: 'Remarks (shown to the submitter)', type: 'area', required: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Reject', variant: 'primary', close: true, toast: 'Invoice rejected with reason' })] }) +
+    UI.modal({ id: 'hold', title: 'Put on', accent: 'Hold', size: 'narrow', body: [UI.field({ label: 'Hold reason', type: 'select', value: 'Awaiting supporting document', required: true }), UI.field({ label: 'Remarks', type: 'area', required: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Put on hold', variant: 'primary', close: true, toast: 'Invoice placed on hold' })] }) +
+    UI.modal({ id: 'done', open: S === 'approved', title: 'Invoice', accent: 'Approved', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Reference', ref], ['Status', INV.status(pm ? 'Under Validation' : 'Under Approval')],
+      ['Next', pm ? 'Booked locator-wise in the PM module; attachments to OWCC by Group ID; Airtel Send for Approval' : r.cat === 'll-gst' ? 'Force approval, then the two-line GST entry in AP' : force ? 'Force approval against the NFA, then booking in AP' : 'DOA approval on the portal, then booking in AP'], ['Notified', 'Submitter']] })],
+      foot: [UI.button({ label: 'Next invoice', go: 'inv-13' }), UI.button({ label: 'Back to queues', variant: 'primary', go: 'inv-13' })] });
+
+  Page.render({
+    id: 'inv-14', roleId: 'phd', navKey: 'inv-13',
+    states: [{ id: 'rfi', label: 'Sending an RFI' }, { id: 'approved', label: 'Approved' }],
+    keep: ['ref'],
+    html: UI.page({ title: 'Review', accent: 'Invoice', crumb: '<a data-go="inv-13">Work queues</a> &rsaquo; ' + ref, sub: 'Try other queue items: <a class="k-link" href="' + INV.review('NPO-2627-004806') + '">tolerance</a>, <a class="k-link" href="' + INV.review('NPO-2627-004847') + '">period not read</a>, <a class="k-link" href="' + INV.review('NPO-2627-004839') + '">landlord GST</a>, <a class="k-link" href="' + INV.review('NPO-2627-004818') + '">potential duplicate</a>, <a class="k-link" href="' + INV.review('NPO-2627-004851') + '">Central ToCo</a>.' }) +
+      UI.split({ left: [UI.section({ title: 'Invoice', body: [summary] }), compare, checklist, catSec, enrich],
+        right: [UI.pdf({ docs: ['Invoice PDF', 'Working sheet'], selected: 'Invoice PDF', count: 'Page 1 of 2', doc: doc }), actions] }) + modals
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign-in - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  var S = Page.state(), v = INV.vendors['600124'];
+  var top = '<div class="k-login-top"><img src="../assets/logo.png" alt="airtel partners"><div class="k-login-links"><span>Help Center</span><span>Visit airtel.in</span></div></div>';
+  var hero = '<div class="k-login-left"><div class="k-login-hero"><h1><em>Non-PO Invoicing</em>Partner Portal</h1><p>Submit invoices raised on Airtel without a purchase order, and follow each one from submission to payment.</p></div></div>';
+  var html, right;
+
+  if (S === 'roles') {
+    html = '<div class="k-roles-top"><img src="../assets/logo.png" alt="airtel partners"><span class="sh-topsp"></span><span class="sh-topicon" data-go="inv-01">' + UI.icon('logout', 'lg') + '<span>Logout</span></span></div>' +
+      '<div class="k-roles-body">' + UI.page({ title: 'Select Your Role  B0PHD307', sub: 'Your profile has more than one role on the Non-PO Portal. Choose the role to work in; you can switch roles later from Profile.' }) +
+      UI.cards({ cols: 4, items: [
+        { icon: 'list', title: 'PHD / AP analyst', text: 'Work queues, invoice review, exceptions', go: 'inv-02?role=phd', active: true },
+        { icon: 'users', title: 'Central user', text: 'Submit invoices for any circle', go: 'inv-02?role=central' },
+        { icon: 'building', title: 'Circle user', text: 'Submit for your circle; locator issues', go: 'inv-02?role=circle' },
+        { icon: 'check', title: 'Business approver', text: 'Approve AP invoices under the DOA', go: 'inv-02?role=approver' },
+        { icon: 'chart', title: 'AP manager', text: 'Team queues, SLA and escalations', go: 'inv-02?role=apm' },
+        { icon: 'percent', title: 'Tax team', text: 'GST non-compliance debit notes', go: 'inv-02?role=tax' },
+        { icon: 'db', title: 'P2P master owner', text: 'Masters and configuration', go: 'inv-02?role=p2p' },
+        { icon: 'eye', title: 'Audit', text: 'Reports and audit trail (read only)', go: 'inv-02?role=audit' }
+      ] }) + '</div>';
+  } else {
+    if (S === 'otp' || S === 'otp-invalid') {
+      right = '<h2>Verify OTP</h2>' + UI.p('A 6-digit OTP has been sent to your mobile number registered on the Partner Portal, ' + UI.esc(v.mobile) + '.', { muted: true }) +
+        UI.stack([
+          UI.otp({ label: 'One-time password', value: S === 'otp-invalid' ? '482915' : '', error: S === 'otp-invalid' ? 'The OTP is wrong or has expired. Request a new OTP.' : '', hint: S === 'otp-invalid' ? '' : 'Valid for 5 minutes' }),
+          UI.button({ label: 'Verify', variant: 'primary', wide: true, go: 'inv-02?role=vendor' }),
+          UI.row([UI.textlink({ label: 'Resend OTP', toast: 'A new OTP has been sent' }), UI.textlink({ label: 'Back to login', state: 'none' })])
+        ]);
+    } else if (S === 'sso') {
+      right = '<h2>Airtel Sign-in</h2>' + UI.p('Airtel employees sign in with their Airtel account. Multi-factor authentication is completed on the Microsoft sign-in page.', { muted: true }) +
+        UI.stack([UI.alert({ tone: 'info', icon: 'shield', text: 'Redirecting to Airtel single sign-on (Azure AD with MFA)...' }),
+          UI.button({ label: 'Continue', variant: 'primary', wide: true, state: 'roles' })]);
+    } else {
+      right = '<h2>Partner Login</h2>' + UI.p('Please enter your Partner Portal credentials', { muted: true }) +
+        (S === 'blocked' ? UI.alert({ tone: 'red', title: 'Access not available.', text: 'Vendor code ' + '600124' + ' is inactive or its vendor site is blocked in the Oracle supplier master. Contact the Airtel circle finance team.' }) : '') +
+        UI.stack([
+          UI.field({ label: 'Username (registered email ID)', value: S === 'blocked' ? UI.esc(v.email) : '', placeholder: 'Enter username' }),
+          UI.field({ label: 'Password', value: S === 'blocked' ? '&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;' : '', placeholder: 'Enter password' }),
+          UI.button({ label: 'Login', variant: 'primary', wide: true, state: 'otp' }),
+          '<div class="k-muted k-small">Forgot Credentials? Reset them on the Partner Portal.</div>',
+          UI.or('Airtel employee'),
+          UI.msButton({ label: 'Sign in with Airtel account', state: 'sso' }),
+          UI.p('Vendors, the central ToCo vendor user and landlords sign in with the email ID and password they use on the Partner Portal; an OTP is sent to the registered mobile number. Airtel employees (circle users, central users, PHD / AP, approvers) use single sign-on.', { muted: true, small: true }),
+          UI.tbc('Carry-over of the PO Partner Portal session through the link')
+        ]);
+    }
+    html = top + '<div class="k-login">' + hero + '<div class="k-login-right">' + right + '</div></div>';
+  }
+  html += UI.footer();
+  Page.render({ id: 'inv-01', layout: 'plain', roleId: 'vendor',
+    states: [{ id: 'otp', label: 'Partner: OTP sent' }, { id: 'otp-invalid', label: 'Partner: wrong OTP' }, { id: 'blocked', label: 'Partner: inactive vendor' }, { id: 'sso', label: 'Airtel: single sign-on' }, { id: 'roles', label: 'Airtel: choose role' }],
+    html: html });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PO raised after provision - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  var S = Page.state(), done = S === 'settled';
+  var rows = [
+    { u: '111·410387·AMCDG004·JUL-26', v: 'Prism Power Systems', b: 520000, po: '4500918822', poDate: '18-Sep-2026', poAmt: 520000, inv: 'PO invoice not yet booked', s: done ? 'Cancelled - settled against PO' : 'PO found - review' },
+    { u: '131·410455·CCSVC002·AUG-26', v: 'Vertex Call Solutions', b: 2140000, po: '4500921107', poDate: '27-Sep-2026', poAmt: 2140000, inv: 'PO invoice VCS/26/1290 booked 30-Sep', s: done ? 'Cancelled - settled by PO invoice' : 'PO and invoice found - review' }
+  ];
+  var table = UI.table({ dense: true, select: !done, columns: [{ key: 'u', label: 'Provision' }, { key: 'po', label: 'Oracle PO' }, { key: 'inv', label: 'PO-based invoice' }, { key: 'b', label: 'Provision balance (Rs)', num: true, money: true }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: rows.map(function (r) { return { u: '<span class="k-urn">' + r.u + '</span><div class="k-muted k-small">' + r.v + '</div>', po: r.po + '<div class="k-muted k-small">' + r.poDate + ' &middot; Rs ' + UI.inr(r.poAmt, 2) + '</div>', inv: r.inv, b: r.b, s: UI.status(r.s, done ? 'grey' : ''), _acts: [{ icon: 'eye', label: 'Open provision', go: 'pa-09' }] }; }) });
+  Page.render({
+    id: 'pa-15', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
+    states: [{ id: 'settled', label: 'After settlement' }],
+    html: UI.page({ title: 'PO Raised', accent: 'After Provision', info: 'Daily fetch of Oracle purchase orders to find POs raised for costs already provided', sub: 'A PO raised in Oracle EBS for the same cost would provide it twice. Each morning the platform fetches new POs, links them to the matching provision, reverses the provision and hands the cost to the PO process.' }) +
+      UI.flow({ items: [{ label: 'Daily PO fetch', text: '01-Oct 06:00 &middot; 312 new POs', state: 'done' }, { label: 'Match to provisions', text: 'Vendor, item, BU, period', state: 'done' }, { label: 'Review', text: done ? '2 settled' : '2 to review', state: done ? 'done' : 'current' }, { label: 'Reverse provision', text: 'Status Cancelled' }, { label: 'PO process', text: 'Invoice booked against the PO' }] }) +
+      (done ? UI.alert({ tone: 'ok', title: '2 provisions settled.', text: 'Provisions marked Cancelled and linked to their POs; reversal journals sent to Oracle.' })
+        : UI.alert({ tone: 'warn', title: '2 provisions have a PO raised after them.', text: 'Confirm the link to reverse the provision and route the cost to the PO process.', actions: [UI.button({ label: 'Confirm and reverse selected', variant: 'primary', size: 'sm', state: 'settled' })] })) +
+      table + UI.p('The provision is settled on this platform when the PO is raised or when its PO-based invoice is booked in AP, so the same cost is not provided twice. A PO can also be linked by hand from the provision detail page.', { muted: true, small: true })
+  });
+})();
+</script>
+</body>
+</html>

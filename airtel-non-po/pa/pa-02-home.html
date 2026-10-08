@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  /* One Home layout for every role: count tiles -> needs your attention -> one panel (chart or table).
+     The role comes from the role selector in the top bar; the default is GPA analyst. */
+  var R = Page.role('pa'), rid = R ? R.id : 'gpa';
+  var lakh = function (v) { return UI.inr(v, 1); };
+  var whole = function (v) { return Math.round(v); };
+  var tbl = function (cols, rows) { return UI.table({ dense: true, pager: false, export: false, columns: cols, rows: rows }); };
+
+  var H = {
+    maker: {
+      sub: 'Your provisions, returns and reminders.',
+      tiles: [['1', 'Draft', '', 'pa-03'], ['1', 'Returned to me', 'Correct and resubmit', 'pa-04?state=returned'], ['2', 'Awaiting approval', '', 'pa-03'], ['3', 'Due this month', 'From your provision calendar', 'pa-11'], ['2', 'Open over 90 days', 'Escalated to you', 'pa-03']],
+      tasks: [['alert', 'Provision returned: 101·410612·LEGAL007·SEP-26', 'Attach the retainer agreement; amount differs from the agreed monthly fee', '30-Sep 17:20', 'pa-04?state=returned', 1],
+        ['calendar', 'Security services - BU 131 not raised for Sep-26', 'Raised every month since Apr-26; suggested amount Rs 4,85,000.00', 'Due 05-Oct', 'pa-04', 1],
+        ['clock', '131·410455·CCSVC002·JUN-26 open for 92 days', 'Escalation level 1 (business user): ask the vendor for the invoice or request force closure', '29-Sep', 'pa-09', 0]],
+      panel: ['My open provisions by age', UI.chart({ type: 'column', title: 'Open balance', unit: 'Rs lakh', categories: ['0-30 days', '31-60', '61-90', 'Over 90'], series: [{ name: 'Open', data: [9.6, 4.9, 0, 39.3] }], fmt: lakh })]
+    },
+    checker: {
+      sub: 'Provisions waiting for your approval, and your team\'s open items.',
+      tiles: [['4', 'Waiting for my approval', '', 'pa-07'], ['1', 'Overdue', 'Escalated to your manager', 'pa-07'], ['1', 'Bulk batch to review', '42 lines', 'pa-08?state=bulk'], ['37', 'Decided this month', '', 'pa-07?tab=ap:mine'], ['2', 'Team open over 90 days', '', 'pa-03']],
+      tasks: [['alert', 'Overdue: bulk batch BLK-26-0412 (42 lines)', 'DG AMC - network sites, Rs 5,29,20,000.00; one potential duplicate with an override reason', 'Since 28-Sep', 'pa-08?state=bulk', 1],
+        ['check', 'Approve 111·410022·SECURITY001·SEP-26', 'Raised by B0MKR412 - Rs 4,85,000.00', 'Due 02-Oct', 'pa-08', 1],
+        ['check', 'Rule-based provision (scenario 2) from business finance', 'NSG network support split to 4 circles - Rs 15,00,000.00', 'Due today', 'pa-08?state=s2', 0],
+        ['users', 'You are delegate for B0CHK201 until 05-Oct', 'Items approved for them carry both names', '', 'pa-07?state=delegation', 0]],
+      panel: ['Approvals I decided', UI.chart({ type: 'stacked', title: 'By week', unit: 'provisions', categories: ['W36', 'W37', 'W38', 'W39'], series: [{ name: 'Approved', data: [8, 11, 9, 7] }, { name: 'Returned', data: [1, 2, 0, 1] }], fmt: whole })]
+    },
+    bfin: {
+      sub: 'Rule-based inputs, deferment and the running financial impact for your BUs.',
+      tiles: [['4', 'Rule-based inputs due', 'Scenarios 2, 6, 7, 8', 'pa-11'], ['1', 'Hits shared by GPA', 'Return the reclass input (S6)', 'pa-04?state=s2'], ['1', 'Deferment parameters', 'Review for Oct-26', 'pa-13?tab=pp:params'], ['Rs 47.3 Cr', 'Provisions this month', 'Your BUs', 'pa-03'], ['+Rs 4.8 Cr', 'Flash impact on opex', 'vs Aug-26 close', 'pa-16']],
+      tasks: [['calendar', 'NSG network support input (scenario 2) due for Sep-26', 'Segment-level YTD input split to circles by the allocation master', 'Due 03-Oct', 'pa-04?state=s2', 1],
+        ['send', 'GPA shared Sep-26 invoice hits for expense-to-revenue reclass (S6)', 'Return the provision input for DTH, IPTV, BAL and Hexacom codes', '30-Sep', 'pa-04', 1],
+        ['edit', 'Deferment % for XFE changes from 01-Oct-2026', 'Confirm 90% and 36 months, or update', '28-Sep', 'pa-13?tab=pp:params', 0]],
+      panel: ['Provisions by scenario - Sep-26', UI.chart({ type: 'bar', title: 'Your BUs', unit: 'Rs lakh', categories: ['S1 Input as per format', 'S2 Distributed by %', 'S7 YTD level', 'S8 Trend basis', 'S12 Allocation'], series: [{ name: 'Amount', data: [312.4, 15.0, 18.0, 1.0, 96.0] }], fmt: lakh, labelWidth: 150 })]
+    },
+    gpa: {
+      sub: 'Posting, matching, PO links and reversals across your BUs.',
+      tiles: [['1', 'Interface errors', 'Oracle import rejected', 'pa-10?state=error'], ['5', 'Unmatched invoices', '', 'pa-12?tab=mw:unmatched'], ['4', 'Nearest-match review', '', 'pa-12?tab=mw:nearest'], ['2', 'PO raised after provision', '', 'pa-15'], ['7', 'Due for PBR reversal', 'At close of Sep-26', 'pa-14?tab=ag:pbr']],
+      tasks: [['alert', 'Oracle import rejected: 131·410455·CCSVC002·SEP-26', 'GL period SEP-26 closed for ledger AIRTEL_IN_LEDGER', '30-Sep 21:05', 'pa-10?state=error', 1],
+        ['link', 'PO 4500918822 raised for 111·410387·AMCDG004·JUL-26', 'Daily PO fetch found a PO for this provision - review and settle against the PO', '01-Oct 06:00', 'pa-15', 1],
+        ['search', '4 invoices need a nearest-match decision', 'No exact URN match; candidates ranked by vendor, item code and period', '01-Oct 07:30', 'pa-12?tab=mw:nearest', 0],
+        ['clock', '7 provisions reach the PBR window at close of Sep-26', 'Reversed automatically on 05-Oct unless placed on hold', 'Run 05-Oct', 'pa-14?tab=ag:pbr', 0]],
+      panel: ['Open provisions by age', UI.chart({ type: 'column', title: 'Open balance', unit: 'Rs lakh', categories: ['0-30 days', '31-60', '61-90', 'Over 90'], series: [{ name: 'Open', data: [91.3, 174.6, 0, 65.2] }], fmt: lakh })]
+    },
+    gpam: {
+      sub: 'Journals waiting to be posted in Oracle, and the daily reconciliation.',
+      tiles: [['3', 'Batches to post', '18,479 journals', 'pa-10?state=manager'], ['1', 'Rejected by Journal Import', 'With the GPA analyst', 'pa-10?state=error'], ['18,442', 'Posted yesterday', '', 'pa-10'], ['Matched', 'Daily reconciliation', '30-Sep: counts, values, documents', 'pa-10?tab=jp:recon']],
+      tasks: [['send', 'Post batch NPP-26-10-0004 - DARTS (TOCO) 18,419 journals', 'Rs 46,82,31,400.00 - imported 01-Oct 10:12', '01-Oct', 'pa-10?state=manager', 1],
+        ['send', 'Post batch NPP-26-10-0003 - related party provisions (RPT)', '6 journals - Rs 2,17,50,000.00', '01-Oct', 'pa-10?state=manager', 1],
+        ['check', 'Daily reconciliation 30-Sep matched', 'Platform and Oracle agree on counts, values and document numbers', '01-Oct 05:30', 'pa-10?tab=jp:recon', 0]],
+      panel: ['Journals posted by day', UI.chart({ type: 'column', title: 'Journals', categories: ['24-Sep', '25-Sep', '26-Sep', '29-Sep', '30-Sep'], series: [{ name: 'Posted', data: [212, 188, 240, 305, 18442] }], fmt: function (v) { return UI.inr(v, 0); } })]
+    },
+    cfr: {
+      sub: 'Decisions waiting for CFR and provisions escalated to CFR.',
+      tiles: [['2', 'New BU / GL / OU', 'Approval with remarks', 'pa-07?tab=ap:cfr'], ['1', 'Force closure requests', '', 'pa-07?tab=ap:cfr'], ['1', 'Force reversal requests', '', 'pa-07?tab=ap:cfr'], ['1', 'Hold requests', '', 'pa-07?tab=ap:cfr'], ['1', 'Open over 270 days', 'Escalated to CFR', 'pa-14']],
+      tasks: [['check', 'New BU for activity: 161·410022·SECURITY001·SEP-26', 'BU 161 (Telangana) used for the first time for Security services - remarks from maker attached', '30-Sep', 'pa-08?state=cfr', 1],
+        ['x', 'Force closure: 131·410612·LEGAL007·FEB-26', 'Matter withdrawn - no invoice expected. Rs 3,00,000.00 written back to P&L', '29-Sep', 'pa-08?state=closure', 1],
+        ['hold', 'Hold request: 141·410387·AMCDG004·JAN-26', 'Vendor dispute under arbitration - exclude from PBR reversal', '28-Sep', 'pa-08?state=hold', 0]],
+      panel: ['P&L effect of CFR decisions (FYTD)', UI.chart({ type: 'bar', title: 'Rs lakh', categories: ['Force closures', 'Force reversals', 'Held from PBR'], series: [{ name: 'Value', data: [21.6, 19.8, 14.5] }], fmt: lakh })]
+    },
+    ace: {
+      sub: 'Central processing and the final level of ageing escalation.',
+      tiles: [['12', 'Raised by ACE this month', '', 'pa-03'], ['0', 'Open over 365 days', 'Controller / ACE level', 'pa-14'], ['1', 'Open over 270 days', 'At CFR', 'pa-14'], ['2', 'Unmatched invoices', '', 'pa-12?tab=mw:unmatched'], ['2', 'PO raised after provision', '', 'pa-15']],
+      tasks: [['clock', '141·410387·AMCDG004·DEC-25 open 305 days', 'On hold for vendor dispute; reaches the Controller / ACE level at 365 days', '27-Sep', 'pa-09', 1],
+        ['search', '2 invoices with no provision', 'Metro Networks Co (BU 141) and the annual membership fee', '01-Oct', 'pa-12?tab=mw:unmatched', 0],
+        ['link', '2 provisions have a PO raised after them', 'Confirm the link to reverse and route to the PO process', '01-Oct', 'pa-15', 0]],
+      panel: ['Open provisions by age', UI.chart({ type: 'column', title: 'All BUs', unit: 'Rs lakh', categories: ['0-30 days', '31-60', '61-90', 'Over 90'], series: [{ name: 'Open', data: [91.3, 174.6, 0, 65.2] }], fmt: lakh })]
+    },
+    p2p: {
+      sub: 'Invoices to match to provisions, and TOCO debit-note provisions.',
+      tiles: [['4', 'Nearest-match review', '', 'pa-12?tab=mw:nearest'], ['2', 'Unmatched invoices', '', 'pa-12?tab=mw:unmatched'], ['2', 'Excess or future period', '', 'pa-12?tab=mw:excess'], ['3', 'TOCO debit-note provisions', 'Created from validated DNs', 'pa-06?tab=tc:dn'], ['2', 'Leases on hold', 'PM lease module', 'pa-06?tab=tc:hold']],
+      tasks: [['search', 'Match VCS/26/1188 (Vertex Call Solutions, Rs 20,75,000.00)', 'No service period on the invoice: FIFO suggests the June provision', '01-Oct', 'pa-12?state=force&tab=mw:nearest', 1],
+        ['search', 'SHK/2026/551 - vendor not on the provision', 'Nearest by PAN: SecureOne Facility Services (same PAN)', '01-Oct', 'pa-12?tab=mw:nearest', 1],
+        ['doc', 'DN-SD-26-0102 validated - provision created', '131·412902·RENT-AOR·AUG-26·13102·DN-SD-26-0102, Rs 22,900.00', '28-Sep', 'pa-06?tab=tc:dn', 0]],
+      panel: ['Matching outcomes by week', UI.chart({ type: 'stacked', title: 'Invoices', categories: ['W36', 'W37', 'W38', 'W39'], series: [{ name: 'Exact', data: [302, 288, 341, 353] }, { name: 'Force match', data: [22, 19, 24, 18] }, { name: 'Unmatched', data: [9, 7, 11, 6] }], fmt: whole })]
+    },
+    toco: {
+      sub: 'Your TOCO inputs to the platform: de-loading (NSG), exit penalty (SCM) and MSC expense (B2B).',
+      tiles: [['3', 'Inputs due for Sep-26', '', 'pa-05?state=other'], ['2', 'Uploaded this month', '', 'pa-05?state=other'], ['0', 'Rows with errors', '', 'pa-05?state=other'], ['1', 'Allocation % to review', 'MSC split by BU', 'pa-19?tab=m:alloc']],
+      tasks: [['upload', 'De-loading input for Sep-26 (NSG team)', 'Standard Excel format', 'Due 05-Oct', 'pa-05?state=other', 1],
+        ['upload', 'Exit penalty input for Sep-26 (SCM team)', 'Standard Excel format', 'Due 05-Oct', 'pa-05?state=other', 1],
+        ['edit', 'MSC expense BU split for Nxtra changes from Oct-26', 'Update the percentage master (effective-dated)', '28-Sep', 'pa-19?tab=m:alloc', 0]],
+      panel: ['Inputs submitted', tbl([{ key: 'i', label: 'Input' }, { key: 'j', label: 'Jul-26' }, { key: 'a', label: 'Aug-26' }, { key: 's', label: 'Sep-26' }],
+        [{ i: 'De-loading (NSG)', j: UI.status('Submitted', 'ok'), a: UI.status('Submitted', 'ok'), s: UI.status('Due') }, { i: 'Exit penalty (SCM)', j: UI.status('Submitted', 'ok'), a: UI.status('Late'), s: UI.status('Due') }, { i: 'MSC expense (B2B)', j: UI.status('Submitted', 'ok'), a: UI.status('Submitted', 'ok'), s: UI.status('Submitted', 'ok') }])]
+    },
+    aio: {
+      sub: 'Subscriber counts for the VTM provision (scenario 10).',
+      tiles: [['19', 'Circles to update', 'Sep-26 counts', 'pa-19?tab=m:vtm'], ['3', 'Updated', 'of 22 circles', 'pa-19?tab=m:vtm'], ['05-Oct', 'Due by', 'Provision runs after', 'pa-19?tab=m:vtm']],
+      tasks: [['edit', 'Update Sep-26 subscriber counts for 19 circles', 'Split by paper-based and online activation', 'Due 05-Oct', 'pa-19?tab=m:vtm', 1],
+        ['info', 'Provision = subscriber count x average penalty % (last 12 months)', 'For Bihar the actualization amount is reclassed to prepaid code 2722035', '', 'pa-19?tab=m:vtm', 0]],
+      panel: ['Counts updated', tbl([{ key: 'c', label: 'Circle' }, { key: 'p', label: 'Paper-based', num: true }, { key: 'o', label: 'Online', num: true }, { key: 'u', label: 'Updated' }],
+        [{ c: 'Delhi', p: '6,820', o: '4,180', u: '28-Sep' }, { c: 'Bihar', p: '9,410', o: '2,050', u: '28-Sep' }, { c: 'Karnataka', p: '5,770', o: '6,320', u: '27-Sep' }])]
+    },
+    lead: {
+      sub: 'Provisioning at a glance. Select a figure to open the dashboard.',
+      tiles: [['Rs 482.6 Cr', 'Provisions FYTD', '', 'pa-17'], ['83%', 'Actualized', 'Provision utilization 87%', 'pa-17?tab=db:fin'], ['Rs 6.5 Cr', 'Open over 90 days', '', 'pa-17'], ['Rs 5.3 Cr', 'Pending approval', '', 'pa-17?tab=db:fin'], ['81%', 'Exact-match rate', 'Target 90%', 'pa-17?tab=db:health']],
+      tasks: [['alert', 'Exact-match rate 81% against a 90% target', 'Force matches rose in W38; most come from invoices without a URN', 'W39', 'pa-17?tab=db:health', 1],
+        ['clock', '1 provision escalated to CFR (270 days)', 'Rs 7,60,000.00 - on hold for vendor dispute', '27-Sep', 'pa-17', 0],
+        ['chart', 'Sep-26 flash: opex +Rs 4.8 Cr over Aug-26 close', 'Mostly TOCO rent and energy provisions from DARTS', '01-Oct', 'pa-16', 0]],
+      panel: ['Provisioned vs actualized', UI.chart({ type: 'line', title: 'Rs Cr', categories: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'], series: [{ name: 'Provisioned', data: [78, 79, 81, 80, 82, 83] }, { name: 'Actualized', data: [74, 76, 78, 79, 70, 24] }], fmt: whole })]
+    },
+    audit: {
+      sub: 'Read-only view of overrides and evidence for sampling.',
+      tiles: [['18', 'Force matches (Sep-26)', 'Reason recorded on each', 'pa-18?state=pva'], ['4', 'Duplicate overrides', 'This month', 'pa-18?state=pva'], ['9', 'Force closures FYTD', 'All CFR approved', 'pa-18?state=pva'], ['1,284', 'Invoices auto-matched', 'Sep-26', 'pa-18?state=pva']],
+      tasks: [['eye', 'Q2 sample: provision vs actual mapping', 'Filter by segment (B2B, B2C, TOCO) and export', 'Due 15-Oct', 'pa-18?state=pva', 1],
+        ['eye', '4 duplicate warnings overridden this month', 'Each override, reason and matched provision is in the audit trail', '30-Sep', 'pa-18?state=pva', 0]],
+      panel: ['Overrides by month', UI.chart({ type: 'stacked', title: 'Count', categories: ['Jun', 'Jul', 'Aug', 'Sep'], series: [{ name: 'Force match', data: [21, 19, 24, 18] }, { name: 'Duplicate override', data: [3, 5, 2, 4] }], fmt: whole })]
+    },
+    admin: {
+      sub: 'Users, roles and access for the platform.',
+      tiles: [['412', 'Active users', 'From single sign-on', 'pa-21'], ['3', 'Access requests', 'Waiting', 'pa-21'], ['2', 'Delegations active', '', 'pa-21'], ['5', 'Users without a role', 'New joiners from HRMS', 'pa-21']],
+      tasks: [['users', 'Access request: B0MKR733 (Admin & Facilities, BU 141)', 'Business user (maker) - approved by line manager', '30-Sep', 'pa-21', 1],
+        ['clock', 'Delegation B0CHK201 to B0CHK155 ends 05-Oct', '', '05-Oct', 'pa-21', 0],
+        ['shield', 'Admin rights and access controls to confirm', 'P2P team to confirm admin rights; controls to be checked with GRC', '', 'pa-21', 0]],
+      panel: ['Users by role', tbl([{ key: 'r', label: 'Role' }, { key: 'n', label: 'Users', num: true }],
+        [{ r: 'Business user (maker)', n: '286' }, { r: 'Manager (checker)', n: '74' }, { r: 'Business finance', n: '22' }, { r: 'GPA analyst / manager', n: '14' }, { r: 'CFR, ACE, audit, leadership', n: '16' }])]
+    }
+  };
+  var h = H[rid] || H.gpa, name = (Page.MODULES.pa.roles.filter(function (r) { return r.id === rid; })[0] || {}).name;
+
+  var tiles = UI.kpis({ cols: h.tiles.length, items: h.tiles.map(function (t) { return { value: t[0], label: t[1], sub: t[2], go: t[3] }; }) });
+  var tasks = UI.list({ items: h.tasks.map(function (t) { return { icon: t[0], title: t[1], text: t[2], meta: t[3], go: t[4], unread: !!t[5] }; }) });
+
+  Page.render({
+    id: 'pa-02', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
+    html: UI.page({ title: 'My Work', sub: h.sub + (R ? '' : ' Shown as GPA analyst - use the Role selector in the top bar to see another role\'s home.') }) +
+      tiles + UI.cols('1:1', [UI.section({ title: 'Needs your attention', body: [tasks] })], [UI.section({ title: h.panel[0], body: [h.panel[1]] })])
+  });
+})();
+</script>
+</body>
+</html>

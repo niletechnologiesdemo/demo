@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoice tracker - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  var S = Page.state(), R = INV.role('vendor'), rid = R.id, partner = INV.isPartner(R);
+  var code = rid === 'toco' ? '412885' : rid === 'landlord' ? '700845' : '600124';
+  var scope = partner ? INV.mine(code) : rid === 'circle' ? INV.invoices.filter(function (r) { return r.circle === 'UP East'; }) : INV.invoices;
+  var bucket = INV.BUCKETS.filter(function (b) { return b.key === S; })[0];
+  var rows = S === 'empty' ? [] : S === 'draft' ? scope.filter(function (r) { return r.status === 'Draft'; }) : bucket ? scope.filter(function (r) { return bucket.of.indexOf(r.status) >= 0; }) : scope;
+
+  var kpi = UI.kpis({ cols: 8, items: INV.buckets(scope).map(function (b) { return { value: String(b.n), label: b.label, go: 'inv-09?state=' + b.key, active: S === b.key }; }) });
+
+  var filters = UI.filters({ items: [
+    UI.field({ label: 'Status', type: 'select', value: S === 'draft' ? 'Draft' : bucket ? bucket.label : 'All statuses' }),
+    UI.field({ label: 'Category', type: 'select', value: 'All categories' }),
+    partner ? '' : UI.field({ label: 'Circle', type: rid === 'circle' ? 'readonly' : 'select', value: rid === 'circle' ? 'UP East (your circle)' : 'All circles' }),
+    partner ? '' : UI.field({ label: 'Vendor', type: 'lookup', placeholder: 'Name, code or GSTIN' }),
+    UI.field({ label: 'Invoice date from', type: 'date' }), UI.field({ label: 'Invoice date to', type: 'date' }),
+    UI.field({ label: 'Reference / invoice no.', type: 'search', placeholder: 'NPO-2627-... or invoice number' })] });
+
+  var cols = [{ key: 'ref', label: 'Reference no.' }, { key: 'inv', label: 'Invoice no. / date' }];
+  if (!partner) cols.push({ key: 'v', label: 'Vendor / circle' });
+  cols = cols.concat([{ key: 'cat', label: 'Category' }, { key: 'total', label: 'Amount (Rs)', num: true }, { key: 'status', label: 'Status / date' }]);
+  if (!partner) cols.push({ key: 'sla', label: 'SLA / ageing' });
+  cols.push({ key: '_acts', label: '' });
+
+  var table = UI.table({ dense: true, columns: cols, rows: rows.map(function (r) {
+    var acts = partner ? [{ icon: 'share', label: 'Invoice statuses', modal: 'statuses' }] : [];
+    if (r.ref) acts.push({ icon: 'eye', label: 'Open invoice', go: INV.detail(r.ref) });
+    if (r.status === 'RFI' || r.status === 'Hold') acts.push({ icon: 'edit', label: 'Respond', go: 'inv-10' });
+    if (r.status === 'Draft') acts.push({ icon: 'edit', label: 'Continue draft', go: r.c.page + '?cat=' + r.cat });
+    return { _flag: r.slaTone === 'red',
+      ref: r.ref ? '<a class="k-link" href="' + INV.detail(r.ref) + '">' + r.ref + '</a>' : '<span class="k-muted">Not submitted</span>',
+      inv: '<div class="w-160 wrap-any">' + UI.esc(r.inv) + '</div><div class="k-muted k-small">' + r.date + '</div>',
+      v: '<div>' + UI.esc(r.vshort) + '</div><div class="k-muted k-small">' + UI.esc(r.circle) + '</div>',
+      cat: UI.esc(r.c.name) + '<div class="k-muted k-small">' + (r.fam === 'PM' ? 'Property Manager' : r.fam === 'DN' ? 'Debit note' : 'AP') + '</div>',
+      total: INV.rs(r.total, r.cur), status: '<div class="w-160">' + INV.status(r.status) + '<div class="k-muted k-small">' + r.on + (r.reason ? ' &middot; ' + UI.esc(r.reason) : '') + '</div></div>',
+      sla: r.sla ? UI.chip(UI.esc(r.sla), r.slaTone === 'red' ? 'red' : r.slaTone === 'warn' ? 'warn' : '') : '<span class="k-muted">-</span>', _acts: acts };
+  }), total: rows.length + ' invoices', empty: S === 'empty' ? 'No invoices match the filters.' : 'No invoices in this status.' });
+
+  var sample = rows.filter(function (r) { return r.ref; })[0] || INV.find('NPO-2627-004790');
+  var statuses = UI.modal({ id: 'statuses', title: 'Invoice', accent: 'Statuses', layout: 'panel', body: [
+    UI.p(UI.esc(sample.ref) + ' &middot; ' + UI.esc(sample.inv) + ' &middot; ' + UI.esc(sample.c.name) + ' (' + (sample.fam === 'PM' ? 'Property Manager: booked, then approved' : 'AP: approved, then booked') + ')', { muted: true }),
+    UI.timeline({ rows: INV.timelineRows(sample) })], foot: [UI.button({ label: 'Close', variant: 'primary', close: true })] });
+
+  Page.render({
+    id: 'inv-09', roleId: 'vendor', stat: S === 'draft' ? 'draft' : S === 'hold' ? 'hold' : 'overall',
+    states: [{ id: 'draft', label: 'Drafts' }, { id: 'inprocess', label: 'In-process' }, { id: 'pending', label: 'Pending with approver' }, { id: 'hold', label: 'Hold' }, { id: 'paid', label: 'Paid' }, { id: 'rejected', label: 'Rejected' }, { id: 'empty', label: 'No results' }],
+    html: UI.page({ title: 'Invoice', accent: 'Tracker', info: 'Status is synchronised from Oracle at every stage', sub: partner ? 'Every invoice you submitted, from submission to payment, with the reason for any hold or rejection.' : 'Invoices in your scope' + (rid === 'circle' ? ' (UP East)' : '') + ' with status, reason, SLA and ageing.' }) +
+      kpi + filters + table +
+      UI.p('Property Manager invoices are booked in Oracle first and approved after; AP invoices and debit notes are approved first and booked after. The status order differs accordingly.', { muted: true, small: true }) + statuses
+  });
+})();
+</script>
+</body>
+</html>

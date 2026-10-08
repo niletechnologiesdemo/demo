@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar & suggestions - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  var months = ['Apr-26', 'May-26', 'Jun-26', 'Jul-26', 'Aug-26', 'Sep-26'];
+  var cal = [
+    { a: 'ACT-0001 Security services', bu: '131 Karnataka', v: 'SecureOne Facility Services', m: ['R', 'R', 'R', 'R', 'R', 'M'] },
+    { a: 'ACT-0001 Security services', bu: '111 Delhi', v: 'SecureOne Facility Services', m: ['R', 'R', 'R', 'R', 'R', 'S'] },
+    { a: 'ACT-0014 DG AMC', bu: '151 Tamil Nadu', v: 'Prism Power Systems', m: ['R', 'R', 'R', 'R', 'L', 'M'] },
+    { a: 'ACT-0022 Call centre services', bu: '121 UP East', v: 'Vertex Call Solutions', m: ['R', 'R', 'R', 'R', 'R', 'M'] },
+    { a: 'ACT-0031 Legal retainer', bu: '101 Corporate', v: 'Lexwise Legal LLP', m: ['R', 'R', 'R', 'R', 'R', 'S'] },
+    { a: 'ACT-0096 Membership fee', bu: '101 Corporate', v: 'Telecom Industry Association', m: ['R', 'R', 'R', 'R', 'R', 'D'] }
+  ];
+  var MARK = { R: '<span class="k-status t-ok">Raised</span>', S: '<span class="k-status t-info">Submitted</span>', D: '<span class="k-status t-grey">Draft</span>', L: '<span class="k-status">Late</span>', M: '<span class="k-status">Missing</span>' };
+  var cols = [{ key: 'a', label: 'Activity / BU' }, { key: 'v', label: 'Vendor' }].concat(months.map(function (m, i) { return { key: 'm' + i, label: m }; })).concat([{ key: '_acts', label: '' }]);
+  var rows = cal.map(function (c) {
+    var r = { a: UI.esc(c.a) + '<div class="k-muted k-small">' + c.bu + '</div>', v: UI.esc(c.v), _flag: c.m[5] === 'M' };
+    c.m.forEach(function (x, i) { r['m' + i] = MARK[x]; });
+    r._acts = c.m[5] === 'M' ? [{ icon: 'plus', label: 'Raise now from suggestion', go: 'pa-04' }, { icon: 'bell', label: 'Send reminder', toast: 'Reminder sent to the maker' }] : [];
+    return r;
+  });
+
+  var sugg = UI.table({ dense: true, select: true, columns: [{ key: 'a', label: 'Suggested provision' }, { key: 'basis', label: 'Basis' }, { key: 'amt', label: 'Suggested (Rs)', num: true, money: true }, { key: 'conf', label: 'Confidence' }, { key: '_acts', label: '' }],
+    rows: [
+      { a: 'Security services &middot; BU 131 &middot; Sep-26<div class="k-muted k-small">SecureOne Facility Services</div>', basis: 'Same amount for 5 months (fixed contract)', amt: 485000, conf: 'High', _acts: [{ icon: 'check', label: 'Accept - opens pre-filled form', go: 'pa-04' }, { icon: 'x', label: 'Dismiss with reason', toast: 'Dismissed; reason recorded' }] },
+      { a: 'Call centre services &middot; BU 121 &middot; Sep-26<div class="k-muted k-small">Vertex Call Solutions</div>', basis: '3-month average (variable volumes)', amt: 1994000, conf: 'Medium', _acts: [{ icon: 'check', label: 'Accept', go: 'pa-04' }, { icon: 'x', label: 'Dismiss', toast: 'Dismissed' }] },
+      { a: 'DG AMC &middot; BU 151 &middot; Sep-26<div class="k-muted k-small">Prism Power Systems</div>', basis: 'Contract rate x 42 sites', amt: 1176000, conf: 'High', _acts: [{ icon: 'check', label: 'Accept', go: 'pa-04' }, { icon: 'x', label: 'Dismiss', toast: 'Dismissed' }] },
+      { a: 'Legal retainer &middot; BU 131 &middot; Feb-26<div class="k-muted k-small">Lexwise Legal LLP - open 243 days</div>', basis: 'Open with no invoice for 8 months', amt: 300000, conf: 'Force close?', _acts: [{ icon: 'x', label: 'Request force closure', go: 'pa-09' }] }] });
+
+  Page.render({
+    id: 'pa-11', user: 'B0MKR412', role: 'Business user (maker)', viewAs: 'Business user (maker)',
+    html: UI.page({ title: 'Provision', accent: 'Calendar', info: 'Built from provision history: expected recurring provisions by month', sub: 'Which regular provisions were raised each month, which are missing, and the platform\'s suggestions for this month.' }) +
+      UI.kpis({ cols: 4, items: [{ value: '3', label: 'Missing for Sep-26', sub: 'Reminder sent 28-Sep', tab: 'cs:cal', active: true }, { value: '1', label: 'Raised late last month' }, { value: '4', label: 'Suggestions', tab: 'cs:sug' }, { value: '05-Oct', label: 'Escalation if still missing', sub: 'To the manager' }] }) +
+      UI.tabs({ id: 'cs', bar: false, tabs: [
+        { id: 'cal', body: [UI.filters({ items: [UI.field({ label: 'BU', type: 'select', value: 'My BUs' }), UI.field({ label: 'Activity', type: 'select', value: 'Recurring activities' })] }), UI.table({ dense: true, columns: cols, rows: rows, pager: false })] },
+        { id: 'sug', body: [UI.p('Suggestions for recurring expenses (rent, electricity, diesel, AMC, security, call centre, legal retainer, IT support) from formulas, history and configurable rules. Accepting one opens a pre-filled provision that still goes through maker-checker.', { muted: true }), sugg] }] })
+  });
+})();
+</script>
+</body>
+</html>

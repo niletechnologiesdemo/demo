@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  var S = Page.state();
+  var reports = [
+    ['open', 'Open provision report', 'Open and partially actualized provisions with remaining balance', 'GPA, business users'],
+    ['closed', 'Closed provision report', 'Closed, reversed and force-closed provisions', 'GPA, Finance'],
+    ['ageing', 'Ageing report', 'Pending provisions by BU, vendor and month, with escalation level and 0-30 / 31-60 / 61-90 / over 90 buckets', 'GPA, managers, CFR'],
+    ['pva', 'Provision vs actual mapping', 'Month\'s knock-off of invoices against provisions, by segment (B2B, B2C, TOCO); for audit sampling', 'GPA, Audit'],
+    ['dept', 'Department summary', 'Provisions by department', 'Business finance'],
+    ['vendor', 'Vendor summary', 'Provisions by vendor', 'Business finance, GPA'],
+    ['trend', 'Monthly trend', 'Provision and actualization trend by month', 'Finance'],
+    ['audit', 'Audit trail', 'Every action, approval, override, force match and posting with user and time', 'Audit'],
+    ['sugg', 'Matching suggestions', 'Nearest-match candidates with force match and force closure options', 'GPA, P2P'],
+    ['unmatched', 'Unmatched invoices', 'Invoices not matched to any provision', 'GPA, P2P'],
+    ['pminfra', 'Exception: PM Infra invoices', 'Invoices uploaded that failed validation or are not approved', 'P2P, GPA'],
+    ['lease', 'Exception: leases on hold', 'Leases scheduled for payment but on hold', 'P2P, GPA'],
+    ['excess', 'Excess and under provision', 'Provision vs invoice match: settled, open, excess and under-provision (ERP report enhancement)', 'GPA, Finance'],
+    ['nearest', 'Nearest match value', 'Nearest match value between provision and actualization, by URN (ERP report enhancement)', 'GPA'],
+    ['portal-erp', 'Portal vs ERP reconciliation', 'ERP invoice and journal data created by the portal against all ERP data, including direct invoices', 'GPA, P2P, IT']
+  ];
+  var cards = UI.cards({ cols: 3, items: reports.map(function (r) { return { left: true, icon: 'report', title: r[1], text: UI.esc(r[2]), meta: ['For: ' + r[3]], go: 'pa-18?state=' + r[0], active: S === r[0] }; }) });
+  var pick = reports.filter(function (r) { return r[0] === S; })[0];
+  var view = '';
+  if (pick) {
+    var body;
+    if (S === 'portal-erp') body = UI.table({ dense: true, columns: [{ key: 'd', label: 'Document' }, { key: 'src', label: 'Created by' }, { key: 'p', label: 'On portal' }, { key: 'e', label: 'In Oracle' }, { key: 'r', label: 'Result' }],
+      rows: [{ d: 'Journal GL-26-0930071 (TOCO rent, Sep-26)', src: 'Portal', p: 'Rs 38,42,500.00', e: 'Rs 38,42,500.00', r: UI.result('pass', 'Matched') },
+        { d: 'Journal GL-26-0930118 (actualization)', src: 'Portal', p: 'Rs 34,12,000.00', e: 'Rs 34,12,000.00', r: UI.result('pass', 'Matched') },
+        { d: 'AP invoice 98112047 (Vertex Call Solutions)', src: 'Direct in Oracle', p: 'Not on portal', e: 'Rs 4,12,000.00', r: UI.result('warn', 'ERP only') },
+        { d: 'Journal NPP-26-09-0118', src: 'Portal', p: 'Rs 21,40,000.00', e: 'Rejected (EM29)', r: UI.result('fail', 'Mismatch') }] });
+    else if (S === 'ageing') body = UI.table({ dense: true, columns: [{ key: 'bu', label: 'BU' }, { key: 'v', label: 'Vendor' }, { key: 'b1', label: '0-30', num: true }, { key: 'b2', label: '31-60', num: true }, { key: 'b3', label: '61-90', num: true }, { key: 'b4', label: 'Over 90', num: true }, { key: 'e', label: 'Escalation' }],
+      rows: [{ bu: '131', v: 'Vertex Call Solutions', b1: '21,40,000', b2: '-', b3: '-', b4: '20,75,000', e: 'Business user' }, { bu: '141', v: 'Vertex Call Solutions', b1: '-', b2: '-', b3: '-', b4: '19,50,000', e: 'Manager' }, { bu: '141', v: 'Prism Power Systems', b1: '-', b2: '-', b3: '-', b4: '7,60,000', e: 'CFR (on hold)' }, { bu: '111', v: 'Nxtra Data', b1: '-', b2: '-', b3: '-', b4: '18,00,000', e: 'Business user' }] });
+    else body = UI.table({ dense: true, columns: [{ key: 'u', label: 'URN' }, { key: 'v', label: 'Vendor' }, { key: 'm', label: 'Month' }, { key: 'a', label: 'Provision (Rs)', num: true, money: true }, { key: 'b', label: 'Balance (Rs)', num: true, money: true }, { key: 's', label: 'Status' }],
+      rows: PA.provisions.slice(0, 6).map(function (p) { return { u: '<span class="k-urn">' + p.urn + '</span>', v: UI.esc(p.vendor), m: p.month, a: p.amount, b: p.balance, s: UI.status(p.status, PA.statusTone(p.status)) }; }) });
+    view = UI.section({ title: pick[1], sub: pick[2], body: [UI.filters({ items: [UI.field({ label: 'From', type: 'date', value: '01/04/2026' }), UI.field({ label: 'To', type: 'date', value: '30/09/2026' }), UI.field({ label: 'BU', type: 'select', value: 'All in scope' }), UI.field({ label: 'Ledger balance basis', type: 'select', value: 'Platform open balance' })], actions: [UI.button({ label: 'Generate report', variant: 'primary', toast: 'Report generated' })] }), body] });
+  }
+  Page.render({
+    id: 'pa-18', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
+    states: [{ id: 'ageing', label: 'Ageing report' }, { id: 'pva', label: 'Provision vs actual' }, { id: 'portal-erp', label: 'Portal vs ERP' }],
+    html: UI.page({ title: 'Reports', sub: 'Operational reports, ERP report enhancements and the Portal vs ERP reconciliation. Each report states whether it shows the platform open balance or the Oracle ledger balance.' }) + view + (view ? '<div class="k-gap"></div>' : '') + cards
+  });
+})();
+</script>
+</body>
+</html>

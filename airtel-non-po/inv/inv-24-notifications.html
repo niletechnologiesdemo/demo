@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notifications - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  /* Notifications whenever an action is needed or a status changes (HLD 5.10). Each is also sent by email. */
+  var R = INV.role('vendor'), partner = INV.isPartner(R);
+  var items = partner ? [
+    { icon: 'doc', title: 'Information requested: NPO-2627-004790', text: 'Invoice period is not shown on the invoice copy - upload a corrected copy', meta: '26-Sep 14:20', unread: true, go: 'inv-10?state=respond', t: 'Information request' },
+    { icon: 'hold', title: 'On hold: NPO-2627-004733', text: 'Locator inactive for 2 of 6 sites - the circle team is arranging the locators', meta: '24-Sep 12:00', unread: true, go: INV.detail('NPO-2627-004733'), t: 'Hold' },
+    { icon: 'check', title: 'Submitted: NPO-2627-004822', text: 'SGIS/26-27/0421 - Local ToCo - Rs 1,56,468.00', meta: '29-Sep 11:02', go: INV.detail('NPO-2627-004822'), t: 'Submission' },
+    { icon: 'x', title: 'Rejected: NPO-2627-004610', text: 'Duplicate of NPO-2627-004598', meta: '15-Sep 16:40', go: INV.detail('NPO-2627-004610'), t: 'Rejection' },
+    { icon: 'rupee', title: 'Paid: NPO-2627-004102', text: 'Rs 2,06,500.00 less TDS - UTR N2408261187', meta: '28-Aug 18:00', go: INV.detail('NPO-2627-004102'), t: 'Payment' }]
+  : [
+    { icon: 'bell', title: 'New submission: NPO-2627-004864 (LL_EB, Goa)', text: 'Submitted by the partner - same alert as the PO portal, replacing the QMT ticket mail', meta: '30-Sep 16:20', unread: true, go: INV.review('NPO-2627-004864'), t: 'Central team alert' },
+    { icon: 'clock', title: 'SLA breached: NPO-2627-004806 (Diesel Knock off)', text: 'Escalated to the AP team (L1)', meta: '01-Oct 09:00', unread: true, go: INV.review('NPO-2627-004806'), t: 'Escalation' },
+    { icon: 'alert', title: 'Oracle rejected NPO-2627-004863 at AP import', text: 'Vendor site KANPUR-DG inactive - hourly error report 11:00', meta: '01-Oct 11:05', unread: true, go: 'inv-18?state=error', t: 'Booking failure' },
+    { icon: 'check', title: 'Approval needed: NPO-2627-004860 (SecureOne Facility Services)', text: 'Others - Rs 5,72,300.00 - DOA level 1 of 2', meta: '30-Sep 10:15', unread: true, go: 'inv-17-approval-review.html?ref=NPO-2627-004860', t: 'Approval' },
+    { icon: 'map', title: 'Locator inactive on NPO-2627-004702', text: '3 of 51 lines - whole invoice withheld', meta: '22-Sep 09:30', go: 'inv-15', t: 'Exception' },
+    { icon: 'send', title: 'Resubmitted after RFI: NPO-2627-004790', text: 'Corrected copy uploaded by the partner', meta: '01-Oct 10:05', go: INV.review('NPO-2627-004790'), t: 'Resubmission' }];
+  Page.render({
+    id: 'inv-24', roleId: 'vendor', stat: 'overall',
+    html: UI.page({ title: 'Notifications', sub: partner ? 'Status changes and requests on your invoices. Each is also sent to your registered email.' : 'Submissions, exceptions, approvals, escalations and booking failures. Each is also sent by email.' }) +
+      UI.filters({ show: false, items: [UI.field({ label: 'Type', type: 'select', value: 'All types' }), UI.field({ label: 'Show', type: 'select', value: 'Unread first' })], actions: [UI.textlink({ label: 'Mark all as read', icon: 'check', toast: 'All marked as read' })] }) +
+      UI.list({ items: items.map(function (i) { return { icon: i.icon, title: i.title, text: i.text + ' &middot; <span class="k-muted">' + i.t + '</span>', meta: i.meta, unread: i.unread, go: i.go }; }) }) +
+      UI.section({ title: 'Email settings', collapsible: true, collapsed: true, body: [UI.options({ label: 'Email me for', type: 'check', items: partner ? [{ label: 'Information requests', on: true }, { label: 'Holds and rejections', on: true }, { label: 'Status changes', on: true }, { label: 'Payments', on: true }]
+        : [{ label: 'New submissions in my circles', on: true }, { label: 'Approvals', on: true }, { label: 'Escalations', on: true }, { label: 'Booking failures', on: true }] })] })
+  });
+})();
+</script>
+</body>
+</html>
