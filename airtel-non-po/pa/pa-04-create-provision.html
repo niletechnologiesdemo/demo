@@ -19,8 +19,8 @@
   var rule = scen !== 1;
   var vcode = scen === 1 ? '410022' : scen === 2 ? '410387' : scen === 4 ? '410387' : '410455';
   var vend = PA.vendors[vcode];
-  var bu = cfr ? '161' : '131', buName = cfr ? 'Mobile - Telangana (new BU)' : 'Mobile - Karnataka';
-  var amount = scen === 1 ? 492000 : scen === 2 ? 1500000 : scen === 4 ? 1008000 : 110;
+  var bu = cfr ? '161' : dup ? '111' : '131', buName = cfr ? 'Mobile - Telangana (new BU)' : dup ? 'Mobile - Delhi' : 'Mobile - Karnataka';
+  var amount = scen === 1 ? (dup ? 485000 : 492000) : scen === 2 ? 1500000 : scen === 4 ? 1008000 : 110;
 
   // Activity master decides scenario, route and reversal mode: one summary line, not separate fields
   var actLine = 'S' + act.scenario + ' ' + UI.esc(PA.scenarios[act.scenario]) + ' &middot; ' +
@@ -79,8 +79,8 @@
 
   var checks = '';
   if (err) checks = UI.alert({ tone: 'red', title: '2 issues stop this provision.', text: 'Item code SECURITY09 does not exist; attachment missing.' });
-  else if (dup) checks = UI.alert({ tone: 'warn', title: 'Potential duplicate.', text: 'Same vendor, item and amount as 131·410022·SECURITY001·AUG-26. Give a reason to continue.', actions: [UI.button({ label: 'Override with reason', size: 'sm', modal: 'override' })] }) +
-    UI.alert({ tone: 'red', title: 'Exact duplicate blocked.', text: 'A provision for BU 131, vendor 410022, item SECURITY001 and SEP-26 was submitted on 30-Sep-2026.' });
+  else if (dup) checks = UI.alert({ tone: 'warn', title: 'Potential duplicate.', text: 'Same vendor, item and amount as 111·410022·SECURITY001·AUG-26. Give a reason to continue.', actions: [UI.button({ label: 'Override with reason', size: 'sm', modal: 'override' })] }) +
+    UI.alert({ tone: 'red', title: 'Exact duplicate blocked.', text: 'PRV-26-10412 (BU 111, vendor 410022, item SECURITY001, SEP-26) was submitted on 30-Sep-2026.' });
   else if (cfr) checks = UI.alert({ tone: 'warn', title: 'Routed to CFR approval.', text: 'BU 161 is new for this activity. Add remarks for CFR; the DOA approvers follow.' });
   else if (ret) checks = UI.alert({ tone: 'red', title: 'Returned by B0CHK155 (approver 1 of 2) on 30-Sep-2026.', text: 'Attach the retainer agreement; amount differs from the agreed monthly fee.' });
   else if (ok) checks = UI.alert({ tone: 'ok', title: 'All checks passed.', text: '2 approvers from DOA: B0CHK155, then B0CHK090.' });
