@@ -35,7 +35,7 @@
       { m: 'Charge-on with 11% markup (S12)', k: 'BAL Mobile 79% &middot; Homes 6% &middot; AB 7% &middot; BHL Mobile 6% &middot; DTH 2%', e: '01-Apr-2026', o: 'CFR', _acts: ['edit', 'history'] },
       { m: 'MSC for Nxtra - BU split', k: 'BU percentage master', e: '01-Jul-2026', o: 'B2B team', _acts: ['edit', 'history'] }] });
 
-  var pbr = UI.grid(3, [UI.field({ label: 'PBR window (months)', value: '13', src: 'green' }), UI.field({ label: 'Effective from', type: 'date', value: '01/04/2026' }), UI.field({ label: 'Maintained by', type: 'readonly', value: 'GPA team' }),
+  var pbr = UI.grid(3, [UI.field({ label: 'PBR window (months)', value: '13', src: 'user' }), UI.field({ label: 'Effective from', type: 'date', value: '01/04/2026' }), UI.field({ label: 'Maintained by', type: 'readonly', value: 'GPA team' }),
     UI.options({ label: 'Excluded from reversal', type: 'check', items: [{ label: 'Provisions on hold', on: true }, { label: 'Government vendor provisions', on: true }] }),
     UI.options({ label: 'Hold needs CFR approval', type: 'check', items: [{ label: 'As per PBR policy mapping', on: true }] }),
     UI.field({ label: 'Escalation thresholds (days)', value: '90 / 180 / 270 / 365' })]);
@@ -68,7 +68,7 @@
         { id: 'alloc', label: 'Allocation %', body: [alloc] }, { id: 'pbr', label: 'PBR & escalation', body: [pbr] },
         { id: 'reclass', label: 'BU reclass mapping', body: [reclass] }, { id: 'dn', label: 'TOCO DN master', body: [dnm] },
         { id: 'vtm', label: 'VTM subscribers', body: [UI.p('AIO updates subscriber counts; provision = subscriber count x average penalty % of the last 12 months.', { muted: true }), vtm] },
-        { id: 'erp', label: 'Synced from ERP', body: [UI.p('Read-only on the platform. New OUs and BUs created in Oracle sync automatically.', { muted: true }), erp] }] }) + edit
+        { id: 'erp', label: 'Synced from ERP', body: [UI.p('Read-only on the platform. New OUs and BUs created in Oracle sync automatically.', { muted: true }), erp, UI.tbc('If the DOA API is not provided, an approval matrix is set up and maintained in the portal')] }] }) + edit
   });
 })();
 </script>

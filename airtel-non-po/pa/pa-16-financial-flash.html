@@ -25,9 +25,9 @@
   var tot = lines.reduce(function (a, r) { return { tb: a.tb + r.tb, prov: a.prov + r.prov, rev: a.rev + r.rev, adj: a.adj + r.adj }; }, { tb: 0, prov: 0, rev: 0, adj: 0 });
   var table = UI.table({ dense: true, pager: false, columns: [{ key: 'l', label: 'FSG line' }, { key: 'tb', label: 'Aug-26 closing TB (Rs lakh)', num: true }, { key: 'prov', label: '+ Provisions', num: true }, { key: 'rev', label: '- Reversals', num: true }, { key: 'adj', label: '+/- Adjustments', num: true }, { key: 'tot', label: 'Running (Rs lakh)', num: true }],
     rows: rows, foot: { l: 'Total operating expenses', tb: UI.inr(tot.tb, 1), prov: UI.inr(tot.prov, 1), rev: UI.inr(tot.rev, 1), adj: UI.inr(tot.adj, 1), tot: UI.inr(tot.tb + tot.prov + tot.rev + tot.adj, 1) } });
-  var drillT = drill ? UI.section({ title: 'Admin and facilities - platform entries this month', body: [UI.table({ dense: true, pager: false, columns: [{ key: 'u', label: 'URN' }, { key: 't', label: 'Entry' }, { key: 'a', label: 'Rs lakh', num: true }, { key: 's', label: 'Status' }],
-    rows: [{ u: '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent('111·410022·SECURITY001·SEP-26') + '">111·410022·SECURITY001·SEP-26</a>', t: 'Provision', a: '4.9', s: UI.status('Submitted') },
-      { u: '<span class="k-urn">151·410022·SECURITY001·SEP-26</span>', t: 'Provision', a: '4.0', s: UI.status('Submitted') },
+  var drillT = drill ? UI.section({ title: 'Admin and facilities - platform entries this month', body: [UI.table({ dense: true, pager: false, columns: [{ key: 'u', label: 'URN or reference' }, { key: 't', label: 'Entry' }, { key: 'a', label: 'Rs lakh', num: true }, { key: 's', label: 'Status' }],
+    rows: [{ u: '<a class="k-link" href="pa-09-provision-detail.html?urn=PRV-26-10412">PRV-26-10412</a>', t: 'Provision', a: '4.9', s: UI.status('Submitted') },
+      { u: '<a class="k-link" href="pa-09-provision-detail.html?urn=PRV-26-10431">PRV-26-10431</a>', t: 'Provision', a: '4.0', s: UI.status('Submitted') },
       { u: '<span class="k-urn">121·410022·SECURITY001·AUG-25</span>', t: 'PBR reversal', a: '-4.1', s: UI.status('Reversed', 'grey') }] })] }) : '';
 
   Page.render({

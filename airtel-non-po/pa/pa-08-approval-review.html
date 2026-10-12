@@ -14,27 +14,33 @@
 (function () {
   var S = Page.state();
   var isCfr = /cfr|closure|reversal|hold/.test(S);
+  // ref = new provision awaiting approval (no URN yet); urn = request about an approved provision (CFR actions)
   var T = {
-    '':        { req: 'APR-26-00981', type: 'New provision', urn: '111·410022·SECURITY001·SEP-26', act: 'ACT-0001 Security services - offices', vendor: 'SecureOne Facility Services Pvt Ltd (410022)', bu: '111 Mobile - Delhi', amount: 485000, maker: 'B0MKR412', who: 'Manager (checker)' },
-    s2:        { req: 'APR-26-00955', type: 'Rule-based provision (scenario 2)', urn: '100·410387·NSGSUP011·SEP-26', act: 'ACT-0040 NSG network support - circle split', vendor: 'Prism Power Systems Pvt Ltd (410387)', bu: 'Consolidated (100)', amount: 1500000, maker: 'B0BFN017', who: 'Manager (checker)' },
-    bulk:      { req: 'APR-26-00962', type: 'Bulk upload - 42 lines', urn: 'Batch BLK-26-0412', act: 'ACT-0014 DG AMC - network sites', vendor: 'Prism Power Systems Pvt Ltd (410387)', bu: '121 Mobile - UP East (42 sites)', amount: 52920000, maker: 'B0MKR519', who: 'Manager (checker)' },
-    cfr:       { req: 'CFR-26-0117', type: 'New BU for activity - CFR approval', urn: '161·410022·SECURITY001·SEP-26', act: 'ACT-0001 Security services - offices', vendor: 'SecureOne Facility Services Pvt Ltd (410022)', bu: '161 Mobile - Telangana (first use)', amount: 312000, maker: 'B0MKR412', who: 'CFR' },
-    closure:   { req: 'CFR-26-0114', type: 'Force closure - CFR approval', urn: '131·410612·LEGAL007·FEB-26', act: 'ACT-0031 Legal retainer', vendor: 'Lexwise Legal LLP (410612)', bu: '131 Mobile - Karnataka', amount: 300000, maker: 'B0GPA204', who: 'CFR' },
-    reversal:  { req: 'CFR-26-0112', type: 'Force reversal (disputed) - CFR approval', urn: '121·410455·CCSVC002·APR-26', act: 'ACT-0022 Call centre services', vendor: 'Vertex Call Solutions Ltd (410455)', bu: '121 Mobile - UP East', amount: 1980000, maker: 'B0GPA204', who: 'CFR' },
-    hold:      { req: 'CFR-26-0109', type: 'Hold - exclude from PBR reversal', urn: '141·410387·AMCDG004·JAN-26', act: 'ACT-0014 DG AMC - network sites', vendor: 'Prism Power Systems Pvt Ltd (410387)', bu: '141 Mobile - Maharashtra', amount: 760000, maker: 'B0GPA204', who: 'CFR' }
+    '':        { req: 'APR-26-00981', type: 'New provision', ref: 'PRV-26-10412', act: 'ACT-0001 Security services - offices', vendor: 'SecureOne Facility Services Pvt Ltd (410022)', bu: '111 Mobile - Delhi', amount: 485000, maker: 'B0MKR412', who: 'Approver (DOA)', chain: ['B0CHK155 (you)', 'B0CHK090'] },
+    s2:        { req: 'APR-26-00955', type: 'Rule-based provision (scenario 2)', ref: 'PRV-26-10359', act: 'ACT-0040 NSG network support - circle split', vendor: 'Prism Power Systems Pvt Ltd (410387)', bu: 'Consolidated (100)', amount: 1500000, maker: 'B0BFN017', who: 'Approver (DOA)', chain: ['B0CHK155 (you)', 'B0CHK090', 'B0CFO012'] },
+    bulk:      { req: 'BLK-26-0412', type: 'Bulk upload - 44 provisions, each approved separately', ref: '44 provisions', act: 'ACT-0014 DG AMC - network sites', vendor: 'Prism Power Systems Pvt Ltd (410387)', bu: '121 to 125 (44 sites)', amount: 52920000, maker: 'B0MKR519', who: 'Approver (DOA)', chain: ['B0CHK155 (you, as delegate for B0CHK201)', 'B0CHK090'] },
+    cfr:       { req: 'CFR-26-0117', type: 'New BU for activity - CFR approval', ref: 'PRV-26-10419', act: 'ACT-0001 Security services - offices', vendor: 'SecureOne Facility Services Pvt Ltd (410022)', bu: '161 Mobile - Telangana (first use)', amount: 312000, maker: 'B0MKR412', who: 'CFR', chain: ['CFR (you)', 'B0CHK155', 'B0CHK090'] },
+    closure:   { req: 'CFR-26-0114', type: 'Force closure - CFR approval', urn: '131·410612·LEGAL007·FEB-26', act: 'ACT-0031 Legal retainer', vendor: 'Lexwise Legal LLP (410612)', bu: '131 Mobile - Karnataka', amount: 300000, maker: 'B0GPA204', who: 'CFR', chain: ['CFR (you)'] },
+    reversal:  { req: 'CFR-26-0112', type: 'Force reversal (disputed) - CFR approval', urn: '121·410455·CCSVC002·APR-26', act: 'ACT-0022 Call centre services', vendor: 'Vertex Call Solutions Ltd (410455)', bu: '121 Mobile - UP East', amount: 1980000, maker: 'B0GPA204', who: 'CFR', chain: ['CFR (you)'] },
+    hold:      { req: 'CFR-26-0109', type: 'Hold - exclude from PBR reversal', urn: '141·410387·AMCDG004·JAN-26', act: 'ACT-0014 DG AMC - network sites', vendor: 'Prism Power Systems Pvt Ltd (410387)', bu: '141 Mobile - Maharashtra', amount: 760000, maker: 'B0GPA204', who: 'CFR', chain: ['CFR (you)'] }
   };
-  var t = T[S] || T[''], done = S === 'approved';
+  var t = T[S] || T[''], done = S === 'approved', bulk = S === 'bulk';
   if (done) t = T[''];
+  var route = t.chain.map(function (c, i) { return (i + 1) + '. ' + c; }).join(', then ');
 
-  var summary = UI.kv({ cols: 2, items: [['Request', t.req + ' &middot; ' + UI.esc(t.type)], ['URN', '<span class="k-urn">' + UI.esc(t.urn) + '</span>'], ['Activity', UI.esc(t.act)], ['Vendor', UI.esc(t.vendor)], ['BU', UI.esc(t.bu)], ['Amount', 'Rs ' + UI.inr(t.amount, 2)], ['Raised by', t.maker + ' on 30-Sep-2026'], ['Approval route', isCfr ? 'CFR, then checker where applicable' : 'Maker-checker (HRMS / DOA)']] });
+  var summary = UI.kv({ cols: 2, items: [['Request', t.req + ' &middot; ' + UI.esc(t.type)],
+    t.urn ? ['URN', '<span class="k-urn">' + UI.esc(t.urn) + '</span>'] : ['Reference', UI.esc(t.ref) + ' <span class="k-muted">(URN after approval)</span>'],
+    ['Activity', UI.esc(t.act)], ['Vendor', UI.esc(t.vendor)], ['BU', UI.esc(t.bu)], ['Amount', 'Rs ' + UI.inr(t.amount, 2)], ['Raised by', t.maker + ' on 30-Sep-2026'],
+    ['Approvers', bulk ? 'Returned by DOA for each provision' : route]] });
 
   var specific = '';
   if (S === 's2') specific = UI.section({ title: 'Calculation (scenario 2)', body: [UI.table({ pager: false, export: false, columns: [{ key: 'c', label: 'Circle' }, { key: 'p', label: 'Share %', num: true }, { key: 'a', label: 'Expense (Rs)', num: true, money: true }],
     rows: [{ c: '111 Delhi', p: '40.00', a: 600000 }, { c: '171 Orissa', p: '20.00', a: 300000 }, { c: '181 Punjab', p: '25.00', a: 375000 }, { c: '191 Haryana', p: '15.00', a: 225000 }], foot: { c: 'Consolidated liability', p: '100.00', a: 1500000 } })] });
-  if (S === 'bulk') specific = UI.section({ title: 'Batch lines', body: [UI.kv({ cols: 3, items: [['Lines', '42'], ['Valid', '42'], ['Potential duplicates', '1 (override reason given)']] }),
-    UI.table({ pager: false, export: false, dense: true, columns: [{ key: 'l', label: 'Line' }, { key: 'u', label: 'URN' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }, { key: 'n', label: 'Check' }],
-      rows: [{ l: 1, u: '<span class="k-urn wrap-any">121·410387·AMCDG004·SEP-26</span>', a: 1260000, n: 'Valid' }, { l: 2, u: '<span class="k-urn wrap-any">122·410387·AMCDG004·SEP-26</span>', a: 1310000, n: 'Valid' }, { l: 3, u: '<span class="k-urn wrap-any">123·410387·AMCDG004·SEP-26</span>', a: 1255000, n: UI.status('Potential duplicate - override logged') }] }),
-    UI.textlink({ label: 'Download all 42 lines', icon: 'download', toast: 'Excel download started' })] });
+  if (bulk) specific = UI.section({ title: 'Provisions in this upload', body: [UI.kv({ cols: 3, items: [['Provisions', '44'], ['Routed to you', '44 (as delegate for B0CHK201)'], ['Potential duplicates', '1 (override reason given)']] }),
+    UI.table({ pager: false, export: false, dense: true, select: true, columns: [{ key: 'r', label: 'Reference' }, { key: 'b', label: 'BU' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }, { key: 'n', label: 'Check' }],
+      rows: [{ r: 'PRV-26-10440', b: '121', a: 1260000, n: 'Valid', _checked: true }, { r: 'PRV-26-10441', b: '122', a: 1310000, n: 'Valid', _checked: true }, { r: 'PRV-26-10442', b: '125', a: 1255000, n: UI.status('Potential duplicate') + '<div class="k-small">Override reason given</div>' }] }),
+    UI.textlink({ label: 'Download all 44 provisions', icon: 'download', toast: 'Excel download started' }),
+    UI.note({ text: 'Each provision is a separate approval record with its own DOA approvers and its own URN. Approving several at once records a decision on each selected provision.' })] });
   if (S === 'cfr') specific = UI.section({ title: 'Why this needs CFR', body: [UI.alert({ tone: 'warn', title: 'First use of BU 161 for this activity.', text: 'New provisions, or any new GL account, BU or OU, go to CFR for approval with remarks.' }),
     UI.kv({ cols: 1, items: [['Maker remarks', 'New Hyderabad office opened 15-Sep-2026; guarding contract extended to the new site at the same rate.']] })] });
   if (S === 'closure') specific = UI.section({ title: 'Force closure', body: [UI.kv({ cols: 2, items: [['Reason', 'Matter withdrawn - no invoice expected'], ['Open since', '01-Feb-2026 (243 days)'], ['P&L impact', 'Rs 3,00,000.00 written back (expense credit)'], ['Evidence', 'Email from Legal, 22-Sep-2026']] }),
@@ -49,29 +55,32 @@
     { check: 'RPT identification', source: 'Vendor RPT flag, BU vs legal entity', result: 'pass', resultText: 'Non-RPT' },
     { check: 'GL period open', source: 'Oracle GL period status', result: 'pass', resultText: 'SEP-26 open' },
     { check: 'Duplicate check', source: 'Vendor, month, item, amount, reference', result: S === 'bulk' ? 'warn' : 'pass', resultText: S === 'bulk' ? '1 potential' : 'None' },
-    { check: 'Self-approval', source: 'Maker vs approver', result: 'pass', resultText: 'Different users' }] })] });
+    { check: 'Self-approval', source: 'Maker vs approver', result: 'pass', resultText: 'Different users' },
+    { check: 'DOA approvers', source: 'DOA API', result: 'pass', resultText: bulk ? 'Returned for each provision' : t.chain.length + ' returned' }] })] });
 
   var history = UI.section({ title: 'History', collapsible: true, collapsed: true, body: [UI.timeline({ columns: ['Step', 'Date', 'By', 'Remarks'], rows: [
     { status: 'Created', state: 'done', date: '30-Sep-2026 16:30', action: t.maker }, { status: 'Submitted', state: 'done', date: '30-Sep-2026 16:42', action: t.maker },
-    { status: 'Waiting for ' + t.who, state: 'current', date: '', action: '' }] })] });
+    { status: 'DOA approvers returned', state: 'done', date: '30-Sep-2026 16:42', action: 'DOA API', reason: bulk ? 'For each provision' : route }]
+    .concat(t.chain.map(function (c, i) { return { status: 'Approver ' + (i + 1) + ' of ' + t.chain.length, state: i ? 'pending' : 'current', action: c }; }))
+    .concat(t.urn ? [] : [{ status: 'URN generated', state: 'pending', reason: 'After the last approval' }]) })] });
 
   var doc = UI.docMock({ title: S === 'closure' ? 'EMAIL - LEGAL DEPARTMENT' : 'SERVICE CONTRACT', fields: [['Party', t.vendor.split(' (')[0]], ['Ref', 'SC/2026/' + t.req.slice(-4)], ['Term', '01-Apr-2026 to 31-Mar-2027'], ['Monthly value', 'Rs ' + UI.inr(t.amount, 2)]],
     lines: [['Guarding services - offices', '998525', '1', UI.inr(t.amount, 2), UI.inr(t.amount, 2)]], stamp: 'AIRTEL' });
 
   var actions = '<div class="k-review-actions">' + UI.btns([
-    UI.button({ label: 'Return to maker', modal: 'return' }), UI.button({ label: 'Reject', modal: 'reject' }),
-    UI.button({ label: isCfr ? 'Approve (CFR)' : 'Approve', variant: 'primary', state: 'approved' })], { end: true }) + '</div>';
+    UI.button({ label: bulk ? 'Return selected' : 'Return to maker', modal: 'return' }), UI.button({ label: bulk ? 'Reject selected' : 'Reject', modal: 'reject' }),
+    UI.button({ label: isCfr ? 'Approve (CFR)' : bulk ? 'Approve selected' : 'Approve', variant: 'primary', state: 'approved' })], { end: true }) + '</div>';
 
   var modals = UI.modal({ id: 'return', title: 'Return to', accent: 'Maker', size: 'narrow', body: [UI.field({ label: 'Reason (shown to the maker)', type: 'area', required: true, placeholder: 'What should the maker correct?' })],
       foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Return', variant: 'primary', close: true, toast: 'Returned to maker with your reason' })] }) +
     UI.modal({ id: 'reject', title: 'Reject', accent: 'Provision', size: 'narrow', body: [UI.field({ label: 'Reason', type: 'area', required: true }), UI.p('The maker can correct and resubmit a returned provision; a rejected one is closed.', { muted: true, small: true })],
       foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Reject', variant: 'primary', close: true, toast: 'Rejected' })] }) +
-    UI.modal({ id: 'done', open: done, title: 'Provision', accent: 'Approved', size: 'narrow', body: [UI.kv({ cols: 2, items: [['URN', '<span class="k-urn">' + T[''].urn + '</span>'], ['Status', UI.status('Approved')], ['Next', 'Journal sent to Oracle GL interface; GPA manager posts it'], ['Notified', 'Maker B0MKR412']] })],
+    UI.modal({ id: 'done', open: done, title: 'Approval', accent: 'Recorded', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Your decision', UI.status('Approved', 'ok')], ['Next approver', 'B0CHK090 (2 of 2)'], ['URN', 'Generated after the last approval'], ['Notified', 'Maker B0MKR412']] })],
       foot: [UI.button({ label: 'Back to inbox', variant: 'primary', go: 'pa-07' })] });
 
   Page.render({
     id: 'pa-08', user: isCfr ? 'B0CFR007' : 'B0CHK155', role: t.who, viewAs: t.who, navKey: 'pa-07',
-    states: [{ id: 's2', label: 'Rule-based (S2)' }, { id: 'bulk', label: 'Bulk batch' }, { id: 'cfr', label: 'CFR - new BU' }, { id: 'closure', label: 'CFR - force closure' }, { id: 'reversal', label: 'CFR - force reversal' }, { id: 'hold', label: 'CFR - hold' }, { id: 'approved', label: 'Approved' }],
+    states: [{ id: 's2', label: 'Rule-based (S2)' }, { id: 'bulk', label: 'Bulk upload' }, { id: 'cfr', label: 'CFR - new BU' }, { id: 'closure', label: 'CFR - force closure' }, { id: 'reversal', label: 'CFR - force reversal' }, { id: 'hold', label: 'CFR - hold' }, { id: 'approved', label: 'Approved' }],
     html: UI.page({ title: 'Review', accent: 'Provision', crumb: '<a data-go="pa-07">Approvals inbox</a> &rsaquo; ' + t.req, sub: UI.esc(t.type) }) +
       UI.split({ left: [UI.section({ title: 'Provision', body: [summary] }), specific, checks, history],
         right: [UI.pdf({ selected: S === 'closure' ? 'Email from Legal (PDF)' : 'Service contract (PDF)', count: 'Page 1 of 3', doc: doc }), actions] }) + modals

@@ -14,10 +14,7 @@
 (function () {
   var S = Page.state(), bulk = S === 'bulk' || S === 'attach', R = INV.role('vendor'), rid = R.id, partner = INV.isPartner(R);
   // which families a role sees: partners only their own categories; Airtel users all; Tax team its debit notes
-  var allow = {
-    vendor: ['local-toco', 'bw-dom', 'll-eb', 'diesel', 'rush', 'advance', 'legal', 'others', 'credit'],
-    toco: ['central-toco'], landlord: ['ll-gst'], tax: ['gst-dn', 'gst-rev']
-  }[rid];
+  var allow = partner ? INV.PARTNER_CATS[rid] : rid === 'tax' ? ['gst-dn', 'gst-rev'] : null;
   var ICON = { PM: 'tower', AP: 'invoice', DN: 'minus' };
   var ok = function (c) { return !allow || allow.indexOf(c.id) >= 0; };
 
@@ -55,6 +52,7 @@
   Page.render({
     id: 'inv-03', roleId: 'vendor', states: [{ id: 'bulk', label: 'Bulk upload mode' }, { id: 'attach', label: 'Bulk attachments mode' }],
     html: UI.page({ title: 'Submit', accent: 'Invoice', sub: 'Select the invoice category and sub-category. The category decides the form or template, the mandatory fields and documents, the approval route and the SLA.' }) +
+      (rid === 'vendor' ? UI.tbc("AP categories are submitted by Airtel users on the vendor's behalf; to be confirmed by Airtel (BRD Step 1 has vendors submitting every category)") : '') +
       UI.steps({ items: [{ label: 'Choose category', sub: 'Family and sub-category', state: 'current' }, { label: 'Fill the form or template', sub: 'Master data filled for you' }, { label: 'Validate', sub: 'Pre-checks before submission' }, { label: 'Submit', sub: 'Reference number issued' }] }) +
       '<div class="k-gap"></div>' + onBehalf + mode +
       (rid === 'landlord' ? UI.alert({ tone: 'info', title: 'Landlords submit GST invoices on rent already paid.', text: 'Choose the lease and the paid rent voucher; one voucher per GST invoice.', actions: [UI.textlink({ label: 'My leases & rent vouchers', icon: 'arrowRight', go: 'inv-12' })] }) : '') +

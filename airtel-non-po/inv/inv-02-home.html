@@ -17,14 +17,12 @@
   var S = Page.state(), R = INV.role('vendor'), rid = R.id, html;
 
   if (INV.isPartner(R)) {
-    var code = rid === 'toco' ? '412885' : rid === 'landlord' ? '700845' : '600124';
-    var rows = S === 'empty' ? [] : INV.mine(code);
-    var action = rows.filter(function (r) { return r.status === 'RFI' || r.status === 'Hold'; });
+    var rows = S === 'empty' ? [] : INV.mine(INV.partnerCode(R));
+    var action = rows.filter(function (r) { return r.status === 'RFI'; });
     var banner = action.length ? UI.alert({ tone: 'red', title: action.length + (action.length > 1 ? ' invoices need' : ' invoice needs') + ' your action.',
-      text: action.map(function (r) { return UI.esc(r.ref) + ' - ' + (r.status === 'RFI' ? 'information requested' : 'on hold') + ': ' + UI.esc(r.reason); }).join('<br>'),
+      text: action.map(function (r) { return UI.esc(r.ref) + ' - information requested: ' + UI.esc(r.reason); }).join('<br>'),
       actions: [UI.textlink({ label: 'Respond', icon: 'arrowRight', go: 'inv-10' })] }) : '';
     if (rid === 'landlord' && S !== 'empty') banner += UI.alert({ tone: 'info', title: 'Rent paid, GST not yet claimed:', text: 'voucher 716902 (Hinjewadi Phase 2 site, Jul-2026 to Sep-2026 quarter, Rs 54,000.00).', actions: [UI.textlink({ label: 'Submit GST invoice', icon: 'arrowRight', go: 'inv-06' })] });
-    var kpi = UI.kpis({ cols: 8, items: INV.buckets(rows).map(function (b) { return { value: String(b.n), label: b.label, go: 'inv-09?state=' + b.key }; }) });
 
     var table = UI.table({
       dense: true,
@@ -50,14 +48,14 @@
         rows: INV.checklist.map(function (c) { return { n: c[0], c: UI.esc(c[1]), r: UI.esc(c[2]) }; }) })], foot: [UI.button({ label: 'Close', variant: 'primary', close: true })] });
 
     html = UI.page({ title: 'Non-PO Invoices', info: 'Invoices you raise on Airtel without a purchase order', sub: 'Submit invoices, respond to requests and follow each invoice from submission to payment.' }) +
-      banner + kpi +
+      banner +
       UI.section({ title: 'Recent invoices', body: [UI.filters({ items: [UI.field({ label: 'Filter by status', type: 'select', value: 'All invoices' }), UI.field({ label: 'Category', type: 'select', value: 'All categories' }),
         UI.field({ label: 'Invoice date from', type: 'date' }), UI.field({ label: 'Invoice date to', type: 'date' })] }), table] }) +
       UI.section({ title: 'Help and templates', collapsible: true, body: [UI.row([
         UI.textlink({ label: 'What we check on every invoice', icon: 'arrowRight', modal: 'checks' }),
         UI.textlink({ label: 'Bulk upload templates', icon: 'download', toast: 'Template download started' }),
         UI.textlink({ label: 'Invoice categories and SLAs', icon: 'arrowRight', go: 'inv-03' })])] }) + statuses + checks;
-    Page.render({ id: 'inv-02', roleId: 'vendor', stat: 'overall', states: [{ id: 'empty', label: 'New partner, no invoices yet' }], html: html });
+    Page.render({ id: 'inv-02', roleId: 'vendor', stat: 'overall', statCounts: S === 'empty' ? ['0', '0', '0', '0'] : null, states: [{ id: 'empty', label: 'New partner, no invoices yet' }], html: html });
     return;
   }
 

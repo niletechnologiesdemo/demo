@@ -13,32 +13,33 @@
 <script>
 (function () {
   var S = Page.state();
+  // New provisions have a reference only; the URN is generated after the last DOA approver approves
   var checker = [
-    { id: 'APR-26-00981', type: 'New provision', urn: '111·410022·SECURITY001·SEP-26', act: 'Security services - offices', maker: 'B0MKR412', amount: 485000, on: '30-Sep 16:42', sla: 'Due in 1d', tone: '', go: 'pa-08' },
-    { id: 'APR-26-00984', type: 'New provision', urn: '151·410022·SECURITY001·SEP-26', act: 'Security services - offices', maker: 'B0MKR611', amount: 398000, on: '30-Sep 18:05', sla: 'Due in 1d', tone: '', go: 'pa-08' },
-    { id: 'APR-26-00962', type: 'Bulk upload (42 lines)', urn: 'Batch BLK-26-0412', act: 'DG AMC - network sites', maker: 'B0MKR519', amount: 52920000, on: '28-Sep 11:10', sla: 'Overdue 1d - escalated', tone: 'red', go: 'pa-08?state=bulk' },
-    { id: 'APR-26-00955', type: 'Rule-based (S2)', urn: '100·410387·NSGSUP011·SEP-26', act: 'NSG network support - circle split', maker: 'B0BFN017', amount: 1500000, on: '27-Sep 15:30', sla: 'Due today', tone: 'red', go: 'pa-08?state=s2' }
+    { id: 'APR-26-00981', type: 'New provision &middot; approver 1 of 2', ref: 'PRV-26-10412', act: 'Security services - offices', maker: 'B0MKR412', amount: 485000, on: '30-Sep 16:42', sla: 'Due in 1d', tone: '', go: 'pa-08' },
+    { id: 'APR-26-00984', type: 'New provision &middot; approver 1 of 1', ref: 'PRV-26-10431', act: 'Security services - offices', maker: 'B0MKR611', amount: 398000, on: '30-Sep 18:05', sla: 'Due in 1d', tone: '', go: 'pa-08' },
+    { id: 'BLK-26-0412', type: 'Bulk upload &middot; 44 provisions, each approved separately', ref: '44 provisions', act: 'DG AMC - network sites', maker: 'B0MKR519', amount: 52920000, on: '28-Sep 11:10', sla: 'Overdue 1d - escalated', tone: 'red', go: 'pa-08?state=bulk' },
+    { id: 'APR-26-00955', type: 'Rule-based (S2) &middot; approver 1 of 3', ref: 'PRV-26-10359', act: 'NSG network support - circle split', maker: 'B0BFN017', amount: 1500000, on: '27-Sep 15:30', sla: 'Due today', tone: 'red', go: 'pa-08?state=s2' }
   ];
   var cfr = [
-    { id: 'CFR-26-0117', type: 'New BU for activity', urn: '161·410022·SECURITY001·SEP-26', act: 'Security services - offices', maker: 'B0MKR412', amount: 312000, on: '30-Sep 12:01', sla: 'Due in 2d', go: 'pa-08?state=cfr' },
+    { id: 'CFR-26-0117', type: 'New BU for activity', ref: 'PRV-26-10419', act: 'Security services - offices', maker: 'B0MKR412', amount: 312000, on: '30-Sep 12:01', sla: 'Due in 2d', go: 'pa-08?state=cfr' },
     { id: 'CFR-26-0114', type: 'Force closure', urn: '131·410612·LEGAL007·FEB-26', act: 'Legal retainer', maker: 'B0GPA204', amount: 300000, on: '29-Sep 10:44', sla: 'Due in 1d', go: 'pa-08?state=closure' },
     { id: 'CFR-26-0112', type: 'Force reversal (disputed)', urn: '121·410455·CCSVC002·APR-26', act: 'Call centre services', maker: 'B0GPA204', amount: 1980000, on: '28-Sep 17:20', sla: 'Due in 1d', go: 'pa-08?state=reversal' },
     { id: 'CFR-26-0109', type: 'Hold (exclude from PBR)', urn: '141·410387·AMCDG004·JAN-26', act: 'DG AMC - network sites', maker: 'B0GPA204', amount: 760000, on: '28-Sep 09:15', sla: 'Due today', go: 'pa-08?state=hold' },
-    { id: 'CFR-26-0106', type: 'New GL account', urn: '62206·200031·ARITM5304·SEP-26', act: 'IT / AMC allocation', maker: 'B0GPA204', amount: 9850000, on: '27-Sep 14:02', sla: 'Overdue 1d - escalated', go: 'pa-08?state=cfr' }
+    { id: 'CFR-26-0106', type: 'New GL account', ref: 'PRV-26-10366', act: 'IT / AMC allocation', maker: 'B0GPA204', amount: 9850000, on: '27-Sep 14:02', sla: 'Overdue 1d - escalated', go: 'pa-08?state=cfr' }
   ];
   var notify = [
-    { id: 'NTF-26-0402', type: 'Notification only', urn: '101·410790·MEMBFEE01·SEP-26', act: 'Industry membership fee', maker: 'B0MKR088', amount: 104583, on: '30-Sep 11:12', sla: 'For information' },
+    { id: 'NTF-26-0371', type: 'Notification only', urn: '101·410790·MEMBFEE01·AUG-26', act: 'Industry membership fee', maker: 'B0MKR088', amount: 104583, on: '31-Aug 11:12', sla: 'For information' },
     { id: 'NTF-26-0398', type: 'Notification only', urn: '111·200014·DCRENT02·SEP-26', act: 'Data centre rent cross-charge', maker: 'B0BFN017', amount: 1800000, on: '30-Sep 10:05', sla: 'For information' }
   ];
   var mine = [
     { id: 'APR-26-00931', type: 'New provision', urn: '111·410022·SECURITY001·AUG-26', act: 'Security services - offices', maker: 'B0MKR412', amount: 485000, on: '31-Aug 18:00', sla: 'Approved 01-Sep' },
-    { id: 'APR-26-00940', type: 'New provision', urn: '101·410612·LEGAL007·SEP-26', act: 'Legal retainer', maker: 'B0MKR088', amount: 350000, on: '30-Sep 09:20', sla: 'Returned 30-Sep' }
+    { id: 'APR-26-00940', type: 'New provision', ref: 'PRV-26-10398', act: 'Legal retainer', maker: 'B0MKR088', amount: 350000, on: '30-Sep 09:20', sla: 'Returned 30-Sep' }
   ];
   var cols = [{ key: 'id', label: 'Request' }, { key: 'item', label: 'Provision / activity' }, { key: 'maker', label: 'Raised by' }, { key: 'amount', label: 'Amount (Rs)', num: true, money: true }, { key: 'on', label: 'Submitted', nowrap: true }, { key: 'sla', label: 'SLA' }, { key: '_acts', label: '' }];
   var mk = function (list, act) {
     return list.map(function (r) {
-      return { id: '<a class="k-link" data-go="' + (r.go || 'pa-08') + '">' + r.id + '</a><div class="k-muted k-small">' + UI.esc(r.type) + '</div>',
-        item: '<span class="k-urn">' + UI.esc(r.urn) + '</span><div class="k-muted k-small">' + UI.esc(r.act) + '</div>', maker: r.maker, amount: r.amount, on: r.on,
+      return { id: '<a class="k-link" data-go="' + (r.go || 'pa-08') + '">' + r.id + '</a><div class="k-muted k-small">' + r.type + '</div>',
+        item: (r.urn ? '<span class="k-urn">' + UI.esc(r.urn) + '</span>' : UI.esc(r.ref)) + '<div class="k-muted k-small">' + UI.esc(r.act) + '</div>', maker: r.maker, amount: r.amount, on: r.on,
         sla: UI.chip(UI.esc(r.sla), r.tone === 'red' || /Overdue|today/.test(r.sla) ? 'red' : ''), _flag: /Overdue/.test(r.sla),
         _acts: act ? [{ icon: 'eye', label: 'Review', go: r.go || 'pa-08' }] : [] };
     });
@@ -47,16 +48,16 @@
   var empty = S === 'empty';
 
   Page.render({
-    id: 'pa-07', user: 'B0CHK155', role: 'Manager (checker) and CFR delegate', viewAs: 'Checker',
+    id: 'pa-07', user: 'B0CHK155', role: 'Approver (DOA) and CFR delegate', viewAs: 'Approver (DOA)',
     states: [{ id: 'empty', label: 'Nothing waiting' }, { id: 'delegation', label: 'Acting as delegate' }],
-    html: UI.page({ title: 'Approvals Inbox', info: 'Approvers are resolved from the HRMS hierarchy and the DOA matrix', sub: 'Maker-checker approvals, CFR decisions and notification-only provisions routed to you. You cannot approve a provision you raised.' }) +
+    html: UI.page({ title: 'Approvals Inbox', info: 'For each provision the DOA API returns up to 10 approvers; all must approve, in order, before the URN is generated', sub: 'DOA approvals, CFR decisions and notification-only provisions routed to you. You cannot approve a provision you raised.' }) +
       (S === 'delegation' ? UI.alert({ tone: 'info', title: 'You are acting as delegate for B0CHK201', text: 'until 05-Oct-2026 (absence delegation). Items approved for them are recorded with both names.' }) : '') +
-      UI.kpis({ cols: 4, items: [{ value: empty ? '0' : '4', label: 'Maker-checker', tab: 'ap:checker', active: true }, { value: empty ? '0' : '5', label: 'CFR decisions', tab: 'ap:cfr' }, { value: empty ? '0' : '2', label: 'Notification only', tab: 'ap:notify' }, { value: '2', label: 'Decided by me', tab: 'ap:mine' }] }) +
+      UI.kpis({ cols: 4, items: [{ value: empty ? '0' : '4', label: 'DOA approvals', tab: 'ap:checker', active: true }, { value: empty ? '0' : '5', label: 'CFR decisions', tab: 'ap:cfr' }, { value: empty ? '0' : '2', label: 'Notification only', tab: 'ap:notify' }, { value: '2', label: 'Decided by me', tab: 'ap:mine' }] }) +
       UI.filters({ items: [UI.field({ label: 'Type', type: 'select', value: 'All types' }), UI.field({ label: 'BU', type: 'select', value: 'All BUs' }), UI.field({ label: 'SLA', type: 'select', value: 'All' })] }) +
       UI.tabs({ id: 'ap', bar: false, tabs: [
         { id: 'checker', body: [table(empty ? [] : checker, true)] },
         { id: 'cfr', body: [UI.p('CFR approves new provisions that use a new item code, BU, OU or GL account, and every force closure, force reversal and PBR hold.', { muted: true, small: true }), table(empty ? [] : cfr, true)] },
-        { id: 'notify', body: [UI.p('Activities configured for notification only are posted without approval; you are told so you can query them.', { muted: true, small: true }), table(empty ? [] : notify, false)] },
+        { id: 'notify', body: [UI.p('Activities configured for notification only are posted without approval; you are told so you can query them.', { muted: true, small: true }), UI.tbc('Whether notification-only activities remain, given DOA approval for every provision (HLD open point 17)'), table(empty ? [] : notify, false)] },
         { id: 'mine', body: [table(mine, false)] }] }) +
       UI.p('Approvals waiting beyond the configured SLA are escalated to the next level and shown on the dashboard.', { muted: true, small: true })
   });

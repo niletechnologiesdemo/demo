@@ -520,9 +520,7 @@ body.show-reqs [data-req].ov-hot { outline: 2px solid #2A5FA8; }
   .sh-rail { position: static; height: auto; }
 }
 
-/* Per-page wireframe files: Airtel icon-font sizing and the wireframe bar (prototype chrome, not product). */
-
-/* Airtel icon font glyphs rendered by UI.icon() */
+/* Airtel icon font glyphs rendered by UI.icon(); the fonts are embedded by build/html_assets.py (font_css) */
 .k-ic.ai { width: auto; height: auto; font-family: "airtel-icons"; font-style: normal; font-weight: normal; font-size: 18px; line-height: 1; display: inline-block; vertical-align: -3px; speak: none; -webkit-font-smoothing: antialiased; }
 .k-ic.ai.lg { font-size: 24px; }
 .k-ic.ai.xl { font-size: 40px; }
@@ -532,6 +530,8 @@ body.show-reqs [data-req].ov-hot { outline: 2px solid #2A5FA8; }
 .k-ferr .k-ic.ai, .k-tbc .k-ic.ai, .k-tl .k-ic.ai, .sh-railsec .k-ic.ai { font-size: 14px; }
 .k-card .k-ic.ai.xl { font-size: 44px; }
 .k-drop .k-ic.ai { font-size: 26px; }
+
+/* Per-page wireframe files: the wireframe bar and page helpers (prototype chrome, not product). The icon-font glyph styles are in components.css. */
 
 /* wireframe bar */
 .wn .wn-mod { color: #8D96A3; white-space: nowrap; }
@@ -602,3 +602,10 @@ body.has-states.has-variants { --nav-h: 106px; }
 .acc-tbl td.acc-c .acc { margin: 0; }
 .acc-tbl td.acc-p { white-space: nowrap; }
 .acc-tbl td.acc-n { font-size: 12px; color: var(--muted); min-width: 220px; }
+
+/* requirement tags switch in the wireframe bar: shows 'to be confirmed' markers (wrapping, as some are long) and system-behaviour notes */
+.wn .wn-toggle { margin-left: 14px; }
+body.show-reqs .k-tbc { display: inline-flex; white-space: normal; }
+/* open points page */
+.op-t { max-width: 720px; white-space: normal; }
+.op-w a { display: block; white-space: nowrap; }

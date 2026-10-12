@@ -12,7 +12,8 @@
 <script src="inv-data.js"></script>
 <script>
 (function () {
-  /* Debit notes, credit notes and reversals (HLD 6.4). Every note is approved before it is booked; ToCo notes go through two stages. */
+  /* Debit notes, credit notes and reversals (HLD 6.4). Every note is approved before it is booked; ToCo notes go through two stages.
+     Fields follow the input formats (ToCo DN / Finance DN / reversals; manual DN and reversal; GST non-compliance DN and reversal). */
   var S = Page.state(), R = INV.role('phd');
   var DNS = INV.cats.filter(function (c) { return c.fam === 'DN'; });
   var cid = Page.param('cat') || (R.id === 'tax' ? 'gst-dn' : 'toco-dn'), c = INV.cat(cid);
@@ -21,104 +22,80 @@
   var toco = /^toco/.test(cid), gstnc = /^gst/.test(cid), rev = /rev$/.test(cid);
 
   var CFG = {
-    'toco-dn': { v: '322600', circle: 'Andhra Pradesh', inv: 'GTL/AP/DUPLICATE/JUL26', amt: 6895, gl: '4695060', desc: 'Rental', reason: 'Rental / Circle - GTL rental duplicate billing DN for Jul-26', ded: 'Center', fdoa: 'Circle', nature: 'Rental', cat: 'Rental Dispute' },
-    'toco-fdn': { v: '412885', circle: 'Delhi', inv: 'IND/26/JUL/74410', amt: 41300, gl: '4232001', desc: 'Energy', reason: 'Excess energy billed against DG run hours, Jul-26', ded: 'Center', fdoa: 'Center', nature: 'Energy', cat: 'Energy Dispute' },
-    'toco-rev': { v: '412885', circle: 'Delhi', inv: 'IND/26/JUL/74388', amt: 41300, gl: '4232001', desc: 'Energy', reason: 'Dispute resolved - vendor submitted DG logs, DN no longer valid', ded: 'Center', fdoa: 'Circle', nature: 'Energy', cat: 'Energy Dispute', orig: 'IND/26/JUL/74388/DN' },
-    'toco-cn': { v: '412885', circle: 'Delhi', inv: 'INFR/CN/26/0091', amt: 18250, gl: '4271004', desc: 'Rent', reason: 'Credit for site decommissioned 12-Aug-2026', ded: 'Center', fdoa: 'Center', nature: 'Rental', cat: 'Rental Dispute' },
+    'toco-dn': { v: '322600', circle: 'Andhra Pradesh', inv: 'GTL/AP/DUPLICATE/JUL26', amt: 6895, gl: '4695060', desc: 'Rental', reason: 'Rental / Circle - GTL rental duplicate billing DN for Jul-26', ded: 'Center', fdoa: 'Circle' },
+    'toco-fdn': { v: '412885', circle: 'Delhi', inv: 'IND/26/JUL/74410', amt: 41300, gl: '4232001', desc: 'Energy', reason: 'Excess energy billed against DG run hours, Jul-26', ded: 'Center', fdoa: 'Center' },
+    'toco-rev': { v: '412885', circle: 'Delhi', inv: 'IND/26/JUL/74388', amt: 41300, gl: '4232001', desc: 'Energy', reason: 'Dispute resolved - vendor submitted DG logs, DN no longer valid', ded: 'Center', fdoa: 'Circle' },
+    'toco-cn': { v: '412885', circle: 'Delhi', inv: 'INFR/CN/26/0091', amt: 18250, gl: '4271004', desc: 'Rent', reason: 'Credit for site decommissioned 12-Aug-2026', ded: 'Center', fdoa: 'Center' },
     'man-dn': { v: '410455', circle: 'Karnataka', inv: 'VCS/26/1188', amt: 120000, gl: '4652011', desc: 'SLA penalty - call centre, Aug-26', reason: 'Answer-rate SLA missed for 9 days in Aug-26' },
     'man-rev': { v: '410455', circle: 'Karnataka', inv: 'VCS/26/1102', amt: 45000, gl: '4652011', desc: 'Reversal of SLA penalty - Jul-26', reason: 'Penalty waived after root-cause review', orig: 'VCS/26/1102/DN' },
-    'gst-dn': { v: '395966', circle: 'Delhi', inv: 'GSTNONCOMPLIANCE-SEP26-B2-26-27-BAL-112', amt: 4016, gl: '2434234 / 2434235', desc: 'Debit note for GST exposure of 2B and 6A reco - 26-27 - BAL', reason: 'Invoice not reflected in GSTR-2B for Jul-26' },
-    'gst-rev': { v: '395966', circle: 'Delhi', inv: 'GSTNONCOMPLIANCE-JUL26-B2-26-27-BAL-69', amt: 4016, gl: '2434234 / 2434235', desc: 'GST non-compliance debit note reversal', reason: 'Vendor filed the return; invoice now in GSTR-2B', orig: 'GSTNONCOMPLIANCE-JUL26-B2-26-27-BAL-69' }
+    'gst-dn': { v: '395966', circle: 'Delhi', inv: 'GSTNONCOMPLIANCE-SEP26-B2-26-27-BAL-112', amt: 4016, gl: '2434234, 2434235', desc: 'Debit note for GST exposure of 2B and 6A reco - 26-27 - BAL' },
+    'gst-rev': { v: '395966', circle: 'Delhi', inv: 'GSTNONCOMPLIANCE-JUL26-B2-26-27-BAL-69', amt: 4016, gl: '2434234, 2434235', desc: 'GST non-compliance debit note reversal', orig: 'GSTNONCOMPLIANCE-JUL26-B2-26-27-BAL-69' }
   };
   var f = CFG[cid], vend = INV.vendors[f.v], ci = INV.circles[f.circle];
   var neg = !rev, amt = neg ? -f.amt : f.amt;
   // note number rules (HLD Table 9): ToCo DN invoice/DN, Finance DN invoice/DNF, ToCo reversal invoice/REV, manual reversal = DN number, GST NC reversal = DN/REV
   var noteNo = { 'toco-cn': f.inv, 'toco-rev': f.inv + '/REV', 'man-rev': f.orig, 'gst-dn': f.inv, 'gst-rev': f.orig + '/REV' }[cid] || f.inv + (c.suffix || '');
+  var F = function (label, value, o) { o = o || {}; o.label = label; o.value = value; return UI.field(o); };
 
-  var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [['Note', UI.esc(c.name)], ['Oracle type and sign', UI.esc(c.invType)], ['Approval', UI.esc(c.approval)], ['Payment term', UI.esc(c.term)],
-    ['Booked', toco ? 'Two-stage: ToCo CN / DN form, then AP' : 'Directly in AP'], ['Raised by', gstnc ? 'Tax team' : toco ? 'Circle request, processed by PHD / AP' : 'Circle request, processed by AP'], ['Pay group', UI.esc(c.payGroup)], ['SLA', c.sla]] })] });
+  var head = UI.row([UI.p('<b>' + UI.esc(c.name) + '</b>', {}), UI.textlink({ label: 'Change note type', iconLeft: 'chevLeft', go: 'inv-03' })]);
+  var vendor = F('Vendor', UI.esc(vend.name) + ' &middot; ' + f.v, { type: 'lookup', required: true });
+  var site = F('Vendor site', UI.esc(vend.site), { type: 'select', required: true });
 
-  var checks = err ? UI.alert({ tone: 'red', title: '2 errors need correction.', text: 'Correct the fields marked in red and validate again.' })
+  var fields, copied = '';
+  if (toco) fields = [
+    F('Operating unit', ci.ou, { type: 'select', required: true }), vendor, site,
+    cid === 'toco-cn' ? F('Supplier GSTIN', vend.gstin, { type: 'select', required: true }) : '',
+    F(cid === 'toco-cn' ? 'Credit note number' : 'Invoice number', UI.esc(f.inv), { required: true, wrap: true, error: err ? 'Invoice ' + UI.esc(f.inv) + ' is not booked for this vendor in Oracle.' : '' }),
+    F('Original tax invoice number', '', { placeholder: 'Optional' }), F('Original tax invoice date', '', { type: 'date' }),
+    F('Base amount', UI.inr(f.amt, 2), { prefix: 'INR', required: true }), F('Description', UI.esc(f.desc), { required: true }), F('GL code', f.gl, { type: 'lookup', required: true }),
+    F('Deduction type', f.ded, { type: 'select', required: true }), F('FDOA (centre / circle)', f.fdoa, { type: 'select', required: true }),
+    { span: 3, html: F('Reason', UI.esc(f.reason), { required: true, wrap: true }) }];
+  else if (cid === 'gst-dn') fields = [
+    F('Operating unit / BU code', 'BAL B&amp;T Delhi &middot; 204', { type: 'select', required: true }), vendor, site,
+    F('Supplier GSTIN', vend.gstin, { type: 'select', required: true }), F('Airtel GSTIN', ci.gstin, { type: 'select', required: true }),
+    F('Debit note number', UI.esc(f.inv), { required: true, wrap: true }), F('Debit note date', '29/09/2026', { type: 'date', required: true }),
+    F('Base amount', UI.inr(f.amt / 2, 2), { prefix: 'INR', required: true }), F('CGST 9%', '1,004.00'), F('SGST 9%', '1,004.00'), F('Total amount', UI.inr(f.amt, 2), { required: true }),
+    F('Item code', 'ARITM1471', { type: 'lookup', required: true }), F('GL code', f.gl, { type: 'lookup', required: true }),
+    { span: 2, html: F('Description', UI.esc(f.desc), { required: true, wrap: true }) }];
+  else if (cid === 'gst-rev') {
+    fields = [F('Debit note to reverse', UI.esc(f.orig), { type: 'lookup', required: true, wrap: true, error: err ? 'This debit note is not booked in Oracle AP.' : '' }), F('Reversal date', '02/10/2026', { type: 'date', required: true })];
+    copied = UI.subhead('Copied from the original debit note') + UI.kv({ cols: 3, items: [['Vendor', UI.esc(vend.name) + ' &middot; ' + f.v + ' &middot; ' + UI.esc(vend.site)], ['Supplier / Airtel GSTIN', vend.gstin + ' / ' + ci.gstin],
+      ['Operating unit / BU', 'BAL B&amp;T Delhi &middot; 204'], ['Amount', 'Base 2,008.00 &middot; GST 2,008.00 &middot; total ' + UI.inr(f.amt, 2)], ['Item code / GL', 'ARITM1471 &middot; ' + f.gl], ['Pay group', 'Network Rent']] });
+  } else fields = [
+    F('Operating unit / BU code', ci.ou + ' &middot; ' + ci.bu, { type: 'select', required: true }), vendor, site,
+    F(rev ? 'Debit note to reverse' : 'Debit note number', UI.esc(rev ? f.orig : f.inv + '/DN'), { type: rev ? 'lookup' : 'text', required: true, error: err ? (rev ? 'This debit note is not booked for the vendor.' : 'Invoice VCS/26/1188 is not booked for this vendor in Oracle.') : '' }),
+    F(rev ? 'Amount' : 'Debit note amount', UI.inr(f.amt, 2), { prefix: 'INR', required: true }), F('Currency', 'INR', { type: 'select', required: true }),
+    F('GL code', f.gl, { type: 'lookup', required: true }), { span: 2, html: F('Description', UI.esc(f.desc), { required: true, wrap: true }) },
+    { span: 3, html: F('Remarks', UI.esc(f.reason), { wrap: true }) }];
+  var details = UI.section({ title: 'Note Details', collapsible: true, body: [UI.grid(3, fields), copied,
+    UI.note({ text: (neg ? 'Booked as a negative amount. ' : '') + (toco ? 'Recorded first in the ToCo credit / debit note form, then booked in AP. ' : 'Booked directly in AP. ') + 'The note number in Oracle is ' + UI.esc(noteNo) + '.' })] });
+
+  var req = UI.section({ title: 'Request and Approvals', collapsible: true, body: [
+    UI.upload({ label: gstnc ? 'Tax team approvals' : 'Circle request and approvals', required: true, files: err ? [] : [{ name: gstnc ? 'TaxTeam_GSTNC_Sep26_approval.pdf' : 'Circle_DN_request_approval.msg', meta: '142 KB' }],
+      hint: err ? '' : 'Approval documents are mandatory' }),
+    err ? UI.alert({ tone: 'red', text: 'Approval documents are mandatory before a note can be approved.' }) : ''] });
+
+  var pa = /^toco-(dn|rev)$/.test(cid) ? UI.note({ text: rev ? 'When this reversal is validated, Provisioning & Actualization reverses the provision created for the original debit note (month-end activity).' : 'When this debit note is validated, Provisioning & Actualization creates a provision with the debit note number in its URN (month-end activity).' }) : '';
+
+  var nErr = (details.match(/k-ferr/g) || []).length + (err ? 1 : 0);
+  var checks = err ? UI.alert({ tone: 'red', title: nErr + ' errors need correction before you can submit.', text: 'Correct the fields marked in red and validate again.' })
     : ok ? UI.alert({ tone: 'ok', title: 'All checks passed.', text: 'Mandatory fields and approvals present, vendor and site valid, note number unique and within 50 characters' + (rev ? ', original note found and booked' : '') + '.' }) : '';
 
-  var fields;
-  if (toco) fields = [
-    UI.field({ label: 'Operating unit', type: 'select', value: ci.ou, required: true, src: 'green' }),
-    UI.field({ label: 'Vendor number', type: 'lookup', value: f.v, required: true, src: 'green' }),
-    UI.field({ label: 'Vendor name / site', type: 'readonly', value: UI.esc(vend.name) + ' &middot; ' + vend.site, src: 'grey', hint: cid === 'toco-cn' ? 'From supplier GSTIN; for Bharti Infratel from GSTIN + first 4 characters of the invoice number' : 'From vendor number and the CN / DN master' }),
-    UI.field({ label: cid === 'toco-cn' ? 'Credit note number' : 'Invoice number', value: UI.esc(f.inv), required: true, src: 'green', error: err ? 'Invoice ' + UI.esc(f.inv) + ' is not booked for this vendor in Oracle.' : '' }),
-    UI.field({ label: 'Original tax invoice number', value: rev || cid === 'toco-cn' ? '' : f.inv, placeholder: 'Optional', src: 'green', hint: 'If given, the invoice reference flag is set and the original invoice referenced' }),
-    UI.field({ label: 'Original tax invoice date', type: 'date', value: rev || cid === 'toco-cn' ? '' : '05/08/2026', src: 'green' }),
-    UI.field({ label: 'Base amount (Rs)', value: UI.inr(f.amt, 2), required: true, src: 'green', hint: neg ? 'Booked negative' : 'Booked positive' }),
-    UI.field({ label: 'Description', value: UI.esc(f.desc), required: true, src: 'green' }),
-    UI.field({ label: 'GL code', type: 'lookup', value: f.gl, required: true, src: 'green' }),
-    UI.field({ label: 'Deduction type', type: 'select', value: f.ded, required: true, src: 'green' }),
-    UI.field({ label: 'FDOA (centre / circle)', type: 'select', value: f.fdoa, required: true, src: 'green' }),
-    UI.field({ label: 'Reason', value: UI.esc(f.reason), required: true, src: 'green', wrap: true })];
-  else if (gstnc) fields = [
-    UI.field({ label: 'Entity / entity code', type: 'readonly', value: 'BAL &middot; B2', src: 'grey' }), UI.field({ label: 'Circle / BU code', type: 'readonly', value: 'BAL B&amp;T Delhi &middot; 204', src: 'grey' }),
-    UI.field({ label: 'Period', type: 'readonly', value: cid === 'gst-dn' ? 'Sep-2026 (2B and 6A reconciliation)' : 'Jul-2026', src: 'grey' }),
-    UI.field({ label: 'Supplier name / code / site', type: 'readonly', value: UI.esc(vend.name) + ' &middot; ' + f.v + ' &middot; ' + vend.site, src: 'grey' }),
-    UI.field({ label: 'Supplier PAN / GSTIN', type: 'readonly', value: vend.gstin.slice(2, 12) + ' &middot; ' + vend.gstin, src: 'grey' }),
-    UI.field({ label: 'Recipient (Airtel) GSTIN', type: 'readonly', value: ci.gstin, src: 'grey' }),
-    UI.field({ label: 'Debit note number', type: 'readonly', value: UI.esc(noteNo), required: true, src: 'blue', wrap: true, hint: 'Tax team format; covers BAL, BHL, APBL, NXTRA, BASL and ADL' }),
-    UI.field({ label: 'CGST / SGST / IGST (Rs)', value: '2,008.00 / 2,008.00 / 0.00', required: true, src: 'green' }),
-    UI.field({ label: 'Total (Rs)', type: 'readonly', value: UI.inr(f.amt, 2), src: 'blue' }),
-    UI.field({ label: 'Item code', type: 'readonly', value: 'ARITM1471', src: 'grey' }),
-    UI.field({ label: 'Line description', value: UI.esc(f.desc), required: true, src: 'green', wrap: true }),
-    UI.field({ label: 'Reason', value: UI.esc(f.reason), src: 'green', wrap: true })];
-  else fields = [
-    UI.field({ label: 'Operating unit / BU code', type: 'select', value: ci.ou + ' &middot; ' + ci.bu, required: true, src: 'green' }),
-    UI.field({ label: 'Vendor name / code', type: 'lookup', value: UI.esc(vend.name) + ' &middot; ' + f.v, required: true, src: 'green' }),
-    UI.field({ label: 'Vendor site', type: 'readonly', value: vend.site, src: 'grey' }),
-    UI.field({ label: rev ? 'Debit note to reverse' : 'Invoice number', value: UI.esc(rev ? f.orig : f.inv), required: true, src: 'green' }),
-    UI.field({ label: 'Debit note number', type: 'readonly', value: UI.esc(noteNo), src: 'blue', hint: rev ? 'Reversal is booked with the debit note number' : 'Invoice number followed by /DN' }),
-    UI.field({ label: 'Currency', type: 'select', value: 'INR', src: 'green' }),
-    UI.field({ label: 'Amount (Rs)', value: UI.inr(f.amt, 2), required: true, src: 'green' }),
-    UI.field({ label: 'GL code', type: 'lookup', value: f.gl, required: true, src: 'green' }),
-    UI.field({ label: 'Description', value: UI.esc(f.desc), required: true, src: 'green', wrap: true }),
-    UI.field({ label: 'Remarks', value: UI.esc(f.reason), src: 'green', wrap: true })];
-  var details = UI.section({ title: gstnc ? 'Debit Note (from the Tax team file)' : 'Note Details', collapsible: true, body: [UI.grid(3, fields)] });
-
-  var req = UI.section({ title: 'Request and approvals', collapsible: true, body: [UI.grid(3, [
-    UI.field({ label: 'Request from', type: 'readonly', value: gstnc ? 'Tax team (B0TAX015)' : 'Circle team - ' + UI.esc(f.circle), src: 'grey' }),
-    UI.field({ label: 'Approval', type: 'readonly', value: UI.esc(c.approval), src: 'blue' }),
-    UI.field({ label: rev && !gstnc ? 'DOA approvers (HRMS / DOA)' : 'Force approval evidence', type: 'readonly', value: rev && !gstnc ? 'B0APR219' : 'Approval email / NFA attached', src: 'blue' })]),
-    UI.upload({ label: gstnc ? 'Tax team approvals' : 'Circle request and approvals', required: true, hint: 'Stored in DMS with the note', files: err ? [] : [{ name: gstnc ? 'TaxTeam_GSTNC_Sep26_approval.pdf' : 'Circle_DN_request_approval.msg', meta: '142 KB' }] }),
-    err ? UI.alert({ tone: 'red', text: 'Approval documents are mandatory before a debit note can be force approved.' }) : '',
-    cid === 'man-rev' ? UI.p('The reversal is validated against its supporting documents and approvals and coordinated with the IP team before DOA initiation.', { muted: true, small: true }) : ''] });
-
-  var stage1 = toco ? UI.section({ title: 'Stage 1 - ToCo credit / debit note form', sub: 'Airtel TOCO Credit/Debit notes mapping function', collapsible: true, collapsed: !ok, body: [UI.kv({ cols: 3, items: [
-    ['Circle', UI.esc(f.circle) + ' (from operating unit)'], ['Note type', cid === 'toco-cn' ? 'Credit Note' : rev ? 'Dispute Reversal Note' : 'Dispute Note'], ['Note number', '<span class="k-urn">' + UI.esc(noteNo) + '</span>'],
-    ['Deduction type', f.ded], ['Deduction nature', f.nature + ' (from description via GL code master)'], ['Dispute category', f.cat],
-    ['Invoice reference flag', rev || cid === 'toco-cn' ? 'No' : 'Yes - original invoice referenced'], ['Adjusted amount', UI.inr(amt, 2)], ['Then', 'Airtel Transfer TOCO WebAdi data to TOCO CNDN Invoice form']] }),
-    UI.p('If the suffix has been used before, /DN2, /DN3 (or /DNF2, /REV2) follow, and the number stays within 50 characters.', { muted: true, small: true })] }) : '';
-
-  var lines = gstnc ? [{ l: 1, gl: '2434234 (CGST)', d: 'ARITM1471', a: neg ? '-2,008.00' : '2,008.00' }, { l: 2, gl: '2434235 (SGST)', d: 'ARITM1471', a: neg ? '-2,008.00' : '2,008.00' }]
-    : [{ l: 1, gl: ci.bu + '-' + f.gl, d: cid === 'toco-rev' ? 'NET000832 &middot; attribute 9 OPEX' : cid === 'toco-fdn' ? 'Attribute 9 blank' : 'From GL code', a: UI.inr(amt, 2) }];
-  var stage2 = UI.section({ title: (toco ? 'Stage 2 - ' : '') + 'AP booking preview', sub: 'Airtel Payable Open Interface Import-GST, after approval', collapsible: true, collapsed: !ok, body: [
-    UI.kv({ cols: 4, items: [['Invoice type', UI.esc(c.invType)], ['Number in Oracle', '<span class="k-urn wrap-any">' + UI.esc(noteNo) + '</span>'], ['Payment term', UI.esc(c.term)], ['GST tax category', gstnc ? '0% category' : 'Not applied']] }),
-    UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'l', label: 'Line' }, { key: 'gl', label: 'Account (BU-GL)' }, { key: 'd', label: 'Item / attributes' }, { key: 'a', label: 'Amount (Rs)', num: true }], rows: lines }),
-    UI.p(gstnc ? 'One line per tax (CGST 2434234, SGST 2434235, IGST 2434236), pay group NETWORK RENT. Approvals attached in DMS; debit notes created are checked through the VPOT report.' : 'The request and its approvals are attached to the invoice; it is closed once booking is complete. Notes that cannot be booked return to the PHD team with the Oracle error.', { muted: true, small: true })] });
-
-  var pa = /^toco-(dn|rev)$/.test(cid) ? UI.alert({ tone: 'info', title: 'Provisioning link.', text: rev ? 'When this reversal is validated, the provision created for the original debit note is reversed (month-end activity).' : 'When this debit note is validated, Provisioning & Actualization creates a provision with the debit note number in its URN (month-end activity).',
-    actions: [UI.textlink({ label: 'TOCO DN provisions', icon: 'arrowRight', go: '../pa/pa-06-toco-darts.html?tab=tc:dn' })] }) : '';
-
   var submitted = UI.modal({ id: 'submitted', open: S === 'submitted', title: 'Note', accent: 'Submitted', size: 'narrow', body: [
-    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004874</b>'], ['Status', INV.status('Submitted')], ['Note number', '<span class="k-urn wrap-any">' + UI.esc(noteNo) + '</span>'], ['Approval', UI.esc(c.approval)]] }),
-    UI.p('The note is booked in Oracle only after it is approved' + (toco ? ', first in the ToCo CN / DN form and then in AP.' : '.'), { muted: true })],
+    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004874</b>'], ['Status', INV.status('Submitted')], ['Note number', '<span class="k-urn wrap-any">' + UI.esc(noteNo) + '</span>']] }),
+    UI.p('Booked in Oracle after it is approved.', { muted: true })],
     foot: [UI.button({ label: 'Raise another', go: 'inv-07' }), UI.button({ label: 'Track', variant: 'primary', go: 'inv-09' })] });
 
-  var bar = UI.sticky({ left: [UI.textlink({ label: 'Check note', icon: 'arrowRight', state: 'validated' })], totals: [['Amount', UI.inr(amt, 2)], ['Lines', String(lines.length)]],
-    right: [UI.button({ label: 'Save', toast: 'Saved as draft' }), ok ? UI.button({ label: 'Submit for approval', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Validate', variant: err ? 'disabled' : 'primary', state: err ? '' : 'validated' })] });
+  var bar = UI.sticky({ totals: [['Amount', 'Rs ' + UI.inr(amt, 2)]],
+    right: [UI.button({ label: 'Save', toast: 'Saved as draft' }), UI.button({ label: 'Validate', state: 'validated' }),
+      ok ? UI.button({ label: 'Submit for approval', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Submit for approval', variant: 'disabled' })] });
 
   Page.render({
     id: 'inv-07', roleId: 'phd', navKey: 'inv-03',
     variants: { label: 'Note type', param: 'cat', def: cid, items: DNS.map(function (x) { return { id: x.id, label: x.name.replace('GST non-compliance', 'GST NC').replace(' / Finance DN', '') }; }) },
     states: [{ id: 'errors', label: 'Validation errors' }, { id: 'validated', label: 'Validated' }, { id: 'submitted', label: 'Submitted' }],
-    rail: { mode: 'form', title: rev ? 'Reversal' : cid === 'toco-cn' ? 'Credit Note' : 'Debit Note', accent: gstnc ? 'GST' : toco ? 'ToCo' : 'Non-PO', back: 'inv-03', text: UI.esc(c.name) + ' &middot; ' + UI.esc(c.text) + '.<br><br>Every note is approved before it is booked. Fields marked <span class="k-link">*</span> are mandatory.' },
-    html: '<div class="k-src-on"><div class="k-legend-src"><span><i class="k-src green"></i>Entered</span><span><i class="k-src grey"></i>From master data</span><span><i class="k-src blue"></i>Derived by the portal</span></div>' +
-      head + checks + details + req + stage1 + stage2 + pa + bar + '</div>' + submitted
+    rail: { mode: 'form', title: rev ? 'Reversal' : cid === 'toco-cn' ? 'Credit Note' : 'Debit Note', accent: gstnc ? 'GST' : toco ? 'ToCo' : 'Non-PO', back: 'inv-03', text: 'Fields marked <span class="k-link">*</span> are mandatory.' },
+    html: head + checks + details + req + pa + bar + submitted
   });
 })();
 </script>

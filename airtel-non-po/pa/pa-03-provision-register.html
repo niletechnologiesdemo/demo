@@ -13,7 +13,8 @@
 <script>
 (function () {
   var S = Page.state(), all = PA.provisions;
-  var rows = S === 'empty' ? [] : S === 'open' ? all.filter(function (p) { return /Open|Partially/.test(p.status); }) : all;
+  var doaQ = S === 'doa', isDoa = function (p) { return p.status === 'DOA exception'; };
+  var rows = S === 'empty' ? [] : doaQ ? all.filter(isDoa) : S === 'open' ? all.filter(function (p) { return /Open|Partially/.test(p.status); }) : all;
   var count = function (f) { return all.filter(f).length; };
   var sum = function (f) { return all.filter(f).reduce(function (a, p) { return a + p.balance; }, 0); };
   var isOpen = function (p) { return p.status === 'Open' || p.status === 'Partially actualized'; };
@@ -21,14 +22,14 @@
   var tiles = UI.kpis({ cols: 6, items: [
     { value: String(count(isOpen)), label: 'Open provisions', sub: 'Rs ' + UI.compact(sum(isOpen)) + ' balance', active: S === 'open', go: 'pa-03?state=open' },
     { value: String(count(function (p) { return p.status === 'Submitted'; })), label: 'Pending approval', go: 'pa-07' },
-    { value: String(count(function (p) { return p.status === 'Returned' || p.status === 'Draft'; })), label: 'Draft or returned' },
+    { value: String(count(isDoa)), label: 'DOA exceptions', sub: 'No approvers returned', active: doaQ, go: 'pa-03?state=doa' },
     { value: String(count(function (p) { return p.status === 'Interface error'; })), label: 'Interface errors', go: 'pa-10' },
     { value: String(count(function (p) { return isOpen(p) && p.age > 90; })), label: 'Open over 90 days', go: 'pa-14' },
     { value: '3', label: 'Missing for Sep-26', sub: 'Expected, not raised', go: 'pa-11' }
   ] });
 
   var filters = UI.filters({ items: [
-    UI.field({ label: 'Status', type: 'select', value: S === 'open' ? 'Open, partially actualized' : 'All statuses' }),
+    UI.field({ label: 'Status', type: 'select', value: S === 'open' ? 'Open, partially actualized' : doaQ ? 'DOA exception' : 'All statuses' }),
     UI.field({ label: 'Activity', type: 'select', value: 'All activities' }),
     UI.field({ label: 'BU', type: 'select', value: 'All BUs in my scope' }),
     UI.field({ label: 'Vendor', type: 'lookup', placeholder: 'Name, code or PAN' }),
@@ -38,25 +39,26 @@
   ] });
 
   var table = UI.table({
-    dense: true,
+    dense: true, select: doaQ,
     columns: [
-      { key: 'urn', label: 'URN / activity' }, { key: 'vendor', label: 'Vendor / BU' },
+      { key: 'urn', label: 'URN or reference / activity' }, { key: 'vendor', label: 'Vendor / BU' },
       { key: 'amount', label: 'Provision (Rs)', num: true }, { key: 'balance', label: 'Balance (Rs)', num: true, money: true },
       { key: 'status', label: 'Status' }, { key: 'age', label: 'Age (days)', num: true }, { key: '_acts', label: '' }
     ],
     rows: rows.map(function (p) {
-      var sub = p.reason || p.error || p.hold || p.note || p.escalation || '';
+      var sub = p.doa || p.reason || p.error || p.hold || p.note || p.escalation || '';
       return {
-        _flag: p.status === 'Interface error' || (isOpen(p) && p.age > 180),
-        urn: '<div class="w-230"><a class="k-link k-urn wrap" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.urn) + '">' + UI.esc(p.urn).replace(/·/g, '·<wbr>') + '</a>' +
+        _flag: p.status === 'Interface error' || isDoa(p) || (isOpen(p) && p.age > 180),
+        urn: '<div class="w-230"><a class="k-link k-urn wrap" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>' + (p.pre ? '<div class="k-muted k-small">URN after approval</div>' : '') +
           '<div class="k-muted k-small">' + UI.esc(p.activity.name) + ' &middot; S' + p.scenario + ' &middot; ' + UI.esc(p.source) + '</div></div>',
         vendor: '<div class="w-170">' + UI.esc(p.vendor) + '</div><div class="k-muted k-small">' + UI.esc(p.bu + ' ' + p.buName) + (p.locator ? ' &middot; locator ' + p.locator : '') + ' &middot; ' + p.rpt + '</div>',
         amount: UI.inr(p.amount, 2) + (p.actual ? '<div class="k-muted k-small">Actualized ' + UI.inr(p.actual, 2) + '</div>' : ''), balance: p.balance,
         status: UI.status(p.status, PA.statusTone(p.status)) + (sub ? '<div class="k-muted k-small">' + UI.esc(sub) + '</div>' : '') + (p.yep ? '<div class="k-small">YEP</div>' : ''),
         age: String(p.age),
-        _acts: [{ icon: 'eye', label: 'Open provision', go: 'pa-09-provision-detail.html?urn=' + encodeURIComponent(p.urn) }].concat(
+        _acts: [{ icon: 'eye', label: 'Open provision', go: 'pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) }].concat(
           p.status === 'Draft' || p.status === 'Returned' ? [{ icon: 'edit', label: 'Edit and resubmit', go: 'pa-04?state=returned' }] : [],
-          isOpen(p) ? [{ icon: 'hold', label: 'Place on hold (GPA)', modal: 'hold' }] : [])
+          isOpen(p) ? [{ icon: 'hold', label: 'Place on hold (GPA)', modal: 'hold' }] : [],
+          isDoa(p) ? [{ icon: 'sync', label: 'Retrigger approval', toast: 'Sent to the DOA API again' }] : [])
       };
     }),
     foot: { urn: 'Total (' + rows.length + ')', amount: UI.inr(rows.reduce(function (a, p) { return a + p.amount; }, 0), 2), balance: rows.reduce(function (a, p) { return a + p.balance; }, 0) },
@@ -71,8 +73,10 @@
 
   Page.render({
     id: 'pa-03', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
-    states: [{ id: 'open', label: 'Open provisions only' }, { id: 'empty', label: 'No results' }],
+    states: [{ id: 'open', label: 'Open provisions only' }, { id: 'doa', label: 'DOA exceptions' }, { id: 'empty', label: 'No results' }],
     html: UI.page({ title: 'Provision Register', info: 'Every provision raised on the platform, from any source, with its URN and lifecycle status', sub: 'Provisions raised by single entry, bulk upload, the DARTS feed and validated TOCO debit notes.' }) +
+      (doaQ ? UI.alert({ tone: 'red', title: 'No approvers returned by DOA.', text: 'The DOA matrix is not set up for these provisions. Once it is fixed in the DOA system, retrigger them.', actions: [UI.button({ label: 'Retrigger selected', size: 'sm', toast: 'Selected provisions sent to the DOA API again' })] }) +
+        UI.note({ text: 'The GPA team is alerted when the DOA API returns no approvers. A flagged provision stays unapproved, also past GL period close, until it is retriggered and approved.' }) : '') +
       UI.alert({ tone: 'warn', title: '3 expected provisions not raised for Sep-26.', text: 'Security services (BU 131), DG AMC (BU 151) and Call centre services (BU 121) are due from the provision calendar.', actions: [UI.textlink({ label: 'View calendar', icon: 'arrowRight', go: 'pa-11' })] }) +
       tiles + filters + table +
       UI.note({ text: 'For provisions posted in reversal mode, Oracle reverses the journal at the start of the next period while the platform keeps the provision open until it is actualized or aged out, so this balance can differ from the Oracle ledger balance (HLD 4.6).' }) +

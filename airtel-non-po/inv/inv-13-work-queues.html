@@ -59,7 +59,7 @@
       UI.tabs({ id: 'q', bar: false, tabs: [{ id: 'validation', body: [tbl('validation')] }, { id: 'manual', body: [UI.p('Invoices the system could not decide: OCR data incomplete, an amount outside tolerance, a potential duplicate, a visual checklist point (signature, invoice form), or a landlord GSTIN on the Tax team\'s non-compliant list.', { muted: true, small: true }), tbl('manual')] },
         { id: 'rush', body: [tbl('rush')] }, { id: 'hold', body: [tbl('hold')] }, { id: 'all', body: [tbl('all')] }] }) +
       UI.note({ text: 'An invoice that breaches its SLA is escalated first to the AP team (L1), then to the manager (L2) and finally to the Finance Head (L3). Rush invoices and their SLA position are also shown on the Rush dashboard.' }) +
-      UI.tbc('RPA bot for the PHD checklist validation, or a portal exception dashboard only') + assign + hold
+      UI.tbc('Whether an RPA bot does the PHD checklist validation, or the portal shows an exception dashboard only (HLD 5.9 client note)') + assign + hold
   });
 })();
 </script>

@@ -17,13 +17,13 @@ window.INV = (function () {
       text: 'Domestic circuits billed per circuit ID', locator: 'Bandwidth cost sheet by circuit ID', tol: 'Rs 10 against the pro-rated MRC / QTRC / ARC in the cost sheet' },
     { id: 'bw-intl', fam: 'PM', name: 'Bandwidth International', page: 'inv-04', booked: 'PM module', invType: 'Locator-wise lines', approval: 'Budget-head DOA in Oracle, after booking', sla: 'T+2', term: 'As given in the PM upload format', payGroup: '-', payAlone: '-', bulk: true,
       text: 'International bandwidth in the PM upload format; foreign currency supported', locator: 'Given in the PM upload format', tol: 'Rs 2, or 0.2 for non-INR invoices' },
-    { id: 'll-eb', fam: 'PM', name: 'LL_EB (landlord electricity)', page: 'inv-04', booked: 'PM module', invType: 'Locator-wise lines', approval: 'Budget-head DOA in Oracle, after booking', sla: 'T+2', term: 'From PM master', payGroup: '-', payAlone: '-', bulk: true,
+    { id: 'll-eb', fam: 'PM', name: 'LL_EB (landlord electricity)', page: 'inv-04', booked: 'PM module', invType: 'Locator-wise lines', approval: 'Budget-head DOA in Oracle, after booking', sla: 'T+2', term: 'From PM master', payGroup: '-', payAlone: '-', bulk: true, tbc: 'Whether vendors submit LL_EB: its format is the circle input sheet (HLD 6.2.6)',
       text: 'Landlord electricity reimbursement with meter readings', locator: 'PM master by site ID', tol: 'Input sheet = OCR = Oracle booking amount' },
     { id: 'll-sd', fam: 'PM', name: 'LL Rent SD', page: 'inv-04', booked: 'PM module', invType: 'Locator-wise lines', approval: 'Budget-head DOA in Oracle, after booking', sla: 'T+2', term: 'From PM master', payGroup: '-', payAlone: '-', bulk: true,
       text: 'Rental security deposit (prepayment opex head: no GST or TDS category)', locator: 'PM master by site ID', tol: '-' },
-    { id: 'govt-dn', fam: 'PM', name: 'Govt Demand Note', page: 'inv-04', booked: 'PM module', invType: 'Locator-wise lines', approval: 'Budget-head DOA in Oracle, after booking', sla: 'T+2', term: 'From PM master', payGroup: '-', payAlone: '-', bulk: true, tbc: 'Further rules and Govt demand note approvals to be confirmed',
+    { id: 'govt-dn', fam: 'PM', name: 'Govt Demand Note', page: 'inv-04', booked: 'PM module', invType: 'Locator-wise lines', approval: 'Budget-head DOA in Oracle, after booking', sla: 'T+2', term: 'From PM master', payGroup: '-', payAlone: '-', bulk: true, tbc: 'Govt Demand Note: further rules and approvals',
       text: 'Government demand notes for sites', locator: 'PM master by site ID', tol: '-' },
-    { id: 'diesel', fam: 'PM', name: 'Diesel Knock off', page: 'inv-04', booked: 'PM module', invType: 'Locator-wise lines', approval: 'Budget-head DOA in Oracle, after booking', sla: 'T+2', term: 'From vendor master', payGroup: '-', payAlone: '-', bulk: true, tbc: 'Input format and rules to be confirmed',
+    { id: 'diesel', fam: 'PM', name: 'Diesel Knock off', page: 'inv-04', booked: 'PM module', invType: 'Locator-wise lines', approval: 'Budget-head DOA in Oracle, after booking', sla: 'T+2', term: 'From vendor master', payGroup: '-', payAlone: '-', bulk: true, tbc: 'Diesel Knock off: input format and rules',
       text: 'Diesel supplied to sites', locator: 'PM master by site ID', tol: '-' },
     // Rush / AP: approved on the portal first, then booked document-wise in the AP module
     { id: 'll-gst', fam: 'AP', name: 'LL_GST (landlord GST)', page: 'inv-06', booked: 'AP module', invType: 'STANDARD (two lines)', approval: 'PHD checklist review, then force approval', sla: 'T+2 / T+3', term: 'Controlled Expense - Property Manager Transactions', payGroup: 'NETWORK RENT', payAlone: 'No', bulk: false,
@@ -128,7 +128,7 @@ window.INV = (function () {
     { ref: '', inv: 'SGIS/26-27/0425', v: '600124', cat: 'local-toco', circle: 'UP East', date: '27-Sep-2026', from: '01-Sep-2026', to: '30-Sep-2026', base: 40000, status: 'Draft', on: '27-Sep-2026', lines: 3 },
     { ref: 'NPO-2627-004822', inv: 'SGIS/26-27/0421', v: '600124', cat: 'local-toco', circle: 'UP East', date: '22-Sep-2026', from: '01-Sep-2026', to: '30-Sep-2026', base: 132600, status: 'Submitted', on: '29-Sep-2026', recv: '29-Sep 11:02', queue: 'validation', sla: 'Due in 1d', lines: 5 },
     { ref: 'NPO-2627-004812', inv: 'SGIS/26-27/0418', v: '600124', cat: 'local-toco', circle: 'UP East', date: '18-Sep-2026', from: '01-Sep-2026', to: '30-Sep-2026', base: 184500, status: 'Under Validation', on: '28-Sep-2026', recv: '28-Sep 10:30', queue: 'validation', sla: 'Due today 18:00', slaTone: 'warn', owner: 'PHD team - UP', lines: 6 },
-    { ref: 'NPO-2627-004790', inv: 'SGIS/26-27/0409', v: '600124', cat: 'local-toco', circle: 'UP East', date: '12-Sep-2026', from: '01-Aug-2026', to: '31-Aug-2026', base: 96200, status: 'RFI', on: '26-Sep-2026', reason: 'Invoice period is not shown on the invoice copy', lines: 4 },
+    { ref: 'NPO-2627-004790', inv: 'SGIS/26-27/0409', v: '600124', cat: 'local-toco', circle: 'UP East', date: '12-Sep-2026', from: '01-Aug-2026', to: '31-Aug-2026', base: 96200, status: 'RFI', on: '26-Sep-2026', reason: 'Signature or stamp missing', rfiNote: 'Checklist 12: a tax invoice must be digitally signed, or signed and stamped. The copy you uploaded has neither. Please upload a signed and stamped copy.', rfiBy: 'PHD team - UP East', lines: 4 },
     { ref: 'NPO-2627-004733', inv: 'SGIS/26-27/0402', v: '600124', cat: 'local-toco', circle: 'UP East', date: '09-Sep-2026', from: '01-Aug-2026', to: '31-Aug-2026', base: 88000, status: 'Hold', on: '24-Sep-2026', reason: 'Locator inactive for 2 of 6 sites', queue: 'hold', sla: 'On hold 7d', owner: 'PHD team - UP', lines: 6, recv: '24-Sep 12:00' },
     { ref: 'NPO-2627-004655', inv: 'SGIS/26-27/0391', v: '600124', cat: 'local-toco', circle: 'UP East', date: '02-Sep-2026', from: '01-Aug-2026', to: '31-Aug-2026', base: 42000, status: 'Under Approval', on: '23-Sep-2026', lines: 2, group: 'GRP-UPE-260923-07', oracle: 'PM-INV-88120456' },
     { ref: 'NPO-2627-004610', inv: 'SGIS/26-27/0388', v: '600124', cat: 'rush', circle: 'UP East', date: '01-Sep-2026', from: '20-Aug-2026', to: '22-Aug-2026', base: 24500, status: 'Rejected', on: '15-Sep-2026', reason: 'Duplicate of NPO-2627-004598' },
@@ -211,6 +211,18 @@ window.INV = (function () {
     { key: 'hold', label: 'Hold', of: ['Hold', 'Scheduled payment hold'] },
     { key: 'rejected', label: 'Rejected', of: ['Rejected'] }
   ];
+  // RFI reasons the PHD team picks from (sample list; the PO portal's list is to be confirmed). Machine-checkable checklist items
+  // run on Validate before submission, so an RFI covers only what needs a reviewer; wrong invoice data is rejected instead.
+  var RFI_REASONS = ['Signature or stamp missing', 'Invoice form not acceptable (partly handwritten)', 'Invoice copy not readable', 'Supporting document missing or incorrect', 'Other'];
+  var REVIEW_CHECKS = [12, 13];   // checklist items confirmed by the PHD team; all others run on Validate
+  // partner groups: the tracker's filters and the rail counts (partners see counts in the rail, not tiles)
+  var PARTNER_BUCKETS = [
+    { key: 'progress', label: 'In progress', of: ['Submitted', 'Under Validation', 'Under Approval', 'Need re-approval', 'Approved', 'Processed', 'Validated'] },
+    { key: 'action', label: 'Needs my action', of: ['RFI'] },
+    { key: 'hold', label: 'On hold', of: ['Hold', 'Scheduled payment hold'] },
+    { key: 'rejected', label: 'Rejected', of: ['Rejected'] },
+    { key: 'paid', label: 'Paid', of: ['Paid'] }
+  ];
   function tone(s) { return s === 'Paid' ? 'ok' : s === 'Draft' ? 'grey' : ''; }
   function status(s) { return UI.status(s, tone(s)); }
   function timelineRows(r) {
@@ -227,6 +239,16 @@ window.INV = (function () {
       } else rows.push({ status: s, state: r.status === 'Rejected' ? 'skipped' : 'pending', info: STATUS_INFO[s] });
     });
     return rows;
+  }
+  // categories a partner submits; AP categories are submitted by Airtel users on the vendor's behalf (to be confirmed by Airtel)
+  var PARTNER_CATS = { vendor: ['local-toco', 'bw-dom', 'll-eb', 'diesel'], toco: ['central-toco'], landlord: ['ll-gst'] };
+  function canSubmit(R, cat) { return !(R && R.layout === 'partner') || (PARTNER_CATS[R.id] || []).indexOf(cat) >= 0; }
+  function partnerCode(R) { return R && R.id === 'toco' ? '412885' : R && R.id === 'landlord' ? '700845' : '600124'; }
+  // partner rail: overall, drafts, action required (RFI), on hold - counted from the partner's own invoices
+  function railCounts(R) {
+    var rows = invoices.filter(function (r) { return r.v === partnerCode(R); });
+    var n = function (of) { return String(rows.filter(function (r) { return of.indexOf(r.status) >= 0; }).length); };
+    return [String(rows.length), n(['Draft']), n(PARTNER_BUCKETS[1].of), n(PARTNER_BUCKETS[2].of)];
   }
   function buckets(rows) { return BUCKETS.map(function (b) { return { key: b.key, label: b.label, n: rows.filter(function (r) { return b.of.indexOf(r.status) >= 0; }).length }; }); }
 
@@ -269,7 +291,7 @@ window.INV = (function () {
 
   return {
     today: today, FAM: FAM, cats: cats, cat: cat, circles: circles, vendors: vendors, invoices: invoices, find: find, byInv: byInv,
-    STATUS_INFO: STATUS_INFO, LIFECYCLE: LIFECYCLE, BUCKETS: BUCKETS, tone: tone, status: status, timelineRows: timelineRows, buckets: buckets,
+    STATUS_INFO: STATUS_INFO, LIFECYCLE: LIFECYCLE, BUCKETS: BUCKETS, PARTNER_BUCKETS: PARTNER_BUCKETS, RFI_REASONS: RFI_REASONS, PARTNER_CATS: PARTNER_CATS, canSubmit: canSubmit, REVIEW_CHECKS: REVIEW_CHECKS, partnerCode: partnerCode, railCounts: railCounts, tone: tone, status: status, timelineRows: timelineRows, buckets: buckets,
     checklist: checklist, leases: leases, vouchers: vouchers,
     mine: function (code) { return invoices.filter(function (r) { return r.v === code; }); },
     rs: function (n, cur) { return (cur && cur !== 'INR' ? cur + ' ' : '') + UI.inr(n, 2); },

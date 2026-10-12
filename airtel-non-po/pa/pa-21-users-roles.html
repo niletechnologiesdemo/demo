@@ -12,17 +12,30 @@
 <script src="pa-data.js"></script>
 <script>
 (function () {
-  var users = UI.table({ dense: true, columns: [{ key: 'u', label: 'User (from SSO)' }, { key: 'r', label: 'Roles' }, { key: 's', label: 'Data scope' }, { key: 'm', label: 'Manager (HRMS)' }, { key: 'st', label: 'Status' }, { key: '_acts', label: '' }],
+  // Circles (operating units) are assigned per user; BUs follow from the circles. Approvers are not set here: DOA returns them.
+  var ed = [{ icon: 'edit', label: 'Edit user', modal: 'user' }];
+  var users = UI.table({ dense: true, columns: [{ key: 'u', label: 'User (from SSO)' }, { key: 'r', label: 'Roles' }, { key: 'c', label: 'Circles (operating units)' }, { key: 'b', label: 'BUs' }, { key: 'src', label: 'Mapped from' }, { key: 'st', label: 'Status' }, { key: '_acts', label: '' }],
     rows: [
-      { u: 'B0MKR412<div class="k-muted k-small">Admin & Facilities</div>', r: 'Business user (maker)', s: 'BAL &middot; BU 111, 131 &middot; Admin & Facilities', m: 'B0CHK155', st: UI.status('Active', 'ok'), _acts: ['edit'] },
-      { u: 'B0CHK155<div class="k-muted k-small">Admin & Facilities</div>', r: 'Manager (checker)', s: 'BAL &middot; BU 111, 131', m: 'B0CHK090', st: UI.status('Active', 'ok'), _acts: ['edit'] },
-      { u: 'B0GPA204<div class="k-muted k-small">GPA</div>', r: 'GPA analyst &middot; master owner', s: 'All entities &middot; all BUs', m: 'B0GPM031', st: UI.status('Active', 'ok'), _acts: ['edit'] },
-      { u: 'B0GPM031<div class="k-muted k-small">GPA</div>', r: 'GPA manager (posting)', s: 'All entities', m: 'B0CTR001', st: UI.status('Active', 'ok'), _acts: ['edit'] },
-      { u: 'B0CFR007<div class="k-muted k-small">CFR</div>', r: 'CFR', s: 'All entities', m: 'B0CTR001', st: UI.status('Active', 'ok'), _acts: ['edit'] },
-      { u: 'B0CHK201<div class="k-muted k-small">Network Operations</div>', r: 'Manager (checker)', s: 'BAL &middot; BU 121-129', m: 'B0CHK090', st: UI.status('On leave - delegated to B0CHK155 until 05-Oct'), _acts: ['edit'] }] });
+      { u: 'B0MKR412<div class="k-muted k-small">Admin & Facilities</div>', r: 'Business user (maker)', c: 'Delhi, Karnataka', b: '111, 131', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0MKR519<div class="k-muted k-small">Network Operations</div>', r: 'Business user (maker)', c: 'UP East cluster (9)', b: '121 to 129', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0MKR611<div class="k-muted k-small">Admin & Facilities</div>', r: 'Business user (maker)', c: 'Tamil Nadu', b: '151', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0CHK155<div class="k-muted k-small">Admin & Facilities</div>', r: 'Approver (DOA)', c: 'Delhi, Karnataka', b: '111, 131', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0CHK201<div class="k-muted k-small">Network Operations</div>', r: 'Approver (DOA)', c: 'UP East cluster (9)', b: '121 to 129', src: 'Portal set-up', st: UI.status('On leave - delegated to B0CHK155 until 05-Oct'), _acts: ed },
+      { u: 'B0BFN017<div class="k-muted k-small">Business Finance</div>', r: 'Business finance', c: 'All circles', b: 'All BUs', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0GPA204<div class="k-muted k-small">GPA</div>', r: 'GPA analyst &middot; master owner', c: 'All circles', b: 'All BUs and entities', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0GPM031<div class="k-muted k-small">GPA</div>', r: 'GPA manager (posting)', c: 'All circles', b: 'All BUs and entities', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0CFR007<div class="k-muted k-small">CFR</div>', r: 'CFR', c: 'All circles', b: 'All BUs and entities', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed }] });
+  var userModal = UI.modal({ id: 'user', title: 'Edit', accent: 'User', size: 'narrow', body: [UI.grid(1, [
+      UI.field({ label: 'OLM ID', type: 'readonly', value: 'B0MKR412 &middot; Admin & Facilities' }),
+      UI.field({ label: 'Roles', type: 'select', value: 'Business user (maker)', required: true }),
+      UI.field({ label: 'Circles (operating units)', type: 'select', value: 'Delhi, Karnataka', required: true }),
+      UI.field({ label: 'BUs', type: 'readonly', value: '111 Mobile - Delhi, 131 Mobile - Karnataka' })]),
+      UI.p('A user with one circle sees their BU read-only when raising a provision; a user with several picks from these BUs.', { muted: true, small: true }),
+      UI.tbc('Circle mapping from HRMS is under discussion; until then it is set up here')],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Save', variant: 'primary', close: true, toast: 'User updated; change recorded in the audit trail' })] });
   var roles = UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Role' }, { key: 'can', label: 'Can' }, { key: 'cannot', label: 'Cannot' }],
     rows: [{ r: 'Business user (maker)', can: 'Raise, edit and resubmit provisions; bulk upload; request force closure', cannot: 'Approve own provisions' },
-      { r: 'Manager (checker)', can: 'Approve, return or reject provisions routed by HRMS / DOA', cannot: 'Approve a provision they raised' },
+      { r: 'Approver (DOA)', can: 'Approve, return or reject provisions the DOA API routes to them', cannot: 'Approve a provision they raised' },
       { r: 'Business finance', can: 'Rule-based inputs (scenarios 2-12), review, financial flash', cannot: 'Post journals' },
       { r: 'GPA analyst', can: 'Matching, force match, holds, PBR run, masters, error queue', cannot: 'Post journals in Oracle' },
       { r: 'GPA manager', can: 'Post imported journals in Oracle (final control gate)', cannot: 'Raise provisions they post' },
@@ -31,10 +44,10 @@
       { r: 'Audit', can: 'Read reports and the audit trail', cannot: 'Change anything' }] });
   Page.render({
     id: 'pa-21', user: 'B0ADM001', role: 'Portal administrator', viewAs: 'Portal administrator',
-    html: UI.page({ title: 'Users', accent: 'Roles & Access', sub: 'Users sign in with single sign-on. Roles and data scope (entity, BU, cost centre, department) are assigned here; managers and approvers come from HRMS and the DOA matrix.' }) +
+    html: UI.page({ title: 'Users', accent: 'Roles & Access', sub: 'Users sign in with single sign-on. Roles and circles are assigned here, and BUs follow from the circles. Approvers are not assigned here: the DOA API returns them for each provision.' }) +
       UI.alert({ tone: 'warn', title: 'To confirm:', text: 'which users get admin or super-admin rights (P2P team), and the access controls to be checked with GRC.' }) +
-      UI.tabs({ id: 'ur', tabs: [{ id: 'users', label: 'Users', count: 6, body: [UI.filters({ items: [UI.field({ label: 'Role', type: 'select', value: 'All roles' }), UI.field({ label: 'Entity', type: 'select', value: 'All' }), UI.field({ label: 'User', type: 'search', placeholder: 'OLM ID or name' })] }), users] },
-        { id: 'roles', label: 'Roles & segregation of duties', body: [roles, UI.p('Self-approval is blocked everywhere, and every override is logged.', { muted: true, small: true })] }] })
+      UI.tabs({ id: 'ur', tabs: [{ id: 'users', label: 'Users', count: 9, body: [UI.filters({ items: [UI.field({ label: 'Role', type: 'select', value: 'All roles' }), UI.field({ label: 'Circle', type: 'select', value: 'All' }), UI.field({ label: 'User', type: 'search', placeholder: 'OLM ID or name' })] }), users] },
+        { id: 'roles', label: 'Roles & segregation of duties', body: [roles, UI.p('Self-approval is blocked everywhere, and every override is logged.', { muted: true, small: true })] }] }) + userModal
   });
 })();
 </script>

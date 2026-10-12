@@ -13,12 +13,13 @@
 <script>
 (function () {
   var S = Page.state(), R = INV.role('vendor'), rid = R.id, partner = INV.isPartner(R);
-  var code = rid === 'toco' ? '412885' : rid === 'landlord' ? '700845' : '600124';
+  var code = INV.partnerCode(R), GROUPS = partner ? INV.PARTNER_BUCKETS : INV.BUCKETS;
   var scope = partner ? INV.mine(code) : rid === 'circle' ? INV.invoices.filter(function (r) { return r.circle === 'UP East'; }) : INV.invoices;
-  var bucket = INV.BUCKETS.filter(function (b) { return b.key === S; })[0];
+  var bucket = GROUPS.filter(function (b) { return b.key === S; })[0];
   var rows = S === 'empty' ? [] : S === 'draft' ? scope.filter(function (r) { return r.status === 'Draft'; }) : bucket ? scope.filter(function (r) { return bucket.of.indexOf(r.status) >= 0; }) : scope;
 
-  var kpi = UI.kpis({ cols: 8, items: INV.buckets(scope).map(function (b) { return { value: String(b.n), label: b.label, go: 'inv-09?state=' + b.key, active: S === b.key }; }) });
+  // counts: the rail for partners, tiles for Airtel users
+  var kpi = partner ? '' : UI.kpis({ cols: 8, items: INV.buckets(scope).map(function (b) { return { value: String(b.n), label: b.label, go: 'inv-09?state=' + b.key, active: S === b.key }; }) });
 
   var filters = UI.filters({ items: [
     UI.field({ label: 'Status', type: 'select', value: S === 'draft' ? 'Draft' : bucket ? bucket.label : 'All statuses' }),
@@ -37,6 +38,7 @@
   var table = UI.table({ dense: true, columns: cols, rows: rows.map(function (r) {
     var acts = partner ? [{ icon: 'share', label: 'Invoice statuses', modal: 'statuses' }] : [];
     if (r.ref) acts.push({ icon: 'eye', label: 'Open invoice', go: INV.detail(r.ref) });
+    if (partner && r.status === 'Rejected' && INV.canSubmit(R, r.cat)) acts.push({ icon: 'plus', label: 'Submit as a new invoice', go: r.c.page + '?cat=' + r.cat });
     if (r.status === 'RFI' || r.status === 'Hold') acts.push({ icon: 'edit', label: 'Respond', go: 'inv-10' });
     if (r.status === 'Draft') acts.push({ icon: 'edit', label: 'Continue draft', go: r.c.page + '?cat=' + r.cat });
     return { _flag: r.slaTone === 'red',
@@ -55,7 +57,7 @@
 
   Page.render({
     id: 'inv-09', roleId: 'vendor', stat: S === 'draft' ? 'draft' : S === 'hold' ? 'hold' : 'overall',
-    states: [{ id: 'draft', label: 'Drafts' }, { id: 'inprocess', label: 'In-process' }, { id: 'pending', label: 'Pending with approver' }, { id: 'hold', label: 'Hold' }, { id: 'paid', label: 'Paid' }, { id: 'rejected', label: 'Rejected' }, { id: 'empty', label: 'No results' }],
+    states: [{ id: 'draft', label: 'Drafts' }].concat(GROUPS.map(function (b) { return { id: b.key, label: b.label }; }), [{ id: 'empty', label: 'No results' }]),
     html: UI.page({ title: 'Invoice', accent: 'Tracker', info: 'Status is synchronised from Oracle at every stage', sub: partner ? 'Every invoice you submitted, from submission to payment, with the reason for any hold or rejection.' : 'Invoices in your scope' + (rid === 'circle' ? ' (UP East)' : '') + ' with status, reason, SLA and ageing.' }) +
       kpi + filters + table +
       UI.p('Property Manager invoices are booked in Oracle first and approved after; AP invoices and debit notes are approved first and booked after. The status order differs accordingly.', { muted: true, small: true }) + statuses

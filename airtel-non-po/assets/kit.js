@@ -219,7 +219,9 @@
       '<span class="val ph">' + esc(o.placeholder || (t === 'select' ? 'Select' : t === 'date' ? 'dd/mm/yyyy' : 'Enter value')) + '</span>';
     var trail = t === 'select' ? icon('chevDown') : t === 'date' ? icon('calendar') : t === 'search' ? icon('search') :
       t === 'file' ? icon('attach') : t === 'lookup' ? icon('search') : o.icon ? icon(o.icon) : '';
-    var src = o.src ? '<i class="k-src ' + o.src + '" data-tip="' + esc(o.src === 'green' ? 'Filled by the user' : o.src === 'grey' ? 'Auto-populated from master data' : 'Calculated by the system') + '"></i>' : '';
+    // field source marker, coloured as the P&A BRD legend (section 9): green auto-populated, grey manual entry, blue system-generated
+    var SRC = { user: ['grey', 'Manual entry'], master: ['green', 'Auto-populated from master data'], system: ['blue', 'Generated or calculated by the system'] }[o.src];
+    var src = SRC ? '<i class="k-src ' + SRC[0] + '" data-tip="' + SRC[1] + '"></i>' : '';
     return '<div class="k-field"' + E(o.eid) + '>' +
       (o.label != null ? '<label class="k-flabel">' + src + esc(o.label) + (o.required ? '<span class="k-req">*</span>' : '') +
         (o.info ? ' <span data-tip="' + esc(o.info) + '">' + icon('info') + '</span>' : '') + '</label>' : '') +

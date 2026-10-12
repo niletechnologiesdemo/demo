@@ -12,165 +12,141 @@
 <script src="inv-data.js"></script>
 <script>
 (function () {
-  /* One document-wise form for the Rush / AP categories (HLD 6.3). AP invoices are approved on the portal first, then booked in AP. */
-  var S = Page.state(), R = INV.role('vendor'), partner = INV.isPartner(R);
+  /* One document-wise form for the Rush / AP categories (HLD 6.3). AP invoices are approved on the portal first, then booked in AP.
+     Fields follow the category's input format (requirements/AP_Invoice_format); derived booking fields are not shown to the submitter. */
+  var S = Page.state(), R = INV.role('circle');
   var APS = INV.cats.filter(function (c) { return c.fam === 'AP' && c.page === 'inv-05'; });
   var cid = Page.param('cat') || 'rush', c = INV.cat(cid);
   if (c.page !== 'inv-05') { cid = 'rush'; c = INV.cat(cid); }
   var err = S === 'errors', ok = S === 'validated' || S === 'submitted';
-  var force = /Force/.test(c.approval) && !/or DOA/.test(c.approval);
 
   var CFG = {
-    rush: { v: '600402', circle: 'UP East', inv: 'SKP/26-27/118', date: '29/09/2026', from: '27/09/2026', to: '29/09/2026', base: 54500, gl: '4282010 &middot; Network O&amp;M - DG hire', desc: 'Emergency DG hire - BTS outage, Kanpur cluster', hsn: '997319' },
-    advance: { v: '600402', circle: 'UP East', inv: 'SKP/PI/26-27/014', date: '24/09/2026', from: '01/10/2026', to: '31/10/2026', base: 200000, gl: '2722011 &middot; Advance to suppliers - opex', desc: 'Advance for DG overhaul - 50% of PO 4500921187', hsn: '998717' },
-    row: { v: '815429', circle: 'Madhya Pradesh', inv: 'Kramank /1759/2026RAMPURA', date: '10/08/2026', from: '10/08/2026', to: '09/08/2027', base: 2492000, noTax: true, gl: '2251003 &middot; ROW restoration charges', desc: 'Restoration charge - Neemuch-Manasa-Bhanpura route', hsn: '-' },
-    sacfa: { v: '246689', circle: 'J&K', inv: 'S20260016392', date: '08/09/2026', from: '08/09/2026', to: '07/09/2027', base: 24000, noTax: true, gl: '2251001 &middot; SACFA clearance fee', desc: 'SACFA clearance - 6 sites', hsn: '-' },
-    legal: { v: '410612', circle: 'Karnataka', inv: 'LEX/26/0233', date: '28/08/2026', from: '01/08/2026', to: '31/08/2026', base: 350000, noTax: true, rcm: true, gl: '4212004 &middot; Legal and professional fees', desc: 'Professional fees - writ petition WP 11873/2026', hsn: '998212', urn: '131·410612·LEGAL007·AUG-26' },
-    caf: { v: '373921', circle: 'Odisha', inv: 'OD/CAF/BAL/2026-27/442', date: '02/09/2026', from: '01/08/2026', to: '31/08/2026', base: 16000, noTax: true, gl: '4745017 &middot; CAF penalty', desc: 'CAF penalty - Aug 2026 audit', hsn: '-' },
-    bsnl: { v: '202546', circle: 'Meghalaya', inv: 'DR20261700000574', date: '30/07/2026', from: '01/07/2026', to: '31/07/2026', base: 526.03, gl: '4671004 &middot; Port charges', desc: 'Port charges - Jul 2026', hsn: '998422' },
-    group: { v: '200014', circle: 'Delhi', inv: 'NXD/26-27/2291', date: '20/09/2026', from: '01/09/2026', to: '30/09/2026', base: 2840000, gl: '4351045 &middot; Colocation charges', desc: 'Rack space and power - Sep 2026', hsn: '997313' },
-    iuc: { v: '202546', circle: 'Meghalaya', inv: 'IUC/MEG/2026/08/114', date: '05/09/2026', from: '01/08/2026', to: '31/08/2026', base: 182080, gl: '4393063 &middot; Interconnect usage charges', desc: 'IUC - Aug 2026 (after deduction)', hsn: '998422' },
-    bank: { v: '517217', circle: 'APO', inv: 'AIRTEL414', date: '04/09/2026', from: '01/08/2026', to: '31/08/2026', base: 18930.84, gl: '9000033 &middot; Bank charges', desc: 'Card and cash handling charges - Aug 2026', hsn: '997113' },
-    apbl: { v: '410455', circle: 'Delhi', ou: 'Airtel Payments Bank Ltd - Delhi', inv: 'VCS/APB/26/0377', date: '22/09/2026', from: '01/09/2026', to: '15/09/2026', base: 412000, gl: '4652011 &middot; Call centre services', desc: 'Inbound call centre - APBL helpline', hsn: '998596' },
-    credit: { v: '600388', circle: 'Karnataka', inv: 'MFL/CN/26-27/021', date: '18/09/2026', from: '01/08/2026', to: '31/08/2026', base: -18000, gl: '4271012 &middot; Bandwidth domestic', desc: 'Credit for SLA breach on CKT-BLR-WF-30112', hsn: '998412' },
-    govt: { v: '535444', circle: 'APO', inv: 'DL/AP/26-27/0630', date: '19/09/2026', from: '01/07/2026', to: '30/09/2026', base: 23355870, igst: true, gl: '4212003 &middot; Authentication charges', desc: 'Aadhaar authentication charges - Q2', hsn: '998399' },
-    tds: { v: '410022', circle: 'Delhi', inv: 'SFS/TDS/26-27/004', date: '23/09/2026', from: '01/08/2026', to: '31/08/2026', base: 9700, noTax: true, gl: '2434101 &middot; TDS rectification', desc: 'TDS deducted at 2% instead of 1% on SFS/2026/0888', hsn: '-' },
-    others: { v: '410022', circle: 'Delhi', inv: 'SFS/2026/0961', date: '26/09/2026', from: '01/09/2026', to: '30/09/2026', base: 485000, gl: '4664060 &middot; Security services', desc: 'Security guarding services - Delhi offices, Sep 2026', hsn: '998525', urn: '111·410022·SECURITY001·SEP-26' }
+    rush: { v: '600402', circle: 'UP East', inv: 'SKP/26-27/118', date: '29/09/2026', base: 54500, gl: '4282010', desc: 'Emergency DG hire - BTS outage, Kanpur cluster' },
+    advance: { v: '600402', circle: 'UP East', inv: 'SKP/PI/26-27/014', date: '24/09/2026', base: 200000, gl: '2722011', desc: 'Advance for DG overhaul - 50% of PO 4500921187' },
+    row: { v: '815429', circle: 'Madhya Pradesh', inv: 'Kramank /1759/2026RAMPURA', date: '10/08/2026', base: 2492000, noTax: true },
+    sacfa: { v: '246689', circle: 'J&K', inv: 'S20260016392', date: '08/09/2026', base: 24000, noTax: true, gl: '2251001' },
+    legal: { v: '410612', circle: 'Karnataka', inv: 'LEX/26/0233', date: '28/08/2026', base: 350000, noTax: true, rcm: true, gl: '4212004', urn: '131·410612·LEGAL007·AUG-26' },
+    caf: { v: '373921', circle: 'Odisha', inv: 'OD/CAF/BAL/2026-27/442', date: '02/09/2026', base: 16000, noTax: true, gl: '4745017' },
+    bsnl: { v: '202546', circle: 'Meghalaya', inv: 'DR20261700000574', date: '30/07/2026', base: 526.03, gl: '4671004' },
+    group: { v: '200014', circle: 'Delhi', inv: 'NXD/26-27/2291', date: '20/09/2026', base: 2840000, gl: '4351045', item: 'ARITM5312', desc: 'Rack space and power - Sep 2026' },
+    iuc: { v: '202546', circle: 'Meghalaya', inv: 'IUC/MEG/2026/08/114', date: '05/09/2026', base: 182080, item: 'NET000838', desc: 'IUC - Aug 2026' },
+    bank: { v: '517217', circle: 'APO', inv: 'AIRTEL414', date: '04/09/2026', base: 18930.84, gl: '9000033', item: 'ARITEM868', desc: 'Card and cash handling charges - Aug 2026' },
+    apbl: { v: '410455', circle: 'Delhi', ou: 'Airtel Payments Bank Ltd - Delhi', inv: 'VCS/APB/26/0377', date: '22/09/2026', base: 412000, gl: '4652011', desc: 'Inbound call centre - APBL helpline' },
+    credit: { v: '600388', circle: 'Karnataka', inv: 'MFL/CN/26-27/021', date: '18/09/2026', base: -18000, gl: '4271012', item: 'NET000832', desc: 'Credit for SLA breach on CKT-BLR-WF-30112' },
+    govt: { v: '535444', circle: 'APO', inv: 'DL/AP/26-27/0630', date: '19/09/2026', base: 23355870, gl: '4212003', igst: true },
+    tds: { v: '410022', circle: 'Delhi', inv: 'SFS/TDS/26-27/004', date: '23/09/2026', base: 9700, noTax: true, gl: '2434101', desc: 'TDS deducted at 2% instead of 1% on SFS/2026/0888' },
+    others: { v: '410022', circle: 'Delhi', inv: 'SFS/2026/0961', date: '26/09/2026', base: 485000, desc: 'Security guarding services - Delhi offices, Sep 2026', urn: '111·410022·SECURITY001·SEP-26' }
   };
   var f = CFG[cid], vend = INV.vendors[f.v], ci = INV.circles[f.circle];
-  var tax = f.noTax ? 0 : Math.round(f.base * 0.18 * 100) / 100, igst = f.igst ? tax : 0, half = f.igst ? 0 : tax / 2, total = f.base + tax;
-  var neg = cid === 'credit';
+  var intra = !f.igst && (!vend.gstin || vend.gstin.slice(0, 2) === ci.gstin.slice(0, 2));
+  var tax = f.noTax ? 0 : Math.round(f.base * 0.18 * 100) / 100, half = tax / 2, total = f.base + tax;
+  var neg = cid === 'credit', dn = cid === 'row' || cid === 'caf';
+  // what the category's input format carries
+  var single = /^(rush|advance|tds)$/.test(cid), basic = /^(bsnl|legal|sacfa|caf|govt)$/.test(cid);
+  var hasDesc = !!f.desc, hasGstins = /^(bank|credit|group|iuc)$/.test(cid), hasItem = !!f.item;
+  var glReq = /^(bsnl|legal|sacfa|caf|bank|credit|group)$/.test(cid), initiator = /^(rush|advance|tds|bsnl|legal)$/.test(cid);
+  var F = function (label, value, o) { o = o || {}; o.label = label; o.value = value; return UI.field(o); };
 
-  var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [['Invoice family', 'Rush / AP (document-wise)'], ['Sub-category', UI.esc(c.name)], ['Approval', UI.esc(c.approval)], ['SLA', c.sla],
-    ['Invoice type', UI.esc(c.invType)], ['Payment term', UI.esc(c.term)], ['Pay group', UI.esc(c.payGroup)], ['Pay alone', UI.esc(c.payAlone)]] }),
-    UI.row([UI.textlink({ label: 'Change category', iconLeft: 'chevLeft', go: 'inv-03' })])] });
+  var head = UI.row([UI.p('<b>' + UI.esc(c.name) + '</b> &middot; AP (approved on the portal, then booked)', {}), UI.textlink({ label: 'Change category', iconLeft: 'chevLeft', go: 'inv-03' }),
+    UI.tbc("AP categories are submitted by Airtel users on the vendor's behalf; to be confirmed by Airtel (BRD Step 1 has vendors submitting every category)")]);
 
-  var onBehalf = partner ? '' : UI.section({ title: 'Submitting for', body: [UI.grid(3, [
-    UI.field({ label: 'Circle (operating unit)', type: R.id === 'circle' ? 'readonly' : 'select', value: UI.esc(f.circle) + ' &middot; ' + UI.esc(f.ou || ci.ou), required: true, hint: 'Identified from the legal entity, bill-to address and first-party GSTIN on the invoice' }),
-    UI.field({ label: 'Vendor (on behalf of)', type: 'lookup', value: UI.esc(vend.name) + ' (' + f.v + ')', required: true, hint: 'Includes alternate and short names in the supplier master' }),
-    UI.field({ label: 'Submitted by', type: 'readonly', value: UI.esc(R.name) + ' &middot; ' + R.user })])] });
+  // Airtel users submit AP invoices on the vendor's behalf
+  var onBehalf = UI.section({ title: 'Submitting for', body: [UI.grid(3, [
+    F('Vendor', UI.esc(vend.name) + ' &middot; ' + f.v, { type: 'lookup', required: true })])] });
 
-  var checks = '';
-  if (err) checks = UI.alert({ tone: 'red', title: cid === 'row' || cid === 'caf' ? '3 errors need correction before you can submit.' : '4 errors need correction before you can submit.', text: 'Correct the fields marked in red and validate again. Incomplete invoices cannot be submitted.' });
-  else if (ok) checks = UI.alert({ tone: 'ok', title: 'All checks passed.', text: 'Mandatory fields and documents present, vendor active, vendor site valid, not booked or under processing in AP, checklist passed' + (force ? ', NFA amount matches the invoice' : '') + '.' });
-
-  /* --------------------------------- category-specific fields */
-  var extra = [], docs = [], note = '';
-  if (cid === 'rush' || cid === 'tds') extra = [UI.field({ label: cid === 'tds' ? 'Rectification reason' : 'Rush reason', type: 'select', value: cid === 'tds' ? 'Higher TDS rate deducted' : 'Site outage - emergency service', required: true, src: 'green', hint: cid === 'tds' ? 'Same input format as Rush (client note on the approved HLD)' : 'Must be one of the predefined Rush scenarios', error: err && cid === 'rush' ? 'Select a Rush reason.' : '' }),
-    UI.field({ label: 'One-time NFA already used (Rs)', type: 'readonly', value: '0.00 of 5,00,000.00', src: 'blue', hint: 'For a one-time approved NFA the value already used is checked; the request must come from a user of the same circle' })];
-  if (cid === 'advance') extra = [UI.options({ label: 'Advance type', required: true, items: [{ label: 'PO advance', on: true }, { label: 'Non-PO advance' }] }),
-    UI.field({ label: 'PO number', type: 'lookup', value: '4500921187', required: true, src: 'green', hint: 'Mandatory for a PO advance' }),
-    UI.field({ label: 'PO value / advance term', type: 'readonly', value: 'Rs 4,00,000.00 &middot; 50% advance', src: 'grey' }),
-    UI.field({ label: 'Pro-forma check', type: 'readonly', value: err ? 'Pro-forma Rs 2,40,000.00 is not 50% of the PO value' : 'Pro-forma Rs 2,00,000.00 = 50% of PO value', src: 'blue', error: err ? 'The pro-forma must agree with the advance terms of the PO.' : '' }),
-    UI.options({ label: 'Sub-category', required: true, items: [{ label: 'Opex', on: true }, { label: 'Capex' }], hint: 'Decides the GL code' })];
-  if (cid === 'row') extra = [
-    UI.field({ label: 'Route name (as per CWIP)', value: 'Neemuch-Manasa-Bhanpura', required: true, src: 'green' }), UI.field({ label: 'ENFA number', value: 'General/6036/275856', required: true, src: 'green' }),
-    UI.field({ label: 'Business NFA number', value: 'Business/6031/88929', src: 'green' }), UI.field({ label: 'Category', type: 'select', value: 'Restoration charge', required: true, src: 'green', hint: 'Rent, restoration, supervision, licence fee - several payouts can come on one demand note' }),
-    UI.field({ label: 'Locator code', value: '61023.TNGC.3077608.CONT1221', src: 'green' }), UI.field({ label: 'Beneficiary', value: 'CMO Nagar Panchayat Parishad Rampura', src: 'green' }),
-    UI.field({ label: 'Section length (m)', value: '500', src: 'green' }), UI.field({ label: 'FF / Homes', type: 'select', value: 'FF', src: 'green' }), UI.field({ label: 'PO number', value: '10006643, 10006680', src: 'green' }),
-    UI.options({ label: 'Reverse charge (RCM) eligible', required: true, items: [{ label: 'No', on: true }, { label: 'Yes' }], hint: 'Checked against the authority on the demand note' }),
-    UI.field({ label: 'NFA value cap', type: 'readonly', value: 'Rs 25,00,000.00 &middot; used Rs 0.00', src: 'grey', hint: 'Booking cannot exceed the NFA value' }), ''];
-  if (cid === 'sacfa') extra = [UI.field({ label: 'SACFA ID', value: 'SACFA/JK/2026/16392', required: true, src: 'green' }), UI.field({ label: 'Application ID (snapshot 1)', value: 'APP-2026-0918841', required: true, src: 'green' }), UI.field({ label: 'Site count (snapshot 1)', value: '6', src: 'green' }),
-    UI.field({ label: 'Payable amount (snapshot 2)', type: 'readonly', value: '24,000.00', src: 'blue', hint: 'Must match the amount on the input sheet' }), UI.field({ label: 'Item code', type: 'readonly', value: 'NET000915', src: 'grey' }), ''];
-  if (cid === 'legal') extra = [UI.options({ label: 'Partner type', required: true, items: [{ label: 'Empanelled advocate (reverse charge)', on: true }, { label: 'CA firm (GST on invoice)' }] }),
-    UI.field({ label: 'Initiator name', value: 'K Raghavendra', required: true, src: 'green' }), UI.field({ label: 'Initiator OLM ID', value: 'B0KAL221', required: true, src: 'green' }),
-    UI.field({ label: 'Days since invoice date', type: 'readonly', value: '34 days (limit 60)', src: 'blue', hint: 'Advocate invoices are processed within 60 days of the invoice date' }), UI.tbc('Reverse-charge limit for advocate invoices: 60 days (Legal) or 45 days (checklist 17)'), ''];
-  if (cid === 'caf') extra = [UI.field({ label: 'Challan number', value: 'CHL/OD/2026/7712', required: true, src: 'green' }), UI.field({ label: 'Payable as per challan', type: 'readonly', value: '16,000.00', src: 'blue', hint: 'The final payable amount is taken from the challan copy' }), ''];
-  if (cid === 'bsnl') extra = [UI.field({ label: 'Charge type', type: 'select', value: 'Port charges', required: true, src: 'green', hint: 'Port, infrastructure, leased-line circuit or TDSAT' }), UI.field({ label: 'Initiator name', value: 'Y Bisht', required: true, src: 'green' }), UI.field({ label: 'Initiator OLM ID', value: 'B0212762', required: true, src: 'green' })];
-  if (cid === 'group') extra = [UI.field({ label: 'IUT code (segment 6)', value: '611', required: true, src: 'green', hint: 'Booked in segment 6 of the accounting code' }), UI.field({ label: 'Item code', type: 'lookup', value: 'ARITM5312', required: true, src: 'green' }),
-    UI.field({ label: 'Product name', value: 'Colocation', src: 'green' }), UI.field({ label: 'Line item name', value: 'Rack space and power', src: 'green' }), UI.field({ label: 'LSI', value: 'LSI-88120', src: 'green' }),
-    UI.field({ label: 'Books', type: 'readonly', value: 'BAL (force approval)', src: 'blue', hint: 'APBL books follow the DOA' })];
-  if (cid === 'iuc') extra = [UI.field({ label: 'Cost circle / BAL circle', value: 'Meghalaya / NESA', required: true, src: 'green' }), UI.field({ label: 'Operator circle', value: 'BSNL Meghalaya (BU 4417)', src: 'green' }), UI.field({ label: 'Due date', type: 'date', value: '05/10/2026', src: 'green' }),
-    UI.field({ label: 'Invoice base / deduction', value: '1,84,220.00 / 2,140.00', required: true, src: 'green' }), UI.field({ label: 'Passed amount', type: 'readonly', value: '1,82,080.00', src: 'blue' }), UI.field({ label: 'PDF invoice reference', value: 'BSNL/MEG/IUC/0826', src: 'green' }),
-    UI.field({ label: 'TDS section (optional)', type: 'select', value: '194J', src: 'green' }), UI.field({ label: 'TDS category (optional)', type: 'select', value: 'TDS_194J_10_4417', src: 'green' }), UI.tbc('TDS section rule and segment 6 value for IUC')];
-  if (cid === 'bank') extra = [UI.field({ label: 'Account number', value: 'XXXXXXXX4471', required: true, src: 'green' }), UI.field({ label: 'UID', value: 'UID-26-0918', src: 'green' }), UI.field({ label: 'PDF password', value: '&bull;&bull;&bull;&bull;&bull;&bull;', src: 'green', hint: 'Some bank invoices are password-protected; the portal opens them for OCR' })];
-  if (cid === 'apbl') extra = [UI.field({ label: 'Cost centre', type: 'lookup', value: 'CC-APB-2201 &middot; Customer care', src: 'green', hint: 'Mandatory for APBL invoices other than group company' }), UI.tbc('Whether cost centre is mandatory on the portal (ERP logic to check)'), ''];
-  if (cid === 'credit') extra = [UI.field({ label: 'Original tax invoice number', value: err ? '' : 'MFL/BLR/26/0874', required: true, src: 'green', error: err ? 'Original tax invoice number is mandatory for a credit note.' : '' }),
-    UI.field({ label: 'Original tax invoice date', type: 'date', value: '14/08/2026', required: true, src: 'green' }), UI.field({ label: 'IUT code', value: '000', src: 'green' })];
-  if (cid === 'govt') extra = [UI.field({ label: 'Approval email', type: 'readonly', value: 'Attached - CFO office, 18-Sep-2026', src: 'blue', hint: 'Govt vendor invoices are force approved against the approval email' }), '', ''];
-  if (cid === 'others') extra = [UI.field({ label: 'Nature of expense', type: 'select', value: 'Facility - security services', required: true, src: 'green' }), '', ''];
-
-  var invNo = UI.field({ label: cid === 'row' || cid === 'caf' ? 'Demand note number' : neg ? 'Credit note number' : 'Invoice number', value: err && (cid === 'row' || cid === 'caf') ? 'E1/293/PALWANCHA/AIRTELOFC/ROADCUTTING/DEMANDNOTICE/2026-27' : UI.esc(f.inv), required: true, src: 'green', wrap: true,
-    error: err ? (cid === 'row' || cid === 'caf' ? 'The number has 59 characters; Oracle accepts 50. It will be booked as E1/293/PALWANCHA/AIRTELOFC/ROADCUTTING/DEMANDNOTIC (unique part at the start: left 50) - needs CFR approval.' : 'Invoice number has 18 characters. GST invoices allow at most 16.') : '',
-    hint: err ? '' : (cid === 'row' || cid === 'caf' ? 'Numbers over 50 characters are trimmed by the prefix / suffix rule after OCR matching' : 'Converted to upper case; must match the invoice copy') });
-
+  /* --------------------------------- invoice details: the columns of the category's input format */
+  var numLabel = dn ? 'Demand note number' : neg ? 'Credit note number' : 'Invoice number';
+  var numErr = !err ? '' : dn ? 'The number has 59 characters; Oracle accepts 50. It is booked shortened by the prefix / suffix rule, with CFR approval.' : 'GST invoice numbers allow at most 16 characters.';
   var details = UI.section({ title: 'Invoice Details', collapsible: true, body: [UI.grid(3, [
-    UI.field({ label: 'Operating unit / BU code', type: 'readonly', value: UI.esc(f.ou || ci.ou) + ' &middot; BU ' + ci.bu, src: 'grey', hint: 'The BU code must belong to the circle of the booking' }),
-    UI.field({ label: 'Airtel GSTIN (bill to)', type: 'select', value: ci.gstin, required: !f.noTax, src: 'grey' }),
-    UI.field({ label: 'Supplier name / number', type: 'readonly', value: UI.esc(vend.name) + ' &middot; ' + f.v, src: 'grey', hint: 'Matched to the Oracle supplier master, including alternate names' }),
-    UI.field({ label: 'Supplier site', type: 'readonly', value: vend.site, src: 'grey', hint: 'Derived from the Quality Plan; an inactive or blocked site stops the submission', error: err && cid === 'others' ? 'Vendor site DELHI-HO is inactive. Refer to the circle to activate it.' : '' }),
-    UI.field({ label: 'Supplier GSTIN', type: 'readonly', value: vend.gstin || 'Not registered (authority)', src: 'grey' }),
-    invNo,
-    UI.field({ label: neg ? 'Credit note date' : 'Invoice date', type: 'date', value: err && !(cid === 'row' || cid === 'caf') ? '03/10/2026' : f.date, required: true, src: 'green', error: err && !(cid === 'row' || cid === 'caf') ? 'Future dates are not allowed.' : '', hint: 'Taken only from the invoice copy' }),
-    UI.field({ label: 'Invoice period from', type: 'date', value: f.from, required: true, src: 'green' }),
-    UI.field({ label: 'Invoice period to', type: 'date', value: f.to, required: true, src: 'green' }),
-    UI.field({ label: 'Description', value: UI.esc(f.desc), required: true, src: 'green', wrap: true, hint: 'Nature of the payment' }),
-    UI.field({ label: 'HSN / SAC code', value: f.hsn, required: f.hsn !== '-', src: 'green' }),
-    UI.field({ label: 'Currency', type: 'select', value: cid === 'group' ? 'INR' : 'INR', src: 'green', hint: cid === 'group' || cid === 'credit' ? 'INR or USD; foreign currency takes the exchange rate from the input' : 'As per the invoice; global invoices are supported' }),
-    UI.field({ label: 'Invoice receipt date', type: 'readonly', value: '01-Oct-2026 (today)', src: 'blue' })
-  ]), extra.length ? UI.subhead(UI.esc(c.name) + ' details') : '', extra.length ? UI.grid(3, extra) : ''] });
+    F('Operating unit (circle)', UI.esc(f.ou || ci.ou), { type: R.id === 'circle' ? 'readonly' : 'select', required: true }),
+    F('Vendor site', UI.esc(vend.site), { type: 'select', required: true, error: err && cid === 'others' ? 'Vendor site ' + vend.site + ' is inactive. Refer to the circle to activate it.' : '' }),
+    hasGstins ? F('Airtel GSTIN (bill to)', ci.gstin, { type: 'select', required: true }) : '',
+    hasGstins ? F('Supplier GSTIN', vend.gstin || '-', { type: 'select', required: true }) : '',
+    F(numLabel, err && dn ? 'E1/293/PALWANCHA/AIRTELOFC/ROADCUTTING/DEMANDNOTICE/2026-27' : UI.esc(f.inv), { required: true, wrap: true, error: numErr }),
+    F(dn ? 'Demand note date' : neg ? 'Credit note date' : 'Invoice date', err && !dn ? '03/10/2026' : f.date, { type: 'date', required: true, error: err && !dn ? 'Future dates are not allowed.' : '' }),
+    hasDesc ? F('Description', UI.esc(f.desc), { required: cid !== 'iuc', wrap: true }) : '',
+    cid === 'others' ? F('Nature of expense', 'Facility - security services', { type: 'select', required: true }) : '',
+    f.gl && cid !== 'iuc' ? F('GL code', f.gl, { type: 'lookup', required: glReq }) : '',
+    hasItem ? F('Item code', f.item, { type: 'lookup', required: true }) : ''
+  ])] });
 
-  var irn = vend.irn === 'Yes' ? UI.section({ title: 'E-invoice (IRN)', collapsible: true, collapsed: true, body: [UI.grid(3, [
-    UI.field({ label: 'IRN applicable (supplier master)', type: 'readonly', value: 'Yes', src: 'grey' }), UI.field({ label: 'IRN', type: 'readonly', value: '5c09e1b7...02ad (read from QR)', src: 'blue' }),
-    UI.field({ label: 'QR check', type: 'readonly', value: 'Date, amount and GSTINs match', src: 'blue' })])] }) : '';
+  /* --------------------------------- category inputs (format columns and BRD rules) */
+  var extra = [];
+  if (cid === 'rush') extra = [F('Rush reason', err ? '' : 'Site outage - emergency service', { type: 'select', required: true, error: err ? 'Select a Rush reason.' : '' })];
+  if (cid === 'advance') extra = [UI.options({ label: 'Advance type', required: true, items: [{ label: 'PO advance', on: true }, { label: 'Non-PO advance' }] }),
+    F('PO number', '4500921187', { type: 'lookup', required: true, error: err ? 'The pro-forma amount must agree with the advance terms of this PO.' : '' }),
+    UI.options({ label: 'Opex / capex', required: true, items: [{ label: 'Opex', on: true }, { label: 'Capex' }] })];
+  if (cid === 'row') extra = [F('Route name (as per CWIP)', 'Neemuch-Manasa-Bhanpura'), F('ENFA number', 'General/6036/275856'), F('Business NFA number', 'Business/6031/88929'),
+    F('Category', 'Restoration charge', { type: 'select' }), F('Locator code', '61023.TNGC.3077608.CONT1221'), F('Site', 'EFT-9363'),
+    F('Circle', 'MPCG'), F('Section length (m)', '500'), F('FF / Homes', 'FF', { type: 'select' }),
+    F('Partner name', 'DSP Corporate Solutions Pvt Ltd'), F('Beneficiary', 'CMO Nagar Panchayat Parishad Rampura'), F('PO number', '10006643, 10006680'),
+    F('Remarks (payment mode)', 'NEFT / RTGS', { type: 'select' }), F('Payment terms', 'Immediate', { type: 'select' }), F('Pay group', 'ROW and other Govt payments', { type: 'select' })];
+  if (cid === 'credit') extra = [F('Original tax invoice number', err ? '' : 'MFL/BLR/26/0874', { required: true, error: err ? 'Original tax invoice number is mandatory for a credit note.' : '' }),
+    F('Original tax invoice date', '14/08/2026', { type: 'date', required: true }), F('IUT code', '')];
+  if (cid === 'group') extra = [F('IUT code', '611'), F('Product name', 'Colocation'), F('Line item name', 'Rack space and power'), F('LSI', 'LSI-88120')];
+  if (cid === 'bank') extra = [F('Account number', 'XXXXXXXX4471'), F('UID', 'UID-26-0918'), F('Remarks', 'Lot-2')];
+  if (cid === 'iuc') extra = [F('Type', 'SMS', { type: 'select' }), F('Cost circle / BAL circle', 'Meghalaya / NESA'), F('Operator circle', 'BSNL Meghalaya'),
+    F('BSNL circle / BU', 'MEG / 4417'), F('Invoice period', 'Aug-2026'), F('Due date', '05/10/2026', { type: 'date' }), F('PDF invoice reference', 'BSNL/MEG/IUC/0826'),
+    F('TDS section', '194J', { type: 'select', required: true }), F('TDS tax category', 'TDS_194J_10_4417', { type: 'select', required: true })];
+  if (cid === 'apbl') extra = [F('Cost centre', 'CC-APB-2201 &middot; Customer care', { type: 'lookup' }) + UI.tbc('APBL invoices: whether cost centre is mandatory (ERP logic to check)')];
+  // format columns 'Initiator name' and 'OLM ID': one lookup by OLM ID that fills in the name
+  if (initiator) extra = extra.concat([F('Initiator (OLM ID)', (R.id === 'circle' ? 'B0UPE118' : 'B0UPE204') + ' &middot; Circle operations - ' + UI.esc(f.circle), { type: 'lookup', required: true })]);
+  var extraSec = extra.length ? UI.section({ title: UI.esc(c.name.replace(/ \(.*\)$/, '')) + ' Details', collapsible: true, body: [UI.grid(3, extra)] }) : '';
 
-  var amounts = UI.section({ title: 'Amount Details', collapsible: true, body: [UI.grid(3, [
-    UI.field({ label: 'Base amount (Rs)', value: UI.inr(f.base, 2), required: true, src: 'green', hint: neg ? 'Credit notes are always booked negative, whatever sign the document shows' : cid === 'row' ? 'Base: rent, restoration, application fees; GST and labour charges calculated separately' : '' }),
-    UI.field({ label: 'CGST 9% (Rs)', value: UI.inr(half, 2), src: 'green', state: f.noTax || f.igst ? 'disabled' : '' }),
-    UI.field({ label: 'SGST 9% (Rs)', value: UI.inr(half, 2), src: 'green', state: f.noTax || f.igst ? 'disabled' : '' }),
-    UI.field({ label: 'IGST 18% (Rs)', value: UI.inr(igst, 2), src: 'green', state: f.igst ? '' : 'disabled', hint: f.rcm ? 'Reverse charge: GST is paid by Airtel, not shown on the invoice' : f.noTax ? 'No GST on this document' : f.igst ? 'Supplier and Airtel GSTIN in different states' : '' }),
-    UI.field({ label: 'Total invoice amount (Rs)', type: 'readonly', value: UI.inr(total, 2), src: 'blue', error: err && cid === 'bsnl' ? 'Base plus GST (620.72) does not equal the total on the invoice (621.00).' : '' }),
-    UI.field({ label: 'Amount in words', type: 'readonly', value: 'As read from the invoice - matches', src: 'blue' })]),
-    UI.grid(3, [UI.options({ label: 'Reverse charge (RCM)', items: [{ label: 'No', on: !f.rcm }, { label: 'Yes', on: !!f.rcm }], hint: 'Offered where the service is on the reverse-charge list' }),
-      UI.options({ label: 'Pay alone', items: [{ label: 'No', on: true }, { label: 'Yes' }], hint: c.payAlone === 'No' ? 'Not used for this category' : 'Pay this invoice separately from other invoices of the vendor' }),
-      UI.field({ label: 'TDS section', type: 'readonly', value: cid === 'legal' ? '194J' : f.noTax ? 'Not applied' : '194C', src: 'grey', hint: 'From the TDS master by nature of expense' })])] });
+  /* --------------------------------- amounts, as the format gives them */
+  var taxF = function () {
+    if (f.noTax) return [];
+    return intra ? [F('CGST 9%', UI.inr(half, 2)), F('SGST 9%', UI.inr(half, 2))] : [F('IGST 18%', UI.inr(tax, 2))];
+  };
+  var amtFields = cid === 'row' ? [F('Demand note amount', UI.inr(f.base, 2), { required: true })]
+    : single ? [F('Invoice amount', UI.inr(f.base, 2), { prefix: 'INR', required: true })]
+    : [F(basic ? 'Basic amount' : 'Base amount', UI.inr(f.base, 2), { required: true })].concat(
+        cid === 'iuc' ? [F('Deduction', '2,140.00'), F('Passed amount', UI.inr(f.base, 2), { type: 'readonly' })] : [],
+        taxF(), [F('Total invoice amount', UI.inr(total, 2), { required: true, error: err && cid === 'bsnl' ? 'Basic plus GST (620.72) does not equal the total on the invoice (621.00).' : '' })]);
+  amtFields.push(F('Currency', 'INR', { type: 'select', required: /rush|advance|tds|caf|bank|credit|group|iuc/.test(cid) }));
+  if (cid === 'legal' || cid === 'row') amtFields.push(UI.options({ label: 'Reverse charge (RCM)', items: [{ label: 'No', on: !f.rcm }, { label: 'Yes', on: !!f.rcm }] }));
+  amtFields.push(UI.options({ label: 'Pay alone', items: [{ label: 'No', on: true }, { label: 'Yes' }] }));
+  var amounts = UI.section({ title: 'Amount Details', collapsible: true, body: [UI.grid(3, amtFields),
+    cid === 'iuc' ? UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'g', label: 'GL code' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }],
+      rows: [{ g: '4393063', a: 160240 }, { g: '1229611', a: 21840 }], foot: { g: 'Total', a: f.base } }) : ''] });
 
-  // link to the provision this invoice settles (P&A HLD 5.4.1: open URN lookup from the invoicing portal)
-  var urnSec = f.urn || cid === 'rush' || cid === 'others' || cid === 'legal' || cid === 'bsnl' ? UI.section({ title: 'Provision (URN)', sub: 'Optional - helps settle the matching provision automatically', collapsible: true, body: [UI.grid(3, [
-    UI.field({ label: 'Provision URN', type: 'lookup', value: f.urn ? '<span class="k-urn">' + f.urn + '</span>' : '', placeholder: 'Search open provisions for this vendor', src: 'green', hint: 'Open URNs for this vendor and BU. If no URN is given, the matching engine rebuilds the key from BU, vendor, item code and service month.' }),
-    UI.field({ label: 'Provision balance', type: 'readonly', value: f.urn ? 'Rs ' + UI.inr(f.base, 2) + ' open' : '-', src: 'blue' }),
-    UI.textlink({ label: 'Show open provisions', icon: 'arrowRight', modal: 'urns' })]), partner ? UI.tbc('Visibility of open provisions to partners') : ''] }) : '';
-
-  // approval details: DOA inputs (FDOA) or force approval evidence
-  var appr = UI.section({ title: 'Approval Details', collapsible: true, body: [
-    force ? UI.alert({ tone: 'info', text: 'This category is force approved. An approved General NFA (not a business NFA) or approval email is mandatory, and the NFA approved amount must match the invoice amount (GST may be excluded).' })
-      : UI.alert({ tone: 'info', text: 'Approved on the portal under the DOA before booking. Approvers are resolved from HRMS and the DOA matrix using the requester, opex / capex type, zone or location and the invoice value.' }),
-    UI.grid(3, [
-      UI.field({ label: 'Requester', type: 'lookup', value: R.id === 'circle' ? 'B0UPE118 &middot; Circle operations' : 'B0UPE204 &middot; Circle operations - UP East', required: true, src: 'green' }),
-      UI.field({ label: 'Opex / capex type', type: 'select', value: 'Opex', required: true, src: 'green' }),
-      UI.field({ label: 'Zone / location', type: 'select', value: UI.esc(f.circle) + ' - circle office', required: true, src: 'green' }),
-      UI.field({ label: 'FDOA type (opex head)', type: 'select', value: f.gl.split(' &middot; ')[1] || '', src: 'green' }),
-      force ? UI.field({ label: 'General NFA number', value: cid === 'row' ? 'General/6036/275856' : 'General/6119/281442', required: true, src: 'green', error: err && force ? 'Business NFA numbers are not accepted. Enter the approved General NFA.' : '' })
-        : UI.field({ label: 'Approval route', type: 'readonly', value: total > 500000 ? 'DOA - 2 levels' : 'DOA - 1 level', src: 'blue' }),
-      force ? UI.field({ label: 'NFA approved amount', type: 'readonly', value: 'Rs ' + UI.inr(Math.abs(f.base), 2) + ' - matches', src: 'blue' })
-        : UI.field({ label: 'Approvers (HRMS / DOA)', type: 'readonly', value: total > 500000 ? 'B0APR219, then B0APR030' : 'B0APR219', src: 'blue' })]),
-    UI.tbc('Zone, location and category inputs for DOA initiation to be confirmed with the ERP team')] });
-
-  var bookBody = [UI.grid(3, [
-    UI.field({ label: 'Invoice type', type: 'readonly', value: UI.esc(c.invType), src: 'blue' }),
-    UI.field({ label: 'GL code / item code', type: 'readonly', value: f.gl + (cid === 'group' ? ' &middot; ARITM5312' : ' &middot; from item code list'), src: 'grey', hint: 'From the Quality Plan and the GPA item code list for the nature of expense' }),
-    UI.field({ label: 'Payment term / pay group', type: 'readonly', value: UI.esc(c.term) + ' &middot; ' + UI.esc(cid === 'group' ? 'Network Rent' : c.payGroup), src: 'grey', hint: cid === 'group' ? 'Contractor for foreign currency, RR PREPAID CROSS CHARGE for LAPU, Network Rent otherwise' : 'From the rush / priority logic in the Quality Plan' }),
-    UI.field({ label: 'Inventory org / location', type: 'readonly', value: ci.bu + '-INV &middot; ' + UI.esc(f.circle) + ' office', src: 'grey', hint: 'From the AP master by BU code and Airtel GSTIN (ISD location where the GSTIN is an input service distributor)' }),
-    UI.field({ label: 'GST tax category', type: 'readonly', value: f.noTax ? (f.rcm ? 'RCM_Legal_18' : 'Not applied') : (f.igst ? 'OutState_IGST18' : 'WithinState_GST18'), src: 'blue' }),
-    UI.field({ label: 'GL date', type: 'readonly', value: '01-Oct-2026', src: 'blue', hint: 'If AP is already closed for the month, the GL date is the 1st of the next month' })])];
-  if (cid === 'row') bookBody.push(UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'l', label: 'Booking line' }, { key: 't', label: 'Invoice type' }, { key: 'n', label: 'Number in Oracle' }, { key: 'a', label: 'Amount (Rs)', num: true }],
-    rows: [{ l: 'Base (restoration, rent, application fees)', t: 'STANDARD', n: 'Kramank /1759/2026RAMPURA', a: '24,92,000.00' }, { l: 'GST, where GST applies', t: 'PREPAYMENT', n: 'Right / left 46 characters + "/GST"', a: 'Not applicable' }] }));
-  var book = UI.section({ title: 'Booking Details', sub: 'Derived; booked in AP only after all approvals', collapsible: true, collapsed: !ok, body: bookBody });
+  // optional link to the provision this invoice settles (P&A HLD 5.4.1), for Airtel users
+  var urnSec = (f.urn || /rush|legal|bsnl/.test(cid)) ? UI.section({ title: 'Provision (URN)', sub: 'Optional', collapsible: true, collapsed: !f.urn, body: [UI.grid(3, [
+    F('Provision URN', f.urn ? '<span class="k-urn">' + f.urn + '</span>' : '', { type: 'lookup', placeholder: 'Search open provisions for this vendor' }),
+    UI.textlink({ label: 'Show open provisions', icon: 'arrowRight', modal: 'urns' })]),
+    UI.note({ text: 'If no URN is given, the matching engine rebuilds the key from BU, vendor, item code and service month.' })] }) : '';
 
   var docSets = {
-    rush: [['Tax invoice (PDF)', true], ['Approved NFA or approval email', true], ['Input sheet (prescribed format)', false]],
+    rush: [['Tax invoice (PDF)', true], ['Approved NFA or approval email', true]],
     tds: [['Tax invoice / TDS working (PDF)', true], ['Approval email', true]],
     advance: [['Pro-forma invoice (PDF)', true], ['PO copy', true], ['Approved NFA or approval email', true]],
-    row: [['Demand note copy with stamp and signature', true], ['Approved General NFA and approval mail', true], ['Input sheet (ROW format)', true], ['Translation copy (regional language demand note)', false]],
-    sacfa: [['Saral Sanchar snapshot 1 (application ID, date, site count)', true], ['Saral Sanchar snapshot 2 (payable amount)', true], ['Input sheet', true]],
+    row: [['Demand note copy with stamp and signature', true], ['Approved General NFA and approval email', true], ['Translation copy (regional language demand note)', false]],
+    sacfa: [['Saral Sanchar snapshot 1 (application ID, date, site count)', true], ['Saral Sanchar snapshot 2 (payable amount)', true]],
     caf: [['Challan copy', true], ['Demand from the authority', true], ['NFA or approval email', true]],
     govt: [['Invoice / demand copy', true], ['Approval email', true]],
-    bank: [['Bank invoice (PDF, may be password-protected)', true], ['Input sheet', false]]
+    bank: [['Bank invoice (PDF; give the password if it is protected)', true]]
   };
-  var ds = docSets[cid] || [['Tax invoice (PDF)', true], ['Supporting documents / input sheet', false]];
+  var ds = docSets[cid] || [[neg ? 'Credit note (PDF)' : 'Tax invoice (PDF)', true], ['Supporting documents', false]];
   var docSec = UI.section({ title: 'Documents', collapsible: true, body: [UI.grid(2, ds.map(function (d, i) {
-    return UI.upload({ label: d[0], required: d[1], hint: i === 0 ? 'PDF only; read by OCR' + (vend.irn === 'Yes' ? ' and IRN QR scanning' : '') : '', files: i === 0 ? [{ name: f.inv.replace(/[\/ ]/g, '_') + '.pdf', meta: '318 KB', status: UI.status('Read by OCR', 'ok') }] : i === 1 && !err ? [{ name: force ? 'NFA_General_approved.pdf' : 'Approval_mail.msg', meta: '96 KB' }] : [] });
+    return UI.upload({ label: d[0], required: d[1], files: i === 0 ? [{ name: f.inv.replace(/[\/ ]/g, '_') + '.pdf', meta: '318 KB', status: err ? UI.status('Period not shown on the copy (checklist 14)') : ok ? UI.status('Read by OCR', 'ok') : '' }]
+      : i === 1 && d[1] ? [{ name: /NFA/.test(d[0]) ? 'NFA_General_approved.pdf' : 'Approval_mail.msg', meta: '96 KB' }] : [] });
   }))] });
+
+  // Validate runs the invoice checklist (HLD 5.4) on the OCR output before submission; checks 12 and 13 are confirmed by the PHD team
+  var chk = INV.checklist.map(function (k) {
+    var n = k[0], res = 'pass';
+    if ((n === 10 && vend.irn !== 'Yes') || (n === 17 && !f.rcm) || (n === 18 && !neg) || ((n === 8 || n === 16) && !vend.gstin) || (n === 11 && f.noTax)) res = 'na';
+    if (INV.REVIEW_CHECKS.indexOf(n) >= 0) res = 'manual';
+    if (err && (n === 14 || (n === 3 && !dn) || (n === 2 && !dn) || (n === 7 && cid === 'bsnl') || (n === 18 && neg))) res = 'fail';
+    return { no: n, check: UI.esc(k[1]), source: res === 'manual' ? 'PHD team, after submission' : 'On Validate', result: res };
+  });
+  var passed = chk.filter(function (k) { return k.result === 'pass'; }).length;
+  var chkModal = UI.modal({ id: 'chk', title: 'Invoice', accent: 'Checklist', size: 'wide', body: [UI.checklist({ columns: ['#', 'Check', 'Checked', 'Result', ''], rows: chk })],
+    foot: [UI.button({ label: 'Close', variant: 'primary', close: true })] });
+  var viewChk = UI.textlink({ label: 'View checklist', icon: 'arrowRight', modal: 'chk' });
+  var nErr = ((details + extraSec + amounts).match(/k-ferr/g) || []).length + 1;
+  var checks = err ? UI.alert({ tone: 'red', title: nErr + ' errors need correction before you can submit.', text: 'Correct the fields marked in red, or upload a corrected invoice copy, and validate again.', actions: [viewChk] })
+    : ok ? UI.alert({ tone: 'ok', title: 'All checks passed.', text: passed + ' checklist items passed on the invoice copy' + (vend.irn === 'Yes' ? ', including the IRN QR code' : '') + '. Signature and invoice form are confirmed by the PHD team after submission.', actions: [viewChk] }) : '';
 
   var urns = UI.modal({ id: 'urns', title: 'Open', accent: 'Provisions', size: 'wide', body: [UI.p('Open provisions for ' + UI.esc(vend.name) + ' in BU ' + ci.bu + '. Select the one this invoice settles.', { muted: true }),
     UI.table({ dense: true, pager: false, export: false, select: true, columns: [{ key: 'u', label: 'URN' }, { key: 'm', label: 'Month' }, { key: 'a', label: 'Open balance (Rs)', num: true }, { key: 's', label: 'Status' }],
@@ -179,21 +155,20 @@
     foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Link URN', variant: 'primary', close: true, toast: 'Provision linked to the invoice' })] });
 
   var submitted = UI.modal({ id: 'submitted', open: S === 'submitted', title: neg ? 'Credit note' : 'Invoice', accent: 'Submitted', size: 'narrow', body: [
-    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004872</b>'], ['Status', INV.status('Submitted')], ['Category', UI.esc(c.name)], ['SLA', c.sla]] }),
-    UI.p('Next: the invoice is validated and then ' + (force ? 'force approved against the NFA' : 'routed for approval under the DOA') + '. Only when all approvals are complete is it booked in the Oracle AP module, a barcode generated and the documents attached.', { muted: true })],
+    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004872</b>'], ['Status', INV.status('Submitted')]] }),
+    UI.p('You are notified at every status change.', { muted: true })],
     foot: [UI.button({ label: 'Submit another', go: 'inv-03' }), UI.button({ label: 'Track invoice', variant: 'primary', go: 'inv-09' })] });
 
-  var bar = UI.sticky({ left: [UI.textlink({ label: 'Generate total', icon: 'arrowRight', state: 'validated' })],
-    totals: [['Taxable amount', UI.inr(f.base, 2)], ['Tax amount', UI.inr(tax, 2)], ['Grand total', UI.inr(total, 2)]],
-    right: [UI.button({ label: 'Save', toast: 'Saved as draft' }), ok ? UI.button({ label: 'Submit invoice', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Validate invoice', variant: err ? 'disabled' : 'primary', state: err ? '' : 'validated' })] });
+  var bar = UI.sticky({ totals: [['Total', 'Rs ' + UI.inr(total, 2)]],
+    right: [UI.button({ label: 'Save', toast: 'Saved as draft' }), UI.button({ label: 'Validate', state: 'validated' }),
+      ok ? UI.button({ label: 'Submit invoice', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Submit invoice', variant: 'disabled' })] });
 
   Page.render({
-    id: 'inv-05', roleId: 'vendor', navKey: 'inv-03',
+    id: 'inv-05', roleId: 'circle', navKey: 'inv-03',
     variants: { label: 'Category', param: 'cat', def: cid, items: APS.map(function (x) { return { id: x.id, label: x.name.replace(' (prepayment)', '').replace(' (right of way)', '').replace(' (incl. broadband)', '') }; }) },
     states: [{ id: 'errors', label: 'Validation errors' }, { id: 'validated', label: 'Validated' }, { id: 'submitted', label: 'Submitted' }],
-    rail: { mode: 'form', title: 'Create Invoice', accent: 'Non-PO', back: partner ? 'inv-02' : 'inv-03', text: UI.esc(c.name) + ' &middot; approved on the portal (' + UI.esc(c.approval.toLowerCase()) + '), then booked document-wise in the Oracle EBS AP module.<br><br>Fields marked <span class="k-link">*</span> are mandatory. Incomplete invoices cannot be submitted.' },
-    html: '<div class="k-src-on"><div class="k-legend-src"><span><i class="k-src green"></i>Entered by you</span><span><i class="k-src grey"></i>From master data (Oracle EBS / portal masters)</span><span><i class="k-src blue"></i>Read by OCR or calculated</span></div>' +
-      head + onBehalf + checks + details + irn + amounts + urnSec + appr + book + docSec + bar + '</div>' + urns + submitted
+    rail: { mode: 'form', title: 'Create Invoice', accent: 'Non-PO', back: 'inv-03', text: 'Fields marked <span class="k-link">*</span> are mandatory.' },
+    html: head + onBehalf + checks + details + extraSec + amounts + urnSec + docSec + bar + submitted + chkModal + urns
   });
 })();
 </script>

@@ -17,7 +17,7 @@
         { id: 'pa-04', file: 'pa-04-create-provision.html', name: 'Create provision', desc: 'Single entry: activity drives the scenario; master defaults, validations, duplicate check, URN and journal preview.' },
         { id: 'pa-05', file: 'pa-05-bulk-upload.html', name: 'Bulk upload', desc: 'Template per activity, row-level validation, submit valid rows, other TOCO input formats.' },
         { id: 'pa-06', file: 'pa-06-toco-darts.html', name: 'TOCO / DARTS provisions', desc: 'DARTS feed with Post to ERP, site-level provisions, debit-note provisions and reversals.' },
-        { id: 'pa-07', file: 'pa-07-approvals.html', name: 'Approvals inbox', desc: 'Maker-checker approvals, CFR approvals, notification-only items, SLA and delegation.' },
+        { id: 'pa-07', file: 'pa-07-approvals.html', name: 'Approvals inbox', desc: 'DOA approvals, CFR approvals, notification-only items, SLA and delegation.' },
         { id: 'pa-08', file: 'pa-08-approval-review.html', name: 'Approval review', desc: 'Review one provision: lines, calculation, duplicates, attachments; approve, return or reject.' },
         { id: 'pa-09', file: 'pa-09-provision-detail.html', name: 'Provision detail (URN)', desc: 'One URN end to end: lines, journals, Oracle references, invoices matched, prepaid, ageing, audit.' },
         { id: 'pa-10', file: 'pa-10-journal-posting.html', name: 'Journal posting & errors', desc: 'Staging, GL interface, Journal Import, posting by GPA manager; error queue, retry, reconciliation.' },
@@ -52,7 +52,7 @@
       // Proposed access by role (derived from the approved HLD roles, section 3.3) - to be confirmed by Airtel.
       roles: [
         { id: 'maker', name: 'Business user (maker)', user: 'B0MKR412', desc: 'User departments: raise provisions, act on reminders' },
-        { id: 'checker', name: 'Manager (checker)', user: 'B0CHK155', desc: 'Approves provisions under HRMS / DOA' },
+        { id: 'checker', name: 'Approver (DOA)', user: 'B0CHK155', desc: 'Approves provisions routed to them by the DOA API' },
         { id: 'bfin', name: 'Business finance', user: 'B0BFN017', desc: 'Rule-based inputs, allocation, deferment, review' },
         { id: 'gpa', name: 'GPA analyst', user: 'B0GPA204', desc: 'Provisioning accounting: matching, holds, PBR, masters' },
         { id: 'gpam', name: 'GPA manager', user: 'B0GPM031', desc: 'Posts journals in Oracle (final control gate)' },
@@ -135,6 +135,7 @@
       home: 'inv-02',
       // Partner layout (PO Partner Portal): invoice overview counts and red action links in the rail
       partner: {
+        counts: function (R) { return G.INV && G.INV.railCounts ? G.INV.railCounts(R) : null; },
         stats: [
           { key: 'overall', value: '46', label: 'Overall invoices', go: 'inv-09' },
           { key: 'draft', value: '3', label: 'Draft invoices', go: 'inv-09?state=draft' },
@@ -148,9 +149,9 @@
       },
       // Proposed access by role (derived from the approved HLD, sections 3.3 and 5.1) - to be confirmed by Airtel.
       roles: [
-        { id: 'vendor', name: 'Vendor (partner)', user: 'Shree Ganesh Infra Services', group: 'Partners', layout: 'partner', counts: ['46', '3', '2', '1'], desc: 'Submits and tracks own invoices; responds to information requests' },
-        { id: 'toco', name: 'Central ToCo vendor', user: 'Indus Towers Ltd', group: 'Partners', layout: 'partner', counts: ['318', '1', '1', '2'], desc: 'Centralised ToCo vendor user: bulk locator-wise invoices for all circles' },
-        { id: 'landlord', name: 'Landlord', user: 'R K Estates', group: 'Partners', layout: 'partner', counts: ['14', '0', '0', '0'], desc: 'Landlord GST invoices against paid rent vouchers' },
+        { id: 'vendor', name: 'Vendor (partner)', user: 'Shree Ganesh Infra Services', group: 'Partners', layout: 'partner', desc: 'Submits and tracks own invoices; responds to information requests' },
+        { id: 'toco', name: 'Central ToCo vendor', user: 'Indus Towers Ltd', group: 'Partners', layout: 'partner', desc: 'Centralised ToCo vendor user: bulk locator-wise invoices for all circles' },
+        { id: 'landlord', name: 'Landlord', user: 'R K Estates', group: 'Partners', layout: 'partner', desc: 'Landlord GST invoices against paid rent vouchers' },
         { id: 'circle', name: 'Circle user', user: 'B0UPE118', group: 'Airtel users', desc: 'Submits for own circle only, on behalf of vendors and landlords; resolves locator issues' },
         { id: 'central', name: 'Central user', user: 'B0CEN021', group: 'Airtel users', desc: 'Submits invoices for any circle' },
         { id: 'phd', name: 'PHD / AP analyst', user: 'B0PHD307', group: 'Airtel users', desc: 'Work queues, invoice review, exceptions, booking monitor; force approvals with NFA evidence' },
@@ -168,7 +169,7 @@
         'inv-02': ['*', '', 'Partners see the invoice overview; Airtel users a role-based work page'],
         'inv-03': ['vendor toco landlord circle central phd', '', 'Circle users submit for their own circle only; PHD / AP resubmit ToCo invoices that failed for internal reasons'],
         'inv-04': ['vendor toco circle central phd', '', 'Central ToCo invoices from the centralised vendor user; other PM sub-categories mostly by circle users'],
-        'inv-05': ['vendor circle central phd', '', ''],
+        'inv-05': ['circle central phd', '', 'Airtel users only, submitting on the vendor\'s behalf (to be confirmed by Airtel)'],
         'inv-06': ['landlord circle central phd', '', 'Circle users submit on behalf of landlords who do not use the portal'],
         'inv-07': ['circle central phd tax', '', 'Tax team: GST non-compliance debit notes only'],
         'inv-08': ['vendor toco circle central phd tax', '', 'Tax team: GST non-compliance file only'],
@@ -293,6 +294,16 @@
     tipEl.style.left = x + 'px'; tipEl.style.top = y + 'px';
   }
   function wire() {
+    // requirement tags: shows 'to be confirmed' markers and system-behaviour notes; remembered across pages, ?reqs=1 / ?reqs=0 sets it
+    var rq = param('reqs');
+    try { if (rq) localStorage.setItem('wf-reqs', rq === '1' ? '1' : ''); else rq = localStorage.getItem('wf-reqs'); } catch (x) { /* storage unavailable */ }
+    document.body.classList.toggle('show-reqs', rq === '1');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-wf-reqs]'), function (c) { c.checked = rq === '1'; });
+    document.addEventListener('change', function (e) {
+      if (!(e.target.matches && e.target.matches('[data-wf-reqs]'))) return;
+      document.body.classList.toggle('show-reqs', e.target.checked);
+      try { localStorage.setItem('wf-reqs', e.target.checked ? '1' : ''); } catch (x) { /* storage unavailable */ }
+    });
     document.addEventListener('change', function (e) {
       var sel = e.target.closest && e.target.closest('[data-wf-role]');
       if (!sel) return;
@@ -322,6 +333,7 @@
       '</select></label><a href="' + (modKey(mod)) + '-access.html">Who sees what</a>';
   }
 
+  var REQS = '<label class="wn-toggle" title="Show the to-be-confirmed markers and system-behaviour notes"><input type="checkbox" data-wf-reqs hidden><i></i>Requirement tags</label>';
   function bar(o, mod, page, roleHtml) {
     var i = mod.pages.indexOf(page), prev = i >= 0 ? mod.pages[i - 1] : null, next = i >= 0 ? mod.pages[i + 1] : null, st = param('state');
     // optional variant row (e.g. invoice category, kept in the query string as o.variants.param)
@@ -334,9 +346,9 @@
     if (states && variants) document.body.classList.add('has-variants');
     states = variants + states;
     return '<div class="wn"><span class="wn-brand">Non-PO Portal<small>wireframes</small></span><span class="wn-mod">' + UI.esc(mod.title) + '</span>' +
-      '<span class="wn-page">' + UI.esc(page.id.toUpperCase() + '  ' + page.name) + '</span>' + (roleHtml || '') +
+      '<span class="wn-page">' + UI.esc(page.id.toUpperCase() + '  ' + page.name) + '</span>' + (roleHtml || '') + REQS +
       '<span class="wn-sp"></span><span class="wn-links">' + (prev ? '<a href="' + prev.file + '">&lsaquo; ' + UI.esc(prev.name) + '</a>' : '') +
-      '<a href="../index.html">All pages</a>' + (next ? '<a href="' + next.file + '">' + UI.esc(next.name) + ' &rsaquo;</a>' : '') + '</span></div>' + states;
+      '<a href="../open-points.html">Open points</a><a href="../index.html">All pages</a>' + (next ? '<a href="' + next.file + '">' + UI.esc(next.name) + ' &rsaquo;</a>' : '') + '</span></div>' + states;
   }
 
   G.Page = {
@@ -375,7 +387,7 @@
         var args = { logo: '../assets/logo.png', home: mod.home, user: chosen ? chosen.user : (o.user || (R ? R.user : '')), role: chosen ? chosen.name : (o.role || (R ? R.name : '')), menu: menu, rail: o.rail || {}, content: content,
           icons: mod.icons.filter(function (t) { return !t.go || can(t.go); }).map(function (t) { return { icon: t.icon, label: t.label, go: t.go, toast: t.toast, badge: t.badge }; }) };
         if (lay === 'partner') {
-          var P = mod.partner || {}, cnt = (R && R.counts) || [];
+          var P = mod.partner || {}, cnt = o.statCounts || (P.counts && P.counts(R)) || (R && R.counts) || [];
           args.stats = (P.stats || []).map(function (s, i) { return { value: cnt[i] != null ? cnt[i] : s.value, label: s.label, go: s.go, active: o.stat === s.key }; });
           args.links = (P.links || []).filter(function (l) { return can(l.go.split('?')[0]); }).map(function (l) { return { label: l.label, go: l.go, active: l.go === (o.navKey || o.id) }; });
         }
@@ -421,7 +433,8 @@
       wire();
     },
     renderIndex: function () {
-      var html = '<div class="sh-content">' + UI.page({ title: 'Non-PO Portal', accent: 'Wireframes', sub: 'One page per screen. Provisioning & Actualization first, then Non-PO Invoicing. Sample data is illustrative.' });
+      var html = '<div class="sh-content">' + UI.page({ title: 'Non-PO Portal', accent: 'Wireframes', sub: 'One page per screen. Provisioning & Actualization first, then Non-PO Invoicing. Sample data is illustrative.' }) +
+        '<p><a class="k-link" href="open-points.html">Open points for Airtel to confirm</a></p>';
       Object.keys(MODULES).forEach(function (k) {
         var mod = MODULES[k];
         html += '<div class="ix-mod"><h2>' + UI.esc(mod.title) + '</h2><p>' + (mod.pages.length ? mod.pages.length + ' pages' : 'Next, after Provisioning & Actualization') +
@@ -429,8 +442,54 @@
           mod.pages.map(function (p) { return '<a class="ix-card" href="' + k + '/' + p.file + '"><b><span>' + p.id.toUpperCase() + '</span>' + UI.esc(p.name) + '</b><small>' + UI.esc(p.desc) + '</small></a>'; }).join('') + '</div></div>';
       });
       document.title = 'Non-PO Portal wireframes';
-      document.body.insertAdjacentHTML('beforeend', '<div class="wn"><span class="wn-brand">Non-PO Portal<small>wireframes</small></span><span class="wn-sp"></span></div><div class="app">' + html + '</div>');
+      document.body.insertAdjacentHTML('beforeend', '<div class="wn"><span class="wn-brand">Non-PO Portal<small>wireframes</small></span><span class="wn-sp"></span><span class="wn-links"><a href="open-points.html">Open points</a></span></div><div class="app">' + html + '</div>');
       wire();
+    },
+    // every 'to be confirmed' marker (UI.tbc) in the page files and module data files, plus access notes; read when the page opens, so it follows the pages
+    renderOpenPoints: function () {
+      var RX = /UI\.tbc\(\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/g;
+      var RXD = /\{\s*id:\s*'([^']+)'[^{}]*?\bname:\s*'([^']+)'[^{}]*?\bpage:\s*'([^']+)'[^{}]*?\btbc:\s*'((?:[^'\\]|\\.)*)'/g;
+      var unesc = function (s) { return s.replace(/\\(.)/g, '$1'); };
+      var html = '<div class="sh-content">' + UI.page({ title: 'Open', accent: 'Points', sub: 'Everything marked to be confirmed by Airtel, collected from the wireframe pages when this page opens. Each link opens the page with Requirement tags on, so the marker shows in place.' }) +
+        '<div id="op-body">' + UI.p('Collecting the open points...', { muted: true }) + '</div></div>';
+      document.title = 'Open points - Non-PO Portal wireframes';
+      document.body.insertAdjacentHTML('beforeend', '<div class="wn"><span class="wn-brand">Non-PO Portal<small>wireframes</small></span><span class="wn-page">Open points</span><span class="wn-sp"></span><span class="wn-links"><a href="index.html">All pages</a></span></div><div class="app">' + html + '</div>');
+      wire();
+      var keys = Object.keys(MODULES).filter(function (k) { return MODULES[k].pages.length; }), jobs = [];
+      keys.forEach(function (k) {
+        MODULES[k].pages.forEach(function (p) { jobs.push({ k: k, p: p, url: k + '/' + p.file }); });
+        jobs.push({ k: k, data: true, url: k + '/' + k + '-data.js' });
+      });
+      var body = document.getElementById('op-body'), snap = G.OPEN_POINTS_SNAPSHOT;
+      Promise.all(jobs.map(function (j) { return fetch(j.url, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.text() : ''; }, function () { return ''; }).then(function (t) { j.text = t; }, function () { j.text = ''; }); })).then(function () {
+        // served: read the files live; opened from a folder (the browser blocks reading files): use the snapshot from build/open_points.py
+        var live = jobs.some(function (j) { return j.text; });
+        if (!live && !snap) { body.innerHTML = UI.alert({ tone: 'warn', title: 'The page files could not be read.', text: 'Open this page through the preview server (for example http://localhost:8765/open-points.html), or run build/open_points.py to write the snapshot.' }); return; }
+        var out = '', total = 0;
+        keys.forEach(function (k) {
+          var mod = MODULES[k], items = [], byText = {};
+          var add = function (text, where) {
+            if (!byText[text]) { byText[text] = { text: text, where: [] }; items.push(byText[text]); }
+            if (byText[text].where.indexOf(where) < 0) byText[text].where.push(where);
+          };
+          var link = function (p, q, label) { return '<a class="k-link" href="' + k + '/' + p.file + '?' + (q ? q + '&' : '') + 'reqs=1">' + p.id.toUpperCase() + ' ' + UI.esc(label || p.name) + '</a>'; };
+          jobs.filter(function (j) { return j.k === k; }).forEach(function (j) {
+            var m, cats = [], tbc = [], s = live ? null : (snap.files[j.url] || {});
+            if (s) { cats = s.cats || []; tbc = s.tbc || []; }
+            else if (j.data) { RXD.lastIndex = 0; while ((m = RXD.exec(j.text))) cats.push([m[1], m[2], m[3], unesc(m[4])]); }
+            else { RX.lastIndex = 0; while ((m = RX.exec(j.text))) tbc.push(unesc(m[1] != null ? m[1] : m[2])); }
+            cats.forEach(function (c) { var pg = pageOf(c[2]); if (pg) add(c[3], link(pg, 'cat=' + c[0], pg.name + ' (' + c[1] + ')')); });
+            if (!j.data) tbc.forEach(function (t) { add(t, link(j.p)); });
+          });
+          var acc = '<a class="k-link" href="' + k + '/' + k + '-access.html">Who sees which page</a>';
+          if (mod.accessNote) add('Page access by role: ' + mod.accessNote, acc);
+          mod.pages.forEach(function (p) { var n = (mod.access[p.id] || [])[2]; if (n && /confirm/i.test(n)) add('Access to ' + p.name + ': ' + n, acc); });
+          total += items.length;
+          out += UI.section({ title: mod.title, sub: items.length + ' open points', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'n', label: '#' }, { key: 't', label: 'Open point' }, { key: 'w', label: 'Where' }],
+            rows: items.map(function (it, i) { return { n: String(i + 1), t: '<div class="op-t">' + UI.esc(it.text) + '</div>', w: '<div class="op-w">' + it.where.join('') + '</div>' }; }) })] });
+        });
+        body.innerHTML = UI.p(total + ' open points across ' + keys.length + ' modules' + (live ? '.' : ', from the snapshot built on ' + UI.esc(snap.built) + ' (opened from a folder; run build/open_points.py after changing markers).'), { muted: true }) + out;
+      });
     }
   };
 })(window);

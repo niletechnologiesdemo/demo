@@ -14,10 +14,11 @@
 (function () {
   var m = /[?&]urn=([^&]*)/.exec(location.search);
   var p = (m && PA.find(decodeURIComponent(m[1]))) || PA.find('121·410387·AMCDG004·AUG-26');
-  var a = p.activity, isToco = !!p.locator, posted = !!p.erpDoc;
+  var a = p.activity, isToco = !!p.locator, posted = !!p.erpDoc, isDoa = p.status === 'DOA exception';
+  var pre = /^(Draft|Submitted|Returned|DOA exception)$/.test(p.status);
 
   var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [
-    ['URN', '<span class="k-urn">' + UI.esc(p.urn) + '</span>'], ['Status', UI.status(p.status, PA.statusTone(p.status))],
+    [pre ? 'Reference' : 'URN', pre ? p.ref + ' <span class="k-muted">(URN after approval)</span>' : '<span class="k-urn">' + UI.esc(p.urn) + '</span>'], ['Status', UI.status(p.status, PA.statusTone(p.status))],
     ['Provision', 'Rs ' + UI.inr(p.amount, 2)], ['Open balance', 'Rs ' + UI.inr(p.balance, 2)],
     ['Activity', UI.esc(a.id + ' ' + a.name)], ['Scenario', 'S' + p.scenario + ' ' + UI.esc(p.scenarioName)],
     ['Vendor', UI.esc(p.vendor) + ' (' + p.vcode + ')'], ['BU', UI.esc(p.bu + ' ' + p.buName) + (isToco ? ' &middot; locator ' + p.locator : '')],
@@ -40,7 +41,9 @@
 
   var audit = UI.timeline({ columns: ['Event', 'Date', 'By', 'Detail'], rows: [
     { status: 'Raised', state: 'done', date: p.raised || '-', action: UI.esc(p.maker) },
-    { status: 'Approved', state: 'done', date: p.raised || '-', action: 'B0CHK155', reason: 'Maker-checker' },
+    isDoa ? { status: 'No DOA approvers', state: 'error', date: p.raised, action: 'DOA API', reason: 'Flagged; GPA team alerted' } : null,
+    isDoa ? { status: 'Approval', state: 'pending', reason: 'Starts when the provision is retriggered' } : null,
+    pre ? null : { status: 'Approved', state: 'done', date: p.raised || '-', action: 'B0CHK155, B0CHK090', reason: 'DOA approvers' },
     posted ? { status: 'Posted in Oracle', state: 'done', date: p.raised, action: 'B0GPM031 (GPA manager)', reason: p.erpDoc } : null,
     p.actual ? { status: 'Invoice matched', state: 'done', date: '18-Sep-2026', action: 'Matching engine', reason: 'Exact URN match' } : null,
     p.actual ? { status: 'Force match', state: 'done', date: '26-Sep-2026', action: 'B0GPA204', reason: 'Invoice without URN; vendor and item agree; period Aug-26' } : null,
@@ -52,7 +55,7 @@
 
   var prepaid = p.act === 'ACT-0063' ? UI.p('Prepaid schedule applies.') : UI.alert({ tone: 'info', text: 'No prepaid portion: the matched invoices cover only this provision\'s service month. Future-period amounts on an invoice are moved to prepaid and released monthly (see Prepaid & deferment).' });
 
-  var actions = UI.btns([
+  var actions = isDoa ? UI.alert({ tone: 'red', title: 'No approvers returned by DOA.', text: UI.esc(p.doa) + '. Retrigger once the matrix is set up.', actions: [UI.button({ label: 'Retrigger approval', size: 'sm', toast: 'Sent to the DOA API again' })] }) : pre ? '' : UI.btns([
     UI.button({ label: 'Link PO', modal: 'po' }), UI.button({ label: 'Place on hold', modal: 'hold' }),
     UI.button({ label: 'Request force closure', modal: 'closure' }), UI.button({ label: 'Request force reversal', modal: 'reversal' })]);
 
@@ -69,7 +72,7 @@
 
   Page.render({
     id: 'pa-09', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst', navKey: 'pa-03',
-    html: UI.page({ title: 'Provision', accent: 'Detail', crumb: '<a data-go="pa-03">Provision register</a> &rsaquo; ' + UI.esc(p.urn), sub: 'Open any URN from the register. Try a TOCO URN, for example <a class="k-link" href="pa-09-provision-detail.html?urn=' + encodeURIComponent('111·412885·ELEC-AOR·AUG-26·11106') + '">111·412885·ELEC-AOR·AUG-26·11106</a>.' }) +
+    html: UI.page({ title: 'Provision', accent: 'Detail', crumb: '<a data-go="pa-03">Provision register</a> &rsaquo; ' + UI.esc(p.key), sub: 'Open any URN from the register. Try a TOCO URN, for example <a class="k-link" href="pa-09-provision-detail.html?urn=' + encodeURIComponent('111·412885·ELEC-AOR·AUG-26·11106') + '">111·412885·ELEC-AOR·AUG-26·11106</a>.' }) +
       head + actions + '<div class="k-gap"></div>' +
       UI.tabs({ id: 'pd', tabs: [
         { id: 'journals', label: 'Journals', count: posted ? 2 : 0, body: [journals, UI.p('Oracle ledger balance and platform open balance can differ for reversal-mode provisions: Oracle reverses on the 1st, the platform keeps the URN open until actualized or aged out.', { muted: true, small: true })] },

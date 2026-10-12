@@ -32,7 +32,7 @@
     footLeft: canEdit ? [UI.button({ label: 'Add scenario', icon: 'plus', size: 'sm', modal: 'edit' })] : [] });
 
   var lists = UI.cols('1:1', [UI.box({ title: 'Reverse-charge service list (checklist 17)', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 's', label: 'Service' }, { key: 'd', label: 'Max days before booking' }],
-      rows: [{ s: 'Legal services by an advocate', d: '45 ' + UI.tbc('60 days per Legal rules') }, { s: 'Services by Government (ROW, where applicable)', d: '45' }, { s: 'Sponsorship services', d: '45' }] })] })],
+      rows: [{ s: 'Legal services by an advocate', d: '45 ' + UI.tbc('Reverse-charge time limit for advocate invoices: 45 days (checklist 17) or 60 days (Legal rules)') }, { s: 'Services by Government (ROW, where applicable)', d: '45' }, { s: 'Sponsorship services', d: '45' }] })] })],
     [UI.box({ title: 'Airtel offices and group entities (checklist 15)', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'e', label: 'Entity' }, { key: 'n', label: 'Offices' }], rows: [{ e: 'Bharti Airtel Ltd', n: '214' }, { e: 'Bharti Hexacom Ltd', n: '22' }, { e: 'Airtel Payments Bank Ltd', n: '31' }, { e: 'Nxtra Data Ltd', n: '12' }] })] })]);
 
   var num = UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Rule' }, { key: 'w', label: 'Applied' }, { key: 'e', label: 'Example' }],
@@ -46,7 +46,7 @@
       { r: 'Debit note suffixes', w: '/DN, /DNF, /REV; then /DN2, /DN3 ...', e: 'GTL/AP/DUPLICATE/JUL26/DN' }] });
 
   var bypass = UI.stack([UI.kv({ cols: 2, items: [['Applies to', 'Central ToCo invoices uploaded to PM'], ['First attempt', 'Validation bypass flag N'], ['Second attempt', 'Flag Y, only when PM reports "Duplicate Invoices" or "Potential Duplicate Invoices"'], ['Any other error', 'Whole invoice removed from the upload and returned']] }),
-    UI.tbc('Control or approval required before a bypass'), UI.p('Every bypass is logged in the audit trail and the Duplicate bypass log report.', { muted: true, small: true })]);
+    UI.tbc('Central ToCo duplicate bypass (flag Y): whether a control or approval is needed before it is used'), UI.p('Every bypass is logged in the audit trail and the Duplicate bypass log report.', { muted: true, small: true })]);
 
   var gstr = UI.kv({ cols: 2, items: [['Previous-year invoice received after 30 September', 'Checked in GSTR-2A; found: process, not found: reject with remarks'], ['Received 1 April to 30 September', 'Processed as usual'], ['Invoice more than one year old', 'Booked only if found in GSTR-2A / 2B; activity period over a year needs BPA head approval'], ['Applies to', 'Tax invoices only']] });
 
@@ -57,8 +57,8 @@
   Page.render({
     id: 'inv-22', roleId: 'p2p', states: [{ id: 'pending', label: 'Change waiting for checker' }],
     html: UI.page({ title: 'Invoicing', accent: 'Configuration', sub: 'Rules held as configuration so a sub-category can be added or a rule changed without altering the core flow. Values are provided by the business before build.' }) +
-      UI.tabs({ id: 'c', active: S === 'pending' ? 'tol' : 'matrix', tabs: [{ id: 'matrix', label: 'Category matrix', body: [matrix, UI.tbc('Add TDS rectification input in AP (same format as Rush, force approval) - client note')] }, { id: 'tol', label: 'Tolerances', body: [tol] }, { id: 'sla', label: 'SLA & escalation', body: [sla] },
-        { id: 'rush', label: 'Rush scenarios', body: [UI.p('Sample scenarios; the business provides the predefined Rush scenario list before build.', { muted: true, small: true }), rush] }, { id: 'lists', label: 'Checklist lists', body: [UI.p('Sample entries; the Finance and Tax teams provide the lists.', { muted: true, small: true }), lists] }, { id: 'num', label: 'Document numbers', body: [num] }, { id: 'bypass', label: 'Duplicate bypass', body: [bypass] }, { id: 'gstr', label: 'GSTR-2A / 2B', body: [gstr, UI.tbc('Whether one GSTR-2A rule or both apply (PM rule vs Central ToCo rule)')] }] }) + edit
+      UI.tabs({ id: 'c', active: S === 'pending' ? 'tol' : 'matrix', tabs: [{ id: 'matrix', label: 'Category matrix', body: [matrix, UI.tbc('TDS rectification category: input format same as Rush and force approved (client note on the HLD)')] }, { id: 'tol', label: 'Tolerances', body: [tol] }, { id: 'sla', label: 'SLA & escalation', body: [sla] },
+        { id: 'rush', label: 'Rush scenarios', body: [UI.p('Sample scenarios; the business provides the predefined Rush scenario list before build.', { muted: true, small: true }), rush] }, { id: 'lists', label: 'Checklist lists', body: [UI.p('Sample entries; the Finance and Tax teams provide the lists.', { muted: true, small: true }), lists] }, { id: 'num', label: 'Document numbers', body: [num] }, { id: 'bypass', label: 'Duplicate bypass', body: [bypass] }, { id: 'gstr', label: 'GSTR-2A / 2B', body: [gstr, UI.tbc('GSTR-2A check for previous-year invoices: whether the PM rule, the Central ToCo rule or both apply')] }] }) + edit
   });
 })();
 </script>

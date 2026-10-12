@@ -22,9 +22,10 @@
   var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [
     ['Reference', '<b>' + r.ref + '</b>'], ['Status', INV.status(r.status) + (r.reason ? '<div class="k-small">' + UI.esc(r.reason) + '</div>' : '')], ['Invoice', '<span class="wrap-any">' + UI.esc(r.inv) + '</span> &middot; ' + r.date], ['Amount', INV.rs(r.total, r.cur) + (r.gst ? ' <span class="k-muted k-small">(base ' + UI.inr(r.base, 2) + ')</span>' : '')],
     ['Vendor', UI.esc(r.vendor) + ' (' + r.v + ')'], ['Category', UI.esc(r.c.name) + ' &middot; ' + INV.FAM[r.fam]], ['Circle', UI.esc(r.circle) + ' &middot; ' + UI.esc(ci.ou)], ['Service period', r.period || '-'],
-    ['Submitted', (r.recv || r.on) + (partner ? '' : ' by ' + (r.v === '600124' || r.v === '412885' || r.v === '700845' ? 'the partner' : 'B0UPE118 (circle user)'))], ['SLA', r.sla ? UI.esc(r.sla) : r.c.sla], ['Approval', UI.esc(r.c.approval)], ['Booked in', pm ? 'Oracle PM module (locator-wise)' : 'Oracle AP module']] })] });
+    ['Submitted', (r.recv || r.on) + (partner ? '' : ' by ' + (['vendor', 'toco', 'landlord'].filter(function (id) { return INV.partnerCode({ id: id }) === r.v && INV.PARTNER_CATS[id].indexOf(r.cat) >= 0; }).length ? 'the partner' : 'B0UPE118 (circle user)'))], ['SLA', r.sla ? UI.esc(r.sla) : r.c.sla], ['Approval', UI.esc(r.c.approval)], ['Booked in', pm ? 'Oracle PM module (locator-wise)' : 'Oracle AP module']] })] });
 
-  var acts = partner ? (r.status === 'RFI' ? UI.btns([UI.button({ label: 'Respond', variant: 'primary', go: 'inv-10?state=respond' })]) : '')
+  var acts = partner ? (r.status === 'RFI' ? UI.btns([UI.button({ label: 'Respond', variant: 'primary', go: 'inv-10?state=respond' })])
+      : r.status === 'Rejected' && INV.canSubmit(R, r.cat) ? UI.btns([UI.button({ label: 'Submit as a new invoice', variant: 'primary', go: r.c.page + '?cat=' + r.cat })]) : '')
     : UI.btns([r.status === 'Under Validation' || r.status === 'Submitted' ? UI.button({ label: 'Open review', variant: 'primary', go: INV.review(r.ref) }) : '',
       r.status === 'Hold' ? UI.button({ label: 'Re-trigger', toast: 'Invoice re-triggered for validation and booking' }) : UI.button({ label: 'Put on hold', modal: 'hold' }),
       UI.button({ label: 'Download all documents', icon: 'download', toast: 'Documents downloaded' })].filter(Boolean));

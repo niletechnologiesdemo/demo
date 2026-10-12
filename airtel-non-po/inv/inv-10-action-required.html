@@ -12,47 +12,45 @@
 <script src="inv-data.js"></script>
 <script>
 (function () {
-  /* Respond to information requests (RFI), correct and resubmit, replace documents, locator issues returned to the submitter (HLD 5.9). */
+  /* Respond to information requests (RFI) by re-uploading documents; for Airtel users also locator issues in their circle (HLD 5.9). */
   var S = Page.state(), R = INV.role('vendor'), rid = R.id, partner = INV.isPartner(R);
   var respond = S === 'respond' || S === 'resubmitted';
-  var items = partner ? (rid === 'toco' ? [INV.find('NPO-2627-004702')] : rid === 'landlord' ? [] : [INV.find('NPO-2627-004790'), INV.find('NPO-2627-004733')])
+  var items = partner ? INV.mine(INV.partnerCode(R)).filter(function (r) { return r.status === 'RFI'; })
     : [INV.find('NPO-2627-004790'), INV.find('NPO-2627-004733'), INV.find('NPO-2627-004847'), INV.find('NPO-2627-004702')].filter(function (r) { return rid !== 'circle' || r.circle === 'UP East'; });
   if (S === 'empty') items = [];
   var rfi = INV.find('NPO-2627-004790');
 
+  // RFI (as in the PO portal): the PHD team gives a reason from a list and comments; the submitter can only re-upload documents
   var what = function (r) {
-    if (r.status === 'RFI') return { need: 'Information requested', you: 'Upload a corrected invoice copy that shows the invoice period, then resubmit', go: 'inv-10?state=respond', act: 'Respond' };
-    if (/Locator/.test(r.reason)) return partner ? { need: 'On hold - locator', you: 'No action needed from you: the circle team is arranging the locator. The invoice is re-triggered when it is active.', go: INV.detail(r.ref), act: 'View' }
-      : { need: 'On hold - locator', you: 'Arrange or activate the locator, then re-trigger the invoice', go: 'inv-15', act: 'Fix locator' };
-    return { need: 'Information requested', you: 'Confirm the invoice period from the cost sheet', go: 'inv-10?state=respond', act: 'Respond' };
+    if (r.status === 'RFI') return { reason: r.reason, note: r.rfiNote || 'Re-upload the invoice copy or supporting documents', go: 'inv-10?state=respond', act: 'Respond' };
+    return { reason: 'On hold - locator', note: 'Arrange or activate the locator, then re-trigger the invoice', go: 'inv-15', act: 'Fix locator' };
   };
-  var list = UI.table({ dense: true, columns: [{ key: 'ref', label: 'Reference no.' }, { key: 'inv', label: 'Invoice' }, { key: 'need', label: 'Needed' }, { key: 'you', label: 'What to do' }, { key: 'on', label: 'Since', nowrap: true }, { key: '_acts', label: '' }],
+  var list = UI.table({ dense: true, columns: [{ key: 'ref', label: 'Reference no.' }, { key: 'inv', label: 'Invoice' }, { key: 'reason', label: 'Reason' }, { key: 'note', label: 'Comments' }, { key: 'on', label: 'Since', nowrap: true }, { key: '_acts', label: '' }],
     rows: items.map(function (r) { var w = what(r); return { ref: '<a class="k-link" href="' + INV.detail(r.ref) + '">' + r.ref + '</a>', inv: '<div class="w-160 wrap-any">' + UI.esc(r.inv) + '</div><div class="k-muted k-small">' + UI.esc(r.c.name) + (partner ? '' : ' &middot; ' + UI.esc(r.vshort)) + '</div>',
-      need: INV.status(r.status) + '<div class="k-small">' + UI.esc(w.need) + '</div><div class="k-muted k-small">' + UI.esc(r.reason) + '</div>', you: UI.esc(w.you), on: r.on, _acts: [{ icon: 'edit', label: w.act, go: w.go }] }; }),
-    pager: false, empty: 'Nothing needs your action. Invoices returned to you for information, or held with a reason you can fix, appear here.' });
+      reason: INV.status(r.status) + '<div class="k-small">' + UI.esc(w.reason) + '</div>', note: '<div class="w-230">' + UI.esc(w.note) + '</div>', on: r.on, _acts: [{ icon: 'edit', label: w.act, go: w.go }] }; }),
+    pager: false, empty: 'Nothing needs your action. Invoices returned to you for more information appear here.' });
 
-  var thread = UI.list({ items: [
-    { icon: 'chat', title: 'PHD team - UP East <span class="k-muted k-small">(RFI)</span>', text: 'Checklist 14: the invoice or activity period is mandatory and is not shown on the invoice copy. Please upload a corrected copy showing the period 01-Aug-2026 to 31-Aug-2026.', meta: '26-Sep 14:20' },
-    S === 'resubmitted' ? { icon: 'send', title: 'You', text: 'Corrected copy uploaded; period added on the invoice.', meta: '01-Oct 10:05' } : null].filter(Boolean) });
-
+  var sent = S === 'resubmitted';
   var form = respond ? UI.split({ left: [
-    UI.section({ title: 'Information requested', body: [UI.kv({ cols: 2, items: [['Reference', rfi.ref], ['Invoice', UI.esc(rfi.inv) + ' &middot; ' + UI.esc(rfi.c.name)], ['Requested by', 'PHD team - UP East'], ['Reply by', '03-Oct-2026 (SLA paused while with you)']] }), thread] }),
+    UI.section({ title: 'Information requested', body: [UI.kv({ cols: 2, items: [['Reference', rfi.ref], ['Invoice', UI.esc(rfi.inv) + ' &middot; ' + UI.esc(rfi.c.name)],
+      ['Reason', UI.esc(rfi.reason)], ['Requested by', UI.esc(rfi.rfiBy) + ' on ' + rfi.on]] }),
+      UI.list({ items: [{ icon: 'chat', title: UI.esc(rfi.rfiBy) + ' <span class="k-muted k-small">(comments)</span>', text: UI.esc(rfi.rfiNote), meta: '26-Sep 14:20' }] })] }),
     UI.section({ title: 'Your response', body: [
-      UI.grid(2, [UI.field({ label: 'Invoice period from', type: 'date', value: '01/08/2026', required: true, src: 'green' }), UI.field({ label: 'Invoice period to', type: 'date', value: '31/08/2026', required: true, src: 'green' })]),
-      UI.field({ label: 'Message to the PHD team', type: 'area', value: S === 'resubmitted' ? 'Corrected copy uploaded; period added on the invoice.' : '', placeholder: 'Explain what you changed', wrap: true }),
-      UI.upload({ label: 'Replace invoice copy (PDF)', required: true, hint: 'The new copy is read by OCR again and the full checks re-run', files: [{ name: 'SGIS_26-27_0409_rev1.pdf', meta: '402 KB', status: UI.status('Read by OCR', 'ok') }] }),
-      UI.alert({ tone: 'ok', text: 'OCR now reads the period 01-Aug-2026 to 31-Aug-2026. Invoice number, date and amounts are unchanged.' })] })],
+      UI.upload({ label: 'Invoice copy (PDF)', hint: 'Replace the copy you submitted', files: [{ name: 'SGIS_26-27_0409_rev1.pdf', meta: '402 KB', status: UI.status('Read by OCR', 'ok') }] }),
+      UI.upload({ label: 'Supporting documents', files: [] }),
+      UI.alert({ tone: 'ok', text: 'Read by OCR: invoice number, date and amounts match your submission. The PHD team checks the signature and stamp again.' }),
+      UI.note({ text: 'Invoice details cannot be changed in an RFI response; only the invoice copy and supporting documents can be uploaded again. The new copy is read by OCR and the checks run again.' })] })],
     right: [UI.pdf({ selected: 'Corrected invoice copy', count: 'Page 1 of 1', doc: UI.docMock({ title: 'TAX INVOICE', qr: true, stamp: 'SGIS', fields: [['Invoice No', rfi.inv], ['Date', rfi.date], ['Supplier GSTIN', rfi.gstin], ['Bill to', 'Bharti Airtel Ltd, UP East'], ['Period', '01-Aug-2026 to 31-Aug-2026']],
       lines: [['Tower rental - 4 sites', '997212', '4', '24,050.00', '96,200.00']], totals: [['Taxable', '96,200.00'], ['CGST 9%', '8,658.00'], ['SGST 9%', '8,658.00'], ['Total', '1,13,516.00']] }) }),
-      '<div class="k-review-actions">' + UI.btns([UI.button({ label: 'Cancel', variant: 'text', state: 'none' }), UI.button({ label: 'Resubmit', variant: 'primary', state: 'resubmitted' })], { end: true }) + '</div>'] }) : '';
+      '<div class="k-review-actions">' + UI.btns([UI.button({ label: 'Cancel', variant: 'text', go: 'inv-10' }), UI.button({ label: 'Resubmit', variant: 'primary', state: 'resubmitted' })], { end: true }) + '</div>'] }) : '';
 
-  var done = UI.modal({ id: 'done', open: S === 'resubmitted', title: 'Invoice', accent: 'Resubmitted', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Reference', rfi.ref], ['Status', INV.status('Under Validation')], ['SLA', 'Restarted from today'], ['Notified', 'PHD team - UP East']] })],
+  var done = UI.modal({ id: 'done', open: sent, title: 'Invoice', accent: 'Resubmitted', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Reference', rfi.ref], ['Status', INV.status('Under Validation')], ['Notified', UI.esc(rfi.rfiBy)]] })],
     foot: [UI.button({ label: 'Back to list', go: 'inv-10' }), UI.button({ label: 'Track invoice', variant: 'primary', go: 'inv-09' })] });
 
   Page.render({
     id: 'inv-10', roleId: 'vendor', stat: 'action',
     states: [{ id: 'respond', label: 'Responding to an RFI' }, { id: 'resubmitted', label: 'Resubmitted' }, { id: 'empty', label: 'Nothing to do' }],
-    html: UI.page({ title: 'Action', accent: 'Required', sub: partner ? 'Invoices returned to you for more information, or held with a reason. Correct and resubmit; the invoice keeps its reference number.' : 'Invoices you submitted that were returned for information, and locator issues in your circle.' }) +
+    html: UI.page({ title: 'Action', accent: 'Required', sub: partner ? 'Invoices returned to you for more information. Upload a corrected invoice copy or supporting documents and resubmit; the invoice keeps its reference number.' : 'Invoices you submitted that were returned for information, and locator issues in your circle.' }) +
       (respond ? form : list) + done
   });
 })();

@@ -12,7 +12,9 @@
 <script src="inv-data.js"></script>
 <script>
 (function () {
-  /* One locator-wise form for every Property Manager sub-category (HLD 6.2). The sub-category is the "cat" variant. */
+  /* One locator-wise form for every Property Manager sub-category (HLD 6.2). The sub-category is the "cat" variant.
+     Fields follow the PM input format for the sub-category (requirements/PM_Invoice_format); booking fields
+     (opex head, TDS, GST category, payment term, invoice month) are derived and are not shown to the submitter. */
   var S = Page.state(), R = INV.role('vendor'), partner = INV.isPartner(R);
   var PMS = INV.cats.filter(function (c) { return c.fam === 'PM'; });
   var cid = Page.param('cat') || (R.id === 'toco' ? 'central-toco' : 'local-toco'), c = INV.cat(cid);
@@ -21,138 +23,126 @@
 
   // sample invoice per sub-category
   var CFG = {
-    'central-toco': { v: '412885', circle: 'Delhi', inv: 'IND/26/SEP/80412', date: '25/09/2026', from: '01/09/2026', to: '30/09/2026', base: 1563754.58, nLines: 42, desc: 'Tower rent, energy and diesel - Sep 2026', hsn: '997212', month: 'OCT-2026' },
-    'local-toco': { v: '600124', circle: 'UP East', inv: 'SGIS/26-27/0425', date: '27/09/2026', from: '01/09/2026', to: '30/09/2026', base: 40000, nLines: 3, desc: 'Tower rental and energy charges - Sep 2026', hsn: '997212', month: 'OCT-2026' },
-    'bw-dom': { v: '600388', circle: 'Karnataka', inv: 'MFL/BLR/26/0912', date: '15/09/2026', from: '01/07/2026', to: '30/09/2026', base: 323525.42, nLines: 3, desc: 'Domestic bandwidth - Q2 FY 2026-27', hsn: '998412', month: 'SEP-2026' },
-    'bw-intl': { v: '588599', circle: 'Delhi', inv: '2026090025021', date: '04/09/2026', from: '01/09/2026', to: '30/09/2026', base: 1500, nLines: 1, desc: 'IP port charges - Sep 2026', hsn: '-', month: 'SEP-2026', cur: 'USD' },
-    'll-eb': { v: '211609', circle: 'Goa', inv: 'OPRT-123/25-41', date: '01/09/2026', from: '01/08/2026', to: '31/08/2026', base: 10000, nLines: 1, desc: 'Electricity reimbursement - Aug 2026', hsn: '996911', month: 'OCT-2026' },
-    'll-sd': { v: '700845', circle: 'Maharashtra', inv: 'RKE/SD/26-27/002', date: '20/09/2026', from: '01/10/2026', to: '30/09/2035', base: 162000, nLines: 1, desc: 'Rental security deposit - Hinjewadi Phase 2 site', hsn: '-', month: 'OCT-2026', noTax: true },
-    'govt-dn': { v: '830114', circle: 'Maharashtra', inv: 'PMC/PT/2026-27/118844', date: '12/09/2026', from: '01/04/2026', to: '31/03/2027', base: 46200, nLines: 1, desc: 'Property tax demand - Kothrud site', hsn: '-', month: 'OCT-2026', noTax: true },
-    'diesel': { v: '600402', circle: 'UP East', inv: 'SKP/26-27/109', date: '20/09/2026', from: '01/09/2026', to: '15/09/2026', base: 78000, nLines: 3, desc: 'Diesel supplied to sites - 1 to 15 Sep 2026', hsn: '271019', month: 'OCT-2026' }
+    'central-toco': { v: '412885', circle: 'Delhi', inv: 'IND/26/SEP/80412', date: '25/09/2026', from: '01/09/2026', to: '30/09/2026', base: 1563754.58, nLines: 42, desc: 'Tower rent, energy and diesel - Sep 2026' },
+    'local-toco': { v: '600124', circle: 'UP East', inv: 'SGIS/26-27/0425', date: '27/09/2026', from: '01/09/2026', to: '30/09/2026', base: 40000, nLines: 3, desc: 'Tower rental and energy charges - Sep 2026' },
+    'bw-dom': { v: '600388', circle: 'Karnataka', inv: 'MFL/BLR/26/0912', date: '15/09/2026', from: '01/07/2026', to: '30/09/2026', base: 323525.42, nLines: 3, desc: 'Domestic bandwidth - Q2 FY 2026-27' },
+    'bw-intl': { v: '588599', circle: 'Delhi', inv: '2026090025021', date: '04/09/2026', from: '01/09/2026', to: '30/09/2026', base: 1500, nLines: 1, desc: 'SEP-2026-CKT-ID', cur: 'USD' },
+    'll-eb': { v: '211609', circle: 'Goa', inv: 'OPRT-123/25-41', date: '01/09/2026', base: 10000, nLines: 1 },
+    'll-sd': { v: '700845', circle: 'Maharashtra', inv: 'RKE/SD/26-27/002', date: '20/09/2026', base: 162000, nLines: 1, noTax: true },
+    'govt-dn': { v: '830114', circle: 'Maharashtra', inv: 'PMC/PT/2026-27/118844', date: '12/09/2026', base: 46200, nLines: 1, noTax: true },
+    'diesel': { v: '600402', circle: 'UP East', inv: 'SKP/26-27/109', date: '20/09/2026', from: '01/09/2026', to: '15/09/2026', base: 78000, nLines: 3, desc: 'Diesel supplied to sites - 1 to 15 Sep 2026' }
   };
   var f = CFG[cid], vend = INV.vendors[f.v], ci = INV.circles[f.circle];
   var tax = f.noTax || f.cur ? 0 : Math.round(f.base * 0.18 * 100) / 100, half = tax / 2, total = f.base + tax;
+  var intra = !vend.gstin || vend.gstin.slice(0, 2) === ci.gstin.slice(0, 2);
   var money = function (n) { return (f.cur ? f.cur + ' ' : '') + UI.inr(n, 2); };
+  // which header fields the sub-category's input format carries
+  var hasPeriod = !!f.from, hasDesc = !!f.desc, hasCur = /toco|bw-/.test(cid), hasGstin = /toco|bw-dom/.test(cid) || cid === 'diesel';
+  var hasSite = /ll-|govt-dn|bw-intl/.test(cid), taxSplit = !f.noTax && !f.cur && cid !== 'll-eb';
 
-  var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [['Invoice family', 'Property Manager (locator-wise)'], ['Sub-category', UI.esc(c.name)], ['Approval route', UI.esc(c.approval)], ['SLA', c.sla]] }),
-    UI.row([UI.textlink({ label: 'Change category', iconLeft: 'chevLeft', go: 'inv-03' }), c.tbc ? UI.tbc(c.tbc) : '', cid === 'central-toco' ? UI.tbc('Standard input format to be agreed for each ToCo vendor working sheet') : ''])] });
+  var head = UI.row([UI.p('<b>' + UI.esc(c.name) + '</b> &middot; Property Manager', {}), UI.textlink({ label: 'Change category', iconLeft: 'chevLeft', go: 'inv-03' }),
+    c.tbc ? UI.tbc(c.tbc) : '', cid === 'central-toco' ? UI.tbc('Central ToCo: a standard input format to be agreed for each ToCo vendor working sheet') : '']);
 
+  // Airtel users submit on behalf of a vendor; Central ToCo carries the circle on each line instead
   var onBehalf = partner ? '' : UI.section({ title: 'Submitting for', body: [UI.grid(3, [
-    UI.field({ label: 'Circle', type: R.id === 'circle' ? 'readonly' : 'select', value: UI.esc(f.circle) + ' &middot; ' + ci.ou, required: true, hint: R.id === 'circle' ? 'Circle users can submit for their own circle only' : '' }),
-    UI.field({ label: 'Vendor (on behalf of)', type: 'lookup', value: UI.esc(vend.name) + ' (' + f.v + ')', required: true }),
-    UI.field({ label: 'Submitted by', type: 'readonly', value: UI.esc(R.name) + ' &middot; ' + R.user })])] });
+    cid === 'central-toco' ? '' : UI.field({ label: 'Circle', type: R.id === 'circle' ? 'readonly' : 'select', value: UI.esc(f.circle) + ' &middot; ' + ci.ou, required: true }),
+    UI.field({ label: 'Vendor', type: 'lookup', value: UI.esc(vend.name) + ' &middot; ' + f.v, required: true })])] });
 
-  // pre-submission and validation messages
+  // Validate runs the invoice checklist (HLD 5.4) on the OCR output before submission; checks 12 and 13 are confirmed by the PHD team
+  var chk = INV.checklist.map(function (k) {
+    var n = k[0], res = 'pass';
+    if ((n === 10 && vend.irn !== 'Yes') || n === 17 || n === 18 || ((n === 8 || n === 16) && !vend.gstin) || (n === 11 && (f.noTax || f.cur))) res = 'na';
+    if (INV.REVIEW_CHECKS.indexOf(n) >= 0) res = 'manual';
+    if (err && (n === 2 || n === 3 || n === 14 || (n === 7 && cid !== 'bw-intl'))) res = 'fail';
+    return { no: n, check: UI.esc(k[1]), source: res === 'manual' ? 'PHD team, after submission' : 'On Validate', result: res };
+  });
+  var count = function (x) { return chk.filter(function (k) { return k.result === x; }).length; };
+  var chkModal = UI.modal({ id: 'chk', title: 'Invoice', accent: 'Checklist', size: 'wide', body: [UI.checklist({ columns: ['#', 'Check', 'Checked', 'Result', ''], rows: chk })],
+    foot: [UI.button({ label: 'Close', variant: 'primary', close: true })] });
+  var viewChk = UI.textlink({ label: 'View checklist', icon: 'arrowRight', modal: 'chk' });
   var checks = '';
-  if (err) checks = UI.alert({ tone: 'red', title: '4 errors need correction before you can submit.', text: 'Correct the fields and lines marked in red and validate again. Nothing is booked until every line passes.' });
-  else if (loc) checks = UI.alert({ tone: 'red', title: 'Locator not found for 1 line - the whole invoice is withheld.', text: 'Line 3 (site UPE-BBK-0077) has no locator in the PN Site Attribute report or the locator master. The invoice is shared with the circle / P2P team to arrange the locator; once it is active, re-trigger the invoice. Lines are never booked partly.', actions: [UI.textlink({ label: 'Locator exceptions', icon: 'arrowRight', go: 'inv-15' })] });
-  else if (ok) checks = UI.alert({ tone: 'ok', title: 'All checks passed.', text: 'Mandatory fields and documents present, vendor active, vendor site valid, not booked or under processing in PM, checklist passed, every line has an active locator, amounts within tolerance.' });
+  var nErr = 3 + (cid === 'bw-intl' ? 0 : 1) + (/toco|bw-dom|ll-eb/.test(cid) ? 1 : 0);
+  if (err) checks = UI.alert({ tone: 'red', title: nErr + ' errors need correction before you can submit.', text: 'Correct the fields and lines marked in red, or upload a corrected invoice copy, and validate again.', actions: [viewChk] }) +
+    (vend.irn === 'Yes' ? UI.alert({ tone: 'red', title: 'IRN applicable but IRN not available.', text: 'The amount in the QR code does not match the invoice copy. Upload a revised invoice copy.' }) : '');
+  else if (loc) checks = UI.alert({ tone: 'red', title: 'Locator not found for line 3 - the whole invoice is withheld.', text: 'The circle or P2P team arranges the locator; then re-trigger the invoice.', actions: [UI.textlink({ label: 'Locator exceptions', icon: 'arrowRight', go: 'inv-15' })] });
+  else if (ok) checks = UI.alert({ tone: 'ok', title: 'All checks passed.', text: count('pass') + ' checklist items passed on the invoice copy' + (vend.irn === 'Yes' ? ', including the IRN QR code' : '') + '. Signature and invoice form are confirmed by the PHD team after submission.', actions: [viewChk] });
 
-  // invoice details
-  var invNoErr = err ? 'Invoice number has 18 characters. GST invoices allow at most 16, and only ( ) / - and \\ as special characters.' : '';
+  var invNoErr = err ? 'GST invoice numbers allow at most 16 characters, and only ( ) / - and \\ as special characters.' : '';
   var details = UI.section({ title: 'Invoice Details', collapsible: true, body: [UI.grid(3, [
-    UI.field({ label: 'Airtel GSTIN (bill to)', type: 'select', value: ci.gstin + ' &middot; ' + UI.esc(f.circle), required: true, src: 'grey' }),
-    UI.field({ label: 'Supplier GSTIN', type: 'readonly', value: vend.gstin || 'Not registered (overseas)', src: 'grey' }),
-    UI.field({ label: 'Vendor name', type: 'readonly', value: UI.esc(vend.name), src: 'grey', hint: 'Matched to GST master data by supplier GSTIN, using the alternate vendor name list where names differ' }),
-    UI.field({ label: 'Invoice number', value: err ? f.inv + '/A1' : f.inv, required: true, src: 'green', error: invNoErr, hint: err ? '' : 'Converted to upper case; must match the invoice copy (OCR)' }),
-    UI.field({ label: 'Invoice date', type: 'date', value: err ? '03/10/2026' : f.date, required: true, src: 'green', error: err ? 'Future dates are not allowed.' : '' }),
-    UI.field({ label: 'Invoice month', type: 'readonly', value: f.month, src: 'blue', hint: /bw-/.test(cid) ? 'Month of the invoice date' : 'Current booking month' }),
-    UI.field({ label: 'Service period from', type: 'date', value: f.from, required: true, src: 'green' }),
-    UI.field({ label: 'Service period to', type: 'date', value: f.to, required: true, src: 'green' }),
-    UI.field({ label: 'Type of invoice / description', value: UI.esc(f.desc), required: true, src: 'green' }),
-    UI.field({ label: 'HSN / SAC code', value: f.hsn, required: f.hsn !== '-', src: 'green' }),
-    UI.field({ label: 'Currency', type: 'select', value: f.cur || 'INR', src: 'green', hint: f.cur ? 'Exchange rate 83.42 on 04-Sep-2026 (Oracle corporate rate)' : '' }),
-    UI.field({ label: 'PAN', type: 'readonly', value: vend.gstin ? vend.gstin.slice(2, 12) : '-', src: 'blue', hint: cid === 'll-eb' || cid === 'local-toco' ? 'Mandatory for EB and Local ToCo; matched with the PAN in the supplier GSTIN' : 'Matched with the PAN in the supplier GSTIN' })
-  ]), cid === 'central-toco' ? UI.grid(3, [
-    UI.field({ label: 'Invoice type (read by OCR)', type: 'readonly', value: 'No change', src: 'blue' }),
-    UI.field({ label: 'Discount on invoice (Rs)', type: 'readonly', value: '4,200.00', src: 'blue', hint: 'Indus / Infratel "No change" invoices: the discount is spread equally over the invoice lines and the discount lines removed' }),
-    UI.field({ label: 'Discount per line (Rs)', type: 'readonly', value: '102.439 x 41 lines', src: 'blue', hint: 'Rounded to three decimals; zero-value lines removed; base re-checked against the original' })]) : ''] });
-
-  var irn = vend.irn === 'Yes' ? UI.section({ title: 'E-invoice (IRN)', collapsible: true, body: [UI.grid(3, [
-    UI.field({ label: 'IRN applicable (supplier master)', type: 'readonly', value: 'Yes', src: 'grey' }),
-    UI.field({ label: 'IRN', type: 'readonly', value: '8a41c7e2...91f0 (read from QR)', src: 'blue' }),
-    UI.field({ label: 'Acknowledgement date', type: 'readonly', value: '25-Sep-2026', src: 'blue' })]),
-    err ? UI.alert({ tone: 'red', title: 'IRN applicable but IRN not available.', text: 'The invoice amount read from the QR code does not match the invoice copy. Upload a revised invoice copy.' })
-      : UI.alert({ tone: 'ok', text: 'QR code read. Invoice date, invoice amount, supplier GSTIN and Airtel GSTIN match the invoice.' })] }) : '';
+    UI.field({ label: 'Invoice number', value: err ? f.inv + '/A1' : f.inv, required: true, error: invNoErr }),
+    UI.field({ label: 'Invoice date', type: 'date', value: err ? '03/10/2026' : f.date, required: true, error: err ? 'Future dates are not allowed.' : '' }),
+    hasGstin ? UI.field({ label: 'Supplier GSTIN', type: 'select', value: vend.gstin, required: true }) : '',
+    hasSite ? UI.field({ label: 'Vendor site', type: 'select', value: UI.esc(vend.site), required: true }) : '',
+    hasPeriod ? UI.field({ label: 'Service period from', type: 'date', value: f.from, required: true }) : '',
+    hasPeriod ? UI.field({ label: 'Service period to', type: 'date', value: f.to, required: true }) : '',
+    hasDesc ? UI.field({ label: cid === 'bw-intl' ? 'Comments' : 'Type of invoice / description', value: UI.esc(f.desc), required: true }) : '',
+    cid === 'bw-intl' ? UI.field({ label: 'Payment term', type: 'select', value: 'Controlled Expense - Property Manager Trade', required: true }) : ''
+  ])] });
 
   var amounts = UI.section({ title: 'Amount Details', collapsible: true, body: [UI.grid(3, [
-    UI.field({ label: 'Base amount', value: money(f.base), required: true, src: 'green', hint: cid === 'central-toco' ? 'After the discount is spread over the lines' : '' }),
-    UI.field({ label: 'CGST 9%', value: UI.inr(half, 2), src: 'green', state: f.noTax || f.cur ? 'disabled' : '' }),
-    UI.field({ label: 'SGST 9%', value: UI.inr(half, 2), src: 'green', state: f.noTax || f.cur ? 'disabled' : '' }),
-    UI.field({ label: 'IGST 18%', value: '0.00', state: 'disabled', hint: f.noTax ? (cid === 'll-sd' ? 'Security deposit: prepayment opex head, no GST' : 'No GST on this demand') : f.cur ? 'Overseas vendor: no GST category applied' : 'Not applicable: supplier and Airtel GSTIN share state code ' + ci.gstin.slice(0, 2) }),
-    UI.field({ label: 'Total invoice amount', type: 'readonly', value: money(total), src: 'blue', error: err ? 'Base plus GST does not equal the total on the invoice copy (difference Rs 300.00).' : '' }),
-    UI.field({ label: 'Amount check against OCR', type: 'readonly', value: ok ? 'Within tolerance' : 'Checked on validation', src: 'blue', hint: 'Tolerance: ' + UI.esc(c.tol) })])] });
+    f.noTax ? '' : UI.field({ label: cid === 'bw-intl' ? 'Invoice amount' : 'Base amount', value: UI.inr(f.base, 2), prefix: hasCur ? (f.cur || 'INR') : '', required: true }),
+    taxSplit && intra ? UI.field({ label: 'CGST 9%', value: UI.inr(half, 2), required: cid === 'local-toco' }) : '',
+    taxSplit && intra ? UI.field({ label: 'SGST 9%', value: UI.inr(half, 2), required: cid === 'local-toco' }) : '',
+    taxSplit && !intra ? UI.field({ label: 'IGST 18%', value: UI.inr(tax, 2), required: cid === 'local-toco' }) : '',
+    cid === 'bw-intl' ? '' : UI.field({ label: 'Total invoice amount', value: UI.inr(total, 2), required: true, error: err ? 'Base plus GST does not equal the total on the invoice copy (difference Rs 300.00).' : '' })
+  ]), cid === 'bw-intl' ? UI.note({ text: 'Overseas vendor: no GST; currency and exchange rate follow the invoice (Oracle corporate rate).' }) : ''] });
 
-  // locator-wise lines, by sub-category
+  // lines: the columns of the sub-category's input format; results appear after Validate
   var R_ = function (s) { return UI.status(s, s === 'Processed' || s === 'Valid' ? 'ok' : ''); };
+  var res = function (r) { return ok || err || loc ? r : '<span class="k-muted">After Validate</span>'; };
   var lines;
-  if (cid === 'central-toco') lines = { cols: [{ key: 'n', label: 'Line' }, { key: 'site', label: 'Site ID / Airtel ID' }, { key: 'loc', label: 'Locator (derived)' }, { key: 'opex', label: 'Opex head (derived)' }, { key: 'per', label: 'Service period' }, { key: 'base', label: 'Base (Rs)', num: true, money: true }, { key: 'rem', label: 'Remark' }],
-    rows: [{ n: 1, site: 'DL-11106-0412<div class="k-muted k-small">DLDEL0412 &middot; BU 111</div>', loc: '11106-MDEL-0412881', opex: 'Rent.Tower.IP', per: '01-Sep to 30-Sep', base: 384147.56, rem: R_('Valid') },
-      { n: 2, site: 'DL-11106-0412<div class="k-muted k-small">DLDEL0412 &middot; BU 111</div>', loc: '11106-MDEL-0412881', opex: 'Energy.EB.IP', per: '01-Sep to 30-Sep', base: 112637.56, rem: R_('Valid') },
-      { n: 3, site: 'DL-11109-0077<div class="k-muted k-small">DLDEL0077 &middot; BU 111</div>', loc: '11109-MDEL-0077140', opex: 'Rent.Tower.IP', per: '01-Sep to 30-Sep', base: 298395.12, rem: R_('Valid') + '<div class="k-small">2 lines merged (01-15 and 16-30 Sep)</div>' },
-      { n: 4, site: 'DL-11112-0301<div class="k-muted k-small">DLDEL0301 &middot; BU 111</div>', loc: err ? '' : '11112-MDEL-0301556', opex: 'Diesel.DG.IP', per: '01-Sep to 30-Sep', base: 26327.56, rem: err ? UI.status('Locator not found') + '<div class="k-small">Not in active / inactive PN report or locator master</div>' : R_('Valid'), _flag: err },
-      { n: 5, site: 'DL-11106-0518<div class="k-muted k-small">DLDEL0518 &middot; BU 111</div>', loc: '11106-MDEL-0518022', opex: 'Rent.Tower.IP', per: '01-Sep to 30-Sep', base: 301772.56, rem: R_('Valid') },
-      { n: '...', site: '<span class="k-muted">37 more lines</span>', loc: '', opex: '', per: '', base: 440474.22, rem: '' }],
+  if (cid === 'central-toco') lines = { cols: [{ key: 'n', label: 'Line' }, { key: 'site', label: 'Site ID / Airtel ID' }, { key: 'bu', label: 'BU / state' }, { key: 'per', label: 'Service period' }, { key: 'base', label: 'Base (Rs)', num: true, money: true }, { key: 'rem', label: 'Result' }],
+    rows: [{ n: 1, site: 'DL-11106-0412<div class="k-muted k-small">DLDEL0412</div>', bu: '111 Delhi', per: '01-Sep to 30-Sep', base: 384147.56, rem: res(R_('Valid')) },
+      { n: 2, site: 'DL-11106-0412<div class="k-muted k-small">DLDEL0412</div>', bu: '111 Delhi', per: '01-Sep to 30-Sep', base: 112637.56, rem: res(R_('Valid')) },
+      { n: 3, site: 'DL-11109-0077<div class="k-muted k-small">DLDEL0077</div>', bu: '111 Delhi', per: '01-Sep to 30-Sep', base: 298395.12, rem: res(R_('Valid') + '<div class="k-small">2 lines merged</div>') },
+      { n: 4, site: 'DL-11112-0301<div class="k-muted k-small">DLDEL0301</div>', bu: '111 Delhi', per: '01-Sep to 30-Sep', base: 26327.56, rem: res(err ? UI.status('Locator not found') : R_('Valid')), _flag: err },
+      { n: 5, site: 'DL-11106-0518<div class="k-muted k-small">DLDEL0518</div>', bu: '111 Delhi', per: '01-Sep to 30-Sep', base: 301772.56, rem: res(R_('Valid')) },
+      { n: '...', site: '<span class="k-muted">37 more lines</span>', bu: '', per: '', base: 440474.22, rem: '' }],
     foot: { n: 'Total (42)', base: f.base } };
-  else if (cid === 'local-toco') lines = { cols: [{ key: 'n', label: 'Line' }, { key: 'site', label: 'Site ID / Airtel ID' }, { key: 'bu', label: 'BU code' }, { key: 'loc', label: 'Locator (ToCo master)' }, { key: 'bh', label: 'Budget head' }, { key: 'meter', label: 'Meter start / end' }, { key: 'qty', label: 'Quantity', num: true }, { key: 'base', label: 'Base (Rs)', num: true, money: true }, { key: 'rem', label: 'Locator remark' }, { key: '_acts', label: '' }],
-    rows: [{ n: 1, site: 'UPE-LKO-0412<div class="k-muted k-small">UPLKO0412</div>', bu: '121', loc: '12104-MLKO-0412207', bh: 'Network rent', meter: '', qty: '', base: 18000, rem: R_('Processed'), _acts: ['trash'] },
-      { n: 2, site: 'UPE-LKO-0412<div class="k-muted k-small">UPLKO0412</div>', bu: '121', loc: '12104-MLKO-0412207', bh: 'Energy', meter: '12,410 / 13,105', qty: '695', base: 9200, rem: R_('Processed'), _acts: ['trash'] },
-      { n: 3, site: 'UPE-BBK-0077<div class="k-muted k-small">UPBBK0077</div>', bu: '121', loc: loc || err ? '' : '12109-MBBK-0077318', bh: 'Network rent', meter: '', qty: '', base: 12800, rem: loc || err ? UI.status(loc ? 'Locator not found' : 'Locator inactive') : R_('Processed'), _acts: ['trash'], _flag: loc || err }],
+  else if (cid === 'local-toco') lines = { cols: [{ key: 'n', label: 'Line' }, { key: 'site', label: 'Site ID / Airtel ID' }, { key: 'bu', label: 'BU code' }, { key: 'loc', label: 'Locator ID' }, { key: 'meter', label: 'Meter start / end' }, { key: 'base', label: 'Base (Rs)', num: true, money: true }, { key: 'rem', label: 'Result' }, { key: '_acts', label: '' }],
+    rows: [{ n: 1, site: 'UPE-LKO-0412<div class="k-muted k-small">UPLKO0412</div>', bu: '121', loc: '12104-MLKO-0412207', meter: '', base: 18000, rem: res(R_('Processed')), _acts: ['trash'] },
+      { n: 2, site: 'UPE-LKO-0412<div class="k-muted k-small">UPLKO0412</div>', bu: '121', loc: '12104-MLKO-0412207', meter: '12,410 / 13,105', base: 9200, rem: res(R_('Processed')), _acts: ['trash'] },
+      { n: 3, site: 'UPE-BBK-0077<div class="k-muted k-small">UPBBK0077</div>', bu: '121', loc: '12109-MBBK-0077318', meter: '', base: 12800, rem: res(loc || err ? UI.status(loc ? 'Locator not found' : 'Locator inactive') : R_('Processed')), _acts: ['trash'], _flag: loc || err }],
     foot: { n: 'Total', base: f.base } };
-  else if (cid === 'bw-dom') lines = { cols: [{ key: 'ckt', label: 'Circuit ID' }, { key: 'loc', label: 'Locator / opex head (cost sheet)' }, { key: 'cap', label: 'Capacity' }, { key: 'basis', label: 'Charge basis' }, { key: 'act', label: 'Activation / disconnection' }, { key: 'cs', label: 'Cost sheet (Rs)', num: true }, { key: 'base', label: 'Invoice (Rs)', num: true, money: true }, { key: 'rem', label: 'Check' }],
-    rows: [{ ckt: 'CKT-BLR-NOC-30070', loc: '13101-NXKA-2709283<div class="k-muted k-small">Bandwidth.Domestic.NLD</div>', cap: '1 Gbps', basis: 'QTRC (quarter)', act: '12-Mar-2024 / -', cs: '64,500.00', base: 64500, rem: R_('Valid') },
-      { ckt: 'CKT-BLR-WF-30112', loc: '13101-NXKA-2710011<div class="k-muted k-small">Bandwidth.Domestic.NLD</div>', cap: '10 Gbps', basis: 'QTRC (quarter)', act: '01-Jan-2025 / -', cs: '1,93,500.00', base: 193505, rem: R_('Valid') + '<div class="k-small">Difference Rs 5 within Rs 10</div>' },
-      { ckt: 'CKT-MYS-11871', loc: '13105-NXKA-1187120<div class="k-muted k-small">Bandwidth.Domestic.Metro</div>', cap: '500 Mbps', basis: 'MRC x 3, pro-rated', act: err ? '15-Jul-2026 / -' : '18-Nov-2025 / -', cs: err ? '54,600.35' : '65,525.42', base: 65520.42, _flag: err,
-        rem: err ? UI.status('Billed before activation') + '<div class="k-small">Vendor cannot charge before the activation date (15-Jul-2026) or after disconnection</div>' : R_('Valid') }],
-    foot: { ckt: 'Total', base: f.base } };
-  else if (cid === 'bw-intl') lines = { cols: [{ key: 'loc', label: 'Location' }, { key: 'opex', label: 'Opex head' }, { key: 'q', label: 'Quantity', num: true }, { key: 'u', label: 'Per UOM cost', num: true }, { key: 'cap', label: 'Capacity' }, { key: 'base', label: 'Total (USD)', num: true }, { key: 'rem', label: 'Check' }],
-    rows: [{ loc: '323-USPP-2233587', opex: 'IP PORT charges Bandwidth.International.NA', q: '1', u: '1,500.00', cap: '200GB', base: '1,500.00', rem: R_('Valid') + '<div class="k-small">Within 0.2 (non-INR)</div>' }] };
-  else if (cid === 'll-eb') lines = { cols: [{ key: 'site', label: 'Site ID' }, { key: 'loc', label: 'Locator (PM master)' }, { key: 'per', label: 'Billing period' }, { key: 'm', label: 'Meter start / end (OCR)' }, { key: 'u', label: 'Units', num: true }, { key: 'base', label: 'Base (Rs)', num: true, money: true }, { key: 'tot', label: 'Total (Rs)', num: true, money: true }, { key: 'rem', label: 'Check' }],
-    rows: [{ site: 'MG4155', loc: '17330-MGOA-1182240', per: '01-Aug to 31-Aug', m: err ? '5,800 / 5,644' : '5,644 / 5,800', u: err ? '-156' : '156', base: 10000, tot: total, _flag: err,
-      rem: err ? UI.status('End reading lower than start') : R_('Valid') + '<div class="k-small">Input = OCR = Oracle amount</div>' }] };
-  else lines = { cols: [{ key: 'site', label: 'Site ID' }, { key: 'loc', label: 'Locator (PM master)' }, { key: 'opex', label: 'Opex head' }, { key: 'per', label: 'Period' }, { key: 'base', label: 'Amount (Rs)', num: true, money: true }, { key: 'rem', label: 'Check' }],
-    rows: cid === 'diesel' ? [{ site: 'UPE-KNP-0118', loc: '12111-MKNP-0118032', opex: 'Diesel.DG.Own', per: '01-Sep to 15-Sep', base: 31200, rem: R_('Valid') }, { site: 'UPE-KNP-0127', loc: '12111-MKNP-0127044', opex: 'Diesel.DG.Own', per: '01-Sep to 15-Sep', base: 24600, rem: R_('Valid') }, { site: 'UPE-UNN-0031', loc: '12113-MUNN-0031207', opex: 'Diesel.DG.Own', per: '01-Sep to 15-Sep', base: 22200, rem: R_('Valid') }]
-      : [{ site: cid === 'll-sd' ? 'PUNE-LL-0533' : 'MH-14102-0418', loc: cid === 'll-sd' ? '14102-MPUN-0533' : '14102-MPUN-0418', opex: cid === 'll-sd' ? 'PrepaymentSD.Rent.3P' : 'Rates.Taxes.Site', per: UI.esc(f.from + ' to ' + f.to), base: f.base, rem: R_('Valid') }] };
-  var linesSec = UI.section({ title: 'Line Details (locator-wise)', sub: f.nLines + ' line' + (f.nLines > 1 ? 's' : '') + '; one per site, budget head and service period', collapsible: true, body: [
+  else if (cid === 'bw-dom') lines = { cols: [{ key: 'ckt', label: 'Circuit ID' }, { key: 'u', label: 'Per UOM cost (Rs)', num: true, money: true }, { key: 'rem', label: 'Result' }],
+    rows: [{ ckt: 'CKT-BLR-NOC-30070', u: 64500, rem: res(R_('Valid')) },
+      { ckt: 'CKT-BLR-WF-30112', u: 193505, rem: res(R_('Valid')) },
+      { ckt: 'CKT-MYS-11871', u: 65520.42, _flag: err, rem: res(err ? UI.status('Billed before activation') + '<div class="k-small">Circuit activated on 15-Jul-2026</div>' : R_('Valid')) }],
+    foot: { ckt: 'Total', u: f.base } };
+  else if (cid === 'bw-intl') lines = { cols: [{ key: 'loc', label: 'Location' }, { key: 'opex', label: 'Opex head' }, { key: 'uom', label: 'UOM' }, { key: 'q', label: 'Quantity', num: true }, { key: 'u', label: 'Per UOM cost', num: true }, { key: 'cap', label: 'Capacity' }, { key: 'base', label: 'Total cost', num: true }, { key: 'rem', label: 'Result' }],
+    rows: [{ loc: '323-USPP-2233587', opex: 'Bandwidth.International.NA', uom: 'Each', q: '1', u: '1,500.00', cap: '200GB', base: '1,500.00', rem: res(R_('Valid')) }] };
+  else if (cid === 'll-eb') lines = { cols: [{ key: 'site', label: 'Site ID' }, { key: 'loc', label: 'Locator ID' }, { key: 'per', label: 'Billing period' }, { key: 'm', label: 'Meter start / end' }, { key: 'base', label: 'Base (Rs)', num: true, money: true }, { key: 'tot', label: 'Total (Rs)', num: true, money: true }, { key: 'rem', label: 'Result' }],
+    rows: [{ site: 'MG4155', loc: '17330-MGOA-1182240', per: '01-Aug to 31-Aug', m: err ? '5,800 / 5,644' : '5,644 / 5,800', base: 10000, tot: total, _flag: err,
+      rem: res(err ? UI.status('End reading lower than start') : R_('Valid')) }] };
+  else if (cid === 'diesel') lines = { cols: [{ key: 'site', label: 'Site ID' }, { key: 'per', label: 'Period' }, { key: 'base', label: 'Amount (Rs)', num: true, money: true }, { key: 'rem', label: 'Result' }],
+    rows: [{ site: 'UPE-KNP-0118', per: '01-Sep to 15-Sep', base: 31200, rem: res(R_('Valid')) }, { site: 'UPE-KNP-0127', per: '01-Sep to 15-Sep', base: 24600, rem: res(R_('Valid')) }, { site: 'UPE-UNN-0031', per: '01-Sep to 15-Sep', base: 22200, rem: res(R_('Valid')) }] };
+  else lines = { cols: [{ key: 'site', label: 'Site ID' }, { key: 'loc', label: 'Locator ID' }, { key: 'base', label: 'Amount (Rs)', num: true, money: true }, { key: 'rem', label: 'Result' }],
+    rows: [{ site: cid === 'll-sd' ? 'PUNE-LL-0533' : 'MH-14102-0418', loc: cid === 'll-sd' ? '14102-MPUN-0533' : '14102-MPUN-0418', base: f.base, rem: res(R_('Valid')) }] };
+  var linesSec = UI.section({ title: 'Line Details', collapsible: true, body: [
     UI.table({ dense: true, pager: false, export: false, columns: lines.cols, rows: lines.rows, foot: lines.foot }),
-    cid === 'local-toco' ? UI.p('Lines 1 and 2 share a locator but carry different budget heads, so they stay as separate PM lines (client note on the approved HLD).', { muted: true, small: true }) : '',
-    UI.row([UI.textlink({ label: 'Add line', iconLeft: 'plus', toast: 'A new line is added' }), UI.textlink({ label: 'Upload lines from Excel', iconLeft: 'upload', go: 'inv-08?cat=' + cid })]),
-    UI.note({ text: 'Locator: ' + UI.esc(c.locator) + '. The BU code at the start of the locator must match the circle. Repeated lines for the same locator, invoice number and invoice are merged, taking the earliest start date, the latest end date and the total amount. After merging the base amount must agree with OCR (' + UI.esc(c.tol) + ').' })] });
-
-  // booking details derived from masters (what goes to the Oracle PM interface)
-  var gstCat = f.noTax || f.cur ? 'Not applied' : 'WithinState_' + ci.state.replace(/ /g, '') + '_GST18';
-  var book = UI.section({ title: 'Booking Details', sub: 'Derived from master data; not keyed by you', collapsible: true, collapsed: !ok, body: [UI.grid(3, [
-    UI.field({ label: 'Vendor site', type: 'readonly', value: vend.site, src: 'grey', hint: cid === 'central-toco' ? 'From supplier GSTIN + operating unit (Bharti Infratel: GSTIN + first 4 characters of the invoice number)' : 'From supplier GSTIN' }),
-    UI.field({ label: 'Payment term', type: 'readonly', value: UI.esc(c.term === 'From vendor master by supplier GSTIN' || c.term === 'From vendor master' || c.term === 'From PM master' ? 'Controlled Expense - 30 days' : c.term), src: 'grey', hint: UI.esc(c.term) }),
-    UI.field({ label: 'GST tax category', type: 'readonly', value: gstCat, src: 'blue', hint: f.noTax || f.cur ? '' : 'Within / outside state from CGST + SGST or IGST; state from the booking circle; rate 18%' }),
-    UI.field({ label: 'TDS section', type: 'readonly', value: cid === 'll-sd' || cid === 'bw-intl' || cid === 'govt-dn' ? 'Not applied' : /toco/.test(cid) || cid === 'll-eb' ? '194I' : '194C', src: 'grey', hint: cid === 'll-sd' ? 'Prepayment opex head: no TDS' : 'From the TDS section master by opex head' }),
-    UI.field({ label: 'TDS category', type: 'readonly', value: cid === 'll-sd' || cid === 'bw-intl' || cid === 'govt-dn' ? 'Not applied' : 'TDS_' + (/toco/.test(cid) || cid === 'll-eb' ? '194I_2' : '194C_2') + '_' + ci.bu, src: 'grey', hint: 'From supplier GSTIN + operating unit + TDS section' }),
-    UI.field({ label: 'First / third party GSTIN', type: 'readonly', value: f.noTax || f.cur ? 'Not applicable' : UI.esc((vend.gstin || '') + ' / ' + ci.gstin), src: 'blue', hint: 'Filled only when a GST tax category applies' }),
-    cid === 'central-toco' ? UI.field({ label: 'Validation bypass flag', type: 'readonly', value: 'N (first attempt)', src: 'blue', hint: 'Re-attempted with Y only if PM reports a duplicate or potential duplicate; any other error withholds the whole invoice' }) : '',
-    UI.field({ label: 'Comments', type: 'readonly', value: UI.esc(f.desc), src: 'blue', hint: 'First 200 characters of the description' })])] });
+    cid === 'central-toco' ? '' : UI.row([UI.textlink({ label: 'Add line', iconLeft: 'plus', toast: 'A new line is added' }), UI.textlink({ label: 'Upload lines from Excel', iconLeft: 'upload', go: 'inv-08?cat=' + cid })]),
+    UI.note({ text: 'Locator, opex head, TDS and GST categories, payment term and vendor site are derived from masters for booking (' + UI.esc(c.locator) + '). Lines for the same locator and invoice are merged; lines with different budget heads stay separate.' })] });
 
   var docs = UI.section({ title: 'Documents', collapsible: true, body: [UI.grid(2, [
-    UI.upload({ label: 'Invoice copy (PDF)', required: true, hint: 'PDF only. Read by OCR' + (vend.irn === 'Yes' ? ' and IRN QR scanning' : '') + '.', files: [{ name: f.inv.replace(/\//g, '_') + '.pdf', meta: '612 KB', status: UI.status('Read by OCR', 'ok') }] }),
-    UI.upload({ label: cid === 'central-toco' ? 'Vendor working sheet (Excel)' : 'Supporting documents', required: cid === 'central-toco' || cid === 'll-eb', hint: cid === 'central-toco' ? 'Site ID, Airtel ID, service dates and amounts per line; Technical ID and ToCo ID cannot be blank' : cid === 'll-eb' ? 'Circle input sheet with meter readings' : cid === 'bw-dom' ? 'Circuit list (validated against the cost sheet)' : 'Site list, approval email',
-      files: cid === 'central-toco' ? [{ name: 'IND_Sep26_working.xlsx', meta: '42 lines &middot; 188 KB' }] : cid === 'll-eb' ? [{ name: 'Goa_EB_Aug26.xlsx', meta: '18 KB' }] : [] })])] });
+    UI.upload({ label: 'Invoice copy (PDF)', required: true, files: [{ name: f.inv.replace(/\//g, '_') + '.pdf', meta: '612 KB', status: err ? UI.status('Period not shown on the copy (checklist 14)') : ok ? UI.status('Read by OCR', 'ok') : '' }] }),
+    cid === 'central-toco' ? UI.upload({ label: 'Working sheet (Excel)', required: true, hint: 'The invoice lines; Technical ID and ToCo ID cannot be blank', files: [{ name: 'IND_Sep26_working.xlsx', meta: '42 lines &middot; 188 KB' }] })
+      : UI.upload({ label: 'Supporting documents', files: [] })])] });
 
   var submitted = UI.modal({ id: 'submitted', open: S === 'submitted', title: 'Invoice', accent: 'Submitted', size: 'narrow', body: [
-    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004871</b>'], ['Status', INV.status('Submitted')], ['Category', UI.esc(c.name)], ['SLA', c.sla]] }),
-    UI.p('Next: the invoice is read and validated, booked locator-wise in the Oracle PM module, its documents are attached in OWCC by Group ID, and it is sent to the business owner under the budget-head DOA. You are notified at every status change.', { muted: true })],
+    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004871</b>'], ['Status', INV.status('Submitted')]] }),
+    UI.p('You are notified at every status change.', { muted: true })],
     foot: [UI.button({ label: 'Submit another', go: 'inv-03' }), UI.button({ label: 'Track invoice', variant: 'primary', go: 'inv-09' })] });
 
-  var bar = UI.sticky({ left: [UI.textlink({ label: 'Generate total', icon: 'arrowRight', state: 'validated' })],
-    totals: [['Taxable amount', money(f.base)], ['Tax amount', UI.inr(tax, 2)], ['Grand total', money(total)]],
-    right: [UI.button({ label: 'Save', toast: 'Saved as draft' }),
-      ok ? UI.button({ label: 'Submit invoice', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Validate invoice', variant: err || loc ? 'disabled' : 'primary', state: err || loc ? '' : 'validated' })] });
+  var bar = UI.sticky({ totals: [['Total', money(cid === 'bw-intl' ? f.base : total)]],
+    right: [UI.button({ label: 'Save', toast: 'Saved as draft' }), UI.button({ label: 'Validate', state: 'validated' }),
+      ok ? UI.button({ label: 'Submit invoice', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Submit invoice', variant: 'disabled' })] });
 
   Page.render({
     id: 'inv-04', roleId: 'vendor', navKey: 'inv-03',
     variants: { label: 'Sub-category', param: 'cat', def: cid, items: PMS.map(function (x) { return { id: x.id, label: x.name.replace(' (landlord electricity)', '') }; }) },
     states: [{ id: 'errors', label: 'Validation errors' }, { id: 'locator', label: 'Locator not found' }, { id: 'validated', label: 'Validated' }, { id: 'submitted', label: 'Submitted' }],
-    rail: { mode: 'form', title: 'Create Invoice', accent: 'Non-PO', back: partner ? 'inv-02' : 'inv-03', text: UI.esc(c.name) + ' &middot; booked locator-wise in the Oracle EBS Property Manager module, then approved in Oracle under the budget-head DOA.<br><br>Fields marked <span class="k-link">*</span> are mandatory. Values from master data are filled in for you.' },
-    html: '<div class="k-src-on">' + '<div class="k-legend-src"><span><i class="k-src green"></i>Entered by you</span><span><i class="k-src grey"></i>From master data (Oracle EBS / portal masters)</span><span><i class="k-src blue"></i>Read by OCR or calculated</span></div>' +
-      head + onBehalf + checks + details + irn + amounts + linesSec + book + docs + bar + '</div>' + submitted
+    rail: { mode: 'form', title: 'Create Invoice', accent: 'Non-PO', back: partner ? 'inv-02' : 'inv-03', text: 'Fields marked <span class="k-link">*</span> are mandatory.' },
+    html: head + onBehalf + checks + details + amounts + linesSec + docs + bar + submitted + chkModal
   });
 })();
 </script>

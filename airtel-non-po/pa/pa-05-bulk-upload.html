@@ -15,43 +15,44 @@
   var S = Page.state(), checked = S === 'checked' || S === 'submitted', other = S === 'other';
 
   var step = UI.steps({ items: [
-    { label: 'Choose the activity and download its template', sub: 'The template carries the input template fields; master-data columns are filled for you after upload', state: 'done' },
-    { label: 'Upload the filled template', sub: 'Excel, up to 5,000 rows per file', state: checked ? 'done' : 'current' },
-    { label: 'Review row-level results', sub: 'Valid rows can be submitted; rows with errors are corrected and uploaded again', state: checked ? 'current' : '' },
-    { label: 'Submit valid rows for approval', sub: 'One approval request per upload; each row gets its own URN', state: S === 'submitted' ? 'done' : '' }] });
+    { label: 'Download the template', state: 'done' },
+    { label: 'Upload the filled template', state: checked ? 'done' : 'current' },
+    { label: 'Review row results', state: checked ? 'current' : '' },
+    { label: 'Submit valid rows', state: S === 'submitted' ? 'done' : '' }] });
 
+  var bu = UI.field({ label: 'BUs in your access', type: 'readonly', value: '121 to 129' }) + UI.note({ text: 'From the user set-up (Users and Roles, or HRMS if available). Each row names its BU and must be one of these. A user with one BU gets a template without the BU column; every row is booked to that BU.' });
   var pick = UI.section({ title: other ? 'Other TOCO Inputs' : 'Template', body: [UI.grid(3, other ? [
-      UI.field({ label: 'Input', type: 'select', value: 'MSC expense (B2B team)', required: true, hint: 'Standard Excel formats: MSC expense (B2B), de-loading (NSG), exit penalty (SCM)' }),
-      UI.field({ label: 'Month', type: 'select', value: 'Sep-2026', required: true }),
-      UI.field({ label: 'BU split', type: 'readonly', value: 'MSC for Nxtra split by BU using the percentage master' })
+      UI.field({ label: 'Input', type: 'select', value: 'MSC expense (B2B team)', required: true }) + UI.note({ text: 'Standard Excel formats: MSC expense (B2B), de-loading (NSG), exit penalty (SCM), rates and taxes and other penalties. MSC for Nxtra is split by BU using the percentage master.' }),
+      UI.field({ label: 'Month', type: 'select', value: 'Sep-2026', required: true })
     ] : [
-      UI.field({ label: 'Activity', type: 'select', value: 'ACT-0014 DG AMC - network sites', required: true }),
+      { span: 1, html: UI.field({ label: 'Activity', type: 'select', value: 'ACT-0014 DG AMC - network sites', required: true }) + UI.p('S1 Input as per format &middot; DOA approval', { muted: true, small: true }) },
       UI.field({ label: 'Input month', type: 'select', value: 'Sep-2026', required: true }),
-      UI.field({ label: 'Scenario', type: 'readonly', value: 'S1 Input as per format' })
+      bu
     ]), UI.row([UI.textlink({ label: 'Download template', icon: 'download', toast: 'Template download started' }), UI.textlink({ label: 'Download last month\'s rows', icon: 'download', toast: 'Aug-26 rows downloaded to reuse' })]),
-    UI.upload({ label: 'Filled template', required: true, hint: 'Columns: vendor name, item code, quantity, currency, rate, amount, period from, period to, provision basis, annotation, remarks', files: checked ? [{ name: other ? 'MSC_Expense_Sep26.xlsx' : 'DG_AMC_Sep26.xlsx', meta: '48 rows &middot; 212 KB', status: UI.status('Checked', 'ok') }] : [] })] });
+    UI.upload({ label: 'Filled template', required: true, hint: other ? '' : 'Columns: BU, vendor name, item code, quantity, currency, rate, amount, period from, period to, provision basis, annotation, remarks', files: checked ? [{ name: other ? 'MSC_Expense_Sep26.xlsx' : 'DG_AMC_Sep26.xlsx', meta: '48 rows &middot; 212 KB', status: UI.status('Checked', 'ok') }] : [] }),
+    other ? '' : UI.tbc('Provision bulk upload: file size and row limits')] });
 
   var res = checked ? UI.section({ title: 'Row Results', body: [
     UI.kpis({ cols: 4, items: [{ value: '48', label: 'Rows' }, { value: '44', label: 'Valid', active: true }, { value: '3', label: 'Errors' }, { value: '1', label: 'Potential duplicate' }] }),
-    UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Row' }, { key: 'u', label: 'URN (on submission)' }, { key: 'v', label: 'Vendor / item' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }, { key: 's', label: 'Result' }],
+    UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Row' }, { key: 'b', label: 'BU' }, { key: 'v', label: 'Vendor / item' }, { key: 'p', label: 'Period' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }, { key: 's', label: 'Result' }],
       rows: [
-        { r: 2, u: '<span class="k-urn">121·410387·AMCDG004·SEP-26</span>', v: 'Prism Power Systems &middot; AMCDG004', a: 1260000, s: UI.status('Valid', 'ok') },
-        { r: 3, u: '<span class="k-urn">122·410387·AMCDG004·SEP-26</span>', v: 'Prism Power Systems &middot; AMCDG004', a: 1310000, s: UI.status('Valid', 'ok') },
-        { r: 7, u: '-', v: 'Prism Power Systems &middot; AMCDG40', a: 980000, s: UI.status('Error') + '<div class="k-small">Item code AMCDG40 does not exist - MDM notified</div>', _flag: true },
-        { r: 11, u: '-', v: 'Shakti Gensets &middot; AMCDG004', a: 640000, s: UI.status('Error') + '<div class="k-small">Vendor site inactive in Oracle</div>', _flag: true },
-        { r: 19, u: '<span class="k-urn">125·410387·AMCDG004·SEP-26</span>', v: 'Prism Power Systems &middot; AMCDG004', a: 1255000, s: UI.status('Potential duplicate') + '<div class="k-small">Same vendor, item and amount as Aug-26 - give a reason</div>' },
-        { r: 23, u: '-', v: 'Prism Power Systems &middot; AMCDG004', a: 1190000, s: UI.status('Error') + '<div class="k-small">Exact duplicate of 126·410387·AMCDG004·SEP-26 - blocked</div>', _flag: true }],
+        { r: 2, b: '121', v: 'Prism Power Systems &middot; AMCDG004', p: 'Sep-26', a: 1260000, s: UI.status('Valid', 'ok') },
+        { r: 3, b: '122', v: 'Prism Power Systems &middot; AMCDG004', p: 'Sep-26', a: 1310000, s: UI.status('Valid', 'ok') },
+        { r: 7, b: '121', v: 'Prism Power Systems &middot; AMCDG40', p: 'Sep-26', a: 980000, s: UI.status('Error') + '<div class="k-small">Item code AMCDG40 does not exist - MDM notified</div>', _flag: true },
+        { r: 11, b: '141', v: 'Prism Power Systems &middot; AMCDG004', p: 'Sep-26', a: 640000, s: UI.status('Error') + '<div class="k-small">BU 141 is not in your access</div>', _flag: true },
+        { r: 19, b: '125', v: 'Prism Power Systems &middot; AMCDG004', p: 'Sep-26', a: 1255000, s: UI.status('Potential duplicate') + '<div class="k-small">Same vendor, item and amount as Aug-26 - give a reason</div>' },
+        { r: 23, b: '121', v: 'Prism Power Systems &middot; AMCDG004', p: 'Sep-26', a: 1260000, s: UI.status('Error') + '<div class="k-small">Exact duplicate of row 2 - blocked</div>', _flag: true }],
       footLeft: [UI.textlink({ label: 'Download rows with errors', icon: 'download', toast: 'Error rows downloaded with the reason in the last column' })] })] }) : '';
 
-  var bar = UI.sticky({ left: [UI.textlink({ label: 'Check the file', icon: 'arrowRight', state: 'checked' })], totals: checked ? [['Valid rows', '44'], ['Amount', 'Rs 5,29,20,000.00']] : [['Valid rows', '-']],
-    right: [UI.button({ label: 'Cancel', variant: 'text', go: 'pa-03' }), checked ? UI.button({ label: 'Submit 44 valid rows', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Submit valid rows', variant: 'disabled' })] });
-  var done = UI.modal({ id: 'done', open: S === 'submitted', title: 'Batch', accent: 'Submitted', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Batch', 'BLK-26-0412'], ['Rows submitted', '44 (URNs assigned)'], ['Routed to', 'B0CHK155 (checker)'], ['Not submitted', '4 rows - download, correct and upload again']] })],
+  var bar = UI.sticky({ totals: checked ? [['Valid rows', '44'], ['Amount', 'Rs 5,29,20,000.00']] : [['Valid rows', '-']],
+    right: [UI.button({ label: 'Cancel', variant: 'text', go: 'pa-03' }), UI.button({ label: 'Validate', state: 'checked' }), checked ? UI.button({ label: 'Submit 44 valid rows', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Submit valid rows', variant: 'disabled' })] });
+  var done = UI.modal({ id: 'done', open: S === 'submitted', title: 'Batch', accent: 'Submitted', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Batch', 'BLK-26-0412'], ['Rows submitted', '44'], ['Approval', 'Each row goes to its own DOA approvers'], ['URNs', 'Generated per row when all its approvers approve'], ['Not submitted', '4 rows - download, correct and upload again']] })],
     foot: [UI.button({ label: 'View register', variant: 'primary', go: 'pa-03' })] });
 
   Page.render({
     id: 'pa-05', user: 'B0MKR519', role: 'Business user (maker)', viewAs: 'Business user (maker)',
     states: [{ id: 'checked', label: 'File checked' }, { id: 'submitted', label: 'Submitted' }, { id: 'other', label: 'Other TOCO inputs' }],
-    rail: { mode: 'form', title: 'Bulk', accent: 'Upload', back: 'pa-03', text: 'Upload many provisions for one activity at a time. Every row is validated like a single entry: mandatory data, masters, RPT, GL period and duplicates.' },
+    rail: { mode: 'form', title: 'Bulk', accent: 'Upload', back: 'pa-03', text: 'One activity per file. Every row is checked like a single entry.' },
     html: step + '<div class="k-gap"></div>' + pick + res + bar + done
   });
 })();

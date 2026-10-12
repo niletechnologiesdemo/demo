@@ -41,12 +41,12 @@
     if (n === 17 && !r.rcm) res = 'na';
     if (n === 18 && r.cat !== 'credit') res = 'na';
     if (n === 16 && r.cat === 'll-gst') res = 'na';
-    if (n === 14 && issue === 'period') { res = 'fail'; det = 'Period not found on the invoice copy'; }
+    if (n === 14 && issue === 'period') { res = 'manual'; txt = 'Confirm'; det = 'OCR could not read the period; confirm it on the copy'; }
     if (n === 7 && issue === 'tol') { res = 'fail'; det = 'Line totals differ from the base total'; }
     if (visual[n]) { res = issue === 'sign' && n === 12 ? 'manual' : 'manual'; txt = 'Confirm'; det = n === 12 ? (issue === 'sign' ? 'Stamp present, signature unclear - confirm against the copy' : 'Signed and stamped') : 'System generated'; }
-    return { no: n, check: UI.esc(c[1]) + '<div class="k-muted k-small">' + UI.esc(c[2]) + '</div>', source: '', result: res, resultText: txt, detail: det };
+    return { no: n, check: UI.esc(c[1]) + '<div class="k-muted k-small">' + UI.esc(c[2]) + '</div>', source: visual[n] ? 'Reviewer' : 'On Validate', result: res, resultText: txt, detail: det };
   });
-  var checklist = UI.section({ title: 'Invoice checklist (18 points)', sub: 'Checks 12 and 13 need a visual confirmation', collapsible: true, body: [UI.checklist({ columns: ['#', 'Check and rule', '', 'Result', 'Detail'], rows: chk }),
+  var checklist = UI.section({ title: 'Invoice checklist (18 points)', sub: 'Run when the submitter validated; checks 12 and 13 need your visual confirmation', collapsible: true, body: [UI.checklist({ columns: ['#', 'Check and rule', 'Checked', 'Result', 'Detail'], rows: chk }),
     UI.options({ type: 'check', items: [{ label: 'I have reviewed the signature (12) and invoice form (13) on the copy', on: S === 'approved' }] })] });
 
   var cat = [];
@@ -72,10 +72,12 @@
   var actions = '<div class="k-review-actions">' + UI.btns([UI.button({ label: 'Upload', toast: 'Upload a supporting document' }), UI.button({ label: 'RFI', modal: 'rfi' }), UI.button({ label: 'Hold', modal: 'hold' }), UI.button({ label: 'Reject', modal: 'reject' }),
     UI.button({ label: approveLabel, variant: issue === 'tol' || issue === 'period' || issue === 'loc' ? 'disabled' : 'primary', state: issue === 'tol' || issue === 'period' || issue === 'loc' ? '' : 'approved' })], { end: true }) + '</div>';
 
-  var modals = UI.modal({ id: 'rfi', open: S === 'rfi', title: 'Request', accent: 'Information', size: 'narrow', body: [UI.field({ label: 'Information needed (shown to the submitter)', type: 'area', required: true, value: issue === 'period' ? 'The invoice period is not legible on the copy. Please upload a copy that shows the service period, or confirm it.' : '', wrap: true }),
-      UI.options({ type: 'check', items: [{ label: 'Allow replacing the invoice copy', on: true }] }), UI.p('The invoice moves to RFI and the SLA pauses until the submitter responds.', { muted: true, small: true })],
+  var modals = UI.modal({ id: 'rfi', open: S === 'rfi', title: 'Request', accent: 'Information', size: 'narrow', body: [UI.field({ label: 'Reason', type: 'select', required: true, value: issue === 'period' ? 'Invoice copy not readable' : issue === 'sign' ? INV.RFI_REASONS[0] : '' }) + UI.tbc('RFI reason list to be confirmed (as used in the PO portal)'),
+      UI.field({ label: 'Comments (shown to the submitter)', type: 'area', required: true, value: issue === 'period' ? 'The service period cannot be read on the copy. Please upload a clearer copy.' : issue === 'sign' ? 'The copy has a stamp but no signature. Please upload a signed copy.' : '', wrap: true }),
+      UI.p('The submitter can only re-upload the invoice copy and supporting documents; invoice details cannot be changed.', { muted: true, small: true })],
       foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Send RFI', variant: 'primary', close: true, toast: 'RFI sent to the submitter' })] }) +
-    UI.modal({ id: 'reject', title: 'Reject', accent: 'Invoice', size: 'narrow', body: [UI.field({ label: 'Rejection reason', type: 'select', value: issue === 'dup' ? 'Duplicate invoice' : 'Checklist failure', required: true }), UI.field({ label: 'Remarks (shown to the submitter)', type: 'area', required: true })],
+    UI.modal({ id: 'reject', title: 'Reject', accent: 'Invoice', size: 'narrow', body: [UI.field({ label: 'Rejection reason', type: 'select', value: issue === 'dup' ? 'Duplicate invoice' : 'Checklist failure', required: true }), UI.field({ label: 'Remarks (shown to the submitter)', type: 'area', required: true }),
+      UI.p('Use reject when the submitted invoice details are wrong. The submitter submits it again as a new invoice; a rejected invoice does not count as a duplicate.', { muted: true, small: true })],
       foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Reject', variant: 'primary', close: true, toast: 'Invoice rejected with reason' })] }) +
     UI.modal({ id: 'hold', title: 'Put on', accent: 'Hold', size: 'narrow', body: [UI.field({ label: 'Hold reason', type: 'select', value: 'Awaiting supporting document', required: true }), UI.field({ label: 'Remarks', type: 'area', required: true })],
       foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Put on hold', variant: 'primary', close: true, toast: 'Invoice placed on hold' })] }) +

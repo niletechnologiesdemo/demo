@@ -1,4 +1,5 @@
 /* Shared mock data for the Provisioning & Actualization wireframes (illustrative only).
+   Every provision has a reference (PRV-...) from submission; the URN is generated only after all DOA approvers approve.
    URN = BU + vendor code + item code + month (+ locator for TOCO; + DN number for TOCO debit notes),
    shown with "·" separators; the exact separator is fixed in detailed design (HLD 4.4). */
 window.PA = (function () {
@@ -37,15 +38,15 @@ window.PA = (function () {
   function urn(p) { return [p.bu, p.vcode, p.item, p.month].concat(p.locator ? [p.locator] : []).concat(p.dn ? [p.dn] : []).join('·'); }
   // status, age (days), amounts in Rs
   var provisions = [
-    { bu: '111', buName: 'Mobile - Delhi', vcode: '410022', item: 'SECURITY001', act: 'ACT-0001', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 485000, actual: 0, status: 'Submitted', age: 1, source: 'Single entry', maker: 'B0MKR412', raised: '30-Sep-2026' },
+    { ref: 'PRV-26-10412', bu: '111', buName: 'Mobile - Delhi', vcode: '410022', item: 'SECURITY001', act: 'ACT-0001', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 485000, actual: 0, status: 'Submitted', age: 1, source: 'Single entry', maker: 'B0MKR412', raised: '30-Sep-2026' },
     { bu: '111', buName: 'Mobile - Delhi', vcode: '410022', item: 'SECURITY001', act: 'ACT-0001', month: 'AUG-26', from: '01-Aug-2026', to: '31-Aug-2026', amount: 485000, actual: 0, status: 'Open', age: 31, source: 'Single entry', maker: 'B0MKR412', raised: '31-Aug-2026', erpDoc: 'GL-26-0814452' },
     { bu: '111', buName: 'Mobile - Delhi', vcode: '410022', item: 'SECURITY001', act: 'ACT-0001', month: 'JUL-26', from: '01-Jul-2026', to: '31-Jul-2026', amount: 470000, actual: 470000, status: 'Closed', age: 62, source: 'Single entry', maker: 'B0MKR412', raised: '31-Jul-2026', erpDoc: 'GL-26-0711208' },
     { bu: '121', buName: 'Mobile - UP East', vcode: '410387', item: 'AMCDG004', act: 'ACT-0014', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 1260000, actual: 0, status: 'Approved', age: 2, source: 'Bulk upload', maker: 'B0MKR519', raised: '29-Sep-2026' },
     { bu: '121', buName: 'Mobile - UP East', vcode: '410387', item: 'AMCDG004', act: 'ACT-0014', month: 'AUG-26', from: '01-Aug-2026', to: '31-Aug-2026', amount: 1260000, actual: 810000, status: 'Partially actualized', age: 31, source: 'Bulk upload', maker: 'B0MKR519', raised: '31-Aug-2026', erpDoc: 'GL-26-0814790' },
     { bu: '131', buName: 'Mobile - Karnataka', vcode: '410455', item: 'CCSVC002', act: 'ACT-0022', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 2140000, actual: 0, status: 'Interface error', age: 2, source: 'Single entry', maker: 'B0MKR233', raised: '29-Sep-2026', error: 'GL period SEP-26 closed for ledger AIRTEL_IN_LEDGER' },
     { bu: '131', buName: 'Mobile - Karnataka', vcode: '410455', item: 'CCSVC002', act: 'ACT-0022', month: 'JUN-26', from: '01-Jun-2026', to: '30-Jun-2026', amount: 2075000, actual: 0, status: 'Open', age: 92, source: 'Single entry', maker: 'B0MKR233', raised: '30-Jun-2026', erpDoc: 'GL-26-0612931', escalation: 'Business user (90 days)' },
-    { bu: '101', buName: 'Corporate - Gurugram', vcode: '410612', item: 'LEGAL007', act: 'ACT-0031', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 350000, actual: 0, status: 'Returned', age: 1, source: 'Single entry', maker: 'B0MKR088', raised: '30-Sep-2026', reason: 'Attach the retainer agreement; amount differs from the agreed monthly fee' },
-    { bu: '101', buName: 'Corporate - Gurugram', vcode: '410790', item: 'MEMBFEE01', act: 'ACT-0096', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 104583, actual: 0, status: 'Draft', age: 0, source: 'Single entry', maker: 'B0MKR088', raised: '' },
+    { ref: 'PRV-26-10398', bu: '101', buName: 'Corporate - Gurugram', vcode: '410612', item: 'LEGAL007', act: 'ACT-0031', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 350000, actual: 0, status: 'Returned', age: 1, source: 'Single entry', maker: 'B0MKR088', raised: '30-Sep-2026', reason: 'Attach the retainer agreement; amount differs from the agreed monthly fee' },
+    { ref: 'PRV-26-10405', bu: '101', buName: 'Corporate - Gurugram', vcode: '410790', item: 'MEMBFEE01', act: 'ACT-0096', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 104583, actual: 0, status: 'Draft', age: 0, source: 'Single entry', maker: 'B0MKR088', raised: '' },
     { bu: '62206', buName: 'Xtelify Cloud - Haryana', vcode: '200031', item: 'ARITM5304', act: 'ACT-0120', month: 'AUG-26', from: '01-Aug-2026', to: '31-Aug-2026', amount: 9600000, actual: 0, status: 'Open', age: 31, source: 'Single entry', maker: 'B0GPA204', raised: '31-Aug-2026', erpDoc: 'GL-26-0815002', rptFlag: 'RPT' },
     { bu: '111', buName: 'Mobile - Delhi', vcode: '200014', item: 'DCRENT02', act: 'ACT-0090', month: 'MAY-26', from: '01-May-2026', to: '31-May-2026', amount: 1800000, actual: 0, status: 'Open', age: 153, source: 'Single entry', maker: 'B0BFN017', raised: '31-May-2026', erpDoc: 'GL-26-0512077', rptFlag: 'RPT', escalation: 'Business user (90 days)' },
     { bu: '141', buName: 'Mobile - Maharashtra', vcode: '410455', item: 'CCSVC002', act: 'ACT-0022', month: 'MAR-26', from: '01-Mar-2026', to: '31-Mar-2026', amount: 1950000, actual: 0, status: 'Open', age: 214, source: 'Single entry', maker: 'B0MKR301', raised: '31-Mar-2026', erpDoc: 'GL-26-0331544', escalation: 'Manager (180 days)', yep: true },
@@ -57,9 +58,13 @@ window.PA = (function () {
     { bu: '111', buName: 'Mobile - Delhi', vcode: '412885', item: 'ELEC-AOR', act: 'ACT-0202', month: 'AUG-26', locator: '11106', from: '01-Aug-2026', to: '31-Aug-2026', amount: 1127400, actual: 1098600, status: 'Partially actualized', age: 31, source: 'DARTS', maker: 'DARTS feed', raised: '31-Aug-2026', erpDoc: 'GL-26-0831402' },
     { bu: '121', buName: 'Mobile - UP East', vcode: '412902', item: 'DSL-AOR', act: 'ACT-0203', month: 'AUG-26', locator: '12114', from: '01-Aug-2026', to: '31-Aug-2026', amount: 264300, actual: 264300, status: 'Closed', age: 31, source: 'DARTS', maker: 'DARTS feed', raised: '31-Aug-2026', erpDoc: 'GL-26-0831433' },
     { bu: '111', buName: 'Mobile - Delhi', vcode: '412885', item: 'RENT-AOR', act: 'ACT-0201', month: 'AUG-26', locator: '11106', dn: 'DN-IT-26-0417', from: '01-Aug-2026', to: '31-Aug-2026', amount: 86200, actual: 0, status: 'Open', age: 14, source: 'Debit note', maker: 'Invoicing (DN validated)', raised: '17-Sep-2026', erpDoc: 'GL-26-0917019' },
-    { bu: '151', buName: 'Mobile - Tamil Nadu', vcode: '410022', item: 'SECURITY001', act: 'ACT-0001', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 398000, actual: 0, status: 'Submitted', age: 1, source: 'Bulk upload', maker: 'B0MKR611', raised: '30-Sep-2026' }
+    { ref: 'PRV-26-10377', bu: '101', buName: 'Corporate - Gurugram', vcode: '200031', item: 'BRANDCC01', act: 'ACT-0052', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 2450000, actual: 0, status: 'DOA exception', age: 3, source: 'Single entry', maker: 'B0BFN017', raised: '28-Sep-2026', rptFlag: 'RPT', doa: 'DOA API returned no approvers: no matrix for brand cross-charge (RPT)' },
+    { ref: 'PRV-26-10431', bu: '151', buName: 'Mobile - Tamil Nadu', vcode: '410022', item: 'SECURITY001', act: 'ACT-0001', month: 'SEP-26', from: '01-Sep-2026', to: '30-Sep-2026', amount: 398000, actual: 0, status: 'Submitted', age: 1, source: 'Bulk upload', maker: 'B0MKR611', raised: '30-Sep-2026' }
   ];
-  provisions.forEach(function (p) {
+  function pre(p) { return /^(Draft|Submitted|Returned|DOA exception)$/.test(p.status); }
+  provisions.forEach(function (p, i) {
+    if (!p.ref) p.ref = 'PRV-' + (p.raised ? p.raised.slice(-2) : '26') + '-' + (10000 + i * 13);
+    p.pre = pre(p); p.key = p.pre ? p.ref : p.urn;
     var a = activities.filter(function (x) { return x.id === p.act; })[0];
     p.urn = urn(p); p.activity = a; p.vendor = vendors[p.vcode].name; p.rpt = p.rptFlag || vendors[p.vcode].rpt;
     p.scenario = a.scenario; p.scenarioName = SCEN[a.scenario]; p.balance = p.amount - p.actual; p.mode = a.mode;
@@ -67,7 +72,7 @@ window.PA = (function () {
   return {
     today: '01-Oct-2026', activities: activities, scenarios: SCEN, vendors: vendors, provisions: provisions, urn: urn,
     statusTone: function (s) { return s === 'Closed' ? 'ok' : (s === 'Draft' || s === 'Reversed' || s === 'Force closed' || s === 'Cancelled') ? 'grey' : ''; },
-    find: function (u) { return provisions.filter(function (p) { return p.urn === u; })[0]; },
+    find: function (u) { return provisions.filter(function (p) { return p.urn === u || p.ref === u; })[0]; },
     rs: function (n) { return UI.inr(n, 2); }
   };
 })();

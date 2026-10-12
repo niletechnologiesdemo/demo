@@ -12,91 +12,79 @@
 <script src="inv-data.js"></script>
 <script>
 (function () {
-  /* Landlord GST on rent already paid (HLD 6.3.3; BRD Landlord GST). One paid rent voucher per GST invoice. */
-  var S = Page.state(), R = INV.role('landlord'), partner = INV.isPartner(R), c = INV.cat('ll-gst');
+  /* Landlord GST on rent already paid (HLD 6.3.3; BRD Landlord GST). One paid rent voucher per GST invoice.
+     Fields follow the LL GST input format: supplier, site and description are derived from the lease and GST masters. */
+  var S = Page.state(), R = INV.role('landlord'), partner = INV.isPartner(R);
   var vend = INV.vendors['700845'], ci = INV.circles['Maharashtra'];
   var err = S === 'errors', ok = S === 'validated' || S === 'submitted', term = S === 'terminated', unpaid = S === 'unpaid';
   var lease = term ? INV.leases[2] : unpaid ? INV.leases[0] : INV.leases[1];
   var vch = term ? INV.vouchers[5] : unpaid ? INV.vouchers[4] : INV.vouchers[1];
-  var base = vch.amount, gst = err ? 10800 : Math.round(base * 0.18 * 100) / 100, half = gst / 2;
+  var base = vch.amount, cap = Math.round(base * 0.18 * 100) / 100, gst = err ? 10800 : cap;
 
-  var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [['Invoice family', 'Rush / AP'], ['Sub-category', 'LL_GST (landlord GST)'], ['Approval', 'PHD checklist review, then force approval'], ['SLA', c.sla],
-    ['Booked as', 'STANDARD, two lines'], ['Payment term', UI.esc(c.term)], ['Pay group', 'NETWORK RENT'], ['Item code / GL', 'NET000832 &middot; 4651002']] })] });
+  var head = UI.p('<b>Landlord GST</b> &middot; GST on rent already paid to you', {});
 
+  // circle users submit for landlords who do not use the portal (BRD Landlord GST #5)
   var onBehalf = partner ? '' : UI.section({ title: 'Submitting for', body: [UI.grid(3, [
-    UI.field({ label: 'Landlord (on behalf of)', type: 'lookup', value: UI.esc(vend.name) + ' (700845)', required: true, hint: 'Circle users submit for landlords who do not use the portal' }),
-    UI.field({ label: 'Circle', type: 'readonly', value: 'Maharashtra &middot; ' + ci.ou }), UI.field({ label: 'Submitted by', type: 'readonly', value: UI.esc(R.name) + ' &middot; ' + R.user })])] });
+    UI.field({ label: 'Landlord', type: 'lookup', value: UI.esc(vend.name) + ' &middot; 700845', required: true })])] });
 
-  var leases = UI.section({ title: '1. Select the lease', sub: 'Leases mapped to you in Oracle Property Manager', collapsible: true, body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'sel', label: '' }, { key: 'id', label: 'Lease' }, { key: 'site', label: 'Site (address)' }, { key: 'f', label: 'Rent' }, { key: 'term', label: 'Term' }, { key: 's', label: 'Status' }],
+  var leases = UI.section({ title: '1. Select the lease', collapsible: true, body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'sel', label: '' }, { key: 'id', label: 'Lease' }, { key: 'site', label: 'Site (address)' }, { key: 'f', label: 'Rent' }, { key: 's', label: 'Status' }],
     rows: INV.leases.map(function (l) {
       var on = l.id === lease.id;
-      return { _sel: on, sel: UI.check({ radio: true, on: on }), id: l.id, site: UI.esc(l.site) + '<div class="k-muted k-small">Locator ' + l.locator + '</div>', f: l.freq + ' &middot; Rs ' + UI.inr(l.rent, 2), term: l.from + ' to ' + l.to,
-        s: UI.status(l.status, l.status === 'Active' ? 'ok' : 'grey') };
+      return { _sel: on, sel: UI.check({ radio: true, on: on }), id: l.id, site: UI.esc(l.site), f: l.freq + ' &middot; Rs ' + UI.inr(l.rent, 2), s: UI.status(l.status, l.status === 'Active' ? 'ok' : 'grey') };
     }) }),
-    term ? UI.alert({ tone: 'red', title: 'Lease LSE-MH-0291 is terminated.', text: 'GST invoices cannot be submitted against a lease that is terminated, on hold or where rent was not paid. Contact the circle if you think this is wrong.' }) : ''] });
+    term ? UI.alert({ tone: 'red', title: 'Lease LSE-MH-0291 is terminated.', text: 'GST invoices cannot be submitted against a terminated lease, a lease on hold, or where rent was not paid.' }) : ''] });
 
   var vouchers = UI.section({ title: '2. Select the paid rent voucher', sub: 'One voucher per GST invoice', collapsible: true, body: [UI.table({ dense: true, pager: false, export: false,
     columns: [{ key: 'sel', label: '' }, { key: 'no', label: 'Voucher' }, { key: 'p', label: 'Rent period' }, { key: 'a', label: 'Rent (Rs)', num: true, money: true }, { key: 'paid', label: 'Payment' }, { key: 'gst', label: 'GST' }],
     rows: INV.vouchers.filter(function (v) { return v.lease === lease.id; }).map(function (v) {
       var on = v.no === vch.no, can = !v.claimed && !v.unpaid && !v.terminated;
-      return { _sel: on, _checked: on, sel: can || on ? UI.check({ radio: true, on: on }) : '', no: v.no, p: v.period, a: v.amount, paid: v.unpaid ? UI.status('Not paid') : UI.esc(v.paid), gst: v.claimed ? UI.status('Already claimed', 'grey') + '<div class="k-small">' + UI.esc(v.gst) + '</div>' : UI.esc(v.gst) };
+      return { _sel: on, _checked: on, sel: can || on ? UI.check({ radio: true, on: on }) : '', no: v.no, p: v.period, a: v.amount, paid: v.unpaid ? UI.status('Not paid') : UI.esc(v.paid), gst: v.claimed ? UI.status('Already claimed', 'grey') : UI.esc(v.gst) };
     }) }),
-    unpaid ? UI.alert({ tone: 'red', title: 'Rent for Oct-2026 (voucher 719004) is not yet paid.', text: 'GST can be entered only after the rent is paid in Oracle AP. The payment is scheduled for 05-Oct-2026.' }) : '',
-    err ? UI.alert({ tone: 'red', text: 'Only one rent voucher can be used per GST invoice. Remove voucher 709881 - GST on it was already claimed (NPO-2627-004512).' }) : ''] });
+    unpaid ? UI.alert({ tone: 'red', title: 'Rent for Oct-2026 (voucher 719004) is not yet paid.', text: 'GST can be entered only after the rent is paid. The payment is scheduled for 05-Oct-2026.' }) : '',
+    err ? UI.alert({ tone: 'red', text: 'Only one rent voucher can be used per GST invoice. Remove voucher 709881: GST on it was already claimed.' }) : ''] });
 
   var details = UI.section({ title: '3. GST Invoice Details', collapsible: true, body: [UI.grid(3, [
-    UI.field({ label: 'Operating unit', type: 'readonly', value: ci.ou, src: 'grey' }),
-    UI.field({ label: 'Supplier name / number', type: 'readonly', value: UI.esc(vend.name) + ' &middot; 700845', src: 'grey', hint: 'Matched from GST master data' }),
-    UI.field({ label: 'Supplier site', type: 'readonly', value: lease.id === 'LSE-MH-0533' ? 'PUNE-LL-0533' : 'PUNE-LL-0418', src: 'grey', hint: 'Taken from the base rent (lease) entry' }),
-    UI.field({ label: 'Supplier GSTIN', type: 'readonly', value: vend.gstin, src: 'grey' }),
-    UI.field({ label: 'Airtel GSTIN (bill to)', type: 'readonly', value: ci.gstin, src: 'grey' }),
-    UI.field({ label: 'Rent voucher number', type: 'readonly', value: vch.no, required: true, src: 'blue', hint: 'Must already be paid in Oracle AP' }),
-    UI.field({ label: 'Invoice number', value: err ? 'RKE#26-27/021' : 'RKE/26-27/021', required: true, src: 'green', error: err ? 'Special characters other than ( ) / - are not allowed in the invoice number.' : '' }),
-    UI.field({ label: 'Invoice date', type: 'date', value: '28/09/2026', required: true, src: 'green' }),
-    UI.field({ label: 'Invoice period', type: 'readonly', value: UI.esc(vch.period), required: true, src: 'blue' }),
-    UI.field({ label: 'Base amount (rent) (Rs)', value: UI.inr(base, 2), required: true, src: 'green', hint: 'Equal to or less than the rent paid on the voucher' }),
-    UI.field({ label: 'CGST 9% (Rs)', value: UI.inr(half, 2), required: true, src: 'green', error: err ? 'GST cannot exceed 18% of the base value (Rs 9,720.00) or the rent paid. A lower amount is accepted.' : '' }),
-    UI.field({ label: 'SGST 9% (Rs)', value: UI.inr(half, 2), required: true, src: 'green' }),
-    UI.field({ label: 'Description', type: 'readonly', value: 'GST|' + (vch.period.slice(0, 3).toUpperCase()) + "'26_BASE RENT VOUCHER # " + vch.no, src: 'blue', wrap: true, hint: 'Nature of invoice + invoice period + base rent voucher number' }),
+    UI.field({ label: 'Invoice number', value: err ? 'RKE#26-27/021' : 'RKE/26-27/021', required: true, error: err ? 'Special characters other than ( ) / - are not allowed in the invoice number.' : '' }),
+    UI.field({ label: 'Invoice date', type: 'date', value: '28/09/2026', required: true }),
     UI.options({ label: 'Invoice signed', required: true, items: [{ label: 'Manually signed', on: true }, { label: 'Digitally signed' }] }),
-    UI.field({ label: 'Total GST claimed (Rs)', type: 'readonly', value: UI.inr(gst, 2), src: 'blue' })])] });
-
-  var rentCheck = UI.section({ title: 'Rent-paid and compliance checks', collapsible: true, body: [UI.checklist({ columns: ['#', 'Check', 'Against', 'Result', 'Detail'], rows: [
-    { check: 'Base rent entry found', source: 'Oracle AP: supplier GSTIN, vendor code and voucher number, invoice period from the description', result: unpaid ? 'fail' : 'pass', detail: unpaid ? 'No paid entry for Oct-2026' : 'Voucher ' + vch.no + ' &middot; Rs ' + UI.inr(base, 2) + ' &middot; ' + UI.esc(vch.paid) },
-    { check: 'Rent on invoice within the lease entry', source: 'Lease entry amount', result: 'pass', detail: 'Equal: processing continues (higher amounts are referred to the circle)' },
-    { check: 'Voucher not already used for GST', source: 'Portal and Oracle AP', result: err ? 'fail' : 'pass', detail: err ? 'Voucher 709881 used on NPO-2627-004512' : 'Not used' },
-    { check: 'GST capping', source: '18% of base and the rent paid', result: err ? 'fail' : 'pass', detail: err ? 'Rs 10,800.00 claimed; cap Rs 9,720.00' : 'Rs ' + UI.inr(gst, 2) + ' within cap' },
-    { check: 'Lease status', source: 'Oracle PM lease module', result: term ? 'fail' : 'pass', detail: term ? 'Terminated 31-Jul-2026' : 'Active, not on hold' },
-    { check: 'Non-compliant vendor list', source: 'Tax team list (100% of landlord GST)', result: 'pass', detail: 'GSTIN not on the list; a match moves the invoice to the manual queue' },
-    { check: 'Supplier and Airtel GSTIN', source: 'GST master data', result: 'pass', detail: 'Valid; same state - CGST and SGST' }] }),
-    UI.p('Where several base rent entries could match, vouchers are checked in turn: first the entry of the same amount, else the nearest amount above the invoice. Quarterly, half-yearly and annual payments carry different descriptions and are matched accordingly.', { muted: true, small: true })] });
-
-  var book = UI.section({ title: 'Booking preview (after PHD approval)', collapsible: true, collapsed: !ok, body: [
-    '<div class="k-tablewrap"><table class="k-je"><thead><tr><th>Line</th><th>Item code / GL</th><th>GST tax category</th><th class="num">Line amount (Rs)</th><th class="num">GST (Rs)</th></tr></thead><tbody>' +
-    '<tr><td>1</td><td>NET000832 &middot; ' + ci.bu + '-4651002</td><td>WithinState_MH_GST18</td><td class="num">' + UI.inr(base, 2) + '</td><td class="num">' + UI.inr(gst, 2) + '</td></tr>' +
-    '<tr><td>2</td><td>NET000832 &middot; ' + ci.bu + '-4651002</td><td>WithinState_MH_GST0</td><td class="num">-' + UI.inr(base, 2) + '</td><td class="num">0.00</td></tr></tbody></table></div>',
-    UI.p('Both lines are at the base amount: the second, negative line with the 0% category of the same type, so that only the GST is recognised and paid.', { muted: true, small: true })] });
+    UI.field({ label: 'Base amount (rent)', value: UI.inr(base, 2), prefix: 'INR', required: true }),
+    UI.field({ label: 'GST amount', value: UI.inr(gst, 2), prefix: 'INR', required: true, hint: err ? '' : 'At most 18% of the rent paid; a lower amount is accepted',
+      error: err ? 'GST cannot exceed 18% of the rent paid (Rs ' + UI.inr(cap, 2) + '). A lower amount is accepted.' : '' }) + UI.tbc('Landlord GST: whether the landlord enters the GST amount (BRD items 3, 9); the LL GST input format has no GST column')
+  ]), UI.note({ text: 'Supplier name, number and site, the GSTINs and the description (GST, invoice period and rent voucher number) come from the lease, the GST master and the invoice copy. The lease and voucher are checked for rent paid, earlier GST claims and lease status.' })] });
 
   var docs = UI.section({ title: 'Documents', collapsible: true, body: [UI.grid(2, [
-    UI.upload({ label: 'GST invoice (PDF)', required: true, hint: 'Manually or digitally signed invoice', files: [{ name: 'RKE_26-27_021.pdf', meta: '204 KB', status: UI.status('Read by OCR', 'ok') }] }),
-    UI.upload({ label: 'Supporting documents', hint: 'Optional' })])] });
+    UI.upload({ label: 'GST invoice (PDF)', required: true, files: [{ name: 'RKE_26-27_021.pdf', meta: '204 KB', status: ok ? UI.status('Read by OCR', 'ok') : '' }] }),
+    UI.upload({ label: 'Supporting documents' })])] });
+
+  // Validate runs the invoice checklist (HLD 5.4) on the OCR output before submission; checks 12 and 13 are confirmed by the PHD team
+  var chk = INV.checklist.map(function (k) {
+    var n = k[0], res = 'pass';
+    if ((n === 10 && vend.irn !== 'Yes') || n === 16 || n === 17 || n === 18) res = 'na';
+    if (INV.REVIEW_CHECKS.indexOf(n) >= 0) res = 'manual';
+    if (err && n === 3) res = 'fail';
+    return { no: n, check: UI.esc(k[1]), source: res === 'manual' ? 'PHD team, after submission' : 'On Validate', result: res };
+  });
+  var chkModal = UI.modal({ id: 'chk', title: 'Invoice', accent: 'Checklist', size: 'wide', body: [UI.checklist({ columns: ['#', 'Check', 'Checked', 'Result', ''], rows: chk })],
+    foot: [UI.button({ label: 'Close', variant: 'primary', close: true })] });
+  var viewChk = UI.textlink({ label: 'View checklist', icon: 'arrowRight', modal: 'chk' });
+  var checks = err ? UI.alert({ tone: 'red', title: '3 errors need correction before you can submit.', text: 'Correct the fields and voucher marked in red and validate again.', actions: [viewChk] })
+    : ok ? UI.alert({ tone: 'ok', title: 'All checks passed.', text: 'Rent paid, voucher not claimed before, GST within the cap, lease active, and the invoice checklist passed. The signature is confirmed by the PHD team after submission.', actions: [viewChk] }) : '';
 
   var submitted = UI.modal({ id: 'submitted', open: S === 'submitted', title: 'GST Invoice', accent: 'Submitted', size: 'narrow', body: [
     UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004873</b>'], ['Status', INV.status('Submitted')], ['Rent voucher', vch.no], ['GST claimed', 'Rs ' + UI.inr(gst, 2)]] }),
-    UI.p('Next: PHD reviews the invoice against the online checklist and approves it; the GST entry is then created in Oracle AP. You can follow the status on the portal.', { muted: true })],
+    UI.p('You are notified at every status change.', { muted: true })],
     foot: [UI.button({ label: 'My leases & vouchers', go: 'inv-12' }), UI.button({ label: 'Track invoice', variant: 'primary', go: 'inv-09' })] });
 
-  var blocked = err || term || unpaid;
-  var bar = UI.sticky({ left: [UI.textlink({ label: 'Check GST', icon: 'arrowRight', state: 'validated' })], totals: [['Rent (base)', UI.inr(base, 2)], ['GST claimed', UI.inr(gst, 2)]],
-    right: [UI.button({ label: 'Save', toast: 'Saved as draft' }), ok ? UI.button({ label: 'Submit GST invoice', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Validate', variant: blocked ? 'disabled' : 'primary', state: blocked ? '' : 'validated' })] });
+  var blocked = term || unpaid;
+  var bar = UI.sticky({ totals: [['GST claimed', 'Rs ' + UI.inr(gst, 2)]],
+    right: [UI.button({ label: 'Save', toast: 'Saved as draft' }), UI.button({ label: 'Validate', variant: blocked ? 'disabled' : '', state: blocked ? '' : 'validated' }),
+      ok ? UI.button({ label: 'Submit GST invoice', variant: 'primary', state: 'submitted' }) : UI.button({ label: 'Submit GST invoice', variant: 'disabled' })] });
 
   Page.render({
     id: 'inv-06', roleId: 'landlord', navKey: 'inv-03',
     states: [{ id: 'errors', label: 'GST over cap / voucher used' }, { id: 'unpaid', label: 'Rent not paid' }, { id: 'terminated', label: 'Lease terminated' }, { id: 'validated', label: 'Validated' }, { id: 'submitted', label: 'Submitted' }],
-    rail: { mode: 'form', title: 'GST Invoice', accent: 'Landlord', back: partner ? 'inv-12' : 'inv-03', text: 'Claim GST on rent already paid to you. Choose the lease and the paid rent voucher, then enter the GST invoice.<br><br>GST can be at most 18% of the rent; a lower amount is accepted.' },
-    html: '<div class="k-src-on"><div class="k-legend-src"><span><i class="k-src green"></i>Entered by you</span><span><i class="k-src grey"></i>From Oracle (lease, supplier, GST masters)</span><span><i class="k-src blue"></i>Calculated</span></div>' +
-      head + onBehalf + (ok ? UI.alert({ tone: 'ok', title: 'All checks passed.', text: 'Rent paid, voucher not used before, GST within the cap, lease active, GSTINs valid.' }) : '') +
-      leases + vouchers + details + rentCheck + book + docs + bar + '</div>' + submitted
+    rail: { mode: 'form', title: 'GST Invoice', accent: 'Landlord', back: partner ? 'inv-12' : 'inv-03', text: 'Fields marked <span class="k-link">*</span> are mandatory.' },
+    html: head + onBehalf + checks + leases + vouchers + details + docs + bar + submitted + chkModal
   });
 })();
 </script>
