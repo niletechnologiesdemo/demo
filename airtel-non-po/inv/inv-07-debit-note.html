@@ -63,7 +63,7 @@
       ['Operating unit / BU', 'BAL B&amp;T Delhi &middot; 204'], ['Amount', 'Base 2,008.00 &middot; GST 2,008.00 &middot; total ' + UI.inr(f.amt, 2)], ['Item code / GL', 'ARITM1471 &middot; ' + f.gl], ['Pay group', 'Network Rent']] });
   } else fields = [
     F('Operating unit / BU code', ci.ou + ' &middot; ' + ci.bu, { type: 'select', required: true }), vendor, site,
-    F(rev ? 'Debit note to reverse' : 'Debit note number', UI.esc(rev ? f.orig : f.inv + '/DN'), { type: rev ? 'lookup' : 'text', required: true, error: err ? (rev ? 'This debit note is not booked for the vendor.' : 'Invoice VCS/26/1188 is not booked for this vendor in Oracle.') : '' }),
+    F(rev ? 'Debit note to reverse' : 'Debit note number', UI.esc(rev ? f.orig : f.inv + '/DN'), { type: rev ? 'lookup' : 'text', required: true, error: err ? (rev ? 'This debit note is not booked for the vendor.' : 'The original invoice is not booked for this vendor in Oracle.') : '' }),
     F(rev ? 'Amount' : 'Debit note amount', UI.inr(f.amt, 2), { prefix: 'INR', required: true }), F('Currency', 'INR', { type: 'select', required: true }),
     F('GL code', f.gl, { type: 'lookup', required: true }), { span: 2, html: F('Description', UI.esc(f.desc), { required: true, wrap: true }) },
     { span: 3, html: F('Remarks', UI.esc(f.reason), { wrap: true }) }];

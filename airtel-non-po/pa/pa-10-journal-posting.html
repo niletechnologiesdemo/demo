@@ -26,9 +26,10 @@
       { b: 'NPP-26-09-0118<div class="k-muted k-small">30-Sep 21:05</div>', src: 'Portal approvals', cat: 'Provisional', n: '1', amt: 2140000, seg: 'Non-RPT', st: UI.status('Rejected by Journal Import'), _flag: true },
       { b: 'NPP-26-09-0117<div class="k-muted k-small">30-Sep 20:40</div>', src: 'Actualization', cat: 'Adjustment', n: '12', amt: 3412000, seg: 'Non-RPT', st: UI.status('Posted', 'ok') + '<div class="k-small">GL-26-0930118</div>' }] });
 
+  var ep = PA.find('131·410455·CCSVC002·SEP-26');   // the provision rejected by Journal Import (pa-data.js)
   var errors = UI.table({ dense: true, columns: [{ key: 'urn', label: 'URN' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'err', label: 'Oracle reason' }, { key: 'fix', label: 'Correction' }, { key: '_acts', label: '' }],
-    rows: [{ urn: '<span class="k-urn">131·410455·CCSVC002·SEP-26</span><div class="k-muted k-small">Batch NPP-26-09-0118</div>', amt: 2140000, err: 'EM29 - GL period SEP-26 closed for ledger AIRTEL_IN_LEDGER', fix: S === 'error' ? UI.field({ type: 'select', value: 'Re-date to OCT-26 (open)' }) : 'Re-date to OCT-26 and retry', _flag: true,
-      _acts: [{ icon: 'sync', label: 'Retry - keyed by URN so it cannot post twice', toast: 'Retry queued for the next import run' }, { icon: 'eye', label: 'Open provision', go: 'pa-09' }] }] });
+    rows: [{ urn: '<span class="k-urn">131·410455·CCSVC002·SEP-26</span><div class="k-muted k-small">Batch NPP-26-09-0118</div>', amt: 2140000, err: UI.esc(ep.error), fix: S === 'error' ? UI.field({ type: 'select', value: 'Use the active account combination for BU 131' }) : 'Correct the account combination and retry', _flag: true,
+      _acts: [{ icon: 'sync', label: 'Retry - keyed by URN so it cannot post twice', toast: 'Retry queued for the next import run' }, { icon: 'eye', label: 'Open provision', go: 'pa-09-provision-detail.html?urn=' + encodeURIComponent(ep.urn) }] }] });
 
   var recon = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'd', label: 'Check (daily)' }, { key: 'p', label: 'Platform', num: true }, { key: 'o', label: 'Oracle', num: true }, { key: 'r', label: 'Result' }],
     rows: [{ d: 'Journals posted - 30-Sep', p: '18,442', o: '18,442', r: UI.result('pass', 'Matched') }, { d: 'Value posted - 30-Sep (Rs)', p: '46,91,48,900.00', o: '46,91,48,900.00', r: UI.result('pass', 'Matched') },

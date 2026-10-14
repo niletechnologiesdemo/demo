@@ -35,15 +35,37 @@
   var view = '';
   if (pick) {
     var body;
+    // report rows come from pa-data.js so they agree with the register, the workbench and Ageing, reversal & year-end
+    var urn = function (p) { return '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>'; };
+    var mon = function (m) { return m.charAt(0) + m.slice(1, 3).toLowerCase() + m.slice(3); };
+    var provTable = function (list) { return UI.table({ dense: true, columns: [{ key: 'u', label: 'URN' }, { key: 'v', label: 'Vendor' }, { key: 'm', label: 'Month' }, { key: 'a', label: 'Provision (Rs)', num: true, money: true }, { key: 'b', label: 'Balance (Rs)', num: true, money: true }, { key: 's', label: 'Status' }],
+      rows: list.map(function (p) { return { u: urn(p), v: UI.esc(p.vendor), m: mon(p.month), a: p.amount, b: p.balance, s: UI.status(p.status, PA.statusTone(p.status)) }; }), total: list.length + ' provisions' }); };
+    var invTable = function (out) { var list = PA.invoices.filter(function (r) { return out.indexOf(r.out) >= 0; });
+      return UI.table({ dense: true, columns: [{ key: 'i', label: 'Invoice', nowrap: true }, { key: 'v', label: 'Vendor / BU' }, { key: 'a', label: 'Invoice (Rs, excl. GST)', num: true, money: true }, { key: 'r', label: 'Result' }],
+        rows: list.map(function (r) { return { i: UI.esc(r.no) + '<div class="k-muted k-small">Booked ' + r.booked + '</div>', v: UI.esc(r.vendor) + '<div class="k-muted k-small">BU ' + r.bu + '</div>', a: r.base,
+          r: UI.esc(r.text || '') + (r.cands || []).map(function (k) { return '<div class="k-small">Candidate ' + urn(PA.find(k)) + '</div>'; }).join('') + r.settles.map(function (p) { return '<div class="k-small">' + urn(p) + '</div>'; }).join('') }; }), total: list.length + ' invoices' }); };
     if (S === 'portal-erp') body = UI.table({ dense: true, columns: [{ key: 'd', label: 'Document' }, { key: 'src', label: 'Created by' }, { key: 'p', label: 'On portal' }, { key: 'e', label: 'In Oracle' }, { key: 'r', label: 'Result' }],
-      rows: [{ d: 'Journal GL-26-0930071 (TOCO rent, Sep-26)', src: 'Portal', p: 'Rs 38,42,500.00', e: 'Rs 38,42,500.00', r: UI.result('pass', 'Matched') },
+      rows: [{ d: 'Journal GL-26-0831402 (TOCO electricity, Aug-26)', src: 'Portal', p: 'Rs 1,10,480.00', e: 'Rs 1,10,480.00', r: UI.result('pass', 'Matched') },
         { d: 'Journal GL-26-0930118 (actualization)', src: 'Portal', p: 'Rs 34,12,000.00', e: 'Rs 34,12,000.00', r: UI.result('pass', 'Matched') },
         { d: 'AP invoice 98112047 (Vertex Call Solutions)', src: 'Direct in Oracle', p: 'Not on portal', e: 'Rs 4,12,000.00', r: UI.result('warn', 'ERP only') },
-        { d: 'Journal NPP-26-09-0118', src: 'Portal', p: 'Rs 21,40,000.00', e: 'Rejected (EM29)', r: UI.result('fail', 'Mismatch') }] });
-    else if (S === 'ageing') body = UI.table({ dense: true, columns: [{ key: 'bu', label: 'BU' }, { key: 'v', label: 'Vendor' }, { key: 'b1', label: '0-30', num: true }, { key: 'b2', label: '31-60', num: true }, { key: 'b3', label: '61-90', num: true }, { key: 'b4', label: 'Over 90', num: true }, { key: 'e', label: 'Escalation' }],
-      rows: [{ bu: '131', v: 'Vertex Call Solutions', b1: '21,40,000', b2: '-', b3: '-', b4: '20,75,000', e: 'Business user' }, { bu: '141', v: 'Vertex Call Solutions', b1: '-', b2: '-', b3: '-', b4: '19,50,000', e: 'Manager' }, { bu: '141', v: 'Prism Power Systems', b1: '-', b2: '-', b3: '-', b4: '7,60,000', e: 'CFR (on hold)' }, { bu: '111', v: 'Nxtra Data', b1: '-', b2: '-', b3: '-', b4: '18,00,000', e: 'Business user' }] });
-    else body = UI.table({ dense: true, columns: [{ key: 'u', label: 'URN' }, { key: 'v', label: 'Vendor' }, { key: 'm', label: 'Month' }, { key: 'a', label: 'Provision (Rs)', num: true, money: true }, { key: 'b', label: 'Balance (Rs)', num: true, money: true }, { key: 's', label: 'Status' }],
-      rows: PA.provisions.slice(0, 6).map(function (p) { return { u: '<span class="k-urn">' + p.urn + '</span>', v: UI.esc(p.vendor), m: p.month, a: p.amount, b: p.balance, s: UI.status(p.status, PA.statusTone(p.status)) }; }) });
+        { d: 'Batch NPP-26-09-0118 (call centre, Sep-26)', src: 'Portal', p: 'Rs 21,40,000.00', e: 'Rejected by Journal Import', r: UI.result('fail', 'Mismatch') }] });
+    else if (S === 'ageing') {
+      var groups = {}, B = ['0-30 days', '31-60 days', '61-90 days', 'Over 90 days'];
+      PA.provisions.filter(function (p) { return p.open; }).forEach(function (p) {
+        var k = p.bu + '|' + p.vendor, g = groups[k] = groups[k] || { bu: p.bu, v: p.vendor, b: [0, 0, 0, 0], e: null, held: 0 };
+        g.b[B.indexOf(p.bucket)] += p.balance; if (p.escLevel && (!g.e || p.escLevel.days > g.e.days)) g.e = p.escLevel; if (p.status === 'On hold') g.held++;
+      });
+      var cell = function (n) { return n ? UI.inr(n, 0) : '-'; };
+      body = UI.table({ dense: true, columns: [{ key: 'bu', label: 'BU' }, { key: 'v', label: 'Vendor' }, { key: 'b1', label: '0-30', num: true }, { key: 'b2', label: '31-60', num: true }, { key: 'b3', label: '61-90', num: true }, { key: 'b4', label: 'Over 90', num: true }, { key: 'e', label: 'Escalation' }],
+        rows: Object.keys(groups).map(function (k) { var g = groups[k]; return { bu: g.bu, v: UI.esc(g.v), b1: cell(g.b[0]), b2: cell(g.b[1]), b3: cell(g.b[2]), b4: cell(g.b[3]), e: (g.e ? g.e.to : '-') + (g.held ? ' (' + g.held + ' on hold)' : '') }; }),
+        total: Object.keys(groups).length + ' BU and vendor lines' }) + UI.tbc('Ageing is counted from the last day of the service month (HLD open point 18)');
+    }
+    else if (S === 'pva') body = UI.table({ dense: true, columns: [{ key: 'u', label: 'URN' }, { key: 'i', label: 'Invoice' }, { key: 'h', label: 'Match' }, { key: 'a', label: 'Applied (Rs)', num: true, money: true }, { key: 's', label: 'Provision status' }],
+      rows: [].concat.apply([], PA.provisions.map(function (p) { return p.matches.map(function (m) { return { u: urn(p), i: UI.esc(m.inv) + '<div class="k-muted k-small">' + m.on + '</div>', h: UI.esc(PA.HOW[m.how]), a: m.amt, s: UI.status(p.status, PA.statusTone(p.status)) }; }); })) });
+    else if (S === 'unmatched') body = invTable(['unmatched']);
+    else if (S === 'sugg' || S === 'nearest') body = invTable(['nearest']);
+    else if (S === 'excess') body = invTable(['excess', 'prepaid']);
+    else body = provTable(PA.provisions.filter(S === 'open' ? function (p) { return p.open; } : S === 'closed' ? function (p) { return p.ended; } : function (p) { return !p.pre; }));
     view = UI.section({ title: pick[1], sub: pick[2], body: [UI.filters({ items: [UI.field({ label: 'From', type: 'date', value: '01/04/2026' }), UI.field({ label: 'To', type: 'date', value: '30/09/2026' }), UI.field({ label: 'BU', type: 'select', value: 'All in scope' }), UI.field({ label: 'Ledger balance basis', type: 'select', value: 'Platform open balance' })], actions: [UI.button({ label: 'Generate report', variant: 'primary', toast: 'Report generated' })] }), body] });
   }
   Page.render({

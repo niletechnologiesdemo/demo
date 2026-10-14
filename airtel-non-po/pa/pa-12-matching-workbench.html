@@ -12,48 +12,128 @@
 <script src="pa-data.js"></script>
 <script>
 (function () {
-  var S = Page.state();
-  var cols = [{ key: 'inv', label: 'Invoice' }, { key: 'v', label: 'Vendor / BU' }, { key: 'period', label: 'Service period' }, { key: 'amt', label: 'Invoice (Rs)', num: true, money: true }, { key: 'res', label: 'Result' }, { key: '_acts', label: '' }];
+  // Rows come from pa-data.js: PA.invoices (booked, validated invoices seen by the matching engine) and PA.pos (POs found after a provision)
+  var S = Page.state(), force = S === 'force', settled = S === 'po-settled';
+  var rs = function (n) { return 'Rs ' + UI.inr(n, 2); };
+  var mon = function (d) { return d.slice(3, 6) + '-' + d.slice(9); };
+  var monthEnd = function (d) { return PA.fmt(PA.parse(d) + 864e5).slice(0, 2) === '01'; };
+  var period = function (r) {
+    if (!r.from) return 'Not on invoice';
+    if (r.from.slice(0, 2) !== '01' || !monthEnd(r.to)) return r.from + ' to ' + r.to;
+    return mon(r.from) === mon(r.to) ? mon(r.from) : mon(r.from) + ' to ' + mon(r.to);
+  };
+  var urn = function (p) { return '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>'; };
+  var applied = function (r, p) { return p.matches.filter(function (m) { return m.inv === r.no; })[0].amt; };
+  var of = function (out) { return PA.invoices.filter(function (r) { return r.out === out; }); };
+  var cols = [{ key: 'inv', label: 'Invoice', nowrap: true }, { key: 'v', label: 'Vendor / BU' }, { key: 'period', label: 'Service period' }, { key: 'amt', label: 'Invoice (Rs, excl. GST)', num: true, money: true }, { key: 'res', label: 'Result' }, { key: '_acts', label: '' }];
+  var row = function (r, res, acts) {
+    var v = PA.vendors[r.vcode];
+    return { inv: UI.esc(r.no) + '<div class="k-muted k-small">' + (r.src === 'Lease' ? 'Lease payment' : r.src + ' invoice') + '</div><div class="k-muted k-small">Booked ' + r.booked + '</div>' +
+        (r.portal ? '<div class="k-small"><a class="k-link" href="../inv/inv-11-invoice-detail.html?ref=' + r.portal + '">' + r.portal + '</a></div>' : ''),
+      v: '<div class="w-170">' + UI.esc(r.vendor) + '</div><div class="k-muted k-small">BU ' + r.bu + (r.vcode ? ' &middot; ' + r.vcode : '') + (v && v.note ? ' &middot; PAN ' + v.pan : '') + '</div>',
+      period: period(r), amt: r.base, res: '<div class="w-280">' + res + '</div>', _acts: acts || [] };
+  };
+  var table = function (rows, empty) { return UI.table({ dense: true, columns: cols, rows: rows, pager: rows.length > 5, empty: empty }); };
 
-  var auto = UI.table({ dense: true, columns: cols, rows: [
-    { inv: 'PPS/26-27/0811<div class="k-muted k-small">AP &middot; booked 18-Sep</div>', v: '<div class="w-200">Prism Power Systems</div><div class="k-muted k-small">BU 121</div>', period: 'Aug-26', amt: 486000, res: 'Exact URN<div class="k-muted k-small k-urn">121·410387·AMCDG004·AUG-26</div>', _acts: [{ icon: 'eye', label: 'Open provision', go: 'pa-09' }] },
-    { inv: 'IND/26/AUG/77120<div class="k-muted k-small">PM &middot; Infra report</div>', v: '<div class="w-200">Indus Towers Ltd</div><div class="k-muted k-small">Locator 11106 &rarr; BU 111</div>', period: 'Aug-26', amt: 659160, res: 'Exact site key (TOCO)<div class="k-muted k-small k-urn">111·412885·ELEC-AOR·AUG-26·11106</div>', _acts: [{ icon: 'eye', label: 'Open provision', go: 'pa-09-provision-detail.html?urn=' + encodeURIComponent('111·412885·ELEC-AOR·AUG-26·11106') }] },
-    { inv: 'SFS/2026/0912<div class="k-muted k-small">AP &middot; booked 22-Sep</div>', v: '<div class="w-200">SecureOne Facility Services</div><div class="k-muted k-small">BU 111</div>', period: 'Jul-26', amt: 470000, res: 'Exact URN - provision closed<div class="k-muted k-small k-urn">111·410022·SECURITY001·JUL-26</div>', _acts: [] }] });
+  /* ---------------------------------------------------------------- auto-matched */
+  var auto = of('auto');
+  var autoT = table(auto.map(function (r) {
+    var p = r.settles[0], how = p.matches.filter(function (m) { return m.inv === r.no; })[0].how;
+    return row(r, UI.esc(PA.HOW[how]) + (r.text ? '<div class="k-muted k-small">' + UI.esc(r.text) + '</div>' : '') +
+      r.settles.map(function (x) { return '<div class="k-small">' + urn(x) + ' &middot; ' + rs(applied(r, x)) + ' &middot; ' + UI.esc(x.status) + (x.status === 'Partially actualized' ? ', balance ' + rs(x.balance) : '') + '</div>'; }).join(''),
+      [{ icon: 'eye', label: 'Open provision', go: 'pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) }]);
+  }));
 
-  var nearest = S === 'force'
-    ? UI.box({ title: 'Force match &middot; VCS/26/1188', body: [UI.kv({ cols: 3, items: [['Invoice', 'VCS/26/1188 &middot; Rs 20,75,000.00'], ['Vendor', 'Vertex Call Solutions (410455) &middot; PAN AACCV2208H'], ['Service period', 'not on invoice']] }),
-        UI.table({ dense: true, pager: false, export: false, select: true, columns: [{ key: 'u', label: 'Candidate provision' }, { key: 'why', label: 'Why it is a candidate' }, { key: 'bal', label: 'Open balance (Rs)', num: true, money: true }, { key: 'rank', label: 'Rank' }],
-          rows: [{ u: '<span class="k-urn">131·410455·CCSVC002·JUN-26</span>', why: 'Same vendor and item; oldest open (FIFO, no service period)', bal: 2075000, rank: '1', _checked: true, _sel: true },
-            { u: '<span class="k-urn">131·410455·CCSVC002·SEP-26</span>', why: 'Same vendor and item; later month', bal: 2140000, rank: '2' }] }),
-        UI.field({ label: 'Reason for force match', type: 'area', required: true, value: 'Invoice is for June volumes per vendor covering letter; no service period printed', wrap: true }),
-        UI.p('Force match changes only which provision the invoice settles - not the amount. Your choice and reason are recorded in the audit trail.', { muted: true, small: true }),
-        UI.btns([UI.button({ label: 'Cancel', variant: 'text', go: 'pa-12?tab=mw:nearest' }), UI.button({ label: 'Confirm force match', variant: 'primary', toast: 'Force match recorded; provision actualized' })], { end: true })] })
-    : UI.table({ dense: true, columns: cols, rows: [
-      { inv: 'VCS/26/1188<div class="k-muted k-small">AP &middot; no URN</div>', v: '<div class="w-200">Vertex Call Solutions</div><div class="k-muted k-small">BU 131</div>', period: 'Not on invoice', amt: 2075000, res: '2 candidates &middot; FIFO suggests JUN-26', _acts: [{ icon: 'link', label: 'Force match', go: 'pa-12?state=force&tab=mw:nearest' }] },
-      { inv: 'LEX/26/0187<div class="k-muted k-small">AP &middot; no URN</div>', v: '<div class="w-200">Lexwise Legal LLP</div><div class="k-muted k-small">BU 101</div>', period: 'Jul-26', amt: 350000, res: '1 candidate &middot; item code relaxed', _acts: [{ icon: 'link', label: 'Force match', go: 'pa-12?state=force&tab=mw:nearest' }] },
-      { inv: 'SHK/2026/551<div class="k-muted k-small">AP &middot; vendor not on provision</div>', v: '<div class="w-200">Shakti Security Services</div><div class="k-muted k-small">BU 121 &middot; PAN AAJCS7712K</div>', period: 'Sep-26', amt: 398000, res: 'Nearest by PAN: SecureOne (same PAN)', _acts: [{ icon: 'link', label: 'Force match', go: 'pa-12?state=force&tab=mw:nearest' }] },
-      { inv: 'PPS/26-27/0890<div class="k-muted k-small">AP &middot; booked in BU 127</div>', v: '<div class="w-200">Prism Power Systems</div><div class="k-muted k-small">Invoice BU 127, provision BU 121</div>', period: 'Aug-26', amt: 324000, res: 'BU mismatch - reclass via mapping table', _acts: [{ icon: 'link', label: 'Match and reclass', toast: 'Knock-off in BU 121 against expense in BU 127' }] }] });
+  /* ---------------------------------------------------------------- nearest match: candidates are open provisions of the same PAN in the invoice BU */
+  var near = of('nearest');
+  var pan = function (code) { return (PA.vendors[code] || {}).pan; };
+  var candidates = function (r) {
+    var list = PA.provisions.filter(function (p) { return !p.pre && p.vcode && pan(p.vcode) === pan(r.vcode) && p.bu === r.bu; });
+    var inMonth = function (p) { return r.from && p.month === mon(r.from).toUpperCase(); };
+    var ok = list.filter(function (p) { return p.open; }).sort(function (x, y) { return (inMonth(y) - inMonth(x)) || (PA.parse(x.to) - PA.parse(y.to)); });
+    return ok.map(function (p, i) { return { p: p, rank: String(i + 1), why: (p.vcode !== r.vcode ? 'Same PAN, vendor code ' + p.vcode : 'Same vendor') + (inMonth(p) ? ', same service month' : r.from ? ', other month' : ', oldest open first (FIFO)') + (r.item ? '; item code ' + r.item + ' relaxed to ' + p.item : '') }; })
+      .concat(list.filter(function (p) { return !p.open; }).map(function (p) { return { p: p, rank: 'Not eligible', why: UI.esc(p.status) + (p.status === 'Interface error' ? ' - not posted in Oracle' : ' - not open') }; }));
+  };
+  var nearT = table(near.map(function (r) {
+    var c = candidates(r).filter(function (x) { return x.p.open; });
+    return row(r, UI.esc(r.text) + c.map(function (x) { return '<div class="k-small">Candidate ' + x.rank + ': ' + urn(x.p) + ' &middot; balance ' + rs(x.p.balance) + '</div>'; }).join(''),
+      [{ icon: 'link', label: 'Force match', go: 'pa-12?state=force&inv=' + encodeURIComponent(r.no) + '&tab=mw:nearest' }]);
+  }));
+  var WHY = { 'VCS/26/1176': 'Invoice is for June volumes per the vendor covering letter; no service period printed',
+    'LEX/26/0187': 'Booked with item code LEGAL009 (legal advisory); the service is the July retainer in BU 101',
+    'SHK/2026/551': 'Shakti Security Services is a second vendor code of SecureOne (same PAN); the invoice is for August guarding in BU 121' };
+  var fr = PA.invoice(Page.param('inv')) || near[0], fc = fr ? candidates(fr) : [];
+  var panel = fr && fr.out === 'nearest' ? UI.box({ title: 'Force match: ' + UI.esc(fr.no), body: [
+    UI.kv({ cols: 3, items: [['Invoice', UI.esc(fr.no) + ' &middot; ' + rs(fr.base)], ['Vendor', UI.esc(fr.vendor) + ' (' + fr.vcode + ') &middot; PAN ' + pan(fr.vcode)], ['Service period', period(fr)]] }),
+    UI.table({ dense: true, pager: false, export: false, select: true, columns: [{ key: 'u', label: 'Candidate provision' }, { key: 'why', label: 'Why it is a candidate' }, { key: 'bal', label: 'Open balance (Rs)', num: true, money: true }, { key: 'rank', label: 'Rank' }],
+      rows: fc.filter(function (x) { return x.p.open; }).map(function (x) { var first = x.rank === '1'; return { u: urn(x.p), why: x.why, bal: x.p.balance, rank: x.rank, _checked: first, _sel: first }; }) }),
+    fc.some(function (x) { return !x.p.open; }) ? UI.p('Not eligible: ' + fc.filter(function (x) { return !x.p.open; }).map(function (x) { return urn(x.p) + ' (' + x.why + ')'; }).join(', ') + '.', { muted: true, small: true }) : '',
+    UI.field({ label: 'Reason for force match', type: 'area', required: true, value: WHY[fr.no] || '', wrap: true }),
+    UI.p('Force match changes only which provision the invoice settles, not the amount. Your choice and reason are recorded in the audit trail.', { muted: true, small: true }),
+    !fr.from ? UI.tbc('Invoice without a service period: settled automatically by FIFO (HLD 5.4.2) or after review') : '',
+    UI.btns([UI.button({ label: 'Cancel', variant: 'text', go: 'pa-12?tab=mw:nearest' }), UI.button({ label: 'Confirm force match', variant: 'primary', toast: 'Force match recorded; provision actualized' })], { end: true })] }) : '';
 
-  var unmatched = UI.table({ dense: true, columns: cols, rows: [
-    { inv: 'MNC/26/0071<div class="k-muted k-small">AP</div>', v: '<div class="w-200">Metro Networks Co</div><div class="k-muted k-small">BU 141</div>', period: 'Sep-26', amt: 118000, res: 'No provision for vendor or category', _acts: [{ icon: 'eye', label: 'Review', toast: 'Stays in the unmatched worklist' }] },
-    { inv: 'TIA/26/MEM/19<div class="k-muted k-small">AP</div>', v: '<div class="w-200">Telecom Industry Association</div><div class="k-muted k-small">BU 101</div>', period: 'FY 26-27', amt: 1255000, res: 'Never provisioned (annual fee)', _acts: [{ icon: 'eye', label: 'Review', toast: 'Stays in the unmatched worklist' }] }] });
+  /* ---------------------------------------------------------------- unmatched */
+  var unm = of('unmatched');
+  var unmT = table(unm.map(function (r) { return row(r, UI.esc(r.text), [{ icon: 'eye', label: 'Keep in the unmatched worklist', toast: 'Stays in the unmatched worklist' }]); }));
 
-  var excess = UI.table({ dense: true, columns: cols, rows: [
-    { inv: 'SFS/2026/0955<div class="k-muted k-small">AP</div>', v: '<div class="w-200">SecureOne Facility Services</div><div class="k-muted k-small">BU 111</div>', period: 'Sep-26 to Nov-26', amt: 1455000, res: 'Sep knocked off Rs 4,85,000.00; Oct-Nov Rs 9,70,000.00 to prepaid', _acts: [{ icon: 'eye', label: 'Prepaid schedule', go: 'pa-13' }] },
-    { inv: 'VCS/26/1201<div class="k-muted k-small">AP</div>', v: '<div class="w-200">Vertex Call Solutions</div><div class="k-muted k-small">BU 131</div>', period: 'Aug-26', amt: 2390000, res: 'Exceeds provision by Rs 2,50,000.00 - finance review', _acts: [{ icon: 'eye', label: 'Send to finance review', toast: 'Sent to business finance' }] }] });
+  /* ---------------------------------------------------------------- excess and future period (HLD 5.4.3, Table 16) */
+  var exc = of('excess').concat(of('prepaid'));
+  var sched = function (id) { var s = PA.schedule(id); return '<div class="k-small">' + rs(s.total) + ' to prepaid <a class="k-link" data-go="pa-13?state=detail&id=' + id + '">' + id + '</a> (' + s.from + ' to ' + s.to + ')</div>'; };
+  var excT = table(exc.map(function (r) {
+    var kind = r.excess ? 'Amount above the provision' : r.settles.length ? 'Current and future period' : r.from && PA.parse(r.from) > PA.parse(r.booked) ? 'Future period only' : 'Current and future period, no provision';
+    return row(r, '<b>' + kind + '</b><div class="k-muted k-small">' + UI.esc(r.text) + '</div>' +
+      (r.settles.length > 1 ? '<div class="k-small">' + r.settles.length + ' provisions knocked off (' + rs(r.applied) + ', now Closed): ' + r.settles.map(urn).join(', ') + '</div>'
+        : r.settles.map(function (x) { return '<div class="k-small">' + urn(x) + ' &middot; ' + rs(applied(r, x)) + ' &middot; ' + UI.esc(x.status) + '</div>'; }).join('')) + (r.prepaid ? sched(r.prepaid) : ''),
+      r.excess ? [{ icon: 'eye', label: 'Open provision', go: 'pa-09-provision-detail.html?urn=' + encodeURIComponent(r.settles[0].key) }, { icon: 'send', label: 'With business finance for review', toast: 'With business finance since 17-Sep-2026' }]
+        : [{ icon: 'eye', label: 'Prepaid schedule', go: 'pa-13?state=detail&id=' + r.prepaid }]);
+  }));
 
+  /* ---------------------------------------------------------------- PO raised after provision (daily PO fetch; HLD 4.6 client note, Tables 10 and 17) */
+  var review = PA.pos.filter(function (o) { return /review/.test(o.status); }), past = PA.pos.filter(function (o) { return !/review/.test(o.status); });
+  var poCols = [{ key: 'u', label: 'Provision' }, { key: 'po', label: 'Oracle PO', nowrap: true }, { key: 'inv', label: 'PO-based invoice' }, { key: 'b', label: 'Provision balance (Rs)', num: true, money: true }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }];
+  var poRow = function (o, done) {
+    var p = PA.find(o.key);
+    return { u: urn(p) + '<div class="k-muted k-small">' + UI.esc(p.vendor) + ' &middot; ' + UI.esc(p.status) + '</div>',
+      po: o.po + '<div class="k-muted k-small">Raised ' + o.raised + ' &middot; ' + rs(o.amt) + '</div><div class="k-muted k-small">Found ' + o.found + '</div>',
+      inv: UI.esc(o.inv) + (o.amt !== p.balance && !p.ended ? '<div class="k-small">PO amount differs from the open balance: the provision settles its balance; the PO carries its own amount</div>' : ''),
+      b: p.ended ? '&ndash;' : p.balance,
+      s: done ? UI.status('Cancelled - settled against PO', 'grey') + (o.settled ? '<div class="k-muted k-small">' + o.settled + '</div>' : '') : UI.status('PO found - review'), _checked: !done,
+      _acts: [{ icon: 'eye', label: 'Open provision', go: 'pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) }] };
+  };
+  var po = [
+    UI.flow({ items: [{ label: 'Daily PO fetch', text: '01-Oct 06:00', state: 'done' }, { label: 'Match to provisions', text: 'Vendor, item code, BU', state: 'done' },
+      { label: 'Review', text: settled ? review.length + ' settled' : review.length + ' to review', state: settled ? 'done' : 'current' }, { label: 'Settle the provision', text: 'Status Cancelled', state: settled ? 'done' : '' }, { label: 'PO process', text: 'Invoice booked against the PO' }] }),
+    settled ? UI.alert({ tone: 'ok', title: review.length + ' provisions settled against their POs.', text: 'Both are reversal-mode provisions that Oracle already reversed at the start of the next period, so the platform closes them without a journal; the cost now follows the PO process.' })
+      : UI.alert({ tone: 'warn', title: review.length + ' provisions have a PO raised after them.', text: 'A PO raised in Oracle for a cost already provided would provide it twice. Confirm the link to settle the provision on the platform and hand the cost to the PO process.', actions: [UI.button({ label: 'Confirm and settle selected', variant: 'primary', size: 'sm', state: 'po-settled' })] }),
+    UI.table({ dense: true, pager: false, select: !settled, columns: poCols, rows: review.map(function (o) { return poRow(o, settled); }) }),
+    UI.subhead('Settled earlier'),
+    UI.table({ dense: true, pager: false, export: false, columns: poCols, rows: past.map(function (o) { return poRow(o, true); }) }),
+    UI.p('A PO can also be linked by hand from the provision detail page. The provision is settled when the PO is raised or when its PO-based invoice is booked in AP, so the same cost is not provided twice.', { muted: true, small: true }),
+    UI.tbc('PO raised after provision: matching keys, automatic or confirmed settlement, PO amount different from the open balance, and partially actualized provisions'),
+    UI.tbc('Reversal mode: whether a journal is posted when the platform reverses (PBR, force reversal) or cancels (PO) a provision Oracle already reversed (HLD open points 2 and 20)')];
+
+  var n = { auto: auto.length, near: near.length, unm: unm.length, exc: exc.length, po: settled ? 0 : review.length };
+  var tab = force ? 'nearest' : settled ? 'po' : 'auto';
   Page.render({
-    id: 'pa-12', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
-    states: [{ id: 'force', label: 'Force match' }],
-    html: UI.page({ title: 'Matching', accent: 'Workbench', info: 'Only invoices booked, validated and accounted in Oracle are used', sub: 'Invoices from AP and PM matched to open provisions by URN, or by the key rebuilt from parent BU, vendor, item code and service month (plus locator for TOCO).' }) +
-      UI.kpis({ cols: 5, items: [{ value: '1,284', label: 'Auto-matched (Sep-26)', sub: 'Exact URN or key', tab: 'mw:auto', active: !S }, { value: '4', label: 'Nearest - needs review', tab: 'mw:nearest', active: S === 'force' }, { value: '2', label: 'Unmatched', tab: 'mw:unmatched' }, { value: '2', label: 'Excess / future period', tab: 'mw:excess' }, { value: '81%', label: 'Exact-match rate', sub: 'Target 90%' }] }) +
-      UI.filters({ items: [UI.field({ label: 'Booked', type: 'select', value: 'Sep-2026' }), UI.field({ label: 'Source', type: 'select', value: 'AP and PM' }), UI.field({ label: 'Segment', type: 'select', value: 'All' }), UI.field({ label: 'Vendor', type: 'lookup', placeholder: 'Name, code or PAN' })] }) +
-      UI.tabs({ id: 'mw', bar: false, active: S === 'force' ? 'nearest' : 'auto', tabs: [
-        { id: 'auto', body: [auto] },
-        { id: 'nearest', body: [UI.p('No exact match: candidates are searched within the same vendor (or same PAN) and category, relaxing item code and then period, and ranked. Matching never crosses categories. An invoice with no service period settles the oldest open provision first (FIFO).', { muted: true }), nearest] },
-        { id: 'unmatched', body: [UI.p('Invoices with no suitable candidate stay here for review.', { muted: true }), unmatched] },
-        { id: 'excess', body: [UI.p('Current period knocked off; future months move to prepaid and are released monthly. An amount above the provision goes to finance review.', { muted: true }), excess] }] }) +
-      UI.note({ text: 'Reversal-mode provisions: Oracle has already reversed the liability, so actualization posts no knock-off journal and only closes the URN. Standing-mode provisions get a knock-off journal (Liability Dr / Expense Cr). HLD 5.4.4.' })
+    id: 'pa-12', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst', keep: ['inv'],
+    states: [{ id: 'force', label: 'Force match' }, { id: 'po-settled', label: 'PO links settled' }],
+    html: UI.page({ title: 'Matching', accent: 'Workbench', info: 'Only invoices booked, validated and accounted in Oracle are used', sub: 'Invoices from AP and PM and lease payments matched to open provisions by URN, or by the key rebuilt from parent BU, vendor, item code and service month (plus locator for TOCO); and POs raised in Oracle after a provision.' }) +
+      UI.kpis({ cols: 5, items: [{ value: String(n.auto), label: 'Auto-matched', sub: 'Exact URN, key or site key', tab: 'mw:auto', active: tab === 'auto' }, { value: String(n.near), label: 'Nearest - needs review', tab: 'mw:nearest', active: tab === 'nearest' },
+        { value: String(n.unm), label: 'Unmatched', tab: 'mw:unmatched' }, { value: String(n.exc), label: 'Excess or future period', tab: 'mw:excess' }, { value: String(n.po), label: 'PO raised after provision', tab: 'mw:po', active: tab === 'po' }] }) +
+      UI.filters({ items: [UI.field({ label: 'Matched', type: 'select', value: 'Last 30 days' }), UI.field({ label: 'Source', type: 'select', value: 'AP, PM and lease payments' }), UI.field({ label: 'Segment', type: 'select', value: 'All' }),
+        UI.field({ label: 'Nature', type: 'select', value: 'All (rent, electricity, diesel, other)' }), UI.field({ label: 'Vendor', type: 'lookup', placeholder: 'Name, code or PAN' })] }) +
+      UI.tabs({ id: 'mw', bar: false, active: tab, tabs: [
+        { id: 'auto', body: [UI.p('Settled automatically: the URN or rebuilt key equals an open provision. A smaller invoice leaves the balance open (partial match); a TOCO invoice settles each locator line against its own provision.', { muted: true }), autoT] },
+        { id: 'nearest', body: [UI.p('No exact match: candidates are open provisions of the same vendor or PAN and category, relaxing the item code and then the period, ranked by service month and then oldest first. Matching never crosses categories.', { muted: true }), force ? panel : nearT,
+          UI.tbc('Nearest match: order of relaxation, ranking, and whether a confident candidate settles without review (HLD open point 5)'), ' ', UI.tbc('Nearest match by PAN: scope, and how a vendor not on the provision is added (HLD open point 12)')] },
+        { id: 'unmatched', body: [UI.p('Invoices with no suitable candidate stay here for review.', { muted: true }), unmT] },
+        { id: 'excess', body: [UI.p('Months with an open provision are knocked off; months after them move to prepaid and are released monthly. An amount above the provision goes to business finance for review.', { muted: true }), excT,
+          UI.tbc('Multi-month invoice: split by days or by months (HLD open point 6)'), ' ', UI.tbc('Excess invoice: rule for splitting an excess between prepaid and expense (HLD open point 19)'), ' ',
+          UI.tbc('Invoice for future months with no provision: held in prepaid, or sent to the unmatched queue')] },
+        { id: 'po', body: po }] }) +
+      UI.note({ text: 'Reversal-mode provisions: Oracle has already reversed the liability, so actualization posts no knock-off journal and only closes the URN. Standing-mode provisions get a knock-off journal (Liability Dr / Expense Cr). HLD 5.4.4.' }) +
+      UI.tbc('Knock-off at the invoice taxable value or at the total including GST') + ' ' + UI.tbc('Invoice data pickup: at day-end or at month-end (HLD open point 11)')
   });
 })();
 </script>

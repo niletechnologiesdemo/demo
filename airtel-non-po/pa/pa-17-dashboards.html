@@ -24,10 +24,13 @@
     UI.box({ title: 'Provision vs invoice by TOCO segment', body: [UI.chart({ type: 'column', title: 'Rs Cr', categories: ['TNG', 'Owned', 'Indus', 'Other TOCO', 'Homes'], series: [{ name: 'Provision', data: [8.4, 2.1, 31.4, 15.4, 0.6] }, { name: 'Invoice', data: [8.1, 2.0, 30.7, 14.2, 0.6] }], fmt: function (v) { return UI.inr(v, 1); } })] }),
     UI.table({ dense: true, pager: false, columns: [{ key: 's', label: 'Segment' }, { key: 'n', label: 'Nature' }, { key: 'p', label: 'Provision (Rs Cr)', num: true }, { key: 'i', label: 'Invoice (Rs Cr)', num: true }, { key: 'd', label: 'Under / excess', num: true }],
       rows: [{ s: 'Indus', n: 'Rent', p: '21.2', i: '21.0', d: '0.2 under' }, { s: 'Indus', n: 'Electricity', p: '10.2', i: '9.7', d: '0.5 under' }, { s: 'Other TOCO', n: 'Rent', p: '11.8', i: '11.2', d: '0.6 under' }, { s: 'Other TOCO', n: 'Diesel', p: '3.6', i: '3.0', d: '0.6 under' }] })];
+  // matching health: rates worked out from the weekly outcomes in the chart below
+  var W = { exact: [302, 288, 341, 353], force: [22, 19, 24, 18], unm: [9, 7, 11, 6] }, sum = function (a) { return a.reduce(function (x, y) { return x + y; }, 0); };
+  var all = sum(W.exact) + sum(W.force) + sum(W.unm), pct = function (a) { return UI.inr(100 * sum(a) / all, 1) + '%'; };
   var health = [
-    UI.kpis({ cols: 4, items: [{ value: '81%', label: 'Exact-match rate', sub: 'Target 90%' }, { value: '6%', label: 'Force-match rate' }, { value: '1.1%', label: 'Force-closure rate' }, { value: '3', label: 'Interface failures this week' }] }),
-    UI.box({ title: 'Matching outcomes by week', body: [UI.chart({ type: 'stacked', title: 'Invoices', categories: ['W36', 'W37', 'W38', 'W39'], series: [{ name: 'Exact', data: [302, 288, 341, 353] }, { name: 'Force match', data: [22, 19, 24, 18] }, { name: 'Unmatched', data: [9, 7, 11, 6] }], fmt: function (v) { return Math.round(v); } })] }),
-    UI.p('Shows where matching or estimating needs attention at source.', { muted: true, small: true })];
+    UI.kpis({ cols: 4, items: [{ value: pct(W.exact), label: 'Exact-match rate', sub: 'W36 to W39, ' + UI.inr(all, 0) + ' invoices' }, { value: pct(W.force), label: 'Force-match rate' }, { value: '1.1%', label: 'Force-closure rate' }, { value: '3', label: 'Interface failures this week' }] }),
+    UI.box({ title: 'Matching outcomes by week', body: [UI.chart({ type: 'stacked', title: 'Invoices', categories: ['W36', 'W37', 'W38', 'W39'], series: [{ name: 'Exact', data: W.exact }, { name: 'Force match', data: W.force }, { name: 'Unmatched', data: W.unm }], fmt: function (v) { return Math.round(v); } })] }),
+    UI.p('Shows where matching or estimating needs attention at source.', { muted: true, small: true }), UI.tbc('Expected exact-match rate, and a target for it (HLD open point 5)')];
   Page.render({
     id: 'pa-17', user: 'B0LDR002', role: 'Finance leadership', viewAs: 'Finance leadership',
     html: UI.page({ title: 'Dashboards', sub: 'Executive, finance, segment and matching-health views. Figures are illustrative.' }) +

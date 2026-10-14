@@ -24,7 +24,7 @@
     { id: 'CFR-26-0117', type: 'New BU for activity', ref: 'PRV-26-10419', act: 'Security services - offices', maker: 'B0MKR412', amount: 312000, on: '30-Sep 12:01', sla: 'Due in 2d', go: 'pa-08?state=cfr' },
     { id: 'CFR-26-0114', type: 'Force closure', urn: '131·410612·LEGAL007·FEB-26', act: 'Legal retainer', maker: 'B0GPA204', amount: 300000, on: '29-Sep 10:44', sla: 'Due in 1d', go: 'pa-08?state=closure' },
     { id: 'CFR-26-0112', type: 'Force reversal (disputed)', urn: '121·410455·CCSVC002·APR-26', act: 'Call centre services', maker: 'B0GPA204', amount: 1980000, on: '28-Sep 17:20', sla: 'Due in 1d', go: 'pa-08?state=reversal' },
-    { id: 'CFR-26-0109', type: 'Hold (exclude from PBR)', urn: '141·410387·AMCDG004·JAN-26', act: 'DG AMC - network sites', maker: 'B0GPA204', amount: 760000, on: '28-Sep 09:15', sla: 'Due today', go: 'pa-08?state=hold' },
+    { id: 'CFR-26-0109', type: 'Hold (exclude from PBR)', urn: '141·410387·AMCDG004·DEC-25', act: 'DG AMC - network sites', maker: 'B0GPA204', amount: 760000, on: '28-Sep 09:15', sla: 'Due today', go: 'pa-08?state=hold' },
     { id: 'CFR-26-0106', type: 'New GL account', ref: 'PRV-26-10366', act: 'IT / AMC allocation', maker: 'B0GPA204', amount: 9850000, on: '27-Sep 14:02', sla: 'Overdue 1d - escalated', go: 'pa-08?state=cfr' }
   ];
   var notify = [
@@ -56,7 +56,7 @@
       UI.filters({ items: [UI.field({ label: 'Type', type: 'select', value: 'All types' }), UI.field({ label: 'BU', type: 'select', value: 'All BUs' }), UI.field({ label: 'SLA', type: 'select', value: 'All' })] }) +
       UI.tabs({ id: 'ap', bar: false, tabs: [
         { id: 'checker', body: [table(empty ? [] : checker, true)] },
-        { id: 'cfr', body: [UI.p('CFR approves new provisions that use a new item code, BU, OU or GL account, and every force closure, force reversal and PBR hold.', { muted: true, small: true }), table(empty ? [] : cfr, true)] },
+        { id: 'cfr', body: [UI.p('CFR approves new provisions that use a new item code, BU, OU or GL account, and every force closure, force reversal and PBR hold.', { muted: true, small: true }), UI.tbc('Hold: CFR approval for every hold, or only where the PBR policy mapping requires it'), table(empty ? [] : cfr, true)] },
         { id: 'notify', body: [UI.p('Activities configured for notification only are posted without approval; you are told so you can query them.', { muted: true, small: true }), UI.tbc('Whether notification-only activities remain, given DOA approval for every provision (HLD open point 17)'), table(empty ? [] : notify, false)] },
         { id: 'mine', body: [table(mine, false)] }] }) +
       UI.p('Approvals waiting beyond the configured SLA are escalated to the next level and shown on the dashboard.', { muted: true, small: true })

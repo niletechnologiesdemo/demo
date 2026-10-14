@@ -13,23 +13,23 @@
 <script>
 (function () {
   var S = Page.state();
-  var act = UI.table({ dense: true, columns: [{ key: 'id', label: 'Activity ID' }, { key: 'n', label: 'Activity' }, { key: 's', label: 'Scenario' }, { key: 'i', label: 'Item / GL' }, { key: 'm', label: 'Reversal mode' }, { key: 'r', label: 'Route' }, { key: 'rec', label: 'Recurring' }, { key: '_acts', label: '' }],
-    rows: PA.activities.map(function (a) { return { id: a.id, n: UI.esc(a.name) + (a.deferred ? '<div class="k-small">Deferred (out of scope for now)</div>' : ''), s: a.scenario === 'T' ? 'TOCO' : 'S' + a.scenario, i: a.item + '<div class="k-muted k-small">' + a.expGL + ' / ' + a.liabGL + '</div>', m: a.mode, r: a.route, rec: a.recurring ? 'Yes' : 'No', _acts: [{ icon: 'edit', label: 'Edit (maker-checker)', modal: 'edit' }] }; }),
+  var act = UI.table({ dense: true, columns: [{ key: 'id', label: 'Activity ID' }, { key: 'n', label: 'Activity' }, { key: 's', label: 'Scenario' }, { key: 'i', label: 'Item / journal' }, { key: 'm', label: 'Reversal mode' }, { key: 'r', label: 'Route' }, { key: 'rec', label: 'Recurring' }, { key: '_acts', label: '' }],
+    rows: PA.activities.map(function (a) { return { id: a.id, n: UI.esc(a.name) + (a.deferred ? '<div class="k-small">Deferred (out of scope for now)</div>' : ''), s: a.scenario === 'T' ? 'TOCO' : 'S' + a.scenario, i: a.item + '<div class="k-muted k-small">' + a.dr + ' Dr / ' + a.cr + ' Cr</div>', m: a.mode, r: a.route, rec: a.recurring ? 'Yes' : 'No', _acts: [{ icon: 'edit', label: 'Edit (maker-checker)', modal: 'edit' }] }; }),
     footLeft: [UI.button({ label: 'Add activity', icon: 'plus', size: 'sm', modal: 'edit' })] });
 
   var urn = UI.section({ title: 'URN builder', body: [UI.p('The URN identifies a provision from input to Oracle journal to invoice. Components are configurable; the combination must be unique, so the URN carries no sequence number.', { muted: true }),
     UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'f', label: 'Form' }, { key: 'c', label: 'Components (in order)' }, { key: 'e', label: 'Example' }, { key: '_acts', label: '' }],
-      rows: [{ f: 'Standard', c: 'BU &middot; Vendor code &middot; Item code &middot; Month', e: '<span class="k-urn">111·410022·SECURITY001·SEP-26</span>', _acts: ['edit'] },
-        { f: 'TOCO', c: 'BU &middot; Vendor code &middot; Item code &middot; Month &middot; Locator <span class="k-muted">(any available field can be mapped)</span>', e: '<span class="k-urn">111·412885·ELEC-AOR·JUN-26·11106</span>', _acts: ['edit'] },
-        { f: 'TOCO debit note', c: 'TOCO URN &middot; Debit note number', e: '<span class="k-urn">111·412885·RENT-AOR·AUG-26·11106·DN-IT-26-0417</span>', _acts: ['edit'] },
-        { f: 'Owned / Homes lease (matching)', c: 'BU &middot; Item code &middot; Month &middot; Locator <span class="k-muted">(vendor optional)</span>', e: '<span class="k-urn">131·RENT-OWN·SEP-26·13102</span>', _acts: ['edit'] }] }),
+      rows: [{ f: 'Standard', c: 'BU &middot; Vendor code &middot; Item code &middot; Month', e: '<span class="k-urn">111·410022·SECURITY001·AUG-26</span>', _acts: ['edit'] },
+        { f: 'TOCO', c: 'BU &middot; Vendor code &middot; Item code &middot; Month &middot; Locator <span class="k-muted">(any available field can be mapped)</span>', e: '<span class="k-urn">111·412885·ELEC-AOR·AUG-26·11106</span>', _acts: ['edit'] },
+        { f: 'TOCO debit note', c: 'TOCO URN &middot; Debit note number', e: '<span class="k-urn">151·322600·RENT-AOR·JUL-26·15104·<wbr>GTL/AP/2026/JUL/4452/DN</span>', _acts: ['edit'] },
+        { f: 'Owned / Homes lease (matching)', c: 'BU &middot; Item code &middot; Month &middot; Locator <span class="k-muted">(vendor optional)</span>', e: '<span class="k-urn">141·RENT-OWN·AUG-26·14031</span>', _acts: ['edit'] }] }),
     S === 'urn' ? UI.box({ title: 'Edit TOCO form', body: [UI.grid(4, [UI.field({ label: 'Component 1', type: 'select', value: 'BU (parent)' }), UI.field({ label: 'Component 2', type: 'select', value: 'Vendor code' }), UI.field({ label: 'Component 3', type: 'select', value: 'Item code' }), UI.field({ label: 'Component 4', type: 'select', value: 'Month (MON-YY)' }),
       UI.field({ label: 'Component 5', type: 'select', value: 'Locator', hint: 'Any available field can be mapped' }), UI.field({ label: 'Separator', type: 'select', value: '· (middle dot)' }), UI.field({ label: 'Effective from', type: 'date', value: '01/10/2026' }), UI.field({ label: 'Preview', type: 'readonly', value: '<span class="k-urn">111·412885·ELEC-AOR·OCT-26·11106</span>' })]),
       UI.btns([UI.button({ label: 'Cancel', variant: 'text', go: 'pa-19?tab=m:urn' }), UI.button({ label: 'Submit for approval', variant: 'primary', toast: 'Change sent to the checker' })], { end: true })] }) : UI.textlink({ label: 'Edit a form', icon: 'edit', state: 'urn' }),
     UI.tbc('URN separators and exact format to be fixed in detailed design')] });
 
   var alloc = UI.table({ dense: true, columns: [{ key: 'm', label: 'Allocation' }, { key: 'k', label: 'Split' }, { key: 'e', label: 'Effective from' }, { key: 'o', label: 'Owner' }, { key: '_acts', label: '' }],
-    rows: [{ m: 'NSG support - circles (S2)', k: 'Delhi 40% &middot; Orissa 20% &middot; Punjab 25% &middot; Haryana 15%', e: '01-Apr-2026', o: 'NSG', _acts: ['edit', 'history'] },
+    rows: [{ m: 'NSG support - circles (S2)', k: 'Delhi 40% &middot; Odisha 20% &middot; Punjab 25% &middot; Haryana 15%', e: '01-Apr-2026', o: 'NSG', _acts: ['edit', 'history'] },
       { m: 'EB and diesel - entities (S5)', k: 'Haryana 70% &middot; Punjab 30%', e: '01-Apr-2026', o: 'Business team', _acts: ['edit', 'history'] },
       { m: 'IT / AMC to Digital Asset books (S12)', k: 'Mobile 85% &middot; Homes 6% &middot; AB 7% &middot; DTH 2%', e: '01-Apr-2026', o: 'CFR', _acts: ['edit', 'history'] },
       { m: 'Charge-on with 11% markup (S12)', k: 'BAL Mobile 79% &middot; Homes 6% &middot; AB 7% &middot; BHL Mobile 6% &middot; DTH 2%', e: '01-Apr-2026', o: 'CFR', _acts: ['edit', 'history'] },
@@ -38,13 +38,31 @@
   var pbr = UI.grid(3, [UI.field({ label: 'PBR window (months)', value: '13', src: 'user' }), UI.field({ label: 'Effective from', type: 'date', value: '01/04/2026' }), UI.field({ label: 'Maintained by', type: 'readonly', value: 'GPA team' }),
     UI.options({ label: 'Excluded from reversal', type: 'check', items: [{ label: 'Provisions on hold', on: true }, { label: 'Government vendor provisions', on: true }] }),
     UI.options({ label: 'Hold needs CFR approval', type: 'check', items: [{ label: 'As per PBR policy mapping', on: true }] }),
-    UI.field({ label: 'Escalation thresholds (days)', value: '90 / 180 / 270 / 365' })]);
+    UI.field({ label: 'Escalation thresholds (days)', value: '90 / 180 / 270 / 365' })]) +
+    UI.p('Age is counted from the last day of the service month. The reversal runs on the 5th of the month after the close (sample).', { muted: true, small: true }) +
+    UI.tbc('Ageing is counted from the last day of the service month (HLD open point 18)') + ' ' + UI.tbc('PBR run day and the window\'s effective date are samples') + ' ' +
+    UI.tbc('Hold: CFR approval for every hold, or only where the PBR policy mapping requires it') + ' ' + UI.tbc('Government vendor for the PBR exclusion: identified by a vendor master flag or a list');
 
   var reclass = UI.table({ dense: true, columns: [{ key: 'u', label: 'Provision BU' }, { key: 'i', label: 'Invoice BU' }, { key: 'r', label: 'Rule' }, { key: 'o', label: 'Owner' }],
     rows: [{ u: '62206 Xtelify Cloud - Haryana', i: 'A - any Mobile BU', r: 'Liability knocked off in 62206 against expense in invoice BU', o: 'User / GPA' }, { u: '121 Mobile - UP East', i: '127 Mobile - UP East (ops)', r: 'Knock-off across BUs', o: 'GPA' }, { u: '141 Mobile - Maharashtra', i: '142 Mumbai', r: 'Circle merger mapping (to confirm)', o: 'GPA' }] });
 
   var dnm = UI.table({ dense: true, columns: [{ key: 't', label: 'Debit note type' }, { key: 'i', label: 'Item code' }, { key: 'u', label: 'URN suffix' }, { key: 'w', label: 'When' }],
     rows: [{ t: 'ToCo debit note', i: 'Per nature (rent / electricity / diesel)', u: 'DN number', w: 'Provision on DN validated; month-end' }, { t: 'ToCo DN reversal', i: 'As original DN', u: 'Original DN number', w: 'Reverse provision on reversal validated' }] });
+
+  // Scenario 4 (BRD; HLD Table 12): deferment % by category, life by entity and category; maintained by business finance
+  var defer = UI.cols('1:1', [UI.subhead('Deferment % by category'), UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'c', label: 'Category' }, { key: 'p', label: 'Deferment %', num: true }, { key: 'e', label: 'Applies to' }, { key: '_acts', label: '' }],
+      rows: [{ c: 'DG (promoter)', p: '72', e: 'Mobile, Homes, IPTV', _acts: ['edit'] }, { c: 'XFE', p: '90', e: 'Mobile, Homes, IPTV', _acts: ['edit'] }, { c: 'OR (own retail)', p: '78', e: 'Mobile, Homes, IPTV', _acts: ['edit'] }] })],
+    [UI.subhead('Life of deferment (months)'), UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'e', label: 'Entity' }, { key: 'c', label: 'Category' }, { key: 'l', label: 'Life (months)', num: true }, { key: '_acts', label: '' }],
+      rows: [{ e: 'Mobile', c: 'DG (promoter)', l: '35', _acts: ['edit'] }, { e: 'Mobile', c: 'XFE', l: '36', _acts: ['edit'] }, { e: 'Mobile', c: 'OR (own retail)', l: '35 or 36', _acts: ['edit'] }, { e: 'IPTV and Homes', c: 'All', l: '55', _acts: ['edit'] }] })]);
+
+  // Opex GL codes eligible for prepaid; a code not in the plan (for example any capex code) is never deferred (HLD 5.5)
+  var glPlan = UI.table({ dense: true, columns: [{ key: 'g', label: 'GL code' }, { key: 'd', label: 'Description' }, { key: 'u', label: 'Used by' }, { key: 'o', label: 'Added' }, { key: '_acts', label: '' }],
+    rows: [['4664060', 'Security services', 'ACT-0001'], ['4271004', 'Tower and site rent', 'ACT-0201, ACT-0204, ACT-0102'], ['4232001', 'Site electricity', 'ACT-0202'], ['4282010', 'DG maintenance and diesel', 'ACT-0014, ACT-0203'],
+      ['4563005', 'DG promoter deferment (scenario 4)', 'ACT-0063'], ['4282037', 'IT and AMC', 'ACT-0120'], ['4691005', 'Membership and subscription', 'ACT-0096']].map(function (r) { return { g: r[0], d: r[1], u: r[2], o: 'GPA team', _acts: [{ icon: 'edit', label: 'Edit (maker-checker)', modal: 'gl' }] }; }),
+    footLeft: [UI.button({ label: 'Add GL code', icon: 'plus', size: 'sm', modal: 'gl' })] });
+  var glModal = UI.modal({ id: 'gl', title: 'Prepaid', accent: 'GL code', size: 'narrow', body: [UI.grid(1, [UI.field({ label: 'GL code', type: 'lookup', placeholder: 'From the Oracle GL code master', required: true }),
+      UI.field({ label: 'Description', type: 'readonly', value: 'From Oracle' }), UI.options({ label: 'Account type', items: [{ label: 'Opex', on: true }], hint: 'Only Opex codes can be added' })])],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Submit for approval', variant: 'primary', close: true, toast: 'Change sent to the checker' })] });
 
   var vtm = UI.table({ dense: true, columns: [{ key: 'c', label: 'Circle' }, { key: 'p', label: 'Paper-based subscribers', num: true }, { key: 'o', label: 'Online subscribers', num: true }, { key: 'u', label: 'Updated' }, { key: '_acts', label: '' }],
     rows: [{ c: 'Delhi', p: '6,820', o: '4,180', u: '28-Sep-2026 by B0AIO009', _acts: ['edit'] }, { c: 'Bihar', p: '9,410', o: '2,050', u: '28-Sep-2026 by B0AIO009', _acts: ['edit'] }, { c: 'Karnataka', p: '5,770', o: '6,320', u: '27-Sep-2026 by B0AIO011', _acts: ['edit'] }] });
@@ -64,11 +82,14 @@
     states: [{ id: 'urn', label: 'Editing URN builder' }],
     html: UI.page({ title: 'Masters', accent: '& Configuration', sub: 'Masters held in Oracle are synchronised to the platform; masters kept by hand today are maintained here with maker-checker control and change history. Effective-dated values let a past month re-run with that month\'s values.' }) +
       UI.tabs({ id: 'm', active: S === 'urn' ? 'urn' : 'act', tabs: [
-        { id: 'act', label: 'Activity master', body: [act] }, { id: 'urn', label: 'URN builder', body: [urn] },
-        { id: 'alloc', label: 'Allocation %', body: [alloc] }, { id: 'pbr', label: 'PBR & escalation', body: [pbr] },
+        { id: 'act', label: 'Activity master', body: [act, UI.tbc('Reversal mode for each activity, who sets it, and how an invoice arriving before the reversal is treated (HLD open point 2)')] }, { id: 'urn', label: 'URN builder', body: [urn] },
+        { id: 'alloc', label: 'Allocation %', body: [alloc] }, { id: 'defer', label: 'Deferment parameters', body: [UI.p('Used by scenario 4 (partial expense and deferment). Maintained by business finance.', { muted: true }), defer,
+          UI.tbc('Scenario 4: whether deferment % is a user input or a parameter')] },
+        { id: 'gl', label: 'Prepaid GL quality plan', body: [UI.p('Opex GL codes whose future periods are held as prepaid. Maintained by the GPA team on the platform; capex codes are never added, so they are never deferred.', { muted: true }), glPlan] },
+        { id: 'pbr', label: 'PBR & escalation', body: [pbr] },
         { id: 'reclass', label: 'BU reclass mapping', body: [reclass] }, { id: 'dn', label: 'TOCO DN master', body: [dnm] },
         { id: 'vtm', label: 'VTM subscribers', body: [UI.p('AIO updates subscriber counts; provision = subscriber count x average penalty % of the last 12 months.', { muted: true }), vtm] },
-        { id: 'erp', label: 'Synced from ERP', body: [UI.p('Read-only on the platform. New OUs and BUs created in Oracle sync automatically.', { muted: true }), erp, UI.tbc('If the DOA API is not provided, an approval matrix is set up and maintained in the portal')] }] }) + edit
+        { id: 'erp', label: 'Synced from ERP', body: [UI.p('Read-only on the platform. New OUs and BUs created in Oracle sync automatically.', { muted: true }), erp, UI.tbc('If the DOA API is not provided, an approval matrix is set up and maintained in the portal')] }] }) + edit + glModal
   });
 })();
 </script>

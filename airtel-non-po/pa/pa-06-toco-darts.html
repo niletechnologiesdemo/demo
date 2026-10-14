@@ -12,43 +12,50 @@
 <script src="pa-data.js"></script>
 <script>
 (function () {
-  var S = Page.state(), posted = S === 'posted';
-  var feed = [
-    { site: 'DL-11106-0412', loc: '11106', bu: '111', v: 'Indus Towers Ltd', vc: '412885', nature: 'Rent', item: 'RENT-AOR', seg: 'Indus', amt: 384250, st: posted ? 'Posted' : 'Ready' },
-    { site: 'DL-11106-0412', loc: '11106', bu: '111', v: 'Indus Towers Ltd', vc: '412885', nature: 'Electricity', item: 'ELEC-AOR', seg: 'Indus', amt: 112740, st: posted ? 'Posted' : 'Ready' },
-    { site: 'DL-11109-0077', loc: '11109', bu: '111', v: 'Summit Digitel Infrastructure Ltd', vc: '412902', nature: 'Rent', item: 'RENT-AOR', seg: 'Other TOCO', amt: 298600, st: posted ? 'Posted' : 'Ready' },
-    { site: 'UPE-12114-0301', loc: '12114', bu: '121', v: 'Summit Digitel Infrastructure Ltd', vc: '412902', nature: 'Diesel', item: 'DSL-AOR', seg: 'Other TOCO', amt: 26430, st: posted ? 'Posted' : 'Ready' },
-    { site: 'UPE-12118-0044', loc: '12118', bu: '121', v: 'Indus Towers Ltd', vc: '412885', nature: 'Electricity', item: 'ELEC-AOR', seg: 'Indus', amt: 98210, st: 'Error', err: 'Locator 12118 not mapped to a parent BU' },
-    { site: 'KA-13102-0910', loc: '13102', bu: '131', v: 'Own site', vc: '-', nature: 'Rent', item: 'RENT-OWN', seg: 'Owned', amt: 64000, st: posted ? 'Posted' : 'Ready' }
-  ];
-  var rows = feed.map(function (f) {
-    return { site: f.site + '<div class="k-muted k-small">Locator ' + f.loc + ' &middot; parent BU ' + f.bu + '</div>', v: '<div class="w-200">' + UI.esc(f.v) + '</div><div class="k-muted k-small">' + f.seg + '</div>',
-      n: f.nature + '<div class="k-muted k-small">' + f.item + '</div>', urn: f.vc === '-' ? '<span class="k-urn">131·OWN·RENT-OWN·SEP-26·13102</span>' : '<span class="k-urn">' + [f.bu, f.vc, f.item, 'SEP-26', f.loc].join('·') + '</span>',
-      amt: f.amt, st: UI.status(f.st, f.st === 'Posted' ? 'ok' : f.st === 'Ready' ? 'grey' : '') + (f.err ? '<div class="k-small">' + f.err + '</div>' : ''), _flag: f.st === 'Error' };
-  });
-  var feedTable = UI.table({ dense: true, select: !posted, columns: [{ key: 'site', label: 'Site' }, { key: 'v', label: 'TOCO / segment' }, { key: 'n', label: 'Nature' }, { key: 'urn', label: 'URN (with locator)' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'st', label: 'Status' }], rows: rows, total: '6 of 18,420 site lines' });
+  // Feed lines and debit-note provisions come from pa-data.js. Default: the Sep-26 feed was posted to ERP on 01-Oct 10:12 (batch NPP-26-10-0004);
+  // the "Before Post to ERP" state shows the same feed when it arrived on 30-Sep 22:40
+  var S = Page.state(), ready = S === 'ready', rs = function (n) { return 'Rs ' + UI.inr(n, 2); };
+  var link = function (p) { return '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>'; };
+  var SEG = { '412885': 'Indus', '412902': 'Other TOCO', '': 'Owned' };
+  var feed = PA.provisions.filter(function (p) { return p.source === 'DARTS' && p.month === 'SEP-26'; });
+  var rows = feed.map(function (p) {
+    return { site: UI.esc(p.site) + '<div class="k-muted k-small">Locator ' + p.locator + ' &middot; parent BU ' + p.bu + '</div>', v: '<div class="w-200">' + UI.esc(p.vcode ? p.vendor : 'Own site (' + p.lease + ')') + '</div><div class="k-muted k-small">' + SEG[p.vcode] + '</div>',
+      n: UI.esc(p.activity.itemDesc) + '<div class="k-muted k-small">' + p.item + '</div>', urn: link(p), amt: p.amount,
+      st: ready ? UI.status('Ready', 'grey') : UI.status('Imported - waiting to post') + '<div class="k-muted k-small">' + p.gl.batch + '</div>' };
+  }).concat([{ site: 'UPE-12118-0044<div class="k-muted k-small">Locator 12118 &middot; parent BU not found</div>', v: '<div class="w-200">Indus Towers Ltd</div><div class="k-muted k-small">Indus</div>',
+    n: 'Site electricity - AOR<div class="k-muted k-small">ELEC-AOR</div>', urn: '<span class="k-muted">Not built: the locator has no parent BU</span>', amt: 98210, st: UI.status('Error') + '<div class="k-small">Locator 12118 not mapped to a parent BU</div>', _flag: true }]);
+  var feedTable = UI.table({ dense: true, select: ready, columns: [{ key: 'site', label: 'Site' }, { key: 'v', label: 'TOCO / segment' }, { key: 'n', label: 'Nature' }, { key: 'urn', label: 'URN (with locator)' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'st', label: 'Status' }], rows: rows, total: rows.length + ' of 18,420 site lines' });
 
-  var dn = UI.table({ dense: true, columns: [{ key: 'dn', label: 'Debit note' }, { key: 'urn', label: 'Provision URN' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'ev', label: 'Event from invoicing' }, { key: 'st', label: 'Provision' }],
-    rows: [{ dn: 'DN-IT-26-0417', urn: '<span class="k-urn">111·412885·RENT-AOR·AUG-26·11106·DN-IT-26-0417</span>', amt: 86200, ev: 'ToCo DN validated 17-Sep-2026', st: UI.status('Open') },
-      { dn: 'DN-IT-26-0388', urn: '<span class="k-urn">121·412885·ELEC-AOR·JUL-26·12114·DN-IT-26-0388</span>', amt: 41300, ev: 'DN reversal validated 25-Sep-2026', st: UI.status('Reversed', 'grey') },
-      { dn: 'DN-SD-26-0102', urn: '<span class="k-urn">131·412902·RENT-AOR·AUG-26·13102·DN-SD-26-0102</span>', amt: 22900, ev: 'ToCo DN validated 28-Sep-2026', st: UI.status('Open') }] });
+  // debit-note provisions: created when a ToCo DN is validated in Non-PO Invoicing, reversed when its reversal is validated
+  var dns = PA.provisions.filter(function (p) { return p.dn; });
+  var dn = UI.table({ dense: true, pager: false, columns: [{ key: 'dn', label: 'Debit note' }, { key: 'urn', label: 'Provision URN' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'ev', label: 'Event from invoicing' }, { key: 'st', label: 'Provision' }],
+    rows: dns.map(function (p) {
+      var rev = p.status === 'Reversed', ref = rev ? 'NPO-2627-004797' : p.dnv[1];
+      return { dn: UI.esc(p.dn) + '<div class="k-muted k-small">' + UI.esc(p.vendor) + '</div>', urn: link(p), amt: p.amount,
+        ev: (rev ? 'DN reversal validated 25-Sep-2026' : 'ToCo DN validated ' + p.dnv[0].slice(0, 11)) + '<div class="k-small"><a class="k-link" href="../inv/inv-11-invoice-detail.html?ref=' + ref + '">' + ref + '</a></div>', st: UI.status(p.status, PA.statusTone(p.status)) };
+    }).concat([{ dn: 'GTL/AP/DUPLICATE/JUL26/DN<div class="k-muted k-small">GTL Infrastructure Ltd</div>', urn: '<span class="k-muted">Created when the DN is validated</span>', amt: 6895,
+      ev: 'Under approval in invoicing<div class="k-small"><a class="k-link" href="../inv/inv-11-invoice-detail.html?ref=NPO-2627-004844">NPO-2627-004844</a></div>', st: UI.status('Not yet created', 'grey') }]) });
 
   var postModal = UI.modal({ id: 'post', title: 'Post to', accent: 'ERP', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Site lines', '18,419 ready (1 with error held back)'], ['Amount', 'Rs 46,82,31,400.00'], ['Month', 'SEP-26'], ['Journal', 'Provisional, reversal mode, per site URN']] }),
     UI.p('Lines are written to the Oracle GL interface. A line is picked again next time only if it was not processed successfully in ERP (status synced back to the portal).', { muted: true, small: true })],
-    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Post to ERP', variant: 'primary', state: 'posted' })] });
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Post to ERP', variant: 'primary', state: 'none' })] });
 
   Page.render({
     id: 'pa-06', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
-    states: [{ id: 'posted', label: 'Posted to ERP' }],
+    states: [{ id: 'ready', label: 'Before Post to ERP' }],
     html: UI.page({ title: 'TOCO', accent: 'Provisions', info: 'Tower company rent, electricity and diesel, raised per site from DARTS', sub: 'Provisions are calculated in DARTS and arrive per site in the platform format. Review them here and post to ERP.' }) +
-      UI.kpis({ cols: 5, items: [{ value: '18,420', label: 'Site lines - Sep-26', tab: 'tc:feed', active: true }, { value: 'Rs 46.8 Cr', label: 'Feed value' }, { value: '1', label: 'Lines with errors' }, { value: '3', label: 'Debit-note provisions', tab: 'tc:dn' }, { value: '2', label: 'Leases on hold', tab: 'tc:hold' }] }) +
+      UI.kpis({ cols: 5, items: [{ value: '18,420', label: 'Site lines - Sep-26', tab: 'tc:feed', active: true }, { value: 'Rs 46.8 Cr', label: 'Feed value' }, { value: '1', label: 'Lines with errors' },
+        { value: String(dns.length), label: 'Debit-note provisions', sub: dns.filter(function (p) { return p.open; }).length + ' open', tab: 'tc:dn' }, { value: '2', label: 'Leases on hold', tab: 'tc:hold' }] }) +
       UI.tabs({ id: 'tc', bar: false, tabs: [
         { id: 'feed', body: [UI.filters({ items: [UI.field({ label: 'Month', type: 'select', value: 'Sep-2026' }), UI.field({ label: 'Segment', type: 'select', value: 'All (Indus, Other TOCO, TNG, Owned, Homes)' }), UI.field({ label: 'Nature', type: 'select', value: 'Rent, electricity, diesel' }), UI.field({ label: 'Status', type: 'select', value: 'All' })] }),
-          posted ? UI.alert({ tone: 'ok', title: 'Posted to ERP.', text: '18,419 site lines sent to the Oracle GL interface on 01-Oct-2026 10:12. Import status is tracked on Journal posting & errors.' }) : UI.alert({ tone: 'info', text: 'DARTS feed received 30-Sep-2026 22:40. Data comes from DARTS (Metabase) in the platform format.', actions: [UI.button({ label: 'Post to ERP', variant: 'primary', size: 'sm', modal: 'post' })] }),
-          feedTable] },
-        { id: 'dn', body: [UI.p('When a TOCO debit note is validated in Non-PO Invoicing, a provision is created with the DN number in its URN; when the DN reversal is validated, the provision is reversed. Month-end activity, driven by the TOCO debit note master.', { muted: true }), dn] },
-        { id: 'hold', body: [UI.table({ dense: true, columns: [{ key: 'l', label: 'Lease' }, { key: 's', label: 'Site' }, { key: 'd', label: 'Scheduled payment' }, { key: 'r', label: 'Hold reason (PM lease module)' }],
-          rows: [{ l: 'LSE-OWN-13102', s: 'KA-13102-0910 (Owned)', d: '05-Oct-2026 &middot; Rs 64,000.00', r: 'Landlord bank details under verification' }, { l: 'LSE-HOM-14077', s: 'MH-14077-0118 (Homes)', d: '05-Oct-2026 &middot; Rs 18,500.00', r: 'Agreement renewal pending' }] })] }] }) + postModal
+          ready ? UI.alert({ tone: 'info', text: 'DARTS feed received 30-Sep-2026 22:40. Data comes from DARTS (Metabase) in the platform format.', actions: [UI.button({ label: 'Post to ERP', variant: 'primary', size: 'sm', modal: 'post' })] })
+            : UI.alert({ tone: 'ok', title: 'Posted to ERP.', text: '18,419 site lines sent to the Oracle GL interface on 01-Oct-2026 10:12 by B0GPA204, imported as batch NPP-26-10-0004 and waiting for the GPA manager to post them (Journal posting & errors).' }),
+          feedTable, UI.tbc('TOCO manual override: the two scenarios to be defined by the business (HLD open point 9)')] },
+        { id: 'dn', body: [UI.p('When a TOCO debit note is validated in Non-PO Invoicing, a provision is created with the DN number in its URN; when the DN reversal is validated, the provision is reversed. Month-end activity, driven by the TOCO debit note master.', { muted: true }), dn,
+          UI.tbc('TOCO debit-note provisions: rules, master and the inputs from invoicing (HLD open point 8)')] },
+        { id: 'hold', body: [UI.table({ dense: true, pager: false, columns: [{ key: 'l', label: 'Lease' }, { key: 's', label: 'Site' }, { key: 'd', label: 'Scheduled payment' }, { key: 'r', label: 'Hold reason (PM lease module)' }],
+          rows: [{ l: 'LSE-OWN-13102', s: 'KA-13102-0910 (Owned)', d: '05-Oct-2026 &middot; Rs 64,000.00', r: 'Landlord bank details under verification' }, { l: 'LSE-HOM-14077', s: 'MH-14077-0118 (Homes)', d: '05-Oct-2026 &middot; Rs 18,500.00', r: 'Agreement renewal pending' }] }),
+          UI.tbc('Owned and Homes leases: lease payment data and hold handling from the PM lease module (HLD open point 10)')] }] }) + postModal
   });
 })();
 </script>

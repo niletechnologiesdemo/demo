@@ -12,75 +12,146 @@
 <script src="pa-data.js"></script>
 <script>
 (function () {
-  var m = /[?&]urn=([^&]*)/.exec(location.search);
-  var p = (m && PA.find(decodeURIComponent(m[1]))) || PA.find('121·410387·AMCDG004·AUG-26');
-  var a = p.activity, isToco = !!p.locator, posted = !!p.erpDoc, isDoa = p.status === 'DOA exception';
-  var pre = /^(Draft|Submitted|Returned|DOA exception)$/.test(p.status);
+  // Everything below is read from pa-data.js: the provision, its journal, the invoices that settled it and its events
+  var q = Page.param('urn'), p = PA.find(q || '121·410387·AMCDG004·AUG-26');
+  var base = { id: 'pa-09', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst', navKey: 'pa-03', keep: ['urn'] };
+  if (!p) {
+    base.html = UI.page({ title: 'Provision', accent: 'Detail', crumb: '<a data-go="pa-03">Provision register</a>' }) +
+      UI.alert({ tone: 'warn', title: 'No provision found for ' + UI.esc(q) + '.', text: 'Check the URN or reference, or open the provision from the register.', actions: [UI.textlink({ label: 'Provision register', icon: 'arrowRight', go: 'pa-03' })] });
+    Page.render(base); return;
+  }
+  var R = Page.roleOr('pa', 'gpa'), gpa = !R || /^(gpa|ace)$/.test(R.id) || Page.access('pa-09', R.id) !== 'w';
+  var a = p.activity, g = p.gl || {}, rs = function (n) { return 'Rs ' + UI.inr(n, 2); };
+  var po = PA.poFor(p.key), poReview = po && /review/.test(po.status);
+  var pending = PA.request(p.key).filter(function (r) { return r.status === 'Waiting for CFR'; })[0];
+  var waitApv = (p.apv || []).map(function (x, i) { return x[1] ? '' : x[0] === 'CFR' ? 'Waiting for CFR approval' : 'Waiting for approver ' + (i + 1) + ' of ' + p.apv.length + ' (' + x[0] + ')'; }).filter(Boolean)[0];
+  var reason = p.doa || p.reason || p.error || p.hold || p.note || (p.status === 'Submitted' ? waitApv : '');
 
+  /* ---------------------------------------------------------------- header */
+  var ENDED = { Closed: 'Nil - settled by invoices', Reversed: p.dn ? 'Nil - reversed when the DN reversal was validated' : 'Nil - reversed under the PBR window',
+    'Force closed': 'Nil - written back with CFR approval', Cancelled: 'Nil - settled against PO ' + p.po };
+  var balance = p.pre ? '&ndash; <span class="k-muted">(not yet approved)</span>' : p.ended ? ENDED[p.status]
+    : rs(p.balance) + (p.actual ? ' <span class="k-muted">after ' + rs(p.actual) + ' actualized</span>' : '') + (!g.posted ? ' <span class="k-muted">(open once posted)</span>' : '');
+  var journal = g.posted ? UI.esc(g.doc) + ' &middot; GL date ' + g.date : g.imported ? 'Imported, waiting to be posted (' + g.batch + ')' : g.rejected ? 'Rejected by Journal Import (' + g.batch + ')' : 'Not yet sent to Oracle';
+  var mode = p.mode === 'Reversal' ? 'Reversal (Oracle reverses at the start of the next period)' : p.mode === 'DN' ? 'Held until the DN reversal is validated' : 'Standing (liability stays until actualized)';
+  var vend = p.vcode ? UI.esc(p.vendor) + ' (' + p.vcode + ') &middot; ' + p.rpt + (p.govt ? ' &middot; Government vendor' : '') : 'Lease ' + UI.esc(p.lease) + ' <span class="k-muted">(no vendor in the URN)</span>';
   var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [
-    [pre ? 'Reference' : 'URN', pre ? p.ref + ' <span class="k-muted">(URN after approval)</span>' : '<span class="k-urn">' + UI.esc(p.urn) + '</span>'], ['Status', UI.status(p.status, PA.statusTone(p.status))],
-    ['Provision', 'Rs ' + UI.inr(p.amount, 2)], ['Open balance', 'Rs ' + UI.inr(p.balance, 2)],
-    ['Activity', UI.esc(a.id + ' ' + a.name)], ['Scenario', 'S' + p.scenario + ' ' + UI.esc(p.scenarioName)],
-    ['Vendor', UI.esc(p.vendor) + ' (' + p.vcode + ')'], ['BU', UI.esc(p.bu + ' ' + p.buName) + (isToco ? ' &middot; locator ' + p.locator : '')],
-    ['Service period', p.from + ' to ' + p.to], ['Age', p.age + ' days' + (p.escalation ? ' &middot; ' + p.escalation : '')],
-    ['Reversal mode', p.mode === 'Reversal' ? 'Reversal (Oracle reverses next period)' : 'Standing'], ['Source', UI.esc(p.source) + ' &middot; ' + UI.esc(p.maker)]] })] });
+    p.pre ? ['Reference', UI.esc(p.ref) + ' <span class="k-muted">(URN after approval)</span>'] : ['URN', '<span class="k-urn">' + UI.esc(p.urn).replace(/·/g, '·<wbr>') + '</span><div class="k-muted k-small">Reference ' + UI.esc(p.ref) + '</div>'],
+    ['Status', UI.status(p.status, PA.statusTone(p.status)) + (reason ? '<div class="k-muted k-small">' + UI.esc(reason) + '</div>' : '')],
+    ['Provision', rs(p.amount)], ['Platform open balance', balance],
+    ['Activity', UI.esc(a.id + ' ' + a.name)], ['Scenario', UI.esc(PA.scenarioLabel(p))],
+    ['Vendor', vend], ['BU', UI.esc(p.bu + ' ' + p.buName) + (p.locator ? ' &middot; locator ' + p.locator : '')],
+    ['Service period', p.from + ' to ' + p.to], ['Reversal mode', mode],
+    ['Source', UI.esc(p.source) + ' &middot; ' + UI.esc(p.maker)], ['Oracle journal', journal]] })] });
 
+  // ageing shows only while the provision is open (age counted from the last day of the service month, frozen at closure)
+  var pbr = p.status === 'On hold' ? 'Excluded while on hold' : p.govt ? 'Excluded - Government vendor' : 'Due at the close of ' + p.pbrClose + ' (run ' + p.pbrRun + ')';
+  var ageing = p.open ? UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [
+    ['Age', p.age + ' days <span class="k-muted">since ' + p.to + '</span>'], ['Ageing bucket', p.bucket], ['Escalation', p.escalation ? 'Escalated to ' + UI.esc(p.escalation) : 'None yet (first at 90 days)'],
+    ['PBR reversal', pbr + (p.yep ? '<div class="k-muted k-small">YEP: FY 2025-26 service period</div>' : '')]] }),
+    UI.tbc('Ageing is counted from the last day of the service month (HLD open point 18)'),
+    p.status === 'On hold' || p.govt ? UI.tbc('Held and excluded provisions: whether they keep escalating and stay in the ageing buckets') : '',
+    p.govt ? UI.tbc('Government vendor for the PBR exclusion: identified by a vendor master flag or a list') : '',
+    p.yep ? UI.tbc('YEP rule: which provisions are flagged year-end provisions, and an invoice above the provision value') : '',
+    p.pbrRun === '05-Oct-2026' && !p.govt && p.status === 'Open' ? UI.tbc('PBR run day and the window\'s effective date are samples') : ''] }) : '';
+
+  /* ---------------------------------------------------------------- actions, gated by status and role */
+  var btn = function (label, o) { o.label = label; return UI.button(o); };
+  var actions = '';
+  if (p.status === 'DOA exception') actions = UI.alert({ tone: 'red', title: 'No approvers returned by DOA.', text: UI.esc(p.doa) + '. Retrigger once the matrix is set up.', actions: gpa ? [btn('Retrigger approval', { size: 'sm', toast: 'Sent to the DOA API again' })] : [] });
+  else if (p.status === 'Returned') actions = UI.btns([btn('Edit and resubmit', { variant: 'primary', go: 'pa-04?state=returned' })]);
+  else if (p.status === 'Draft') actions = UI.btns([btn('Continue editing', { go: 'pa-04' }), btn('Discard draft', { toast: 'Draft discarded' })]);
+  else if (p.status === 'Approved') actions = UI.alert({ tone: 'info', title: 'Waiting to be posted.', text: 'The journal is imported in Oracle (batch ' + g.batch + '); the GPA manager posts it. The provision is Open once posted.', actions: [UI.textlink({ label: 'Journal posting', icon: 'arrowRight', go: 'pa-10' })] });
+  else if (p.status === 'Interface error') actions = UI.alert({ tone: 'red', title: 'Rejected by Oracle Journal Import.', text: UI.esc(p.error) + '. Correct it and retry; the retry is keyed by URN so it cannot post twice.', actions: gpa ? [btn('Correct and retry', { size: 'sm', go: 'pa-10?state=error' })] : [] });
+  else if (p.open) {
+    var list = [];
+    if (pending) actions += UI.alert({ tone: 'warn', title: UI.esc(pending.type) + ' requested (' + pending.id + ').', text: 'Raised by ' + pending.by + ' on ' + pending.on + '; waiting for CFR. Other requests are not available until CFR decides.', actions: [UI.textlink({ label: 'Approvals inbox', icon: 'arrowRight', go: 'pa-07?tab=ap:cfr' })] });
+    if (poReview) actions += UI.alert({ tone: 'warn', title: 'PO ' + po.po + ' found by the daily PO fetch.', text: 'Raised ' + po.raised + ' for ' + rs(po.amt) + (po.amt !== p.balance ? ', against an open balance of ' + rs(p.balance) : '') + '. Confirm the link to settle the provision against the PO.', actions: gpa ? [btn('Review the PO link', { size: 'sm', go: 'pa-12?tab=mw:po' })] : [] });
+    if (p.status === 'On hold') {
+      if (gpa) list.push(btn('Release hold', { modal: 'release' }));
+    } else if (!pending) {
+      if (gpa && !p.po) list.push(btn('Link PO', { modal: 'po' }));
+      if (gpa) list.push(btn('Place on hold', { modal: 'hold' }));
+      list.push(btn('Request force closure', { modal: 'closure' }), btn('Request force reversal', { modal: 'reversal' }));
+    }
+    if (list.length) actions += UI.btns(list);
+  }
+
+  /* ---------------------------------------------------------------- journals */
+  var line = function (dr, cr) { return p.bu + '-' + dr + ' Dr / ' + p.bu + '-' + cr + ' Cr'; };
+  var jrows = [];
+  if (p.gl) jrows.push({ j: 'Provision ' + p.month, c: p.dn ? 'Debit-note provision' : p.rpt === 'RPT' ? 'Related party provision' : 'Provisional', l: line(a.dr, a.cr), amt: p.amount, erp: g.doc || '&ndash;',
+    s: g.posted ? UI.status('Posted', 'ok') + '<div class="k-small">GL date ' + g.date + '</div>' : g.imported ? UI.status('Imported - waiting to post') : UI.status('Rejected by Journal Import'), _flag: !!g.rejected });
+  if (g.posted && p.mode === 'Reversal') jrows.push({ j: 'Auto-reversal (Oracle)', c: 'Reversal', l: line(a.cr, a.dr), amt: p.amount, erp: 'Created by Oracle', s: UI.status('Reversed', 'grey') + '<div class="k-small">GL date ' + PA.fmt(PA.parse(g.date) + 864e5) + '</div>' });
+  p.matches.forEach(function (m) { if (m.kdoc) jrows.push({ j: 'Actualization knock-off', c: 'Adjustment', l: line(a.cr, a.dr), amt: m.amt, erp: m.kdoc, s: UI.status('Posted', 'ok') + '<div class="k-small">' + m.inv + '</div>' }); });
+  if (p.wb) jrows.push({ j: 'Force closure write-back', c: 'Adjustment', l: line(a.cr, a.dr), amt: p.amount - p.actual, erp: p.wb.doc, s: UI.status('Posted', 'ok') + '<div class="k-small">GL date ' + p.wb.date + '</div>' });
+  if (p.rev) jrows.push({ j: 'Reversal on DN reversal', c: 'Debit-note provision', l: line(a.cr, a.dr), amt: p.amount, erp: p.rev.doc, s: UI.status('Posted', 'ok') + '<div class="k-small">GL date ' + p.rev.date + '</div>' });
   var journals = UI.table({ pager: false, export: false, dense: true, columns: [{ key: 'j', label: 'Journal' }, { key: 'c', label: 'Category' }, { key: 'l', label: 'Lines (Dr / Cr)' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'erp', label: 'Oracle document' }, { key: 's', label: 'Status' }],
-    rows: posted ? [
-      { j: 'Provision ' + p.month, c: p.rpt === 'RPT' ? 'Related party provision' : 'Provisional', l: p.bu + '-' + a.expGL + ' Dr / ' + p.bu + '-' + a.liabGL + ' Cr', amt: p.amount, erp: p.erpDoc, s: UI.status('Posted', 'ok') },
-      p.mode === 'Reversal' ? { j: 'Auto-reversal (Oracle)', c: 'Reversal', l: p.bu + '-' + a.liabGL + ' Dr / ' + p.bu + '-' + a.expGL + ' Cr', amt: p.amount, erp: p.erpDoc + '-R', s: UI.status('Reversed 01 of next month', 'grey') } : null,
-      p.actual && p.mode !== 'Reversal' ? { j: 'Actualization knock-off', c: 'Adjustment', l: p.bu + '-' + a.liabGL + ' Dr / ' + p.bu + '-' + a.expGL + ' Cr', amt: p.actual, erp: 'GL-26-0921114', s: UI.status('Posted', 'ok') } : null
-    ].filter(Boolean) : [], empty: 'Not yet posted to Oracle.' });
+    rows: jrows, empty: p.pre ? 'No journal before approval.' : 'Not yet sent to Oracle.' });
+  var jnotes = [
+    p.scenario === 12 ? UI.p('Mirror entry in the Digital Asset books (D8206, D7806, D7906, D8106) at the CFR ratios; cost charged on with an 11% markup (scenario 12).', { muted: true, small: true }) : '',
+    p.prepaid ? UI.p('The deferred part is held and released through prepaid schedule <a class="k-link" data-go="pa-13?state=detail&id=' + p.prepaid + '">' + p.prepaid + '</a>.', { muted: true, small: true }) : '',
+    p.mode === 'Reversal' && g.posted ? UI.note({ text: 'Reversal mode: Oracle reverses the journal at the start of the next period while the platform keeps the URN open until it is actualized or aged out, so the Oracle ledger balance and the platform open balance differ (HLD 4.6). Actualization posts no knock-off journal; it closes the URN.' }) : '',
+    p.mode === 'Reversal' && /^(Reversed|Cancelled)$/.test(p.status) || p.mode === 'Reversal' && pending && pending.type === 'Force reversal' ? UI.tbc('Reversal mode: whether a journal is posted when the platform reverses (PBR, force reversal) or cancels (PO) a provision Oracle already reversed (HLD open points 2 and 20)') : '',
+    p.dn ? UI.tbc('TOCO debit-note provisions: rules, master and the inputs from invoicing (HLD open point 8)') : ''];
 
-  var inv = p.actual ? [
-    { inv: isToco ? 'IND/26/AUG/77120' : 'PPS/26-27/0811', path: isToco ? 'PM invoice (Infra report)' : 'AP invoice via Non-PO portal (URN selected)', booked: '18-Sep-2026', amt: p.actual * 0.6, match: 'Exact (URN)' },
-    { inv: isToco ? 'IND/26/AUG/77121' : 'PPS/26-27/0844', path: isToco ? 'PM invoice (Infra report)' : 'AP invoice booked in Oracle (key rebuilt)', booked: '26-Sep-2026', amt: p.actual * 0.4, match: isToco ? 'Exact (site key)' : 'Force match by B0GPA204 - reason recorded' }
-  ] : [];
-  var actual = UI.table({ pager: false, export: false, dense: true, columns: [{ key: 'inv', label: 'Invoice' }, { key: 'path', label: 'How it reached this URN' }, { key: 'booked', label: 'Booked' }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'match', label: 'Match' }],
-    rows: inv, empty: 'No invoice matched yet.' });
+  /* ---------------------------------------------------------------- actualization */
+  var arows = p.matches.map(function (m) {
+    var r = m.invoice || {};
+    return { inv: UI.esc(m.inv) + '<div class="k-muted k-small">' + (r.src === 'Lease' ? 'Lease payment' : r.src + (r.portal ? ' &middot; portal ' + r.portal : ' &middot; booked in Oracle')) + '</div>',
+      how: UI.esc(PA.HOW[m.how]) + (m.how === 'bumap' ? '<div class="k-muted k-small">Invoice BU ' + r.bu + ' &rarr; provision BU ' + p.bu + '</div>' : '') + (r.lines ? '<div class="k-muted k-small">Line for locator ' + p.locator + ' of ' + r.lines + '</div>' : ''),
+      booked: r.booked, period: r.period, inv_amt: r.base, amt: m.amt };
+  });
+  var EMPTY = { Open: 'No invoice matched yet.', 'On hold': 'No invoice matched yet.', Reversed: p.dn ? 'Debit-note provisions are not matched to invoices; this one ended when the DN reversal was validated.' : 'No invoice matched before the PBR reversal.',
+    'Force closed': 'No invoice matched; the balance was written back.', Cancelled: 'No invoice matched; settled against PO ' + p.po + '.', Approved: 'Matching starts once the journal is posted in Oracle.', 'Interface error': 'Matching starts once the journal is posted in Oracle.' };
+  var actual = UI.table({ pager: false, export: false, dense: true, columns: [{ key: 'inv', label: 'Invoice', nowrap: true }, { key: 'how', label: 'How it reached this URN' }, { key: 'booked', label: 'Booked', nowrap: true }, { key: 'period', label: 'Service period' }, { key: 'inv_amt', label: 'Invoice (Rs, excl. GST)', num: true, money: true }, { key: 'amt', label: 'Applied here (Rs)', num: true, money: true }],
+    rows: arows, empty: p.dn && p.open ? 'Debit-note provisions are not matched to invoices; this one ends when the DN reversal is validated.' : EMPTY[p.status] || 'Matching starts after approval and posting.' });
+  var extra = [];
+  p.matches.forEach(function (m) {
+    var r = m.invoice || {};
+    var others = r.settles ? r.settles.filter(function (x) { return x !== p; }) : [];
+    if (r.excess) extra.push(UI.alert({ tone: 'warn', title: 'Invoice ' + r.no + ' exceeds the provision by ' + rs(r.excess) + '.', text: 'The provision is fully settled; the excess is with business finance for review.', actions: [UI.textlink({ label: 'Matching workbench', icon: 'arrowRight', go: 'pa-12?tab=mw:excess' })] }), UI.tbc('Excess invoice: rule for splitting an excess between prepaid and expense (HLD open point 19)'));
+    if (others.length) extra.push(UI.p('Invoice ' + r.no + ' also settles ' + others.length + ' other provision' + (others.length > 1 ? 's' : '') + ': ' + others.map(function (x) { return '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(x.key) + '">' + UI.esc(x.key) + '</a>'; }).join(', ') + '.', { small: true }));
+    if (r.prepaid) extra.push(UI.p('The future months of ' + r.no + ' (' + rs(PA.schedule(r.prepaid).total) + ') are held in prepaid schedule <a class="k-link" data-go="pa-13?state=detail&id=' + r.prepaid + '">' + r.prepaid + '</a> and released monthly.', { small: true }), UI.tbc('Multi-month invoice: split by days or by months (HLD open point 6)'));
+    if (r.yep) extra.push(UI.p('YEP: the invoice is for a service period up to 31-Mar-2026, so it is reclassed to the YEP code up to the provision value (' + rs(p.amount) + ').', { small: true }));
+    if (m.how === 'bumap') extra.push(UI.tbc('BU reclass of a reversal-mode provision: which journal moves the cost from the invoice BU to the provision BU'));
+  });
+  if (p.status === 'Partially actualized') extra.push(UI.p('Balance ' + rs(p.balance) + ' stays open (partial match, HLD Table 15).', { muted: true, small: true }));
+  PA.invoices.filter(function (r) { return r.out === 'nearest' && r.cands.indexOf(p.key) >= 0; }).forEach(function (r) {
+    extra.push(UI.alert({ tone: 'info', title: 'Candidate for invoice ' + r.no + '.', text: UI.esc(r.text) + '. Waiting for a GPA decision (nearest match).', actions: [UI.textlink({ label: 'Matching workbench', icon: 'arrowRight', go: 'pa-12?tab=mw:nearest' })] }));
+  });
+  if (p.matches.length) extra.push(UI.tbc('Knock-off at the invoice taxable value or at the total including GST'));
 
-  var audit = UI.timeline({ columns: ['Event', 'Date', 'By', 'Detail'], rows: [
-    { status: 'Raised', state: 'done', date: p.raised || '-', action: UI.esc(p.maker) },
-    isDoa ? { status: 'No DOA approvers', state: 'error', date: p.raised, action: 'DOA API', reason: 'Flagged; GPA team alerted' } : null,
-    isDoa ? { status: 'Approval', state: 'pending', reason: 'Starts when the provision is retriggered' } : null,
-    pre ? null : { status: 'Approved', state: 'done', date: p.raised || '-', action: 'B0CHK155, B0CHK090', reason: 'DOA approvers' },
-    posted ? { status: 'Posted in Oracle', state: 'done', date: p.raised, action: 'B0GPM031 (GPA manager)', reason: p.erpDoc } : null,
-    p.actual ? { status: 'Invoice matched', state: 'done', date: '18-Sep-2026', action: 'Matching engine', reason: 'Exact URN match' } : null,
-    p.actual ? { status: 'Force match', state: 'done', date: '26-Sep-2026', action: 'B0GPA204', reason: 'Invoice without URN; vendor and item agree; period Aug-26' } : null,
-    p.escalation ? { status: 'Escalated', state: 'current', date: '29-Sep-2026', action: 'System', reason: UI.esc(p.escalation) } : null
-  ].filter(Boolean) });
+  /* ---------------------------------------------------------------- audit trail */
+  var audit = UI.timeline({ columns: ['Event', 'Date', 'By', 'Detail'], rows: p.events.map(function (e) { return { status: e.status, state: e.state, date: e.at, action: UI.esc(e.by), reason: e.detail }; }) });
 
-  var ageing = UI.kv({ cols: 3, items: [['Age today', p.age + ' days'], ['Ageing bucket', p.age <= 30 ? '0-30 days' : p.age <= 60 ? '31-60 days' : p.age <= 90 ? '61-90 days' : 'Over 90 days'], ['Escalation', p.escalation || 'None yet (90 / 180 / 270 / 365 days)'],
-    ['PBR reversal due', 'Close of ' + (p.month === 'AUG-26' ? 'Sep-27' : 'month 13') + ' (13-month window)'], ['On hold', p.hold ? 'Yes - ' + UI.esc(p.hold) : 'No'], ['YEP', p.yep ? 'Yes (FY 2025-26 service period)' : 'No']] });
-
-  var prepaid = p.act === 'ACT-0063' ? UI.p('Prepaid schedule applies.') : UI.alert({ tone: 'info', text: 'No prepaid portion: the matched invoices cover only this provision\'s service month. Future-period amounts on an invoice are moved to prepaid and released monthly (see Prepaid & deferment).' });
-
-  var actions = isDoa ? UI.alert({ tone: 'red', title: 'No approvers returned by DOA.', text: UI.esc(p.doa) + '. Retrigger once the matrix is set up.', actions: [UI.button({ label: 'Retrigger approval', size: 'sm', toast: 'Sent to the DOA API again' })] }) : pre ? '' : UI.btns([
-    UI.button({ label: 'Link PO', modal: 'po' }), UI.button({ label: 'Place on hold', modal: 'hold' }),
-    UI.button({ label: 'Request force closure', modal: 'closure' }), UI.button({ label: 'Request force reversal', modal: 'reversal' })]);
-
-  var modals = UI.modal({ id: 'closure', title: 'Request', accent: 'Force closure', size: 'narrow', body: [UI.p('Writes the open balance back to profit and loss and ends the URN. Needs CFR approval.', { muted: true }),
+  /* ---------------------------------------------------------------- modals */
+  var pos = PA.pos.filter(function (x) { return x.vcode === p.vcode && x.bu === p.bu && !/Settled/.test(x.status); });
+  var modals = UI.modal({ id: 'closure', title: 'Request', accent: 'Force closure', size: 'narrow', body: [UI.p('For a provision where no invoice is expected: writes the open balance (' + rs(p.balance) + ') back to profit and loss and ends the URN. Needs CFR approval.', { muted: true }),
       UI.grid(1, [UI.field({ label: 'Reason', type: 'select', value: 'No invoice expected', required: true }), UI.field({ label: 'Remarks', type: 'area', required: true }), UI.upload({ label: 'Evidence' })])],
       foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Send to CFR', variant: 'primary', close: true, toast: 'Force closure request sent to CFR' })] }) +
-    UI.modal({ id: 'reversal', title: 'Request', accent: 'Force reversal', size: 'narrow', body: [UI.p('For a disputed provision. Reverses before the PBR window; a later invoice for the period is a hit. Needs CFR approval.', { muted: true }), UI.field({ label: 'Reason', type: 'area', required: true })],
+    UI.modal({ id: 'reversal', title: 'Request', accent: 'Force reversal', size: 'narrow', body: [UI.p('For a disputed provision: reverses the open balance (' + rs(p.balance) + ') before the PBR window and ends the URN. Needs CFR approval.', { muted: true }),
+      UI.field({ label: 'Reason', type: 'area', required: true }), UI.tbc('Force reversal: how a later invoice for the reversed period is treated')],
       foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Send to CFR', variant: 'primary', close: true, toast: 'Force reversal request sent to CFR' })] }) +
-    UI.modal({ id: 'hold', title: 'Place on', accent: 'Hold', size: 'narrow', body: [UI.p('Held provisions are not reversed under the PBR window. GPA places holds; CFR approves where the PBR policy mapping requires it.', { muted: true }), UI.field({ label: 'Reason', type: 'area', required: true })],
-      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Place on hold', variant: 'primary', close: true, toast: 'Hold requested' })] }) +
-    UI.modal({ id: 'po', title: 'Link', accent: 'Purchase order', size: 'narrow', body: [UI.field({ label: 'Oracle PO', type: 'select', value: '4500918822 - Prism Power Systems - Rs 5,20,000.00', hint: 'List of values of Oracle POs for this vendor and BU' }),
+    UI.modal({ id: 'hold', title: 'Place on', accent: 'Hold', size: 'narrow', body: [UI.p('A held provision is excluded from the PBR reversal until the hold is released. Only the GPA team places holds.', { muted: true }),
+      UI.field({ label: 'Reason', type: 'area', required: true }), UI.tbc('Hold: CFR approval for every hold, or only where the PBR policy mapping requires it')],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Request hold', variant: 'primary', close: true, toast: 'Hold requested - sent to CFR' })] }) +
+    UI.modal({ id: 'release', title: 'Release', accent: 'Hold', size: 'narrow', body: [UI.p('The provision returns to the PBR reversal; past the window (close of ' + p.pbrClose + ') it is reversed in the next run.', { muted: true }), UI.field({ label: 'Reason', type: 'area', required: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Release hold', variant: 'primary', close: true, toast: 'Hold released' })] }) +
+    UI.modal({ id: 'po', title: 'Link', accent: 'Purchase order', size: 'narrow', body: [
+      pos.length ? UI.field({ label: 'Oracle PO', type: 'select', value: pos[0].po + ' - raised ' + pos[0].raised + ' - Rs ' + UI.inr(pos[0].amt, 2), hint: 'Oracle POs for this vendor and BU' })
+        : UI.field({ label: 'Oracle PO', type: 'lookup', placeholder: 'PO number', hint: 'No open Oracle PO found for ' + UI.esc(p.vendor) + ' in BU ' + p.bu }),
       UI.p('The provision stays on this platform and is settled when the PO is raised or when its PO-based invoice is booked in AP, so the cost is not provided twice.', { muted: true, small: true })],
-      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Link PO', variant: 'primary', close: true, toast: 'PO linked to the provision' })] });
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Link PO', variant: pos.length ? 'primary' : 'disabled', close: true, toast: 'PO linked to the provision' })] });
 
-  Page.render({
-    id: 'pa-09', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst', navKey: 'pa-03',
-    html: UI.page({ title: 'Provision', accent: 'Detail', crumb: '<a data-go="pa-03">Provision register</a> &rsaquo; ' + UI.esc(p.key), sub: 'Open any URN from the register. Try a TOCO URN, for example <a class="k-link" href="pa-09-provision-detail.html?urn=' + encodeURIComponent('111·412885·ELEC-AOR·AUG-26·11106') + '">111·412885·ELEC-AOR·AUG-26·11106</a>.' }) +
-      head + actions + '<div class="k-gap"></div>' +
-      UI.tabs({ id: 'pd', tabs: [
-        { id: 'journals', label: 'Journals', count: posted ? 2 : 0, body: [journals, UI.p('Oracle ledger balance and platform open balance can differ for reversal-mode provisions: Oracle reverses on the 1st, the platform keeps the URN open until actualized or aged out.', { muted: true, small: true })] },
-        { id: 'actual', label: 'Actualization', count: inv.length, body: [actual] },
-        { id: 'prepaid', label: 'Prepaid', body: [prepaid] },
-        { id: 'ageing', label: 'Ageing', body: [ageing] },
-        { id: 'audit', label: 'Audit trail', body: [audit] }] }) + modals
-  });
+  base.html = UI.page({ title: 'Provision', accent: 'Detail', crumb: '<a data-go="pa-03">Provision register</a> &rsaquo; ' + UI.esc(p.key),
+      sub: 'Open any URN or reference from the register. Try a TOCO URN, for example <a class="k-link" href="pa-09-provision-detail.html?urn=' + encodeURIComponent('111·412885·ELEC-AOR·AUG-26·11106') + '">111·412885·ELEC-AOR·AUG-26·11106</a>.' }) +
+    head + ageing + actions + '<div class="k-gap"></div>' +
+    UI.tabs({ id: 'pd', tabs: [
+      { id: 'actual', label: 'Actualization', count: p.matches.length, body: [actual].concat(extra) },
+      { id: 'journals', label: 'Journals', count: jrows.length, body: [journals].concat(jnotes) },
+      { id: 'audit', label: 'Audit trail', count: p.events.length, body: [audit] }] }) + modals;
+  Page.render(base);
 })();
 </script>
 </body>

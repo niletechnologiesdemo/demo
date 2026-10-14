@@ -12,39 +12,91 @@
 <script src="pa-data.js"></script>
 <script>
 (function () {
-  var S = Page.state(), ran = S === 'run';
-  var buckets = UI.chart({ type: 'column', title: 'Open provisions by ageing bucket', unit: 'Rs lakh', categories: ['0-30 days', '31-60 days', '61-90 days', 'Over 90 days'], series: [{ name: 'Open balance', data: [91.3, 174.6, 0, 65.2] }], fmt: function (v) { return UI.inr(v, 1); } });
+  // Everything is derived from pa-data.js: open provisions (Open, Partially actualized, On hold), their age from the last day
+  // of the service month, CFR requests and the invoices with a hit or YEP treatment
+  var S = Page.state(), ran = S === 'run', rs = function (n) { return 'Rs ' + UI.inr(n, 2); };
+  var open = PA.provisions.filter(function (p) { return p.open; });
+  var urn = function (p) { return '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>'; };
+  var total = function (list) { return list.reduce(function (a, p) { return a + p.balance; }, 0); };
+
+  /* ---------------------------------------------------------------- ageing and escalation */
+  var BUCKETS = ['0-30 days', '31-60 days', '61-90 days', 'Over 90 days'];
+  var chart = UI.chart({ type: 'column', title: 'Open balance by ageing bucket', unit: 'Rs lakh', categories: BUCKETS, series: [{ name: 'Open balance', data: BUCKETS.map(function (b) { return Math.round(total(open.filter(function (p) { return p.bucket === b; })) / 1e3) / 100; }) }], fmt: function (v) { return UI.inr(v, 2); } });
   var esc = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 't', label: 'Age reached' }, { key: 'w', label: 'Escalated to' }, { key: 'n', label: 'Provisions', num: true }, { key: 'v', label: 'Balance (Rs)', num: true, money: true }],
-    rows: [{ t: '90 days', w: 'Business user', n: '2', v: 3875000 }, { t: '180 days', w: 'Manager', n: '1', v: 1950000 }, { t: '270 days', w: 'CFR', n: '1', v: 760000 }, { t: '365 days', w: 'Controller / ACE', n: '0', v: 0 }] });
+    rows: PA.ESC.map(function (e) { var l = open.filter(function (p) { return p.escLevel === e; }); return { t: e.days + ' days', w: e.to, n: String(l.length), v: total(l) }; }),
+    foot: { t: 'Escalated', n: String(open.filter(function (p) { return p.escLevel; }).length), v: total(open.filter(function (p) { return p.escLevel; })) } });
+  var escalated = open.filter(function (p) { return p.escLevel; }).sort(function (x, y) { return y.age - x.age; });
+  var escList = UI.table({ dense: true, columns: [{ key: 'u', label: 'URN' }, { key: 'v', label: 'Vendor / BU' }, { key: 'a', label: 'Age (days)', num: true }, { key: 'e', label: 'Escalated to' }, { key: 'b', label: 'Balance (Rs)', num: true, money: true }, { key: 's', label: 'Status' }],
+    rows: escalated.map(function (p) { return { u: urn(p), v: '<div class="w-170">' + UI.esc(p.vendor) + '</div><div class="k-muted k-small">BU ' + p.bu + '</div>', a: String(p.age), e: UI.esc(p.escalation), b: p.balance, s: UI.status(p.status, PA.statusTone(p.status)) }; }), total: escalated.length + ' provisions' });
 
-  var pbr = UI.table({ dense: true, select: !ran, columns: [{ key: 'u', label: 'URN' }, { key: 'v', label: 'Vendor' }, { key: 'm', label: 'Month' }, { key: 'b', label: 'Balance (Rs)', num: true, money: true }, { key: 'a', label: 'Outcome at close of Sep-26' }],
-    rows: [
-      { u: '<span class="k-urn">121·410022·SECURITY001·AUG-25</span>', v: 'SecureOne Facility Services', m: 'Aug-25', b: 410000, a: ran ? UI.status('Reversed', 'grey') : 'Reverse (beyond 13 months)' },
-      { u: '<span class="k-urn">111·410455·CCSVC002·AUG-25</span>', v: 'Vertex Call Solutions', m: 'Aug-25', b: 1880000, a: ran ? UI.status('Reversed', 'grey') : 'Reverse' },
-      { u: '<span class="k-urn">141·410387·AMCDG004·AUG-25</span>', v: 'Prism Power Systems', m: 'Aug-25', b: 690000, a: UI.status('On hold - excluded') + '<div class="k-small">Vendor dispute (CFR approved)</div>' },
-      { u: '<span class="k-urn">101·510044·GOVLIC01·AUG-25</span>', v: 'Department of Telecommunications', m: 'Aug-25', b: 2500000, a: UI.status('Excluded - Government vendor', 'grey') }] });
+  /* ---------------------------------------------------------------- PBR reversal run at the close of Sep-26 */
+  var due = open.filter(function (p) { return p.pbrClose === 'Sep-26'; });
+  var reversible = function (p) { return p.status !== 'On hold' && !p.govt; };
+  var rev = due.filter(reversible);
+  var pbr = UI.table({ dense: true, pager: false, columns: [{ key: 'u', label: 'URN' }, { key: 'v', label: 'Vendor' }, { key: 'm', label: 'Service month' }, { key: 'b', label: 'Balance (Rs)', num: true, money: true }, { key: 'a', label: 'Outcome at the close of Sep-26' }, { key: '_acts', label: '' }],
+    rows: due.map(function (p) {
+      var out = !reversible(p) ? UI.status(p.govt ? 'Excluded - Government vendor' : 'Excluded - on hold', 'grey') + (p.hold ? '<div class="k-small">' + UI.esc(p.hold) + '</div>' : '')
+        : ran ? UI.status('Reversed', 'grey') + '<div class="k-small">05-Oct-2026 06:00</div>' : UI.status('Reverse');
+      return { u: urn(p), v: UI.esc(p.vendor) + '<div class="k-muted k-small">BU ' + p.bu + '</div>', m: p.month.charAt(0) + p.month.slice(1, 3).toLowerCase() + p.month.slice(3), b: p.balance, a: out, _acts: reversible(p) && !ran ? [{ icon: 'hold', label: 'Place on hold', modal: 'hold' }] : [] };
+    }) });
 
-  var force = UI.table({ dense: true, columns: [{ key: 'r', label: 'Request' }, { key: 'u', label: 'URN' }, { key: 'b', label: 'Balance (Rs)', num: true, money: true }, { key: 'why', label: 'Reason' }, { key: 's', label: 'Status' }],
-    rows: [{ r: 'Force closure CFR-26-0114', u: '<span class="k-urn">131·410612·LEGAL007·FEB-26</span>', b: 300000, why: 'Matter withdrawn - no invoice expected', s: UI.status('Waiting for CFR') },
-      { r: 'Force reversal CFR-26-0112', u: '<span class="k-urn">121·410455·CCSVC002·APR-26</span>', b: 1980000, why: 'Disputed - billed under a new contract', s: UI.status('Waiting for CFR') },
-      { r: 'Force closure CFR-26-0098', u: '<span class="k-urn">131·410612·LEGAL007·JAN-26</span>', b: 300000, why: 'Matter withdrawn', s: UI.status('Force closed', 'grey') }] });
+  /* ---------------------------------------------------------------- holds: provisions on hold and hold requests waiting for CFR */
+  var holdReq = PA.requests.filter(function (r) { return r.type === 'Hold'; });
+  var holds = UI.table({ dense: true, pager: false, columns: [{ key: 'u', label: 'URN' }, { key: 'r', label: 'Reason' }, { key: 'b', label: 'Balance (Rs)', num: true, money: true }, { key: 'q', label: 'Request', nowrap: true }, { key: 'p', label: 'PBR due' }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: holdReq.map(function (r) {
+      var p = PA.find(r.key), held = p.status === 'On hold';
+      return { u: urn(p) + '<div class="k-muted k-small">' + UI.esc(p.vendor) + '</div>', r: UI.esc(r.reason), b: p.balance, q: r.id + '<div class="k-muted k-small">' + r.on.slice(0, 11) + ' &middot; ' + r.by + '</div>',
+        p: 'Close of ' + p.pbrClose, s: held ? UI.status('On hold') + '<div class="k-muted k-small">CFR approved ' + r.decided.slice(0, 11) + '</div>' : UI.status('Waiting for CFR'),
+        _acts: held ? [{ icon: 'x', label: 'Release hold', modal: 'release' }] : [{ icon: 'eye', label: 'Open the request', go: 'pa-08?state=hold' }] };
+    }) });
 
-  var hits = UI.table({ dense: true, columns: [{ key: 'i', label: 'Invoice' }, { key: 'v', label: 'Vendor' }, { key: 'p', label: 'Service period' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }, { key: 't', label: 'Treatment' }],
-    rows: [{ i: 'SFS/2026/0981', v: 'SecureOne Facility Services', p: 'Jun-25', a: 395000, t: 'Hit - service before the PBR window (before 31-Jul-2025); current-period expense, not reclassed to YEP' },
-      { i: 'VCS/26/1240', v: 'Vertex Call Solutions', p: 'Mar-26', a: 1950000, t: 'YEP - service up to 31-Mar-2026; reclass limited to the provision value (Rs 19,50,000.00)' }] });
+  /* ---------------------------------------------------------------- force closure and force reversal requests (decided by CFR in the approvals inbox) */
+  var forceReq = PA.requests.filter(function (r) { return /^Force/.test(r.type); });
+  var force = UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Request', nowrap: true }, { key: 'u', label: 'URN' }, { key: 'b', label: 'Amount (Rs)', num: true, money: true }, { key: 'why', label: 'Reason' }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: forceReq.map(function (r) {
+      var p = PA.find(r.key), wait = r.status === 'Waiting for CFR';
+      return { r: r.id + '<div class="k-muted k-small">' + UI.esc(r.type) + ' &middot; ' + r.on.slice(0, 11) + '</div>', u: urn(p), b: p.amount - p.actual, why: UI.esc(r.reason),
+        s: wait ? UI.status('Waiting for CFR') : UI.status(p.status, 'grey') + '<div class="k-muted k-small">CFR approved ' + r.decided.slice(0, 11) + '</div>',
+        _acts: wait ? [{ icon: 'eye', label: 'Open the request', go: r.type === 'Force closure' ? 'pa-08?state=closure' : 'pa-08?state=reversal' }] : [] };
+    }) });
 
-  var settings = UI.kv({ cols: 3, items: [['PBR window', '13 months (effective 01-Apr-2026, GPA)'], ['Next reversal run', 'Close of Sep-26 - 05-Oct-2026'], ['Exclusions', 'Provisions on hold; Government vendor provisions'], ['ERP ageing buckets', '0-30, 31-60, 61-90, over 90 days'], ['Escalation thresholds', '90 / 180 / 270 / 365 days (configurable)'], ['Year-end', 'FY 2025-26 closed 31-Mar-2026']] });
+  /* ---------------------------------------------------------------- hits and YEP */
+  var hitRows = PA.invoices.filter(function (r) { return r.out === 'hit' || r.yep; });
+  var hits = UI.table({ dense: true, pager: false, columns: [{ key: 'i', label: 'Invoice', nowrap: true }, { key: 'v', label: 'Vendor / BU' }, { key: 'p', label: 'Service period' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }, { key: 't', label: 'Treatment' }],
+    rows: hitRows.map(function (r) {
+      var p = r.settles[0];
+      return { i: UI.esc(r.no) + '<div class="k-muted k-small">Booked ' + r.booked + '</div>', v: UI.esc(r.vendor) + '<div class="k-muted k-small">BU ' + r.bu + '</div>', p: r.from.slice(3) + (r.from.slice(3) === r.to.slice(3) ? '' : ' to ' + r.to.slice(3)), a: r.base,
+        t: r.yep ? '<b>YEP</b>: service up to 31-Mar-2026; reclass ' + rs(Math.min(r.base, p.amount)) + ' to the YEP code, within the provision value (' + rs(p.amount) + ') of ' + urn(p)
+          : '<b>Hit</b>: service before the PBR window; expensed in the current period, not reclassed to YEP <span class="k-muted">(sample invoice; its Jun-25 provision was reversed at the close of Jul-26)</span>' };
+    }) });
+
+  var hold = UI.modal({ id: 'hold', title: 'Place on', accent: 'Hold', size: 'narrow', body: [UI.p('A held provision is excluded from the PBR reversal until the hold is released. Only the GPA team places holds.', { muted: true }), UI.field({ label: 'Reason', type: 'area', required: true }),
+      UI.tbc('Hold: CFR approval for every hold, or only where the PBR policy mapping requires it')],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Request hold', variant: 'primary', close: true, toast: 'Hold requested - sent to CFR' })] }) +
+    UI.modal({ id: 'release', title: 'Release', accent: 'Hold', size: 'narrow', body: [UI.p('The provision returns to the PBR reversal; past the window it is reversed in the next run.', { muted: true }), UI.field({ label: 'Reason', type: 'area', required: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Release hold', variant: 'primary', close: true, toast: 'Hold released' })] });
 
   Page.render({
     id: 'pa-14', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
     states: [{ id: 'run', label: 'After PBR run' }],
-    html: UI.page({ title: 'Ageing', accent: '& Reversal', info: 'Open provisions are aged monthly, escalated, and reversed beyond the PBR window unless on hold', sub: 'Escalations, the automatic PBR reversal, holds, force closure and reversal requests, hits and year-end provisions.' }) +
-      settings + '<div class="k-gap"></div>' +
+    html: UI.page({ title: 'Ageing,', accent: 'Reversal & Year-end', info: 'Open provisions are aged, escalated, and reversed beyond the PBR window unless on hold', sub: 'Escalations, the automatic PBR reversal, holds, force closure and reversal requests, hits and year-end provisions.' }) +
+      UI.p('PBR window 13 months; escalation at 90, 180, 270 and 365 days; provisions on hold and Government vendor provisions are not reversed. These are set on <a class="k-link" data-go="pa-19?tab=m:pbr">Masters &amp; configuration</a>. ' +
+        (ran ? 'Next run: close of Oct-26, on 05-Nov-2026.' : 'Next run: close of Sep-26, on 05-Oct-2026.'), { muted: true }) +
+      UI.tbc('Ageing is counted from the last day of the service month (HLD open point 18)') + ' ' + UI.tbc('PBR run day and the window\'s effective date are samples') +
       UI.tabs({ id: 'ag', active: ran ? 'pbr' : 'age', tabs: [
-        { id: 'age', label: 'Ageing & escalation', body: [UI.cols('1:1', [buckets], [UI.subhead('Escalation matrix'), esc])] },
-        { id: 'pbr', label: 'PBR reversal run', count: 4, body: [ran ? UI.alert({ tone: 'ok', title: 'Reversal run completed 05-Oct-2026 06:00.', text: '2 provisions reversed (Rs 22,90,000.00); 2 excluded. Reversal journals sent to Oracle.' }) : UI.alert({ tone: 'info', text: 'At the close of 30-Sep-2026, provisions for Aug-25 and earlier fall outside the 13-month window and will be reversed automatically on 05-Oct unless placed on hold.', actions: [UI.button({ label: 'Place selected on hold', size: 'sm', toast: 'Hold requested - CFR approval where the policy requires it' })] }), pbr] },
-        { id: 'force', label: 'Force closure & reversal', count: 3, body: [UI.p('Force closure writes the provision back before the PBR window when no invoice is expected; force reversal is for disputed provisions. Both need CFR approval.', { muted: true }), force] },
-        { id: 'hits', label: 'Hits & YEP', count: 2, body: [hits] }] })
+        { id: 'age', label: 'Ageing & escalation', count: escalated.length, body: [UI.cols('1:1', [chart, UI.p('Open, partially actualized and held provisions in this sample.', { muted: true, small: true })], [UI.subhead('Escalation matrix (current level)'), esc]),
+          UI.subhead('Escalated provisions'), escList, UI.tbc('Held and excluded provisions: whether they keep escalating and stay in the ageing buckets')] },
+        { id: 'pbr', label: 'PBR reversal run', count: due.length, body: [
+          ran ? UI.alert({ tone: 'ok', title: 'Reversal run completed 05-Oct-2026 06:00.', text: rev.length + ' provisions reversed (' + rs(total(rev)) + '); ' + (due.length - rev.length) + ' excluded. Both are reversal-mode provisions that Oracle already reversed at the start of Sep-25, so the platform closes the URNs without a journal. An invoice for Aug-25 or earlier is now a hit.' })
+            : UI.alert({ tone: 'info', text: 'At the close of 30-Sep-2026, provisions for Aug-25 and earlier are beyond the 13-month window: ' + rev.length + ' are reversed in the run on 05-Oct-2026 unless placed on hold, ' + (due.length - rev.length) + ' are excluded.' }),
+          pbr, UI.tbc('Government vendor for the PBR exclusion: identified by a vendor master flag or a list'),
+          UI.tbc('Reversal mode: whether a journal is posted when the platform reverses (PBR, force reversal) or cancels (PO) a provision Oracle already reversed (HLD open points 2 and 20)')] },
+        { id: 'holds', label: 'Holds', count: holdReq.length, body: [UI.p('GPA places a provision on hold for an exception; a held provision is not reversed under the PBR window (HLD 5.6).', { muted: true }), holds,
+          UI.tbc('Hold: CFR approval for every hold, or only where the PBR policy mapping requires it')] },
+        { id: 'force', label: 'Force closure & reversal', count: forceReq.length, body: [UI.p('Force closure writes the provision back before the PBR window when no invoice is expected; force reversal is for a disputed provision. CFR decides both in the <a class="k-link" data-go="pa-07?tab=ap:cfr">approvals inbox</a>.', { muted: true }), force,
+          UI.tbc('Force reversal: how a later invoice for the reversed period is treated')] },
+        { id: 'hits', label: 'Hits & YEP', count: hitRows.length, body: [UI.p(ran ? 'After the run, an invoice for Aug-25 or earlier is a hit.' : 'Today an invoice for Jul-25 or earlier is a hit; after the run on 05-Oct-2026, Aug-25 too.', { muted: true }), hits,
+          UI.tbc('YEP rule: which provisions are flagged year-end provisions, and an invoice above the provision value')] }] }) + hold
   });
 })();
 </script>

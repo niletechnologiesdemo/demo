@@ -148,9 +148,10 @@
   var checks = err ? UI.alert({ tone: 'red', title: nErr + ' errors need correction before you can submit.', text: 'Correct the fields marked in red, or upload a corrected invoice copy, and validate again.', actions: [viewChk] })
     : ok ? UI.alert({ tone: 'ok', title: 'All checks passed.', text: passed + ' checklist items passed on the invoice copy' + (vend.irn === 'Yes' ? ', including the IRN QR code' : '') + '. Signature and invoice form are confirmed by the PHD team after submission.', actions: [viewChk] }) : '';
 
-  // approved, open provisions of the sample vendors (as in pa-data.js); URNs exist only after approval
+  // approved, open provisions of the sample vendors (as in pa-data.js); URNs exist only after approval. Provisions with a force closure
+  // or force reversal request waiting for CFR are not offered (for example 131·410612·LEGAL007·FEB-26)
   var OPEN = { '111·410022': [['111·410022·SECURITY001·AUG-26', 'Aug-26', 485000]], '131·410612': [['131·410612·LEGAL007·AUG-26', 'Aug-26', 350000]] }[ci.bu + '·' + f.v] || [];
-  var urns = UI.modal({ id: 'urns', title: 'Open', accent: 'Provisions', size: 'wide', body: [UI.p('Approved provisions for ' + UI.esc(vend.name) + ' in BU ' + ci.bu + ' that are still open. Select the one this invoice settles.', { muted: true }),
+  var urns = UI.modal({ id: 'urns', title: 'Open', accent: 'Provisions', size: 'wide', body: [UI.p('Approved provisions for ' + UI.esc(vend.name) + ' in BU ' + ci.bu + ' that are still open. Select the one this invoice settles. Provisions with a force closure or force reversal request waiting for CFR are not offered.', { muted: true }),
     UI.table({ dense: true, pager: false, export: false, select: true, columns: [{ key: 'u', label: 'URN' }, { key: 'm', label: 'Month' }, { key: 'a', label: 'Open balance (Rs)', num: true, money: true }, { key: 's', label: 'Status' }],
       rows: OPEN.map(function (o) { var on = o[0] === f.urn; return { u: '<span class="k-urn">' + o[0] + '</span>', m: o[1], a: o[2], s: UI.status('Open'), _checked: on, _sel: on }; }),
       empty: 'No open provisions for this vendor in BU ' + ci.bu + '. After booking, the matching engine looks for one by BU, vendor, item code and service month.' })],
