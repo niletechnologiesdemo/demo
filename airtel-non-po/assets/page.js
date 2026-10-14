@@ -16,11 +16,11 @@
         { id: 'pa-03', file: 'pa-03-provision-register.html', name: 'Provision register', desc: 'All provisions with lifecycle status, URN, ageing, missing-month flags, filters and export.' },
         { id: 'pa-04', file: 'pa-04-create-provision.html', name: 'Create provision', desc: 'Single entry: activity drives the scenario; master defaults, validations, duplicate check, URN and journal preview.' },
         { id: 'pa-05', file: 'pa-05-bulk-upload.html', name: 'Bulk upload', desc: 'Template per activity, row-level validation, submit valid rows, other TOCO input formats.' },
-        { id: 'pa-06', file: 'pa-06-toco-darts.html', name: 'TOCO / DARTS provisions', desc: 'DARTS feed with Post to ERP, site-level provisions, debit-note provisions and reversals.' },
+        { id: 'pa-06', file: 'pa-06-toco-darts.html', name: 'TOCO / DARTS provisions', desc: 'DARTS feed sent to Oracle, site-level provisions, debit-note provisions and reversals.' },
         { id: 'pa-07', file: 'pa-07-approvals.html', name: 'Approvals inbox', desc: 'DOA approvals, CFR approvals, notification-only items, SLA and delegation.' },
         { id: 'pa-08', file: 'pa-08-approval-review.html', name: 'Approval review', desc: 'Review one provision: lines, calculation, duplicates, attachments; approve, return or reject.' },
         { id: 'pa-09', file: 'pa-09-provision-detail.html', name: 'Provision detail (URN)', desc: 'One URN end to end: status and reason, ageing, invoices matched, journals and Oracle references, audit trail; actions by status.' },
-        { id: 'pa-10', file: 'pa-10-journal-posting.html', name: 'Journal posting & errors', desc: 'Staging, GL interface, Journal Import, posting by GPA manager; error queue, retry, reconciliation.' },
+        { id: 'pa-10', file: 'pa-10-journal-posting.html', name: 'Journal posting & errors', desc: 'Journals sent to Oracle through staging, the GL interface and Journal Import, and their status (GPA managers post them in Oracle EBS); error queue, retry, reconciliation.' },
         { id: 'pa-11', file: 'pa-11-calendar-suggestions.html', name: 'Calendar & suggestions', desc: 'Expected vs raised provisions by month, reminders and auto provision suggestions.' },
         { id: 'pa-12', file: 'pa-12-matching-workbench.html', name: 'Matching workbench', desc: 'Invoices against provisions: exact, nearest (incl. PAN), force match, unmatched, excess and future period, FIFO, BU reclass; POs raised after a provision.' },
         { id: 'pa-13', file: 'pa-13-prepaid-deferment.html', name: 'Prepaid register', desc: 'Prepaid schedules from invoices, advance payments and scenario 4 deferment: current / non-current split and monthly release.' },
@@ -57,7 +57,7 @@
         { id: 'checker', name: 'Approver (DOA)', user: 'B0CHK155', desc: 'Approves provisions routed to them by the DOA API' },
         { id: 'bfin', name: 'Business finance', user: 'B0BFN017', desc: 'Rule-based inputs, allocation, deferment, review' },
         { id: 'gpa', name: 'GPA analyst', user: 'B0GPA204', desc: 'Provisioning accounting: matching, holds, PBR, masters' },
-        { id: 'gpam', name: 'GPA manager', user: 'B0GPM031', desc: 'Posts journals in Oracle (final control gate)' },
+        { id: 'gpam', name: 'GPA manager', user: 'B0GPM031', desc: 'Reviews and posts journals in Oracle EBS (final control gate); sees their status on the platform' },
         { id: 'cfr', name: 'CFR', user: 'B0CFR007', desc: 'New BU / GL / OU, force closure and reversal, holds' },
         { id: 'ace', name: 'ACE / Controller', user: 'B0ACE003', desc: 'Central processing; final ageing escalation' },
         { id: 'p2p', name: 'P2P team', user: 'B0P2P114', desc: 'Invoice booking; matching; TOCO debit notes' },
@@ -74,11 +74,11 @@
         'pa-03': ['maker bfin gpa ace', 'checker gpam cfr lead audit', 'Records limited to the user\'s entity, BU and department'],
         'pa-04': ['maker bfin gpa ace', '', 'Business finance and GPA raise the rule-based scenarios'],
         'pa-05': ['maker bfin gpa ace toco', '', 'NSG / SCM / B2B upload their TOCO inputs only'],
-        'pa-06': ['gpa ace', 'gpam p2p', 'GPA posts the DARTS feed to ERP'],
+        'pa-06': ['gpa ace', 'gpam p2p', 'GPA sends the DARTS feed to Oracle'],
         'pa-07': ['checker cfr', '', 'Includes absence delegates'],
         'pa-08': ['checker cfr', '', 'Nobody approves a provision they raised'],
         'pa-09': ['maker gpa ace', 'bfin checker gpam cfr lead audit', 'GPA: hold, link PO; maker and GPA: request force closure or reversal'],
-        'pa-10': ['gpa gpam', '', 'Analyst corrects and retries; manager posts in Oracle'],
+        'pa-10': ['gpa', 'gpam', 'Analyst corrects and retries; GPA managers post the journals in Oracle EBS and see their status here'],
         'pa-11': ['maker bfin gpa ace', 'checker', ''],
         'pa-12': ['gpa p2p ace', '', 'GPA confirms PO links (PO raised after provision)'],
         'pa-13': ['gpa', 'bfin', 'Deferment parameters and the prepaid GL quality plan are kept on Masters & configuration'],
@@ -431,7 +431,7 @@
         '<div class="k-tablewrap"><table class="k-table acc-tbl"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>' +
         UI.section({ title: 'Applies to every page', body: [UI.list({ items: mod.accessRules || [
           { icon: 'filter', title: 'Data scope', text: 'Users see only the records of their entity, BU, cost centre and department, from single sign-on and HRMS. Leadership and GPA see all.' },
-          { icon: 'users', title: 'Separation of duties', text: 'Nobody approves a provision they raised; the GPA manager posts journals but does not raise them; audit is read-only everywhere.' },
+          { icon: 'users', title: 'Separation of duties', text: 'Nobody approves a provision they raised; the GPA manager posts journals in Oracle EBS but does not raise them; audit is read-only everywhere.' },
           { icon: 'history', title: 'Audit trail', text: 'Every submission, approval, override, force match, force closure and posting is recorded with user and time.' }] })] }) +
         UI.section({ title: 'Roles', body: [UI.cards({ cols: 4, items: R.map(function (r) { return { left: true, icon: 'user', title: r.name, text: UI.esc(r.desc), meta: ['Open the portal as this role'], go: pageOf(mod.home).file + '?role=' + r.id }; }) })] }) + '</div>';
       document.title = page.name + ' - Non-PO Portal wireframes';

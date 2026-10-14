@@ -56,6 +56,11 @@ window.OPEN_POINTS_SNAPSHOT = {
     "Hold: CFR approval for every hold, or only where the PBR policy mapping requires it"
    ]
   },
+  "pa/pa-10-journal-posting.html": {
+   "tbc": [
+    "Journal status from Oracle: how often the platform reads the import result, the posted status and the document numbers"
+   ]
+  },
   "pa/pa-12-matching-workbench.html": {
    "tbc": [
     "Invoice without a service period: settled automatically by FIFO (HLD 5.4.2) or after review",

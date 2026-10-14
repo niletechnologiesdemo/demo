@@ -16,13 +16,13 @@
   var flow = UI.flow({ items: [
     { label: 'Staging', text: '18,486 journals', state: 'done' }, { label: 'Validated', text: '18,485 passed', state: 'done' },
     { label: 'GL interface', text: '18,485 inserted', state: 'done' }, { label: 'Journal Import', text: '1 rejected', state: 'current' },
-    { label: 'Posted by GPA manager', text: mgr ? '3 batches waiting' : '18,431 posted' }] });
+    { label: 'Posted in Oracle EBS', text: mgr ? '3 batches waiting' : '18,431 posted' }] });
 
-  var batches = UI.table({ dense: true, select: mgr, columns: [{ key: 'b', label: 'Batch (group ID)' }, { key: 'src', label: 'Source' }, { key: 'cat', label: 'Category' }, { key: 'n', label: 'Journals', num: true }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'seg', label: 'RPT / YEP' }, { key: 'st', label: 'Status' }],
+  var batches = UI.table({ dense: true, columns: [{ key: 'b', label: 'Batch (group ID)' }, { key: 'src', label: 'Source' }, { key: 'cat', label: 'Category' }, { key: 'n', label: 'Journals', num: true }, { key: 'amt', label: 'Amount (Rs)', num: true, money: true }, { key: 'seg', label: 'RPT / YEP' }, { key: 'st', label: 'Status' }],
     rows: [
-      { b: 'NPP-26-10-0004<div class="k-muted k-small">01-Oct 10:12</div>', src: 'DARTS (TOCO)', cat: 'Provisional', n: '18,419', amt: 468231400, seg: 'Non-RPT', st: UI.status(mgr ? 'Imported - waiting to post' : 'Imported') },
-      { b: 'NPP-26-10-0003<div class="k-muted k-small">01-Oct 08:30</div>', src: 'Portal approvals', cat: 'Related party provision', n: '6', amt: 21750000, seg: 'RPT', st: UI.status(mgr ? 'Imported - waiting to post' : 'Imported') },
-      { b: 'NPP-26-10-0002<div class="k-muted k-small">01-Oct 08:30</div>', src: 'Portal approvals', cat: 'Provisional', n: '54', amt: 61022500, seg: 'Non-RPT', st: UI.status(mgr ? 'Imported - waiting to post' : 'Imported') },
+      { b: 'NPP-26-10-0004<div class="k-muted k-small">01-Oct 10:12</div>', src: 'DARTS (TOCO)', cat: 'Provisional', n: '18,419', amt: 468231400, seg: 'Non-RPT', st: UI.status('Imported - waiting to post') },
+      { b: 'NPP-26-10-0003<div class="k-muted k-small">01-Oct 08:30</div>', src: 'Portal approvals', cat: 'Related party provision', n: '6', amt: 21750000, seg: 'RPT', st: UI.status('Imported - waiting to post') },
+      { b: 'NPP-26-10-0002<div class="k-muted k-small">01-Oct 08:30</div>', src: 'Portal approvals', cat: 'Provisional', n: '54', amt: 61022500, seg: 'Non-RPT', st: UI.status('Imported - waiting to post') },
       { b: 'NPP-26-09-0118<div class="k-muted k-small">30-Sep 21:05</div>', src: 'Portal approvals', cat: 'Provisional', n: '1', amt: 2140000, seg: 'Non-RPT', st: UI.status('Rejected by Journal Import'), _flag: true },
       { b: 'NPP-26-09-0117<div class="k-muted k-small">30-Sep 20:40</div>', src: 'Actualization', cat: 'Adjustment', n: '12', amt: 3412000, seg: 'Non-RPT', st: UI.status('Posted', 'ok') + '<div class="k-small">GL-26-0930118</div>' }] });
 
@@ -37,13 +37,15 @@
 
   Page.render({
     id: 'pa-10', user: mgr ? 'B0GPM031' : 'B0GPA204', role: mgr ? 'GPA manager' : 'GPA analyst', viewAs: mgr ? 'GPA manager' : 'GPA analyst',
-    states: [{ id: 'error', label: 'Correcting an error' }, { id: 'manager', label: 'GPA manager posting' }],
-    html: UI.page({ title: 'Journal Posting', info: 'Journals reach Oracle GL through staging, the GL interface and Journal Import; the GPA manager posts them', sub: 'Every approved provision, actualization, prepaid and reversal journal, from staging to posted. Rejected rows wait here with the Oracle reason.' }) +
-      flow + (mgr ? UI.alert({ tone: 'info', title: '3 batches imported and waiting to be posted.', text: 'Posting in Oracle is the final control gate. Select the batches you have reviewed.', actions: [UI.button({ label: 'Post selected batches', variant: 'primary', size: 'sm', toast: 'Posting submitted in Oracle - document numbers will sync back' })] }) : '') +
+    states: [{ id: 'error', label: 'Correcting an error' }, { id: 'manager', label: 'As GPA manager' }],
+    html: UI.page({ title: 'Journal Posting', info: 'Journals reach Oracle GL through staging, the GL interface and Journal Import; GPA managers review and post them in Oracle EBS', sub: 'Every approved provision, actualization, prepaid and reversal journal the platform sends to Oracle, and its status read back from Oracle: imported, rejected with the Oracle reason, or posted with its document number. Journals are posted in Oracle EBS, not on the platform.' }) +
+      flow + (mgr ? UI.alert({ tone: 'info', title: '3 batches imported and waiting to be posted in Oracle EBS.', text: 'Review and post them in Oracle; posting is the final control gate. The posted status and document numbers come back to the platform with the journal status.' }) : '') +
       UI.tabs({ id: 'jp', tabs: [
         { id: 'batches', label: 'Batches', count: 5, body: [UI.filters({ items: [UI.field({ label: 'Date', type: 'select', value: 'Last 2 days' }), UI.field({ label: 'Source', type: 'select', value: 'All' }), UI.field({ label: 'Status', type: 'select', value: 'All' })] }), batches] },
         { id: 'errors', label: 'Error queue', count: 1, body: [errors, UI.p('Corrected journals are retried without double posting: each journal is keyed by its URN.', { muted: true, small: true })] },
-        { id: 'recon', label: 'Daily reconciliation', body: [recon] }], active: S === 'error' ? 'errors' : 'batches' })
+        { id: 'recon', label: 'Daily reconciliation', body: [recon] }], active: S === 'error' ? 'errors' : 'batches' }) +
+      UI.note({ text: 'Posting is not done on the platform. The platform writes journals to its staging tables; a database package validates them, inserts them into the GL interface with a group ID per batch and submits Journal Import. GPA managers review and post the imported journals in Oracle EBS. The platform reads back the import result, the posted status and the document number by group ID (HLD 6.3).' }) +
+      UI.tbc('Journal status from Oracle: how often the platform reads the import result, the posted status and the document numbers')
   });
 })();
 </script>

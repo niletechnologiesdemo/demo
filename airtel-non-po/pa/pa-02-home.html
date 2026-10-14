@@ -74,10 +74,10 @@
       panel: ['Open provisions by age', UI.chart({ type: 'column', title: 'Open balance (sample provisions)', unit: 'Rs lakh', categories: ['0-30 days', '31-60', '61-90', 'Over 90'], series: [{ name: 'Open', data: buckets }], fmt: function (v) { return UI.inr(v, 2); } })]
     },
     gpam: {
-      sub: 'Journals waiting to be posted in Oracle, and the daily reconciliation.',
-      tiles: [['3', 'Batches to post', '18,479 journals', 'pa-10?state=manager'], ['1', 'Rejected by Journal Import', 'With the GPA analyst', 'pa-10?state=error'], ['18,442', 'Posted yesterday', '', 'pa-10'], ['Matched', 'Daily reconciliation', '30-Sep: counts, values, documents', 'pa-10?tab=jp:recon']],
-      tasks: [['send', 'Post batch NPP-26-10-0004 - DARTS (TOCO) 18,419 journals', 'Rs 46,82,31,400.00 - imported 01-Oct 10:12', '01-Oct', 'pa-10?state=manager', 1],
-        ['send', 'Post batch NPP-26-10-0003 - related party provisions (RPT)', '6 journals - Rs 2,17,50,000.00', '01-Oct', 'pa-10?state=manager', 1],
+      sub: 'Journals waiting to be reviewed and posted in Oracle EBS, rejections and the daily reconciliation. Posting is done in Oracle, not on the platform.',
+      tiles: [['3', 'Waiting to be posted in Oracle', '18,479 journals', 'pa-10?state=manager'], ['1', 'Rejected by Journal Import', 'With the GPA analyst', 'pa-10?state=error'], ['18,442', 'Posted yesterday', '', 'pa-10'], ['Matched', 'Daily reconciliation', '30-Sep: counts, values, documents', 'pa-10?tab=jp:recon']],
+      tasks: [['eye', 'Batch NPP-26-10-0004 waiting in Oracle - DARTS (TOCO) 18,419 journals', 'Rs 46,82,31,400.00 - imported 01-Oct 10:12; review and post it in Oracle EBS', '01-Oct', 'pa-10?state=manager', 1],
+        ['eye', 'Batch NPP-26-10-0003 waiting in Oracle - related party provisions (RPT)', '6 journals - Rs 2,17,50,000.00; review and post it in Oracle EBS', '01-Oct', 'pa-10?state=manager', 1],
         ['check', 'Daily reconciliation 30-Sep matched', 'Platform and Oracle agree on counts, values and document numbers', '01-Oct 05:30', 'pa-10?tab=jp:recon', 0]],
       panel: ['Journals posted by day', UI.chart({ type: 'column', title: 'Journals', categories: ['24-Sep', '25-Sep', '26-Sep', '29-Sep', '30-Sep'], series: [{ name: 'Posted', data: [212, 188, 240, 305, 18442] }], fmt: function (v) { return UI.inr(v, 0); } })]
     },

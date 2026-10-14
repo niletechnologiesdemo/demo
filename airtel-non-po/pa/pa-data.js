@@ -168,7 +168,7 @@ window.PA = (function () {
 
     // Group companies (RPT)
     { ref: 'PRV-26-10401', bu: '111', vcode: '200014', act: 'ACT-0090', month: 'SEP-26', amount: 1800000, status: 'Approved', source: 'Single entry', maker: 'B0BFN017', sub: '30-Sep-2026 10:05',
-      gl: { batch: 'NPP-26-10-0003', sent: '01-Oct-2026 08:30', imported: '01-Oct-2026 08:30' }, note: 'Imported in Oracle (RPT batch NPP-26-10-0003) - waiting for the GPA manager to post' },
+      gl: { batch: 'NPP-26-10-0003', sent: '01-Oct-2026 08:30', imported: '01-Oct-2026 08:30' }, note: 'Imported in Oracle (RPT batch NPP-26-10-0003) - waiting for the GPA manager to post it in Oracle EBS' },
     { ref: 'PRV-26-05048', bu: '111', vcode: '200014', act: 'ACT-0090', month: 'MAY-26', amount: 1800000, status: 'Open', source: 'Single entry', maker: 'B0BFN017', sub: '29-May-2026 10:10',
       gl: { batch: 'NPP-26-06-0002', sent: '01-Jun-2026 09:30', posted: '01-Jun-2026 17:00', doc: 'GL-26-0512077', date: '31-May-2026' } },
     { ref: 'PRV-26-08401', bu: '62206', vcode: '200031', act: 'ACT-0120', month: 'AUG-26', amount: 9600000, status: 'Open', source: 'Single entry', maker: 'B0GPA204', sub: '31-Aug-2026 12:00', apv: [['B0CHK155', '31-Aug-2026 15:00'], ['B0CHK090', '31-Aug-2026 17:30'], ['B0CFO012', '01-Sep-2026 10:00']],
@@ -184,13 +184,13 @@ window.PA = (function () {
 
     // TOCO from DARTS (site level, with locator) and owned / Homes leases
     { ref: 'DRT-26-09-04127', bu: '111', vcode: '412885', act: 'ACT-0201', month: 'SEP-26', locator: '11106', site: 'DL-11106-0412', amount: 384250, status: 'Approved', source: 'DARTS', maker: 'DARTS feed',
-      darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004) - waiting for the GPA manager to post' },
+      darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004) - waiting for the GPA manager to post it in Oracle EBS' },
     { ref: 'DRT-26-09-04128', bu: '111', vcode: '412885', act: 'ACT-0202', month: 'SEP-26', locator: '11106', site: 'DL-11106-0412', amount: 112740, status: 'Approved', source: 'DARTS', maker: 'DARTS feed',
-      darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004) - waiting for the GPA manager to post' },
+      darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004) - waiting for the GPA manager to post it in Oracle EBS' },
     { ref: 'DRT-26-09-07102', bu: '111', vcode: '412902', act: 'ACT-0201', month: 'SEP-26', locator: '11109', site: 'DL-11109-0077', amount: 298600, status: 'Approved', source: 'DARTS', maker: 'DARTS feed',
-      darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004) - waiting for the GPA manager to post' },
+      darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004) - waiting for the GPA manager to post it in Oracle EBS' },
     { ref: 'DRT-26-09-07216', bu: '121', vcode: '412902', act: 'ACT-0203', month: 'SEP-26', locator: '12114', site: 'UPE-12114-0301', amount: 26430, status: 'Approved', source: 'DARTS', maker: 'DARTS feed',
-      darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004) - waiting for the GPA manager to post' },
+      darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004) - waiting for the GPA manager to post it in Oracle EBS' },
     { ref: 'DRT-26-09-13102', bu: '131', vcode: '', lease: 'LSE-OWN-13102', act: 'ACT-0204', month: 'SEP-26', locator: '13102', site: 'KA-13102-0910 (Owned)', amount: 64000, status: 'Approved', source: 'DARTS', maker: 'DARTS feed',
       darts: ['30-Sep-2026 22:40', '01-Oct-2026 10:12'], gl: { batch: 'NPP-26-10-0004', sent: '01-Oct-2026 10:12', imported: '01-Oct-2026 10:12' }, note: 'Imported in Oracle (DARTS batch NPP-26-10-0004); the lease payment of 05-Oct is on hold in the PM lease module' },
     { ref: 'DRT-26-08-04133', bu: '111', vcode: '412885', act: 'ACT-0202', month: 'AUG-26', locator: '11106', site: 'DL-11106-0412', amount: 110480, status: 'Partially actualized', source: 'DARTS', maker: 'DARTS feed',
@@ -286,7 +286,7 @@ window.PA = (function () {
     if (p.created) add(p.created, 'Created (draft)', p.maker);
     if (route === 'DARTS' && p.darts) {
       add(p.darts[0], 'DARTS feed received', 'DARTS', 'Site ' + p.site + ' in the ' + p.month + ' feed');
-      add(p.darts[1], 'Posted to ERP', 'B0GPA204 (GPA)', 'Sent to the Oracle GL interface with the rest of the feed, batch ' + p.gl.batch);
+      add(p.darts[1], 'Sent to Oracle', 'B0GPA204 (GPA)', 'Sent to the Oracle GL interface with the rest of the feed, batch ' + p.gl.batch);
     } else if (route === 'DN') {
       add(p.dnv[0], 'DN validated in Non-PO Invoicing', 'Non-PO Invoicing (AP team)', p.dnv[1] + ': ' + p.dn + ', ' + rs(p.amount));
       add(p.gl.date + ' 20:00', 'Provision created (month-end DN run)', 'Platform', 'URN carries the DN number');
@@ -313,7 +313,7 @@ window.PA = (function () {
     if (g) {
       if (!p.darts) add(g.sent, 'Sent to Oracle', 'Platform', 'Batch ' + g.batch);
       if (g.rejected) { add(g.rejected, 'Rejected by Journal Import', 'Oracle Journal Import', UI.esc(p.error), 'error'); add(null, 'Correction and retry', 'GPA team', 'In the error queue; the retry is keyed by URN so it cannot post twice', 'current'); }
-      else if (g.imported) add(g.imported, 'Imported, waiting to be posted', 'GPA manager', 'Batch ' + g.batch, 'current');
+      else if (g.imported) add(g.imported, 'Imported, waiting to be posted', 'GPA manager (in Oracle EBS)', 'Batch ' + g.batch + '; reviewed and posted in Oracle', 'current');
       else if (g.posted) {
         add(g.posted, 'Posted in Oracle', 'B0GPM031 (GPA manager)', g.doc + ' &middot; GL date ' + g.date);
         if (p.mode === 'Reversal') add(g.posted, 'Reversed in Oracle (auto-reversal)', 'Oracle', 'Reversal mode: GL date ' + fmt(parse(g.date) + DAY) + ', the start of the next period; the URN stays open on the platform until actualized or aged out');

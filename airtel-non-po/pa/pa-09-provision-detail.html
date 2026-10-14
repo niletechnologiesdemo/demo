@@ -61,7 +61,7 @@
   if (p.status === 'DOA exception') actions = UI.alert({ tone: 'red', title: 'No approvers returned by DOA.', text: UI.esc(p.doa) + '. Retrigger once the matrix is set up.', actions: gpa ? [btn('Retrigger approval', { size: 'sm', toast: 'Sent to the DOA API again' })] : [] });
   else if (p.status === 'Returned') actions = UI.btns([btn('Edit and resubmit', { variant: 'primary', go: 'pa-04?state=returned' })]);
   else if (p.status === 'Draft') actions = UI.btns([btn('Continue editing', { go: 'pa-04' }), btn('Discard draft', { toast: 'Draft discarded' })]);
-  else if (p.status === 'Approved') actions = UI.alert({ tone: 'info', title: 'Waiting to be posted.', text: 'The journal is imported in Oracle (batch ' + g.batch + '); the GPA manager posts it. The provision is Open once posted.', actions: [UI.textlink({ label: 'Journal posting', icon: 'arrowRight', go: 'pa-10' })] });
+  else if (p.status === 'Approved') actions = UI.alert({ tone: 'info', title: 'Waiting to be posted.', text: 'The journal is imported in Oracle (batch ' + g.batch + '); the GPA manager reviews and posts it in Oracle EBS. The provision is Open once the posted status comes back from Oracle.', actions: [UI.textlink({ label: 'Journal posting', icon: 'arrowRight', go: 'pa-10' })] });
   else if (p.status === 'Interface error') actions = UI.alert({ tone: 'red', title: 'Rejected by Oracle Journal Import.', text: UI.esc(p.error) + '. Correct it and retry; the retry is keyed by URN so it cannot post twice.', actions: gpa ? [btn('Correct and retry', { size: 'sm', go: 'pa-10?state=error' })] : [] });
   else if (p.open) {
     var list = [];

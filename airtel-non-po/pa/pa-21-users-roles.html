@@ -23,7 +23,7 @@
       { u: 'B0CHK201<div class="k-muted k-small">Network Operations</div>', r: 'Approver (DOA)', c: 'UP East cluster (9)', b: '121 to 129', src: 'Portal set-up', st: UI.status('On leave - delegated to B0CHK155 until 05-Oct'), _acts: ed },
       { u: 'B0BFN017<div class="k-muted k-small">Business Finance</div>', r: 'Business finance', c: 'All circles', b: 'All BUs', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
       { u: 'B0GPA204<div class="k-muted k-small">GPA</div>', r: 'GPA analyst &middot; master owner', c: 'All circles', b: 'All BUs and entities', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
-      { u: 'B0GPM031<div class="k-muted k-small">GPA</div>', r: 'GPA manager (posting)', c: 'All circles', b: 'All BUs and entities', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0GPM031<div class="k-muted k-small">GPA</div>', r: 'GPA manager (posts in Oracle)', c: 'All circles', b: 'All BUs and entities', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
       { u: 'B0CFR007<div class="k-muted k-small">CFR</div>', r: 'CFR', c: 'All circles', b: 'All BUs and entities', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed }] });
   var userModal = UI.modal({ id: 'user', title: 'Edit', accent: 'User', size: 'narrow', body: [UI.grid(1, [
       UI.field({ label: 'OLM ID', type: 'readonly', value: 'B0MKR412 &middot; Admin & Facilities' }),
@@ -38,7 +38,7 @@
       { r: 'Approver (DOA)', can: 'Approve, return or reject provisions the DOA API routes to them', cannot: 'Approve a provision they raised' },
       { r: 'Business finance', can: 'Rule-based inputs (scenarios 2-12), review, financial flash', cannot: 'Post journals' },
       { r: 'GPA analyst', can: 'Matching, force match, holds, PBR run, masters, error queue', cannot: 'Post journals in Oracle' },
-      { r: 'GPA manager', can: 'Post imported journals in Oracle (final control gate)', cannot: 'Raise provisions they post' },
+      { r: 'GPA manager', can: 'Review and post the imported journals in Oracle EBS (final control gate); see their status on the platform', cannot: 'Raise provisions they post' },
       { r: 'CFR', can: 'Approve new provisions (new item / BU / OU / GL), force closure, force reversal, holds', cannot: '-' },
       { r: 'AIO', can: 'Update VTM subscriber counts', cannot: 'Raise or approve provisions' },
       { r: 'Audit', can: 'Read reports and the audit trail', cannot: 'Change anything' }] });

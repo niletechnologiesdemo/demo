@@ -12,8 +12,8 @@
 <script src="pa-data.js"></script>
 <script>
 (function () {
-  // Feed lines and debit-note provisions come from pa-data.js. Default: the Sep-26 feed was posted to ERP on 01-Oct 10:12 (batch NPP-26-10-0004);
-  // the "Before Post to ERP" state shows the same feed when it arrived on 30-Sep 22:40
+  // Feed lines and debit-note provisions come from pa-data.js. Default: the Sep-26 feed was sent to Oracle on 01-Oct 10:12 (batch NPP-26-10-0004);
+  // the "Before sending to Oracle" state shows the same feed when it arrived on 30-Sep 22:40
   var S = Page.state(), ready = S === 'ready', rs = function (n) { return 'Rs ' + UI.inr(n, 2); };
   var link = function (p) { return '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>'; };
   var SEG = { '412885': 'Indus', '412902': 'Other TOCO', '': 'Owned' };
@@ -36,20 +36,20 @@
     }).concat([{ dn: 'GTL/AP/DUPLICATE/JUL26/DN<div class="k-muted k-small">GTL Infrastructure Ltd</div>', urn: '<span class="k-muted">Created when the DN is validated</span>', amt: 6895,
       ev: 'Under approval in invoicing<div class="k-small"><a class="k-link" href="../inv/inv-11-invoice-detail.html?ref=NPO-2627-004844">NPO-2627-004844</a></div>', st: UI.status('Not yet created', 'grey') }]) });
 
-  var postModal = UI.modal({ id: 'post', title: 'Post to', accent: 'ERP', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Site lines', '18,419 ready (1 with error held back)'], ['Amount', 'Rs 46,82,31,400.00'], ['Month', 'SEP-26'], ['Journal', 'Provisional, reversal mode, per site URN']] }),
-    UI.p('Lines are written to the Oracle GL interface. A line is picked again next time only if it was not processed successfully in ERP (status synced back to the portal).', { muted: true, small: true })],
-    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Post to ERP', variant: 'primary', state: 'none' })] });
+  var postModal = UI.modal({ id: 'post', title: 'Send to', accent: 'Oracle', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Site lines', '18,419 ready (1 with error held back)'], ['Amount', 'Rs 46,82,31,400.00'], ['Month', 'SEP-26'], ['Journal', 'Provisional, reversal mode, per site URN']] }),
+    UI.p('Lines are written to the Oracle GL interface and imported as one batch; GPA managers review and post it in Oracle EBS. A line is picked again next time only if it was not processed successfully in ERP (status synced back to the portal).', { muted: true, small: true })],
+    foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Send to Oracle', variant: 'primary', state: 'none' })] });
 
   Page.render({
     id: 'pa-06', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
-    states: [{ id: 'ready', label: 'Before Post to ERP' }],
-    html: UI.page({ title: 'TOCO', accent: 'Provisions', info: 'Tower company rent, electricity and diesel, raised per site from DARTS', sub: 'Provisions are calculated in DARTS and arrive per site in the platform format. Review them here and post to ERP.' }) +
+    states: [{ id: 'ready', label: 'Before sending to Oracle' }],
+    html: UI.page({ title: 'TOCO', accent: 'Provisions', info: 'Tower company rent, electricity and diesel, raised per site from DARTS', sub: 'Provisions are calculated in DARTS and arrive per site in the platform format. Review them here and send them to Oracle; GPA managers post them in Oracle EBS.' }) +
       UI.kpis({ cols: 5, items: [{ value: '18,420', label: 'Site lines - Sep-26', tab: 'tc:feed', active: true }, { value: 'Rs 46.8 Cr', label: 'Feed value' }, { value: '1', label: 'Lines with errors' },
         { value: String(dns.length), label: 'Debit-note provisions', sub: dns.filter(function (p) { return p.open; }).length + ' open', tab: 'tc:dn' }, { value: '2', label: 'Leases on hold', tab: 'tc:hold' }] }) +
       UI.tabs({ id: 'tc', bar: false, tabs: [
         { id: 'feed', body: [UI.filters({ items: [UI.field({ label: 'Month', type: 'select', value: 'Sep-2026' }), UI.field({ label: 'Segment', type: 'select', value: 'All (Indus, Other TOCO, TNG, Owned, Homes)' }), UI.field({ label: 'Nature', type: 'select', value: 'Rent, electricity, diesel' }), UI.field({ label: 'Status', type: 'select', value: 'All' })] }),
-          ready ? UI.alert({ tone: 'info', text: 'DARTS feed received 30-Sep-2026 22:40. Data comes from DARTS (Metabase) in the platform format.', actions: [UI.button({ label: 'Post to ERP', variant: 'primary', size: 'sm', modal: 'post' })] })
-            : UI.alert({ tone: 'ok', title: 'Posted to ERP.', text: '18,419 site lines sent to the Oracle GL interface on 01-Oct-2026 10:12 by B0GPA204, imported as batch NPP-26-10-0004 and waiting for the GPA manager to post them (Journal posting & errors).' }),
+          ready ? UI.alert({ tone: 'info', text: 'DARTS feed received 30-Sep-2026 22:40. Data comes from DARTS (Metabase) in the platform format.', actions: [UI.button({ label: 'Send to Oracle', variant: 'primary', size: 'sm', modal: 'post' })] })
+            : UI.alert({ tone: 'ok', title: 'Sent to Oracle.', text: '18,419 site lines sent to the Oracle GL interface on 01-Oct-2026 10:12 by B0GPA204, imported as batch NPP-26-10-0004 and waiting for the GPA manager to review and post them in Oracle EBS (status on Journal posting & errors).' }),
           feedTable, UI.tbc('TOCO manual override: the two scenarios to be defined by the business (HLD open point 9)')] },
         { id: 'dn', body: [UI.p('When a TOCO debit note is validated in Non-PO Invoicing, a provision is created with the DN number in its URN; when the DN reversal is validated, the provision is reversed. Month-end activity, driven by the TOCO debit note master.', { muted: true }), dn,
           UI.tbc('TOCO debit-note provisions: rules, master and the inputs from invoicing (HLD open point 8)')] },
