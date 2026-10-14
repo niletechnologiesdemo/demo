@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="inv-data.js"></script>
+<script>
+(function () {
+  // One report from the catalogue (INV.reports in inv-data.js), opened from Reports (inv-20)
+  var q = Page.param('r'), rep = INV.report(q || 'pending'), body;
+  var base = { id: 'inv-25', roleId: 'apm', navKey: 'inv-20', keep: ['r'] };
+  if (!rep) {
+    base.html = UI.page({ title: 'Report', crumb: '<a data-go="inv-20">Reports</a>' }) +
+      UI.alert({ tone: 'warn', title: 'No report ' + UI.esc(q) + '.', text: 'Open a report from the reports list.', actions: [UI.textlink({ label: 'Reports', icon: 'arrowRight', go: 'inv-20' })] });
+    Page.render(base); return;
+  }
+  if (rep.id === 'portal-erp') body = UI.table({ dense: true, columns: [{ key: 'd', label: 'Document' }, { key: 'src', label: 'Created by' }, { key: 'p', label: 'On portal' }, { key: 'e', label: 'In Oracle' }, { key: 'r', label: 'Result' }],
+    rows: [{ d: 'PM invoice PM-INV-88118845 (IND/26/AUG/77120)', src: 'Portal', p: 'Rs 6,59,160.00', e: 'Rs 6,59,160.00', r: UI.result('pass', 'Matched') },
+      { d: 'AP invoice AP-98118702 (NXD/26-27/2291)', src: 'Portal', p: 'Rs 33,51,200.00', e: 'Rs 33,51,200.00', r: UI.result('pass', 'Matched') },
+      { d: 'AP invoice 98112047 (Vertex Call Solutions)', src: 'Direct in Oracle', p: 'Not on portal', e: 'Rs 4,12,000.00', r: UI.result('warn', 'ERP only') },
+      { d: 'NPO-2627-004863 (SKP/26-27/121)', src: 'Portal', p: 'Rs 41,890.00', e: 'Rejected at import', r: UI.result('fail', 'Mismatch') }] });
+  else if (rep.id === 'force') body = UI.table({ dense: true, columns: [{ key: 'r', label: 'Invoice' }, { key: 'c', label: 'Category' }, { key: 'a', label: 'Amount (Rs)', num: true }, { key: 'e', label: 'Evidence' }, { key: 'b', label: 'Force approved by' }],
+    rows: [{ r: 'NPO-2627-004826', c: 'CAF penalty', a: '16,000.00', e: 'General NFA General/6102/279911', b: 'B0PHD307, 26-Sep' }, { r: 'NPO-2627-004853', c: 'Group company', a: '33,51,200.00', e: 'Approval mail, CFO office', b: 'B0PHD311, 29-Sep' }, { r: 'NPO-2627-004836', c: 'GST NC debit note', a: '-4,016.00', e: 'Tax team approval (DMS)', b: 'B0PHD307, 28-Sep' }] });
+  else if (rep.id === 'bypass') body = UI.table({ dense: true, columns: [{ key: 'r', label: 'Invoice' }, { key: 'l', label: 'Line' }, { key: 'e', label: 'PM error (first attempt, flag N)' }, { key: 'y', label: 'Second attempt (flag Y)' }],
+    rows: [{ r: 'NPO-2627-004640 &middot; IND/26/AUG/77120', l: '12', e: 'Potential Duplicate Invoices', y: UI.result('pass', 'Booked') }, { r: 'NPO-2627-004521 &middot; SGIS/26-27/0377', l: '3', e: 'Duplicate Invoices', y: UI.result('pass', 'Booked') }] });
+  else if (rep.id === 'rejected') body = UI.table({ dense: true, columns: [{ key: 'r', label: 'Invoice' }, { key: 'v', label: 'Vendor' }, { key: 'c', label: 'Category' }, { key: 'w', label: 'Reason' }, { key: 'd', label: 'Rejected' }],
+    rows: [{ r: 'NPO-2627-004610', v: 'Shree Ganesh Infra', c: 'Rush', w: 'Duplicate of NPO-2627-004598', d: '15-Sep-2026' }, { r: 'NPO-2627-004577', v: 'Metro Fibre Links', c: 'Bandwidth Domestic', w: 'Invoice older than one year, not in GSTR-2A / 2B', d: '11-Sep-2026' }, { r: 'NPO-2627-004541', v: 'R K Estates', c: 'LL_GST', w: 'GST already claimed on voucher 702214', d: '08-Sep-2026' }] });
+  else body = UI.table({ dense: true, columns: [{ key: 'r', label: 'Invoice' }, { key: 'v', label: 'Vendor / circle' }, { key: 'c', label: 'Category' }, { key: 'a', label: 'Amount (Rs)', num: true }, { key: 's', label: 'Status' }, { key: 'o', label: 'Owner / SLA' }],
+    rows: INV.invoices.filter(function (r) { return r.ref && !/Paid|Rejected/.test(r.status); }).slice(0, 8).map(function (r) { return { r: '<a class="k-link" href="' + INV.detail(r.ref) + '">' + r.ref + '</a>', v: UI.esc(r.vshort) + '<div class="k-muted k-small">' + UI.esc(r.circle) + '</div>', c: UI.esc(r.c.name), a: INV.rs(r.total, r.cur), s: INV.status(r.status), o: UI.esc(r.owner || '-') + (r.sla ? '<div class="k-muted k-small">' + UI.esc(r.sla) + '</div>' : '') }; }) });
+
+  base.html = UI.page({ title: rep.name, crumb: '<a data-go="inv-20">Reports</a> &rsaquo; ' + UI.esc(rep.name), sub: UI.esc(rep.text) + ' &middot; For: ' + UI.esc(rep.users) }) +
+    UI.filters({ items: [UI.field({ label: 'From', type: 'date', value: '01/09/2026' }), UI.field({ label: 'To', type: 'date', value: '30/09/2026' }), UI.field({ label: 'Circle', type: 'select', value: 'All in scope' }), UI.field({ label: 'Category', type: 'select', value: 'All' })], actions: [UI.button({ label: 'Generate report', variant: 'primary', toast: 'Report generated' })] }) + body;
+  Page.render(base);
+})();
+</script>
+</body>
+</html>

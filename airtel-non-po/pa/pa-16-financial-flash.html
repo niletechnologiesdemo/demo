@@ -12,35 +12,20 @@
 <script src="pa-data.js"></script>
 <script>
 (function () {
-  var S = Page.state(), drill = S === 'drill';
-  // Admin and facilities (security services, GL 4664060) is built from pa-data.js: Sep-26 provisions, and the Oracle auto-reversal on 01-Sep of the Aug-26 reversal-mode provisions
-  var sec = PA.provisions.filter(function (p) { return p.activity.id === 'ACT-0001'; });
-  var newProv = sec.filter(function (p) { return p.month === 'SEP-26'; }), autoRev = sec.filter(function (p) { return p.month === 'AUG-26' && p.gl && p.gl.posted; });
-  var lk = function (list) { return list.reduce(function (a, p) { return a + p.amount; }, 0) / 1e5; };
-  var lines = [
-    { l: 'Network operating expenses', g: '4282xxx', tb: 41250.6, prov: 196.4, rev: -22.9, adj: 0 },
-    { l: 'Site rent and energy (TOCO)', g: '4271xxx / 4232xxx', tb: 38410.2, prov: 4682.3, rev: 0, adj: -14.6 },
-    { l: 'Customer service and call centre', g: '4652xxx', tb: 6120.8, prov: 21.4, rev: -18.8, adj: 0 },
-    { l: 'Admin and facilities', g: '4664xxx', tb: 2988.1, prov: lk(newProv), rev: -lk(autoRev), adj: 0 },
-    { l: 'Legal and professional', g: '4671xxx', tb: 1104.3, prov: 3.5, rev: 0, adj: -3.0 },
-    { l: 'IT and AMC (incl. allocations)', g: '4282037', tb: 5502.0, prov: 96.0, rev: 0, adj: 0 }
-  ];
-  var rows = lines.map(function (r) { var tot = r.tb + r.prov + r.rev + r.adj; return { l: (drill && r.l.indexOf('Admin') === 0 ? '<b>' : '') + r.l + '<div class="k-muted k-small">' + r.g + '</div>', tb: UI.inr(r.tb, 2), prov: UI.inr(r.prov, 2), rev: UI.inr(r.rev, 2), adj: UI.inr(r.adj, 2), tot: UI.inr(tot, 2), _go: 'pa-16?state=drill', _sel: drill && r.l.indexOf('Admin') === 0 }; });
-  var tot = lines.reduce(function (a, r) { return { tb: a.tb + r.tb, prov: a.prov + r.prov, rev: a.rev + r.rev, adj: a.adj + r.adj }; }, { tb: 0, prov: 0, rev: 0, adj: 0 });
-  var table = UI.table({ dense: true, pager: false, columns: [{ key: 'l', label: 'FSG line' }, { key: 'tb', label: 'Aug-26 closing TB (Rs lakh)', num: true }, { key: 'prov', label: '+ Provisions', num: true }, { key: 'rev', label: '- Reversals', num: true }, { key: 'adj', label: '+/- Adjustments', num: true }, { key: 'tot', label: 'Running (Rs lakh)', num: true }],
-    rows: rows, foot: { l: 'Total operating expenses', tb: UI.inr(tot.tb, 2), prov: UI.inr(tot.prov, 2), rev: UI.inr(tot.rev, 2), adj: UI.inr(tot.adj, 2), tot: UI.inr(tot.tb + tot.prov + tot.rev + tot.adj, 2) } });
-  var drillT = drill ? UI.section({ title: 'Admin and facilities - platform entries this month', body: [UI.table({ dense: true, pager: false, columns: [{ key: 'u', label: 'URN or reference' }, { key: 't', label: 'Entry' }, { key: 'a', label: 'Rs lakh', num: true }, { key: 's', label: 'Status' }],
-    rows: newProv.map(function (p) { return { u: '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key) + '</a><div class="k-muted k-small">BU ' + p.bu + '</div>', t: 'Provision ' + p.month, a: UI.inr(p.amount / 1e5, 2), s: UI.status(p.status, PA.statusTone(p.status)) }; })
-      .concat(autoRev.map(function (p) { return { u: '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>', t: 'Auto-reversal in Oracle, 01-Sep-2026 (reversal mode)', a: UI.inr(-p.amount / 1e5, 2), s: UI.status('Reversed in Oracle', 'grey') }; })),
-    foot: { u: 'Admin and facilities', a: UI.inr(lk(newProv) - lk(autoRev), 2) } })] }) : '';
+  // Lines and their entries come from pa-data.js (PA.flash). Selecting a line opens its detail page (pa-24) with the entries behind it.
+  var lines = PA.flash, f = function (n) { return UI.inr(n, 2); };
+  var tot = lines.reduce(function (a, r) { return { tb: a.tb + r.tb, prov: a.prov + r.prov, rev: a.rev + r.rev, adj: a.adj + r.adj, run: a.run + r.run }; }, { tb: 0, prov: 0, rev: 0, adj: 0, run: 0 });
+  var table = UI.table({ dense: true, pager: false, columns: [{ key: 'l', label: 'FSG line' }, { key: 'tb', label: 'Aug-26 closing TB (Rs lakh)', num: true }, { key: 'prov', label: '+ Provisions', num: true }, { key: 'rev', label: '- Reversals', num: true }, { key: 'adj', label: '+/- Adjustments', num: true }, { key: 'tot', label: 'Running (Rs lakh)', num: true }, { key: '_acts', label: '' }],
+    rows: lines.map(function (r) { return { l: '<a class="k-link" data-go="pa-24?line=' + r.id + '">' + UI.esc(r.l) + '</a><div class="k-muted k-small">' + r.g + '</div>', tb: f(r.tb), prov: f(r.prov), rev: f(r.rev), adj: f(r.adj), tot: f(r.run), _go: 'pa-24?line=' + r.id,
+      _acts: [{ icon: 'eye', label: 'Open the line', go: 'pa-24?line=' + r.id }] }; }),
+    foot: { l: 'Total operating expenses', tb: f(tot.tb), prov: f(tot.prov), rev: f(tot.rev), adj: f(tot.adj), tot: f(tot.run) } });
 
   Page.render({
     id: 'pa-16', user: 'B0BFN017', role: 'Business finance', viewAs: 'Business finance',
-    states: [{ id: 'drill', label: 'Drill-down to URN' }],
     html: UI.page({ title: 'Financial', accent: 'Flash', info: 'Prior month trial balance and FSG replicated from Oracle daily, with platform entries overlaid', sub: 'See the running effect of this month\'s provisions, reversals and adjustments on profit and loss before month-end close.' }) +
       UI.kv({ cols: 4, items: [['Base', 'Aug-26 closing trial balance and FSG'], ['Refreshed', '01-Oct-2026 05:30 from Oracle'], ['Scope', 'BAL &middot; Mobile, all circles'], ['Overlay', 'Your BUs\' platform entries for Sep-26']] }) + '<div class="k-gap"></div>' +
       UI.filters({ items: [UI.field({ label: 'Entity', type: 'select', value: 'BAL' }), UI.field({ label: 'Segment', type: 'select', value: 'Mobile' }), UI.field({ label: 'Circle', type: 'select', value: 'All' }), UI.field({ label: 'View', type: 'select', value: 'FSG - operating expenses' })] }) +
-      table + drillT + UI.p('Select a line to see the provisions, reversals and adjustments behind it, down to each URN.', { muted: true, small: true })
+      table + UI.p('Select a line to open the provisions, reversals and adjustments behind it, down to each URN.', { muted: true, small: true })
   });
 })();
 </script>

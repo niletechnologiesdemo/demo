@@ -310,10 +310,27 @@ window.INV = (function () {
     { no: '688120', lease: 'LSE-MH-0291', period: 'Jul-2026', amount: 12500, paid: 'Paid 03-Jul-2026', gst: 'Not claimed - lease terminated', claimed: false, terminated: true }
   ];
 
+  // report catalogue (inv-20); each report opens on its own page (inv-25)
+  var reports = [
+    ['pending', 'Pending invoices', 'Invoices not yet completed, by stage and owner', 'AP team, managers'],
+    ['rush', 'Rush invoices', 'Rush invoices tracked against the same day / T+1 SLA', 'AP team, Finance'],
+    ['ageing', 'Invoice ageing', 'Age of open invoices by stage, category and circle', 'AP team, Finance'],
+    ['rejected', 'Rejected invoices', 'Rejected invoices with reasons', 'AP team, circles, vendors'],
+    ['status', 'Processing status', 'Processed, hold, rejected, in-process, pending with approver, approved, validated and paid', 'Airtel users; vendors their own'],
+    ['gl', 'GL actualization status', 'Booking and actualization status of submitted invoices', 'Finance'],
+    ['errors', 'AP error report (hourly)', 'Oracle interface rejections after each hourly run, for root-cause analysis and reprocessing', 'AP team, IT team'],
+    ['portal-erp', 'Portal vs ERP reconciliation', 'Invoices booked by the portal against all Oracle invoices, including direct invoices', 'AP team, P2P, IT'],
+    ['force', 'Force approvals and evidence', 'Every force approval with its NFA or approval email', 'Audit, Finance'],
+    ['bypass', 'Duplicate bypass log', 'Central ToCo invoices re-attempted with the validation bypass flag Y', 'Audit, AP team'],
+    ['locator', 'Locator exceptions', 'Lines with locator not found or inactive and the invoices withheld', 'PHD, circles, P2P'],
+    ['gstnc', 'GST non-compliance debit notes', 'Debit notes and reversals raised from the Tax team files', 'Tax team']
+  ].map(function (r) { return { id: r[0], name: r[1], text: r[2], users: r[3] }; });
+
   return {
     today: today, FAM: FAM, cats: cats, cat: cat, circles: circles, vendors: vendors, invoices: invoices, find: find, byInv: byInv, issuedRef: issuedRef,
     STATUS_INFO: STATUS_INFO, LIFECYCLE: LIFECYCLE, BUCKETS: BUCKETS, PARTNER_BUCKETS: PARTNER_BUCKETS, RFI_REASONS: RFI_REASONS, PARTNER_CATS: PARTNER_CATS, canSubmit: canSubmit, REVIEW_CHECKS: REVIEW_CHECKS, partnerCode: partnerCode, railCounts: railCounts, tone: tone, status: status, timelineRows: timelineRows, buckets: buckets,
     checklist: checklist, leases: leases, vouchers: vouchers,
+    reports: reports, report: function (id) { return reports.filter(function (r) { return r.id === id; })[0]; },
     mine: function (code) { return invoices.filter(function (r) { return r.v === code; }); },
     rs: function (n, cur) { return (cur && cur !== 'INR' ? cur + ' ' : '') + UI.inr(n, 2); },
     // the role a page is seen as (wireframe bar choice, else the page default role id)

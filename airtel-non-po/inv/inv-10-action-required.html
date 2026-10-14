@@ -18,11 +18,12 @@
   var items = partner ? INV.mine(INV.partnerCode(R)).filter(function (r) { return r.status === 'RFI'; })
     : [INV.find('NPO-2627-004790'), INV.find('NPO-2627-004733'), INV.find('NPO-2627-004847'), INV.find('NPO-2627-004702')].filter(function (r) { return rid !== 'circle' || r.circle === 'UP East'; });
   if (S === 'empty') items = [];
-  var rfi = INV.find('NPO-2627-004790');
+  // the invoice being answered comes from ?ref= (the row's Respond action); default is the sample RFI
+  var rfi = (function (x) { return x && x.status === 'RFI' ? x : null; })(INV.find(Page.param('ref'))) || INV.find('NPO-2627-004790');
 
   // RFI (as in the PO portal): the PHD team gives a reason from a list and comments; the submitter can only re-upload documents
   var what = function (r) {
-    if (r.status === 'RFI') return { reason: r.reason, note: r.rfiNote || 'Re-upload the invoice copy or supporting documents', go: 'inv-10?state=respond', act: 'Respond' };
+    if (r.status === 'RFI') return { reason: r.reason, note: r.rfiNote || 'Re-upload the invoice copy or supporting documents', go: 'inv-10?state=respond&ref=' + encodeURIComponent(r.ref), act: 'Respond' };
     return { reason: 'On hold - locator', note: 'Arrange or activate the locator, then re-trigger the invoice', go: 'inv-15', act: 'Fix locator' };
   };
   var list = UI.table({ dense: true, columns: [{ key: 'ref', label: 'Reference no.' }, { key: 'inv', label: 'Invoice' }, { key: 'reason', label: 'Reason' }, { key: 'note', label: 'Comments' }, { key: 'on', label: 'Since', nowrap: true }, { key: '_acts', label: '' }],
@@ -36,21 +37,22 @@
       ['Reason', UI.esc(rfi.reason)], ['Requested by', UI.esc(rfi.rfiBy) + ' on ' + rfi.on]] }),
       UI.list({ items: [{ icon: 'chat', title: UI.esc(rfi.rfiBy) + ' <span class="k-muted k-small">(comments)</span>', text: UI.esc(rfi.rfiNote), meta: '26-Sep 14:20' }] })] }),
     UI.section({ title: 'Your response', body: [
-      UI.upload({ label: 'Invoice copy (PDF)', hint: 'Replace the copy you submitted', files: [{ name: 'SGIS_26-27_0409_rev1.pdf', meta: '402 KB', status: UI.status('Read by OCR', 'ok') }] }),
+      UI.upload({ label: 'Invoice copy (PDF)', hint: 'Replace the copy you submitted', files: [{ name: rfi.inv.replace(/\//g, '_') + '_rev1.pdf', meta: '402 KB', status: UI.status('Read by OCR', 'ok') }] }),
       UI.upload({ label: 'Supporting documents', files: [] }),
-      UI.alert({ tone: 'ok', text: 'Read by OCR: invoice number, date and amounts match your submission. The PHD team checks the signature and stamp again.' }),
+      UI.alert({ tone: 'ok', text: 'Read by OCR: invoice number, date and amounts match your submission. ' + (/Signature/.test(rfi.reason) ? 'The PHD team checks the signature and stamp again.' : 'The ' + UI.esc(rfi.rfiBy) + ' checks the documents again.') }),
       UI.note({ text: 'Invoice details cannot be changed in an RFI response; only the invoice copy and supporting documents can be uploaded again. The new copy is read by OCR and the checks run again.' })] })],
-    right: [UI.pdf({ selected: 'Corrected invoice copy', count: 'Page 1 of 1', doc: UI.docMock({ title: 'TAX INVOICE', qr: true, stamp: 'SGIS', fields: [['Invoice No', rfi.inv], ['Date', rfi.date], ['Supplier GSTIN', rfi.gstin], ['Bill to', 'Bharti Airtel Ltd, UP East'], ['Period', '01-Aug-2026 to 31-Aug-2026']],
-      lines: [['Tower rental - 4 sites', '997212', '4', '24,050.00', '96,200.00']], totals: [['Taxable', '96,200.00'], ['CGST 9%', '8,658.00'], ['SGST 9%', '8,658.00'], ['Total', '1,13,516.00']] }) }),
+    right: [UI.pdf({ selected: 'Corrected invoice copy', count: 'Page 1 of 1', doc: UI.docMock({ title: 'TAX INVOICE', qr: true, stamp: 'SGIS', fields: [['Invoice No', rfi.inv], ['Date', rfi.date], ['Supplier GSTIN', rfi.gstin], ['Bill to', 'Bharti Airtel Ltd, ' + rfi.circle], ['Period', rfi.from + ' to ' + rfi.to]],
+      lines: [[rfi.lines ? 'Tower rental - ' + rfi.lines + ' sites' : UI.esc(rfi.c.name) + ' charges', '997212', String(rfi.lines || 1), UI.inr(rfi.base / (rfi.lines || 1), 2), UI.inr(rfi.base, 2)]],
+      totals: [['Taxable', UI.inr(rfi.base, 2)]].concat(rfi.cgst ? [['CGST 9%', UI.inr(rfi.cgst, 2)], ['SGST 9%', UI.inr(rfi.sgst, 2)]] : [['IGST 18%', UI.inr(rfi.igstAmt, 2)]]).concat([['Total', UI.inr(rfi.total, 2)]]) }) }),
       '<div class="k-review-actions">' + UI.btns([UI.button({ label: 'Cancel', variant: 'text', go: 'inv-10' }), UI.button({ label: 'Resubmit', variant: 'primary', state: 'resubmitted' })], { end: true }) + '</div>'] }) : '';
 
   var done = UI.modal({ id: 'done', open: sent, title: 'Invoice', accent: 'Resubmitted', size: 'narrow', body: [UI.kv({ cols: 2, items: [['Reference', rfi.ref], ['Status', INV.status('Under Validation')], ['Notified', UI.esc(rfi.rfiBy)]] })],
     foot: [UI.button({ label: 'Back to list', go: 'inv-10' }), UI.button({ label: 'Track invoice', variant: 'primary', go: 'inv-09' })] });
 
   Page.render({
-    id: 'inv-10', roleId: 'vendor', stat: 'action',
+    id: 'inv-10', roleId: 'vendor', stat: 'action', keep: ['ref'],
     states: [{ id: 'respond', label: 'Responding to an RFI' }, { id: 'resubmitted', label: 'Resubmitted' }, { id: 'empty', label: 'Nothing to do' }],
-    html: UI.page({ title: 'Action', accent: 'Required', sub: partner ? 'Invoices returned to you for more information. Upload a corrected invoice copy or supporting documents and resubmit; the invoice keeps its reference number.' : 'Invoices you submitted that were returned for information, and locator issues in your circle.' }) +
+    html: (respond ? UI.page({ title: 'Respond', accent: 'to RFI', crumb: '<a data-go="inv-10">Action required</a> &rsaquo; ' + rfi.ref, sub: 'Upload a corrected invoice copy or supporting documents and resubmit; the invoice keeps its reference number.' }) : UI.page({ title: 'Action', accent: 'Required', sub: partner ? 'Invoices returned to you for more information. Upload a corrected invoice copy or supporting documents and resubmit; the invoice keeps its reference number.' : 'Invoices you submitted that were returned for information, and locator issues in your circle.' })) +
       (respond ? form : list) + done
   });
 })();

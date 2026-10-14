@@ -361,8 +361,45 @@ window.PA = (function () {
     r.period = r.from ? r.from + ' to ' + r.to : 'Not on invoice';
   });
 
+  /* ------------------------------------------------ financial flash (pa-16 and its line detail pa-24): Aug-26 closing trial balance by FSG line
+     (Rs lakh) with this month's platform entries overlaid. Admin and facilities is built from the security-services provisions:
+     the Sep-26 provisions and the Oracle auto-reversal on 01-Sep of the Aug-26 reversal-mode provisions. */
+  var sec = provisions.filter(function (p) { return p.act === 'ACT-0001'; });
+  var secEntries = sec.filter(function (p) { return p.month === 'SEP-26'; }).map(function (p) { return { p: p, entry: 'Provision ' + cap(p.month), amt: p.amount / 1e5, status: p.status }; })
+    .concat(sec.filter(function (p) { return p.month === 'AUG-26' && p.gl && p.gl.posted; }).map(function (p) { return { p: p, entry: 'Auto-reversal in Oracle, 01-Sep-2026 (reversal mode)', amt: -p.amount / 1e5, status: 'Reversed in Oracle', rev: true }; }));
+  var lk = function (list) { return list.reduce(function (a, e) { return a + e.amt; }, 0); };
+  var flash = [
+    { id: 'network', l: 'Network operating expenses', g: '4282xxx', tb: 41250.6, prov: 196.4, rev: -22.9, adj: 0 },
+    { id: 'toco', l: 'Site rent and energy (TOCO)', g: '4271xxx / 4232xxx', tb: 38410.2, prov: 4682.3, rev: 0, adj: -14.6 },
+    { id: 'cc', l: 'Customer service and call centre', g: '4652xxx', tb: 6120.8, prov: 21.4, rev: -18.8, adj: 0 },
+    { id: 'admin', l: 'Admin and facilities', g: '4664xxx', tb: 2988.1, prov: lk(secEntries.filter(function (e) { return !e.rev; })), rev: lk(secEntries.filter(function (e) { return e.rev; })), adj: 0, entries: secEntries },
+    { id: 'legal', l: 'Legal and professional', g: '4671xxx', tb: 1104.3, prov: 3.5, rev: 0, adj: -3.0 },
+    { id: 'it', l: 'IT and AMC (incl. allocations)', g: '4282037', tb: 5502.0, prov: 96.0, rev: 0, adj: 0 }
+  ];
+  flash.forEach(function (x) { x.run = x.tb + x.prov + x.rev + x.adj; });
+
+  /* ------------------------------------------------ reports (pa-18 lists them; pa-25 shows one): id, name, purpose, users (HLD Table 24, 7.3) */
+  var reports = [
+    ['open', 'Open provision report', 'Open and partially actualized provisions with remaining balance', 'GPA, business users'],
+    ['closed', 'Closed provision report', 'Closed, reversed and force-closed provisions', 'GPA, Finance'],
+    ['ageing', 'Ageing report', 'Pending provisions by BU, vendor and month, with escalation level and 0-30 / 31-60 / 61-90 / over 90 buckets', 'GPA, managers, CFR'],
+    ['pva', 'Provision vs actual mapping', 'Month\'s knock-off of invoices against provisions, by segment (B2B, B2C, TOCO); for audit sampling', 'GPA, Audit'],
+    ['dept', 'Department summary', 'Provisions by department', 'Business finance'],
+    ['vendor', 'Vendor summary', 'Provisions by vendor', 'Business finance, GPA'],
+    ['trend', 'Monthly trend', 'Provision and actualization trend by month', 'Finance'],
+    ['audit', 'Audit trail', 'Every action, approval, override, force match and posting with user and time', 'Audit'],
+    ['sugg', 'Matching suggestions', 'Nearest-match candidates with force match and force closure options', 'GPA, P2P'],
+    ['unmatched', 'Unmatched invoices', 'Invoices not matched to any provision', 'GPA, P2P'],
+    ['pminfra', 'Exception: PM Infra invoices', 'Invoices uploaded that failed validation or are not approved', 'P2P, GPA'],
+    ['lease', 'Exception: leases on hold', 'Leases scheduled for payment but on hold', 'P2P, GPA'],
+    ['excess', 'Excess and under provision', 'Provision vs invoice match: settled, open, excess and under-provision (ERP report enhancement)', 'GPA, Finance'],
+    ['nearest', 'Nearest match value', 'Nearest match value between provision and actualization, by URN (ERP report enhancement)', 'GPA'],
+    ['portal-erp', 'Portal vs ERP reconciliation', 'ERP invoice and journal data created by the portal against all ERP data, including direct invoices', 'GPA, P2P, IT']
+  ].map(function (r) { return { id: r[0], name: r[1], text: r[2], users: r[3] }; });
+
   return {
-    today: '01-Oct-2026', activities: activities, scenarios: SCEN, vendors: vendors, bus: BUS, provisions: provisions, invoices: invoices, requests: requests, pos: pos, prepaid: prepaid,
+    today: '01-Oct-2026', flash: flash, reports: reports, report: function (id) { return reports.filter(function (r) { return r.id === id; })[0]; },
+    activities: activities, scenarios: SCEN, vendors: vendors, bus: BUS, provisions: provisions, invoices: invoices, requests: requests, pos: pos, prepaid: prepaid,
     urn: urn, HOW: HOW, ESC: ESC, parse: parse, fmt: fmt, act: act, invoice: invoice,
     statusTone: function (s) { return s === 'Closed' ? 'ok' : (s === 'Draft' || s === 'Reversed' || s === 'Force closed' || s === 'Cancelled') ? 'grey' : ''; },
     find: function (u) { return provisions.filter(function (p) { return p.urn === u || p.ref === u; })[0]; },

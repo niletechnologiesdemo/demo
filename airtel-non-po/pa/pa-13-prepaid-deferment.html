@@ -12,8 +12,8 @@
 <script src="pa-data.js"></script>
 <script>
 (function () {
-  // Schedules come from pa-data.js (PA.prepaid). Deferment parameters and the prepaid GL quality plan are kept on Masters & configuration.
-  var S = Page.state(), rs = function (n) { return 'Rs ' + UI.inr(n, 2); };
+  // Schedules come from pa-data.js (PA.prepaid). Each schedule opens on its own page (pa-23). Deferment parameters and the
+  // prepaid GL quality plan are kept on Masters & configuration.
   var all = PA.prepaid, sum = function (k) { return all.reduce(function (a, s) { return a + s[k]; }, 0); };
   var lakh = function (n) { return 'Rs ' + UI.inr(n / 1e5, 2) + ' L'; };
   var source = function (s) {
@@ -22,45 +22,18 @@
     return (r.src === 'Lease' ? 'Lease payment ' : 'Invoice ') + '<a class="k-link" data-go="pa-12?tab=mw:excess">' + UI.esc(s.inv) + '</a>';
   };
   var table = UI.table({ dense: true, pager: false, columns: [{ key: 'id', label: 'Schedule', nowrap: true }, { key: 'src', label: 'Source' }, { key: 'gl', label: 'Opex GL / BU' }, { key: 'life', label: 'Life' },
-      { key: 'total', label: 'Total (Rs)', num: true, money: true }, { key: 'cur', label: 'Current (Rs)', num: true, money: true }, { key: 'nc', label: 'Non-current (Rs)', num: true, money: true }, { key: 'rel', label: 'Released (Rs)', num: true, money: true }],
-    rows: all.map(function (s) { return { id: '<a class="k-link" data-go="pa-13?state=detail&id=' + s.id + '">' + s.id + '</a>', src: source(s) + '<div class="k-muted k-small">' + UI.esc(s.text) + '</div>', gl: s.gl + '<div class="k-muted k-small">BU ' + s.bu + '</div>',
-      life: s.from + ' to ' + s.to, total: s.total, cur: s.cur, nc: s.nc, rel: s.rel, _sel: S === 'detail' && s.id === (Page.param('id') || all[0].id) }; }),
+      { key: 'total', label: 'Total (Rs)', num: true, money: true }, { key: 'cur', label: 'Current (Rs)', num: true, money: true }, { key: 'nc', label: 'Non-current (Rs)', num: true, money: true }, { key: 'rel', label: 'Released (Rs)', num: true, money: true }, { key: '_acts', label: '' }],
+    rows: all.map(function (s) { return { id: '<a class="k-link" data-go="pa-23?id=' + s.id + '">' + s.id + '</a>', src: source(s) + '<div class="k-muted k-small">' + UI.esc(s.text) + '</div>', gl: s.gl + '<div class="k-muted k-small">BU ' + s.bu + '</div>',
+      life: s.from + ' to ' + s.to, total: s.total, cur: s.cur, nc: s.nc, rel: s.rel, _acts: [{ icon: 'eye', label: 'Open schedule', go: 'pa-23?id=' + s.id }] }; }),
     foot: { id: 'Total (' + all.length + ')', total: sum('total'), cur: sum('cur'), nc: sum('nc'), rel: sum('rel') } });
 
-  // accounting steps for each schedule (HLD 5.5, Tables 19 and 20; BRD scenario 4)
-  var STEPS = {
-    'PPD-26-0418': [['Invoice booked in AP, 24-Sep-2026 (Apr-26 to Mar-27)', 'Expense Dr / Vendor Cr', 1255000, 'Booked in AP'],
-      ['Apr-26 to Aug-26 knocked off against their 5 provisions', 'URNs closed; no journal (reversal mode)', 522915, 'Done'],
-      ['Move Sep-26 to Mar-27 to prepaid', 'Prepaid current Dr / Expense Cr', 732085, 'Posted'], ['Release for Sep-26', 'Expense Dr / Prepaid current Cr', 104583, 'Posted'],
-      ['Each month, Oct-26 to Mar-27', 'Expense Dr / Prepaid current Cr (Mar-27: Rs 1,04,587.00)', 104583, 'Scheduled']],
-    'PPD-26-0402': [['Invoice booked in AP, 08-Sep-2026', 'Expense Dr / Vendor Cr', 24000, 'Booked in AP'], ['Move to prepaid', 'Prepaid current Dr / Expense Cr', 24000, 'Posted'],
-      ['Release for Sep-26', 'Expense Dr / Prepaid current Cr', 1000, 'Posted'], ['Current / non-current split', 'Prepaid non-current Dr / Prepaid current Cr', 11000, 'Posted'],
-      ['Each following month', 'Expense Dr / Prepaid current Cr; non-current moved to current as it falls due', 1000, 'Scheduled']],
-    'PPD-26-0377': [['Quarterly rent paid in the PM lease module, 28-Sep-2026', 'Expense Dr / Bank Cr', 55500, 'Paid'], ['Move to prepaid', 'Prepaid current Dr / Expense Cr', 55500, 'Posted'],
-      ['Release for Oct-26, Nov-26 and Dec-26', 'Expense Dr / Prepaid current Cr', 18500, 'Scheduled']],
-    'PPD-26-0201': [['Scenario 4 provision for Aug-26', 'Expense Dr / Mobile liability Cr', 3600000, 'Posted'], ['15 days of the deferred 72% expensed in Aug-26', 'Stays in expense', 37029, 'Posted'],
-      ['Rest of the deferred 72% to prepaid', 'Current prepaid Dr 8,88,686.00 / Non-current prepaid Dr 16,66,285.00 / Expense Cr', 2554971, 'Posted'],
-      ['Release for Sep-26', 'Expense Dr / Current prepaid Cr', 74057, 'Posted'], ['Non-current falling due in Sep-27', 'Current prepaid Dr / Non-current prepaid Cr', 74057, 'Posted'],
-      ['Each following month', 'Expense Dr / Current prepaid Cr; non-current moved to current as it falls due', 74057, 'Scheduled']]
-  };
-  var s = PA.schedule(Page.param('id')) || all[0];
-  var detail = S === 'detail' ? UI.section({ title: s.id + ' · ' + s.text, body: [
-    UI.kv({ cols: 4, items: [['Source', source(s)], ['Opex GL / BU', s.gl + ' &middot; BU ' + s.bu], ['Life', s.from + ' to ' + s.to], ['Monthly release', rs(s.monthly)],
-      ['Total', rs(s.total)], ['Current (next 12 months)', rs(s.cur)], ['Non-current', rs(s.nc)], ['Released to date', rs(s.rel)]] }),
-    '<div class="k-gap"></div><table class="k-je"><thead><tr><th>Step</th><th>Entry</th><th class="num">Amount (Rs)</th><th>Status</th></tr></thead><tbody>' +
-      STEPS[s.id].map(function (x) { return '<tr><td>' + UI.esc(x[0]) + '</td><td>' + UI.esc(x[1]) + '</td><td class="num">' + UI.inr(x[2], 2) + '</td><td>' + x[3] + '</td></tr>'; }).join('') + '</tbody></table>',
-    s.id === 'PPD-26-0201' ? UI.tbc('Scenario 4: 15 days expensed at once, the life convention, and the GL for DG promoter deferment (HLD open point 4)') : '',
-    s.id === 'PPD-26-0377' ? UI.tbc('Advance lease payments: how the monthly prepaid release settles the DARTS provision for the same site') : '',
-    s.id === 'PPD-26-0418' ? UI.tbc('Multi-month invoice: split by days or by months (HLD open point 6)') : ''] }) : '';
-
   Page.render({
-    id: 'pa-13', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst', keep: ['id'],
-    states: [{ id: 'detail', label: 'Schedule detail' }],
+    id: 'pa-13', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst',
     html: UI.page({ title: 'Prepaid', accent: 'Register', info: 'Future service periods on an invoice, advance payments and scenario 4 deferments are held as prepaid and released monthly',
         sub: 'Prepaid applies only to Opex GL codes in the GL quality plan. Due within 12 months is current; the rest is non-current and moves to current month by month. The GL quality plan and the deferment parameters are kept on <a class="k-link" data-go="pa-19?tab=m:gl">Masters &amp; configuration</a>.' }) +
       UI.tbc('Prepaid entries: posted by the platform, by the Oracle prepaid module, or both (HLD open point 3)') +
       UI.kpis({ cols: 4, items: [{ value: String(all.length), label: 'Schedules' }, { value: lakh(sum('cur')), label: 'Current prepaid' }, { value: lakh(sum('nc')), label: 'Non-current prepaid' }, { value: lakh(sum('rel')), label: 'Released to date' }] }) +
-      table + detail
+      table + UI.p('Open a schedule to see its release plan, its accounting entries and the records it came from.', { muted: true, small: true })
   });
 })();
 </script>

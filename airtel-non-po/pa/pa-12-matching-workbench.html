@@ -57,21 +57,26 @@
   var nearT = table(near.map(function (r) {
     var c = candidates(r).filter(function (x) { return x.p.open; });
     return row(r, UI.esc(r.text) + c.map(function (x) { return '<div class="k-small">Candidate ' + x.rank + ': ' + urn(x.p) + ' &middot; balance ' + rs(x.p.balance) + '</div>'; }).join(''),
-      [{ icon: 'link', label: 'Force match', go: 'pa-12?state=force&inv=' + encodeURIComponent(r.no) + '&tab=mw:nearest' }]);
+      [{ icon: 'link', label: 'Force match', modal: 'force-' + near.indexOf(r) }]);
   }));
   var WHY = { 'VCS/26/1176': 'Invoice is for June volumes per the vendor covering letter; no service period printed',
     'LEX/26/0187': 'Booked with item code LEGAL009 (legal advisory); the service is the July retainer in BU 101',
     'SHK/2026/551': 'Shakti Security Services is a second vendor code of SecureOne (same PAN); the invoice is for August guarding in BU 121' };
-  var fr = PA.invoice(Page.param('inv')) || near[0], fc = fr ? candidates(fr) : [];
-  var panel = fr && fr.out === 'nearest' ? UI.box({ title: 'Force match: ' + UI.esc(fr.no), body: [
-    UI.kv({ cols: 3, items: [['Invoice', UI.esc(fr.no) + ' &middot; ' + rs(fr.base)], ['Vendor', UI.esc(fr.vendor) + ' (' + fr.vcode + ') &middot; PAN ' + pan(fr.vcode)], ['Service period', period(fr)]] }),
-    UI.table({ dense: true, pager: false, export: false, select: true, columns: [{ key: 'u', label: 'Candidate provision' }, { key: 'why', label: 'Why it is a candidate' }, { key: 'bal', label: 'Open balance (Rs)', num: true, money: true }, { key: 'rank', label: 'Rank' }],
-      rows: fc.filter(function (x) { return x.p.open; }).map(function (x) { var first = x.rank === '1'; return { u: urn(x.p), why: x.why, bal: x.p.balance, rank: x.rank, _checked: first, _sel: first }; }) }),
-    fc.some(function (x) { return !x.p.open; }) ? UI.p('Not eligible: ' + fc.filter(function (x) { return !x.p.open; }).map(function (x) { return urn(x.p) + ' (' + x.why + ')'; }).join(', ') + '.', { muted: true, small: true }) : '',
-    UI.field({ label: 'Reason for force match', type: 'area', required: true, value: WHY[fr.no] || '', wrap: true }),
-    UI.p('Force match changes only which provision the invoice settles, not the amount. Your choice and reason are recorded in the audit trail.', { muted: true, small: true }),
-    !fr.from ? UI.tbc('Invoice without a service period: settled automatically by FIFO (HLD 5.4.2) or after review') : '',
-    UI.btns([UI.button({ label: 'Cancel', variant: 'text', go: 'pa-12?tab=mw:nearest' }), UI.button({ label: 'Confirm force match', variant: 'primary', toast: 'Force match recorded; provision actualized' })], { end: true })] }) : '';
+  // force match opens in a dialog for each nearest-match invoice; state 'force' opens it for ?inv= (default: the first one)
+  var pick = PA.invoice(Page.param('inv')) || near[0];
+  var forceModal = function (fr, i) {
+    var fc = candidates(fr);
+    return UI.modal({ id: 'force-' + i, size: 'wide', open: force && fr === pick, title: 'Force match', accent: fr.no, body: [
+      UI.kv({ cols: 3, items: [['Invoice', UI.esc(fr.no) + ' &middot; ' + rs(fr.base)], ['Vendor', UI.esc(fr.vendor) + ' (' + fr.vcode + ') &middot; PAN ' + pan(fr.vcode)], ['Service period', period(fr)]] }),
+      UI.table({ dense: true, pager: false, export: false, select: true, columns: [{ key: 'u', label: 'Candidate provision' }, { key: 'why', label: 'Why it is a candidate' }, { key: 'bal', label: 'Open balance (Rs)', num: true, money: true }, { key: 'rank', label: 'Rank' }],
+        rows: fc.filter(function (x) { return x.p.open; }).map(function (x) { var first = x.rank === '1'; return { u: urn(x.p), why: x.why, bal: x.p.balance, rank: x.rank, _checked: first, _sel: first }; }) }),
+      fc.some(function (x) { return !x.p.open; }) ? UI.p('Not eligible: ' + fc.filter(function (x) { return !x.p.open; }).map(function (x) { return urn(x.p) + ' (' + x.why + ')'; }).join(', ') + '.', { muted: true, small: true }) : '',
+      UI.field({ label: 'Reason for force match', type: 'area', required: true, value: WHY[fr.no] || '', wrap: true }),
+      UI.p('Force match changes only which provision the invoice settles, not the amount. Your choice and reason are recorded in the audit trail.', { muted: true, small: true }),
+      !fr.from ? UI.tbc('Invoice without a service period: settled automatically by FIFO (HLD 5.4.2) or after review') : ''],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Confirm force match', variant: 'primary', close: true, toast: 'Force match recorded; provision actualized' })] });
+  };
+  var forceModals = near.map(forceModal).join('');
 
   /* ---------------------------------------------------------------- unmatched */
   var unm = of('unmatched');
@@ -79,14 +84,14 @@
 
   /* ---------------------------------------------------------------- excess and future period (HLD 5.4.3, Table 16) */
   var exc = of('excess').concat(of('prepaid'));
-  var sched = function (id) { var s = PA.schedule(id); return '<div class="k-small">' + rs(s.total) + ' to prepaid <a class="k-link" data-go="pa-13?state=detail&id=' + id + '">' + id + '</a> (' + s.from + ' to ' + s.to + ')</div>'; };
+  var sched = function (id) { var s = PA.schedule(id); return '<div class="k-small">' + rs(s.total) + ' to prepaid <a class="k-link" data-go="pa-23?id=' + id + '">' + id + '</a> (' + s.from + ' to ' + s.to + ')</div>'; };
   var excT = table(exc.map(function (r) {
     var kind = r.excess ? 'Amount above the provision' : r.settles.length ? 'Current and future period' : r.from && PA.parse(r.from) > PA.parse(r.booked) ? 'Future period only' : 'Current and future period, no provision';
     return row(r, '<b>' + kind + '</b><div class="k-muted k-small">' + UI.esc(r.text) + '</div>' +
       (r.settles.length > 1 ? '<div class="k-small">' + r.settles.length + ' provisions knocked off (' + rs(r.applied) + ', now Closed): ' + r.settles.map(urn).join(', ') + '</div>'
         : r.settles.map(function (x) { return '<div class="k-small">' + urn(x) + ' &middot; ' + rs(applied(r, x)) + ' &middot; ' + UI.esc(x.status) + '</div>'; }).join('')) + (r.prepaid ? sched(r.prepaid) : ''),
       r.excess ? [{ icon: 'eye', label: 'Open provision', go: 'pa-09-provision-detail.html?urn=' + encodeURIComponent(r.settles[0].key) }, { icon: 'send', label: 'With business finance for review', toast: 'With business finance since 17-Sep-2026' }]
-        : [{ icon: 'eye', label: 'Prepaid schedule', go: 'pa-13?state=detail&id=' + r.prepaid }]);
+        : [{ icon: 'eye', label: 'Prepaid schedule', go: 'pa-23?id=' + r.prepaid }]);
   }));
 
   /* ---------------------------------------------------------------- PO raised after provision (daily PO fetch; HLD 4.6 client note, Tables 10 and 17) */
@@ -125,7 +130,7 @@
         UI.field({ label: 'Nature', type: 'select', value: 'All (rent, electricity, diesel, other)' }), UI.field({ label: 'Vendor', type: 'lookup', placeholder: 'Name, code or PAN' })] }) +
       UI.tabs({ id: 'mw', bar: false, active: tab, tabs: [
         { id: 'auto', body: [UI.p('Settled automatically: the URN or rebuilt key equals an open provision. A smaller invoice leaves the balance open (partial match); a TOCO invoice settles each locator line against its own provision.', { muted: true }), autoT] },
-        { id: 'nearest', body: [UI.p('No exact match: candidates are open provisions of the same vendor or PAN and category, relaxing the item code and then the period, ranked by service month and then oldest first. Matching never crosses categories.', { muted: true }), force ? panel : nearT,
+        { id: 'nearest', body: [UI.p('No exact match: candidates are open provisions of the same vendor or PAN and category, relaxing the item code and then the period, ranked by service month and then oldest first. Matching never crosses categories.', { muted: true }), nearT,
           UI.tbc('Nearest match: order of relaxation, ranking, and whether a confident candidate settles without review (HLD open point 5)'), ' ', UI.tbc('Nearest match by PAN: scope, and how a vendor not on the provision is added (HLD open point 12)')] },
         { id: 'unmatched', body: [UI.p('Invoices with no suitable candidate stay here for review.', { muted: true }), unmT] },
         { id: 'excess', body: [UI.p('Months with an open provision are knocked off; months after them move to prepaid and are released monthly. An amount above the provision goes to business finance for review.', { muted: true }), excT,
@@ -133,7 +138,7 @@
           UI.tbc('Invoice for future months with no provision: held in prepaid, or sent to the unmatched queue')] },
         { id: 'po', body: po }] }) +
       UI.note({ text: 'Reversal-mode provisions: Oracle has already reversed the liability, so actualization posts no knock-off journal and only closes the URN. Standing-mode provisions get a knock-off journal (Liability Dr / Expense Cr). HLD 5.4.4.' }) +
-      UI.tbc('Knock-off at the invoice taxable value or at the total including GST') + ' ' + UI.tbc('Invoice data pickup: at day-end or at month-end (HLD open point 11)')
+      UI.tbc('Knock-off at the invoice taxable value or at the total including GST') + ' ' + UI.tbc('Invoice data pickup: at day-end or at month-end (HLD open point 11)') + forceModals
   });
 })();
 </script>

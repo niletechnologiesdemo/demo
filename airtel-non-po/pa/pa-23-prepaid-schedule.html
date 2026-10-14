@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prepaid schedule - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  // One prepaid schedule (PA.prepaid in pa-data.js): release plan, accounting entries and the records it came from
+  var q = Page.param('id'), s = PA.schedule(q || 'PPD-26-0418'), rs = function (n) { return 'Rs ' + UI.inr(n, 2); };
+  var base = { id: 'pa-23', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst', navKey: 'pa-13', keep: ['id'] };
+  if (!s) {
+    base.html = UI.page({ title: 'Prepaid', accent: 'Schedule', crumb: '<a data-go="pa-13">Prepaid register</a>' }) +
+      UI.alert({ tone: 'warn', title: 'No prepaid schedule ' + UI.esc(q) + '.', text: 'Open a schedule from the prepaid register.', actions: [UI.textlink({ label: 'Prepaid register', icon: 'arrowRight', go: 'pa-13' })] });
+    Page.render(base); return;
+  }
+
+  // months of the schedule, split into released (up to Sep-26), current (next 12 months: Oct-26 to Sep-27) and non-current (after Sep-27)
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var idx = function (m) { return (2000 + +m.slice(4)) * 12 + MON.indexOf(m.slice(0, 3)); };
+  var lbl = function (i) { return MON[i % 12] + '-' + String(Math.floor(i / 12)).slice(2); };
+  var from = idx(s.from), to = idx(s.to), SEP26 = idx('Sep-26'), SEP27 = idx('Sep-27');
+  var span = function (a, b) { a = Math.max(a, from); b = Math.min(b, to); return a > b ? '' : a === b ? lbl(a) : lbl(a) + ' to ' + lbl(b); };
+  var plan = [['Released to date', span(from, SEP26), s.rel], ['Current: due within 12 months', span(SEP26 + 1, SEP27), s.cur], ['Non-current: due after 12 months', span(SEP27 + 1, to), s.nc]];
+  var status = s.rel === 0 ? 'Starts ' + s.from : s.rel >= s.total ? 'Fully released' : 'Releasing monthly';
+
+  var source = s.urn ? 'Provision <a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(s.urn) + '">' + UI.esc(s.urn).replace(/·/g, '·<wbr>') + '</a>'
+    : (PA.invoice(s.inv).src === 'Lease' ? 'Lease payment ' : 'Invoice ') + '<a class="k-link" data-go="pa-12?tab=mw:excess">' + UI.esc(s.inv) + '</a>';
+  var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [['Schedule', s.id], ['Status', UI.status(status, s.rel >= s.total ? 'grey' : 'ok')], ['Source', source], ['Opex GL / BU', s.gl + ' &middot; BU ' + s.bu],
+    ['Life', s.from + ' to ' + s.to], ['Monthly release', rs(s.monthly)], ['Total', rs(s.total)], ['Released to date', rs(s.rel)]] })] });
+
+  var planT = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'b', label: 'Bucket' }, { key: 'p', label: 'Months' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }],
+    rows: plan.map(function (r) { return { b: r[0], p: r[1] || '&ndash;', a: r[2] }; }), foot: { b: 'Total', a: s.total } });
+
+  // accounting steps for each schedule (HLD 5.5, Tables 19 and 20; BRD scenario 4)
+  var STEPS = {
+    'PPD-26-0418': [['Invoice booked in AP, 24-Sep-2026 (Apr-26 to Mar-27)', 'Expense Dr / Vendor Cr', 1255000, 'Booked in AP'],
+      ['Apr-26 to Aug-26 knocked off against their 5 provisions', 'URNs closed; no journal (reversal mode)', 522915, 'Done'],
+      ['Move Sep-26 to Mar-27 to prepaid', 'Prepaid current Dr / Expense Cr', 732085, 'Posted'], ['Release for Sep-26', 'Expense Dr / Prepaid current Cr', 104583, 'Posted'],
+      ['Each month, Oct-26 to Mar-27', 'Expense Dr / Prepaid current Cr (Mar-27: Rs 1,04,587.00)', 104583, 'Scheduled']],
+    'PPD-26-0402': [['Invoice booked in AP, 08-Sep-2026', 'Expense Dr / Vendor Cr', 24000, 'Booked in AP'], ['Move to prepaid', 'Prepaid current Dr / Expense Cr', 24000, 'Posted'],
+      ['Release for Sep-26', 'Expense Dr / Prepaid current Cr', 1000, 'Posted'], ['Current / non-current split', 'Prepaid non-current Dr / Prepaid current Cr', 11000, 'Posted'],
+      ['Each following month', 'Expense Dr / Prepaid current Cr; non-current moved to current as it falls due', 1000, 'Scheduled']],
+    'PPD-26-0377': [['Quarterly rent paid in the PM lease module, 28-Sep-2026', 'Expense Dr / Bank Cr', 55500, 'Paid'], ['Move to prepaid', 'Prepaid current Dr / Expense Cr', 55500, 'Posted'],
+      ['Release for Oct-26, Nov-26 and Dec-26', 'Expense Dr / Prepaid current Cr', 18500, 'Scheduled']],
+    'PPD-26-0201': [['Scenario 4 provision for Aug-26', 'Expense Dr / Mobile liability Cr', 3600000, 'Posted'], ['15 days of the deferred 72% expensed in Aug-26', 'Stays in expense', 37029, 'Posted'],
+      ['Rest of the deferred 72% to prepaid', 'Current prepaid Dr 8,88,686.00 / Non-current prepaid Dr 16,66,285.00 / Expense Cr', 2554971, 'Posted'],
+      ['Release for Sep-26', 'Expense Dr / Current prepaid Cr', 74057, 'Posted'], ['Non-current falling due in Sep-27', 'Current prepaid Dr / Non-current prepaid Cr', 74057, 'Posted'],
+      ['Each following month', 'Expense Dr / Current prepaid Cr; non-current moved to current as it falls due', 74057, 'Scheduled']]
+  };
+  var steps = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 's', label: 'Step' }, { key: 'e', label: 'Entry' }, { key: 'a', label: 'Amount (Rs)', num: true, money: true }, { key: 't', label: 'Status' }],
+    rows: (STEPS[s.id] || []).map(function (x) { return { s: UI.esc(x[0]), e: UI.esc(x[1]), a: x[2], t: UI.status(x[3], /Posted|Paid|Booked|Done/.test(x[3]) ? 'ok' : 'grey') }; }) });
+  var notes = [
+    s.id === 'PPD-26-0201' ? UI.tbc('Scenario 4: 15 days expensed at once, the life convention, and the GL for DG promoter deferment (HLD open point 4)') : '',
+    s.id === 'PPD-26-0377' ? UI.tbc('Advance lease payments: how the monthly prepaid release settles the DARTS provision for the same site') : '',
+    s.id === 'PPD-26-0418' ? UI.tbc('Multi-month invoice: split by days or by months (HLD open point 6)') : ''];
+
+  // records the schedule came from
+  var r = s.inv ? PA.invoice(s.inv) : null;
+  var links = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'k', label: 'Record' }, { key: 'w', label: 'What it is' }, { key: 'st', label: 'Status' }],
+    rows: (r ? [{ k: (r.src === 'Lease' ? 'Lease payment ' : 'Invoice ') + '<a class="k-link" data-go="pa-12?tab=mw:excess">' + UI.esc(r.no) + '</a>', w: UI.esc(r.vendor) + ' &middot; BU ' + r.bu + ' &middot; ' + rs(r.base) + ' &middot; ' + r.period, st: 'Booked ' + r.booked }] : [])
+      .concat((r ? r.settles : [PA.find(s.urn)]).filter(Boolean).map(function (p) { return { k: '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key) + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>', w: 'Provision ' + p.month + ' &middot; ' + rs(p.amount), st: UI.status(p.status, PA.statusTone(p.status)) }; })) });
+
+  base.html = UI.page({ title: 'Prepaid', accent: 'Schedule', crumb: '<a data-go="pa-13">Prepaid register</a> &rsaquo; ' + s.id, sub: UI.esc(s.text) }) +
+    UI.tbc('Prepaid entries: posted by the platform, by the Oracle prepaid module, or both (HLD open point 3)') + head + '<div class="k-gap"></div>' +
+    UI.tabs({ id: 'ps', tabs: [
+      { id: 'plan', label: 'Release plan', body: [planT, UI.p('Today is 01-Oct-2026: releases up to Sep-26 are posted; the next 12 months are current prepaid and the rest is non-current, moved to current month by month.', { muted: true, small: true })] },
+      { id: 'acc', label: 'Accounting entries', count: (STEPS[s.id] || []).length, body: [steps].concat(notes) },
+      { id: 'links', label: 'Linked records', body: [links] }] });
+  Page.render(base);
+})();
+</script>
+</body>
+</html>

@@ -133,9 +133,9 @@
     },
     audit: {
       sub: 'Read-only view of overrides and evidence for sampling.',
-      tiles: [['18', 'Force matches (Sep-26)', 'Reason recorded on each', 'pa-18?state=pva'], ['4', 'Duplicate overrides', 'This month', 'pa-18?state=pva'], ['9', 'Force closures FYTD', 'All CFR approved', 'pa-18?state=pva'], ['1,284', 'Invoices auto-matched', 'Sep-26', 'pa-18?state=pva']],
-      tasks: [['eye', 'Q2 sample: provision vs actual mapping', 'Filter by segment (B2B, B2C, TOCO) and export', 'Due 15-Oct', 'pa-18?state=pva', 1],
-        ['eye', '4 duplicate warnings overridden this month', 'Each override, reason and matched provision is in the audit trail', '30-Sep', 'pa-18?state=pva', 0]],
+      tiles: [['18', 'Force matches (Sep-26)', 'Reason recorded on each', 'pa-25?r=pva'], ['4', 'Duplicate overrides', 'This month', 'pa-25?r=pva'], ['9', 'Force closures FYTD', 'All CFR approved', 'pa-25?r=pva'], ['1,284', 'Invoices auto-matched', 'Sep-26', 'pa-25?r=pva']],
+      tasks: [['eye', 'Q2 sample: provision vs actual mapping', 'Filter by segment (B2B, B2C, TOCO) and export', 'Due 15-Oct', 'pa-25?r=pva', 1],
+        ['eye', '4 duplicate warnings overridden this month', 'Each override, reason and matched provision is in the audit trail', '30-Sep', 'pa-25?r=pva', 0]],
       panel: ['Overrides by month', UI.chart({ type: 'stacked', title: 'Count', categories: ['Jun', 'Jul', 'Aug', 'Sep'], series: [{ name: 'Force match', data: [21, 19, 24, 18] }, { name: 'Duplicate override', data: [3, 5, 2, 4] }], fmt: whole })]
     },
     admin: {

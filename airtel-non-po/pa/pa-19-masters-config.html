@@ -17,15 +17,16 @@
     rows: PA.activities.map(function (a) { return { id: a.id, n: UI.esc(a.name) + (a.deferred ? '<div class="k-small">Deferred (out of scope for now)</div>' : ''), s: a.scenario === 'T' ? 'TOCO' : 'S' + a.scenario, i: a.item + '<div class="k-muted k-small">' + a.dr + ' Dr / ' + a.cr + ' Cr</div>', m: a.mode, r: a.route, rec: a.recurring ? 'Yes' : 'No', _acts: [{ icon: 'edit', label: 'Edit (maker-checker)', modal: 'edit' }] }; }),
     footLeft: [UI.button({ label: 'Add activity', icon: 'plus', size: 'sm', modal: 'edit' })] });
 
+  // URN forms; each row's edit opens its own dialog (state 'urn' opens the TOCO form)
+  var FORMS = [
+    { id: 'std', f: 'Standard', c: ['BU (parent)', 'Vendor code', 'Item code', 'Month (MON-YY)'], e: '111·410022·SECURITY001·AUG-26', p: '111·410022·SECURITY001·OCT-26' },
+    { id: 'toco', f: 'TOCO', c: ['BU (parent)', 'Vendor code', 'Item code', 'Month (MON-YY)', 'Locator'], any: true, e: '111·412885·ELEC-AOR·AUG-26·11106', p: '111·412885·ELEC-AOR·OCT-26·11106' },
+    { id: 'dn', f: 'TOCO debit note', c: ['TOCO URN', 'Debit note number'], e: '151·322600·RENT-AOR·JUL-26·15104·<wbr>GTL/AP/2026/JUL/4452/DN', p: '151·322600·RENT-AOR·JUL-26·15104·<wbr>GTL/AP/2026/JUL/4452/DN' },
+    { id: 'own', f: 'Owned / Homes lease (matching)', c: ['BU (parent)', 'Item code', 'Month (MON-YY)', 'Locator'], opt: '(vendor optional)', e: '141·RENT-OWN·AUG-26·14031', p: '141·RENT-OWN·OCT-26·14031' }];
   var urn = UI.section({ title: 'URN builder', body: [UI.p('The URN identifies a provision from input to Oracle journal to invoice. Components are configurable; the combination must be unique, so the URN carries no sequence number.', { muted: true }),
     UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'f', label: 'Form' }, { key: 'c', label: 'Components (in order)' }, { key: 'e', label: 'Example' }, { key: '_acts', label: '' }],
-      rows: [{ f: 'Standard', c: 'BU &middot; Vendor code &middot; Item code &middot; Month', e: '<span class="k-urn">111·410022·SECURITY001·AUG-26</span>', _acts: ['edit'] },
-        { f: 'TOCO', c: 'BU &middot; Vendor code &middot; Item code &middot; Month &middot; Locator <span class="k-muted">(any available field can be mapped)</span>', e: '<span class="k-urn">111·412885·ELEC-AOR·AUG-26·11106</span>', _acts: ['edit'] },
-        { f: 'TOCO debit note', c: 'TOCO URN &middot; Debit note number', e: '<span class="k-urn">151·322600·RENT-AOR·JUL-26·15104·<wbr>GTL/AP/2026/JUL/4452/DN</span>', _acts: ['edit'] },
-        { f: 'Owned / Homes lease (matching)', c: 'BU &middot; Item code &middot; Month &middot; Locator <span class="k-muted">(vendor optional)</span>', e: '<span class="k-urn">141·RENT-OWN·AUG-26·14031</span>', _acts: ['edit'] }] }),
-    S === 'urn' ? UI.box({ title: 'Edit TOCO form', body: [UI.grid(4, [UI.field({ label: 'Component 1', type: 'select', value: 'BU (parent)' }), UI.field({ label: 'Component 2', type: 'select', value: 'Vendor code' }), UI.field({ label: 'Component 3', type: 'select', value: 'Item code' }), UI.field({ label: 'Component 4', type: 'select', value: 'Month (MON-YY)' }),
-      UI.field({ label: 'Component 5', type: 'select', value: 'Locator', hint: 'Any available field can be mapped' }), UI.field({ label: 'Separator', type: 'select', value: '· (middle dot)' }), UI.field({ label: 'Effective from', type: 'date', value: '01/10/2026' }), UI.field({ label: 'Preview', type: 'readonly', value: '<span class="k-urn">111·412885·ELEC-AOR·OCT-26·11106</span>' })]),
-      UI.btns([UI.button({ label: 'Cancel', variant: 'text', go: 'pa-19?tab=m:urn' }), UI.button({ label: 'Submit for approval', variant: 'primary', toast: 'Change sent to the checker' })], { end: true })] }) : UI.textlink({ label: 'Edit a form', icon: 'edit', state: 'urn' }),
+      rows: FORMS.map(function (x) { return { f: x.f, c: x.c.map(function (c) { return c.replace(' (parent)', '').replace(' (MON-YY)', ''); }).join(' &middot; ') + (x.any ? ' <span class="k-muted">(any available field can be mapped)</span>' : x.opt ? ' <span class="k-muted">' + x.opt + '</span>' : ''),
+        e: '<span class="k-urn">' + x.e + '</span>', _acts: [{ icon: 'edit', label: 'Edit form (maker-checker)', modal: 'urn-' + x.id }] }; }) }),
     UI.tbc('URN separators and exact format to be fixed in detailed design')] });
 
   var alloc = UI.table({ dense: true, columns: [{ key: 'm', label: 'Allocation' }, { key: 'k', label: 'Split' }, { key: 'e', label: 'Effective from' }, { key: 'o', label: 'Owner' }, { key: '_acts', label: '' }],
@@ -77,9 +78,18 @@
       UI.p('A new activity is a change to the master. Every change goes through maker-checker and is kept in the change history.', { muted: true, small: true })],
     foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Submit for approval', variant: 'primary', close: true, toast: 'Change sent to the checker' })] });
 
+  var urnModals = FORMS.map(function (x) {
+    return UI.modal({ id: 'urn-' + x.id, size: 'wide', open: S === 'urn' && x.id === 'toco', title: 'Edit URN form', accent: x.f,
+      body: [UI.grid(4, x.c.map(function (c, i) { return UI.field({ label: 'Component ' + (i + 1), type: 'select', value: c, hint: x.any && i === x.c.length - 1 ? 'Any available field can be mapped' : '' }); })
+        .concat([UI.field({ label: 'Separator', type: 'select', value: '· (middle dot)' }), UI.field({ label: 'Effective from', type: 'date', value: '01/10/2026' })])),
+        UI.field({ label: 'Preview', type: 'readonly', value: '<span class="k-urn">' + x.p + '</span>' }),
+        UI.p('A change to a URN form applies to provisions raised from the effective date; existing URNs keep their form. Every change goes through maker-checker and is kept in the change history.', { muted: true, small: true })],
+      foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Submit for approval', variant: 'primary', close: true, toast: 'Change sent to the checker' })] });
+  }).join('');
+
   Page.render({
     id: 'pa-19', user: 'B0GPA204', role: 'GPA analyst', viewAs: 'GPA analyst (master owner)',
-    states: [{ id: 'urn', label: 'Editing URN builder' }],
+    states: [{ id: 'urn', label: 'Editing a URN form' }],
     html: UI.page({ title: 'Masters', accent: '& Configuration', sub: 'Masters held in Oracle are synchronised to the platform; masters kept by hand today are maintained here with maker-checker control and change history. Effective-dated values let a past month re-run with that month\'s values.' }) +
       UI.tabs({ id: 'm', active: S === 'urn' ? 'urn' : 'act', tabs: [
         { id: 'act', label: 'Activity master', body: [act, UI.tbc('Reversal mode for each activity, who sets it, and how an invoice arriving before the reversal is treated (HLD open point 2)')] }, { id: 'urn', label: 'URN builder', body: [urn] },
@@ -89,7 +99,7 @@
         { id: 'pbr', label: 'PBR & escalation', body: [pbr] },
         { id: 'reclass', label: 'BU reclass mapping', body: [reclass] }, { id: 'dn', label: 'TOCO DN master', body: [dnm] },
         { id: 'vtm', label: 'VTM subscribers', body: [UI.p('AIO updates subscriber counts; provision = subscriber count x average penalty % of the last 12 months.', { muted: true }), vtm] },
-        { id: 'erp', label: 'Synced from ERP', body: [UI.p('Read-only on the platform. New OUs and BUs created in Oracle sync automatically.', { muted: true }), erp, UI.tbc('If the DOA API is not provided, an approval matrix is set up and maintained in the portal')] }] }) + edit + glModal
+        { id: 'erp', label: 'Synced from ERP', body: [UI.p('Read-only on the platform. New OUs and BUs created in Oracle sync automatically.', { muted: true }), erp, UI.tbc('If the DOA API is not provided, an approval matrix is set up and maintained in the portal')] }] }) + edit + glModal + urnModals
   });
 })();
 </script>

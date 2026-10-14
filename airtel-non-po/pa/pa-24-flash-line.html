@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flash line detail - Non-PO Portal</title>
+<link rel="stylesheet" href="../assets/airtel.css">
+</head>
+<body>
+<script src="../assets/kit.js"></script>
+<script src="../assets/page.js"></script>
+<script src="pa-data.js"></script>
+<script>
+(function () {
+  // One FSG line of the financial flash (PA.flash in pa-data.js) and the platform entries behind it
+  var q = Page.param('line'), x = PA.flash.filter(function (r) { return r.id === (q || 'admin'); })[0], f = function (n) { return UI.inr(n, 2); };
+  var base = { id: 'pa-24', user: 'B0BFN017', role: 'Business finance', viewAs: 'Business finance', navKey: 'pa-16', keep: ['line'] };
+  if (!x) {
+    base.html = UI.page({ title: 'Flash', accent: 'Line', crumb: '<a data-go="pa-16">Financial flash</a>' }) +
+      UI.alert({ tone: 'warn', title: 'No FSG line ' + UI.esc(q) + '.', text: 'Open a line from the financial flash.', actions: [UI.textlink({ label: 'Financial flash', icon: 'arrowRight', go: 'pa-16' })] });
+    Page.render(base); return;
+  }
+  var head = UI.box({ notice: true, body: [UI.kv({ cols: 4, items: [['FSG line', UI.esc(x.l)], ['GL codes', x.g], ['Aug-26 closing TB', 'Rs ' + f(x.tb) + ' lakh'], ['Running', 'Rs ' + f(x.run) + ' lakh'],
+    ['+ Provisions', f(x.prov)], ['- Reversals', f(x.rev)], ['+/- Adjustments', f(x.adj)], ['Platform entries', x.entries ? String(x.entries.length) : '&ndash;']] })] });
+  var entries = x.entries || [];
+  var table = UI.table({ dense: true, pager: false, columns: [{ key: 'u', label: 'URN or reference' }, { key: 'v', label: 'Vendor / BU' }, { key: 't', label: 'Entry' }, { key: 'a', label: 'Rs lakh', num: true }, { key: 's', label: 'Status' }, { key: '_acts', label: '' }],
+    rows: entries.map(function (e) {
+      var p = e.p, link = 'pa-09-provision-detail.html?urn=' + encodeURIComponent(p.key);
+      return { u: '<a class="k-link k-urn" href="' + link + '">' + UI.esc(p.key).replace(/·/g, '·<wbr>') + '</a>', v: UI.esc(p.vendor) + '<div class="k-muted k-small">BU ' + p.bu + '</div>', t: e.entry, a: f(e.amt),
+        s: UI.status(e.status, e.rev ? 'grey' : PA.statusTone(p.status)), _acts: [{ icon: 'eye', label: 'Open provision', go: link }] };
+    }),
+    foot: entries.length ? { u: 'Total of these entries', a: f(entries.reduce(function (a, e) { return a + e.amt; }, 0)) } : null,
+    empty: 'Entry-level rows are in the sample data for Admin and facilities only; this line shows its totals.' });
+
+  base.html = UI.page({ title: 'Flash', accent: 'Line', crumb: '<a data-go="pa-16">Financial flash</a> &rsaquo; ' + UI.esc(x.l), sub: 'The platform entries behind this FSG line for Sep-26, down to each URN.' }) +
+    head + '<div class="k-gap"></div>' + UI.section({ title: 'Platform entries this month', body: [table] });
+  Page.render(base);
+})();
+</script>
+</body>
+</html>

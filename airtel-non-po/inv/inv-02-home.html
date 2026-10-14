@@ -126,8 +126,8 @@
     },
     audit: {
       sub: 'Read-only view of overrides and evidence for sampling.',
-      tiles: [['412', 'Force approvals (Sep-26)', 'NFA or approval email attached', 'inv-20?state=force'], ['7', 'Duplicate bypass (Central ToCo)', 'Re-attempted with flag Y', 'inv-20?state=bypass'], ['3', 'Exception approvals', 'Old period, long numbers', 'inv-20'], ['0', 'Booked before approval', 'AP invoices', 'inv-20']],
-      tasks: [['eye', 'Q2 sample: force approvals with NFA evidence', 'Filter by category and export', 'Due 15-Oct', 'inv-20?state=force', 1]],
+      tiles: [['412', 'Force approvals (Sep-26)', 'NFA or approval email attached', 'inv-25?r=force'], ['7', 'Duplicate bypass (Central ToCo)', 'Re-attempted with flag Y', 'inv-25?r=bypass'], ['3', 'Exception approvals', 'Old period, long numbers', 'inv-20'], ['0', 'Booked before approval', 'AP invoices', 'inv-20']],
+      tasks: [['eye', 'Q2 sample: force approvals with NFA evidence', 'Filter by category and export', 'Due 15-Oct', 'inv-25?r=force', 1]],
       panel: ['Overrides by month', UI.chart({ type: 'stacked', title: 'Count', categories: ['Jun', 'Jul', 'Aug', 'Sep'], series: [{ name: 'Duplicate bypass', data: [5, 9, 6, 7] }, { name: 'Exception approvals', data: [2, 4, 1, 3] }], fmt: whole })]
     },
     admin: {

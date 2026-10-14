@@ -12,46 +12,14 @@
 <script src="inv-data.js"></script>
 <script>
 (function () {
-  var S = Page.state();
-  var reports = [
-    ['pending', 'Pending invoices', 'Invoices not yet completed, by stage and owner', 'AP team, managers'],
-    ['rush', 'Rush invoices', 'Rush invoices tracked against the same day / T+1 SLA', 'AP team, Finance'],
-    ['ageing', 'Invoice ageing', 'Age of open invoices by stage, category and circle', 'AP team, Finance'],
-    ['rejected', 'Rejected invoices', 'Rejected invoices with reasons', 'AP team, circles, vendors'],
-    ['status', 'Processing status', 'Processed, hold, rejected, in-process, pending with approver, approved, validated and paid', 'Airtel users; vendors their own'],
-    ['gl', 'GL actualization status', 'Booking and actualization status of submitted invoices', 'Finance'],
-    ['errors', 'AP error report (hourly)', 'Oracle interface rejections after each hourly run, for root-cause analysis and reprocessing', 'AP team, IT team'],
-    ['portal-erp', 'Portal vs ERP reconciliation', 'Invoices booked by the portal against all Oracle invoices, including direct invoices', 'AP team, P2P, IT'],
-    ['force', 'Force approvals and evidence', 'Every force approval with its NFA or approval email', 'Audit, Finance'],
-    ['bypass', 'Duplicate bypass log', 'Central ToCo invoices re-attempted with the validation bypass flag Y', 'Audit, AP team'],
-    ['locator', 'Locator exceptions', 'Lines with locator not found or inactive and the invoices withheld', 'PHD, circles, P2P'],
-    ['gstnc', 'GST non-compliance debit notes', 'Debit notes and reversals raised from the Tax team files', 'Tax team']
-  ];
-  var cards = UI.cards({ cols: 3, items: reports.map(function (r) { return { left: true, icon: 'report', title: r[1], text: UI.esc(r[2]), meta: ['For: ' + r[3]], go: 'inv-20?state=' + r[0], active: S === r[0] }; }) });
-  var pick = reports.filter(function (r) { return r[0] === S; })[0], view = '';
-  if (pick) {
-    var body;
-    if (S === 'portal-erp') body = UI.table({ dense: true, columns: [{ key: 'd', label: 'Document' }, { key: 'src', label: 'Created by' }, { key: 'p', label: 'On portal' }, { key: 'e', label: 'In Oracle' }, { key: 'r', label: 'Result' }],
-      rows: [{ d: 'PM invoice PM-INV-88118845 (IND/26/AUG/77120)', src: 'Portal', p: 'Rs 6,59,160.00', e: 'Rs 6,59,160.00', r: UI.result('pass', 'Matched') },
-        { d: 'AP invoice AP-98118702 (NXD/26-27/2291)', src: 'Portal', p: 'Rs 33,51,200.00', e: 'Rs 33,51,200.00', r: UI.result('pass', 'Matched') },
-        { d: 'AP invoice 98112047 (Vertex Call Solutions)', src: 'Direct in Oracle', p: 'Not on portal', e: 'Rs 4,12,000.00', r: UI.result('warn', 'ERP only') },
-        { d: 'NPO-2627-004863 (SKP/26-27/121)', src: 'Portal', p: 'Rs 41,890.00', e: 'Rejected at import', r: UI.result('fail', 'Mismatch') }] });
-    else if (S === 'force') body = UI.table({ dense: true, columns: [{ key: 'r', label: 'Invoice' }, { key: 'c', label: 'Category' }, { key: 'a', label: 'Amount (Rs)', num: true }, { key: 'e', label: 'Evidence' }, { key: 'b', label: 'Force approved by' }],
-      rows: [{ r: 'NPO-2627-004826', c: 'CAF penalty', a: '16,000.00', e: 'General NFA General/6102/279911', b: 'B0PHD307, 26-Sep' }, { r: 'NPO-2627-004853', c: 'Group company', a: '33,51,200.00', e: 'Approval mail, CFO office', b: 'B0PHD311, 29-Sep' }, { r: 'NPO-2627-004836', c: 'GST NC debit note', a: '-4,016.00', e: 'Tax team approval (DMS)', b: 'B0PHD307, 28-Sep' }] });
-    else if (S === 'bypass') body = UI.table({ dense: true, columns: [{ key: 'r', label: 'Invoice' }, { key: 'l', label: 'Line' }, { key: 'e', label: 'PM error (first attempt, flag N)' }, { key: 'y', label: 'Second attempt (flag Y)' }],
-      rows: [{ r: 'NPO-2627-004640 &middot; IND/26/AUG/77120', l: '12', e: 'Potential Duplicate Invoices', y: UI.result('pass', 'Booked') }, { r: 'NPO-2627-004521 &middot; SGIS/26-27/0377', l: '3', e: 'Duplicate Invoices', y: UI.result('pass', 'Booked') }] });
-    else if (S === 'rejected') body = UI.table({ dense: true, columns: [{ key: 'r', label: 'Invoice' }, { key: 'v', label: 'Vendor' }, { key: 'c', label: 'Category' }, { key: 'w', label: 'Reason' }, { key: 'd', label: 'Rejected' }],
-      rows: [{ r: 'NPO-2627-004610', v: 'Shree Ganesh Infra', c: 'Rush', w: 'Duplicate of NPO-2627-004598', d: '15-Sep-2026' }, { r: 'NPO-2627-004577', v: 'Metro Fibre Links', c: 'Bandwidth Domestic', w: 'Invoice older than one year, not in GSTR-2A / 2B', d: '11-Sep-2026' }, { r: 'NPO-2627-004541', v: 'R K Estates', c: 'LL_GST', w: 'GST already claimed on voucher 702214', d: '08-Sep-2026' }] });
-    else body = UI.table({ dense: true, columns: [{ key: 'r', label: 'Invoice' }, { key: 'v', label: 'Vendor / circle' }, { key: 'c', label: 'Category' }, { key: 'a', label: 'Amount (Rs)', num: true }, { key: 's', label: 'Status' }, { key: 'o', label: 'Owner / SLA' }],
-      rows: INV.invoices.filter(function (r) { return r.ref && !/Paid|Rejected/.test(r.status); }).slice(0, 8).map(function (r) { return { r: '<a class="k-link" href="' + INV.detail(r.ref) + '">' + r.ref + '</a>', v: UI.esc(r.vshort) + '<div class="k-muted k-small">' + UI.esc(r.circle) + '</div>', c: UI.esc(r.c.name), a: INV.rs(r.total, r.cur), s: INV.status(r.status), o: UI.esc(r.owner || '-') + (r.sla ? '<div class="k-muted k-small">' + UI.esc(r.sla) + '</div>' : '') }; }) });
-    view = UI.section({ title: pick[1], sub: pick[2], body: [UI.filters({ items: [UI.field({ label: 'From', type: 'date', value: '01/09/2026' }), UI.field({ label: 'To', type: 'date', value: '30/09/2026' }), UI.field({ label: 'Circle', type: 'select', value: 'All in scope' }), UI.field({ label: 'Category', type: 'select', value: 'All' })], actions: [UI.button({ label: 'Generate report', variant: 'primary', toast: 'Report generated' })] }), body] });
-  }
+  // The report catalogue is INV.reports in inv-data.js; each report opens on its own page (inv-25)
+  var cards = UI.cards({ cols: 3, items: INV.reports.map(function (r) { return { left: true, icon: 'report', title: r.name, text: UI.esc(r.text), meta: ['For: ' + r.users], go: 'inv-25?r=' + r.id }; }) });
   var oracle = UI.section({ title: 'Oracle EBS reports used in the process', collapsible: true, collapsed: true, body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'r', label: 'Report' }, { key: 'u', label: 'Use' }],
     rows: [{ r: 'Airtel VPOT Report - GST', u: 'Validation of invoices and debit notes created in AP' }, { r: 'Airtel PN Opex Invoice Barcode Report - XML-GST', u: 'Barcode for AP invoices' }, { r: 'Airtel PN Site Attribute Status Report', u: 'Locator mapping and status (refreshed nightly)' },
       { r: 'Airtel Infrastructure OPEX Management Report (Text) - All Circle', u: UI.tbc('What the Airtel Infrastructure OPEX Management Report is used for') }, { r: 'Airtel Payment Status - Daily Pending Response Report to Each Person', u: UI.tbc('What the Airtel Payment Status - Daily Pending Response report is used for') }, { r: 'Airtel PN opex group records report', u: UI.tbc('What the Airtel PN opex group records report is used for') }] })] });
   Page.render({
-    id: 'inv-20', roleId: 'apm', states: [{ id: 'pending', label: 'Pending invoices' }, { id: 'rejected', label: 'Rejected' }, { id: 'force', label: 'Force approvals' }, { id: 'bypass', label: 'Duplicate bypass' }, { id: 'portal-erp', label: 'Portal vs ERP' }],
-    html: UI.page({ title: 'Reports', sub: 'Invoicing reports. Report formats are to be agreed with the business during detailed design.' }) + view + (view ? '<div class="k-gap"></div>' : '') + cards + oracle
+    id: 'inv-20', roleId: 'apm',
+    html: UI.page({ title: 'Reports', sub: 'Invoicing reports. Report formats are to be agreed with the business during detailed design.' }) + cards + oracle
   });
 })();
 </script>

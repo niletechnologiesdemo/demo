@@ -90,7 +90,7 @@
     rows: jrows, empty: p.pre ? 'No journal before approval.' : 'Not yet sent to Oracle.' });
   var jnotes = [
     p.scenario === 12 ? UI.p('Mirror entry in the Digital Asset books (D8206, D7806, D7906, D8106) at the CFR ratios; cost charged on with an 11% markup (scenario 12).', { muted: true, small: true }) : '',
-    p.prepaid ? UI.p('The deferred part is held and released through prepaid schedule <a class="k-link" data-go="pa-13?state=detail&id=' + p.prepaid + '">' + p.prepaid + '</a>.', { muted: true, small: true }) : '',
+    p.prepaid ? UI.p('The deferred part is held and released through prepaid schedule <a class="k-link" data-go="pa-23?id=' + p.prepaid + '">' + p.prepaid + '</a>.', { muted: true, small: true }) : '',
     p.mode === 'Reversal' && g.posted ? UI.note({ text: 'Reversal mode: Oracle reverses the journal at the start of the next period while the platform keeps the URN open until it is actualized or aged out, so the Oracle ledger balance and the platform open balance differ (HLD 4.6). Actualization posts no knock-off journal; it closes the URN.' }) : '',
     p.mode === 'Reversal' && /^(Reversed|Cancelled)$/.test(p.status) || p.mode === 'Reversal' && pending && pending.type === 'Force reversal' ? UI.tbc('Reversal mode: whether a journal is posted when the platform reverses (PBR, force reversal) or cancels (PO) a provision Oracle already reversed (HLD open points 2 and 20)') : '',
     p.dn ? UI.tbc('TOCO debit-note provisions: rules, master and the inputs from invoicing (HLD open point 8)') : ''];
@@ -112,7 +112,7 @@
     var others = r.settles ? r.settles.filter(function (x) { return x !== p; }) : [];
     if (r.excess) extra.push(UI.alert({ tone: 'warn', title: 'Invoice ' + r.no + ' exceeds the provision by ' + rs(r.excess) + '.', text: 'The provision is fully settled; the excess is with business finance for review.', actions: [UI.textlink({ label: 'Matching workbench', icon: 'arrowRight', go: 'pa-12?tab=mw:excess' })] }), UI.tbc('Excess invoice: rule for splitting an excess between prepaid and expense (HLD open point 19)'));
     if (others.length) extra.push(UI.p('Invoice ' + r.no + ' also settles ' + others.length + ' other provision' + (others.length > 1 ? 's' : '') + ': ' + others.map(function (x) { return '<a class="k-link k-urn" href="pa-09-provision-detail.html?urn=' + encodeURIComponent(x.key) + '">' + UI.esc(x.key) + '</a>'; }).join(', ') + '.', { small: true }));
-    if (r.prepaid) extra.push(UI.p('The future months of ' + r.no + ' (' + rs(PA.schedule(r.prepaid).total) + ') are held in prepaid schedule <a class="k-link" data-go="pa-13?state=detail&id=' + r.prepaid + '">' + r.prepaid + '</a> and released monthly.', { small: true }), UI.tbc('Multi-month invoice: split by days or by months (HLD open point 6)'));
+    if (r.prepaid) extra.push(UI.p('The future months of ' + r.no + ' (' + rs(PA.schedule(r.prepaid).total) + ') are held in prepaid schedule <a class="k-link" data-go="pa-23?id=' + r.prepaid + '">' + r.prepaid + '</a> and released monthly.', { small: true }), UI.tbc('Multi-month invoice: split by days or by months (HLD open point 6)'));
     if (r.yep) extra.push(UI.p('YEP: the invoice is for a service period up to 31-Mar-2026, so it is reclassed to the YEP code up to the provision value (' + rs(p.amount) + ').', { small: true }));
     if (m.how === 'bumap') extra.push(UI.tbc('BU reclass of a reversal-mode provision: which journal moves the cost from the invoice BU to the provision BU'));
   });
