@@ -82,7 +82,7 @@
     : ok ? UI.alert({ tone: 'ok', title: 'All checks passed.', text: 'Mandatory fields and approvals present, vendor and site valid, note number unique and within 50 characters' + (rev ? ', original note found and booked' : '') + '.' }) : '';
 
   var submitted = UI.modal({ id: 'submitted', open: S === 'submitted', title: 'Note', accent: 'Submitted', size: 'narrow', body: [
-    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004874</b>'], ['Status', INV.status('Submitted')], ['Note number', '<span class="k-urn wrap-any">' + UI.esc(noteNo) + '</span>']] }),
+    UI.kv({ cols: 2, items: [['Reference number', '<b>' + INV.issuedRef(noteNo) + '</b>'], ['Status', INV.status('Submitted')], ['Note number', '<span class="k-urn wrap-any">' + UI.esc(noteNo) + '</span>']] }),
     UI.p('Booked in Oracle after it is approved.', { muted: true })],
     foot: [UI.button({ label: 'Raise another', go: 'inv-07' }), UI.button({ label: 'Track', variant: 'primary', go: 'inv-09' })] });
 

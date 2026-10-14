@@ -129,7 +129,7 @@
       : UI.upload({ label: 'Supporting documents', files: [] })])] });
 
   var submitted = UI.modal({ id: 'submitted', open: S === 'submitted', title: 'Invoice', accent: 'Submitted', size: 'narrow', body: [
-    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004871</b>'], ['Status', INV.status('Submitted')]] }),
+    UI.kv({ cols: 2, items: [['Reference number', '<b>' + INV.issuedRef(f.inv) + '</b>'], ['Status', INV.status('Submitted')]] }),
     UI.p('You are notified at every status change.', { muted: true })],
     foot: [UI.button({ label: 'Submit another', go: 'inv-03' }), UI.button({ label: 'Track invoice', variant: 'primary', go: 'inv-09' })] });
 

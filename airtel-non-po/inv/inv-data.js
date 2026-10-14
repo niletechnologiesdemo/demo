@@ -171,7 +171,15 @@ window.INV = (function () {
     { ref: 'NPO-2627-004771', inv: 'VCS/26/1188', v: '410455', cat: 'others', circle: 'Karnataka', date: '05-Sep-2026', from: '01-Aug-2026', to: '31-Aug-2026', base: 2390000, status: 'Paid', on: '22-Sep-2026', recv: '08-Sep 10:20', urn: '131·410455·CCSVC002·AUG-26', oracle: 'AP-98114906', barcode: 'BC2627KAR004771', paid: 'UTR N2209260618 on 22-Sep-2026' },
     { ref: 'NPO-2627-004466', inv: 'GTL/AP/2026/JUL/4452/DN', v: '322600', cat: 'toco-dn', circle: 'Andhra Pradesh', date: '14-Aug-2026', from: '01-Jul-2026', to: '31-Jul-2026', base: -18600, noTax: true, status: 'Validated', on: '20-Aug-2026', oracle: 'AP-98112730', orig: 'GTL/AP/2026/JUL/4452', provUrn: '151·322600·RENT-AOR·JUL-26·15104·GTL/AP/2026/JUL/4452/DN' },
     { ref: 'NPO-2627-003984', inv: 'GTL/AP/2026/JUN/4390/DN', v: '322600', cat: 'toco-dn', circle: 'Andhra Pradesh', date: '15-Jul-2026', from: '01-Jun-2026', to: '30-Jun-2026', base: -41300, noTax: true, status: 'Validated', on: '22-Jul-2026', oracle: 'AP-98103318', orig: 'GTL/AP/2026/JUN/4390', provUrn: '151·322600·ELEC-AOR·JUN-26·15104·GTL/AP/2026/JUN/4390/DN' },
-    { ref: 'NPO-2627-004797', inv: 'GTL/AP/2026/JUN/4390/REV', v: '322600', cat: 'toco-rev', circle: 'Andhra Pradesh', date: '18-Sep-2026', from: '01-Jun-2026', to: '30-Jun-2026', base: 41300, noTax: true, status: 'Validated', on: '25-Sep-2026', oracle: 'AP-98117411', orig: 'GTL/AP/2026/JUN/4390/DN', provUrn: '151·322600·ELEC-AOR·JUN-26·15104·GTL/AP/2026/JUN/4390/DN' }
+    { ref: 'NPO-2627-004797', inv: 'GTL/AP/2026/JUN/4390/REV', v: '322600', cat: 'toco-rev', circle: 'Andhra Pradesh', date: '18-Sep-2026', from: '01-Jun-2026', to: '30-Jun-2026', base: 41300, noTax: true, status: 'Validated', on: '25-Sep-2026', oracle: 'AP-98117411', orig: 'GTL/AP/2026/JUN/4390/DN', provUrn: '151·322600·ELEC-AOR·JUN-26·15104·GTL/AP/2026/JUN/4390/DN' },
+    // invoices other pages name: bulk attachments (inv-08), approvals decided (inv-16), the AP import rejection (inv-18, inv-20, inv-24) and the rejected-invoice report (inv-20)
+    { ref: 'NPO-2627-004866', inv: 'IND/26/SEP/80430', v: '412885', cat: 'central-toco', circle: 'Delhi', date: '25-Sep-2026', from: '01-Sep-2026', to: '30-Sep-2026', base: 1206440.68, status: 'Submitted', on: '30-Sep-2026', recv: '30-Sep 09:14', queue: 'validation', sla: 'Due in 2d', lines: 31 },
+    { ref: 'NPO-2627-004811', inv: 'SFS/2026/0888', v: '410022', cat: 'others', circle: 'Delhi', date: '05-Jul-2026', from: '01-Jun-2026', to: '30-Jun-2026', base: 485000, status: 'Paid', on: '15-Sep-2026', recv: '08-Sep 10:00', oracle: 'AP-98112291', barcode: 'BC2627DEL004811', paid: 'UTR N1509260233 on 15-Sep-2026' },
+    { ref: 'NPO-2627-004780', inv: 'BSNL/MEG/2026/07/88', v: '202546', cat: 'bsnl', circle: 'Meghalaya', date: '31-Jul-2026', from: '01-Jul-2026', to: '31-Jul-2026', base: 3500, status: 'RFI', on: '26-Sep-2026', recv: '25-Sep 09:30', reason: 'Supporting document missing or incorrect', rfiNote: 'Returned at DOA level 1: attach the port charges schedule for Jul-26.', rfiBy: 'DOA approver (level 1)' },
+    { ref: 'NPO-2627-004863', inv: 'SKP/26-27/121', v: '600402', cat: 'rush', circle: 'UP East', date: '30-Sep-2026', from: '29-Sep-2026', to: '30-Sep-2026', base: 35500, status: 'Approved', on: '01-Oct-2026', recv: '30-Sep 14:20', queue: 'booking', reason: 'Oracle AP import rejected: vendor site KANPUR-DG inactive' },
+    { ref: 'NPO-2627-004598', inv: 'SGIS/26-27/0388', v: '600124', cat: 'rush', circle: 'UP East', date: '01-Sep-2026', from: '20-Aug-2026', to: '22-Aug-2026', base: 24500, status: 'Paid', on: '09-Sep-2026', recv: '02-Sep 09:40', oracle: 'AP-98111520', barcode: 'BC2627UPE004598', paid: 'UTR N0909260412 on 09-Sep-2026' },
+    { ref: 'NPO-2627-004577', inv: 'MFL/BLR/25/0498', v: '600388', cat: 'bw-dom', circle: 'Karnataka', date: '30-Apr-2025', from: '01-Apr-2025', to: '30-Apr-2025', base: 42000, status: 'Rejected', on: '11-Sep-2026', reason: 'Invoice older than one year, not in GSTR-2A / 2B', lines: 1 },
+    { ref: 'NPO-2627-004541', inv: 'RKE/26-27/012', v: '700845', cat: 'll-gst', circle: 'Maharashtra', date: '20-Aug-2026', from: '01-Jul-2026', to: '31-Jul-2026', base: 18000, gstOnly: true, status: 'Rejected', on: '08-Sep-2026', reason: 'GST already claimed on voucher 702214 (NPO-2627-004356)', voucher: '702214' }
   ];
   invoices.forEach(function (r) {
     var c = cat(r.cat), vd = vendors[r.v], ci = circles[r.circle] || {};
@@ -184,6 +192,13 @@ window.INV = (function () {
   });
   function find(ref) { return invoices.filter(function (r) { return r.ref === ref; })[0]; }
   function byInv(no) { return invoices.filter(function (r) { return r.inv === no; })[0]; }
+  // the reference the portal issues on submission: the record's own when the invoice is already in the data, else the next free number
+  function issuedRef(no) {
+    var r = invoices.filter(function (x) { return x.inv === no && x.ref; })[0];
+    if (r) return r.ref;
+    var max = invoices.reduce(function (m, x) { return x.ref ? Math.max(m, +x.ref.slice(-6)) : m; }, 0);
+    return 'NPO-2627-' + ('00000' + (max + 1)).slice(-6);
+  }
 
   /* ------------------------------------------------ statuses (HLD 5.8) */
   var STATUS_INFO = {
@@ -296,7 +311,7 @@ window.INV = (function () {
   ];
 
   return {
-    today: today, FAM: FAM, cats: cats, cat: cat, circles: circles, vendors: vendors, invoices: invoices, find: find, byInv: byInv,
+    today: today, FAM: FAM, cats: cats, cat: cat, circles: circles, vendors: vendors, invoices: invoices, find: find, byInv: byInv, issuedRef: issuedRef,
     STATUS_INFO: STATUS_INFO, LIFECYCLE: LIFECYCLE, BUCKETS: BUCKETS, PARTNER_BUCKETS: PARTNER_BUCKETS, RFI_REASONS: RFI_REASONS, PARTNER_CATS: PARTNER_CATS, canSubmit: canSubmit, REVIEW_CHECKS: REVIEW_CHECKS, partnerCode: partnerCode, railCounts: railCounts, tone: tone, status: status, timelineRows: timelineRows, buckets: buckets,
     checklist: checklist, leases: leases, vouchers: vouchers,
     mine: function (code) { return invoices.filter(function (r) { return r.v === code; }); },

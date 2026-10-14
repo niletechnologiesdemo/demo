@@ -31,7 +31,7 @@
     UI.kpis({ cols: 3, items: [{ value: '9', label: 'At L1 (AP team)' }, { value: '2', label: 'At L2 (manager)' }, { value: '0', label: 'At L3 (Finance Head)' }] }),
     UI.table({ dense: true, pager: false, columns: [{ key: 'r', label: 'Invoice' }, { key: 'c', label: 'Category / circle' }, { key: 's', label: 'Stage' }, { key: 'l', label: 'Level' }, { key: 'o', label: 'Over SLA by' }],
       rows: [{ r: '<a class="k-link" href="' + INV.review('NPO-2627-004818') + '">NPO-2627-004818</a>', c: 'Others &middot; Karnataka', s: 'Manual queue', l: 'L2', o: '4 hours' }, { r: '<a class="k-link" href="' + INV.review('NPO-2627-004806') + '">NPO-2627-004806</a>', c: 'Diesel Knock off &middot; UP East', s: 'Manual queue', l: 'L1', o: '1 day' },
-        { r: 'NPO-2627-004781', c: 'Legal &middot; Delhi', s: 'DOA approval', l: 'L1', o: '6 hours' }] })];
+        { r: '<a class="k-link" href="inv-17-approval-review.html?ref=NPO-2627-004834">NPO-2627-004834</a>', c: 'Legal &middot; Karnataka', s: 'DOA approval', l: 'L1', o: '6 hours' }] })];
   var exc = [
     UI.cols('1:1', [UI.box({ title: 'Manual queue by reason - Sep-26', body: [UI.chart({ type: 'bar', title: 'Invoices', categories: ['OCR incomplete', 'Amount outside tolerance', 'Signature / form review', 'Potential duplicate', 'Non-compliant landlord'], series: [{ name: 'Invoices', data: [64, 38, 52, 17, 9] }], fmt: whole, labelWidth: 160 })] })],
       [UI.box({ title: 'Portal vs ERP - Sep-26', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'k', label: 'Check' }, { key: 'v', label: 'Count', num: true }, { key: 'r', label: 'Result' }],

@@ -71,7 +71,7 @@
     : ok ? UI.alert({ tone: 'ok', title: 'All checks passed.', text: 'Rent paid, voucher not claimed before, GST within the cap, lease active, and the invoice checklist passed. The signature is confirmed by the PHD team after submission.', actions: [viewChk] }) : '';
 
   var submitted = UI.modal({ id: 'submitted', open: S === 'submitted', title: 'GST Invoice', accent: 'Submitted', size: 'narrow', body: [
-    UI.kv({ cols: 2, items: [['Reference number', '<b>NPO-2627-004873</b>'], ['Status', INV.status('Submitted')], ['Rent voucher', vch.no], ['GST claimed', 'Rs ' + UI.inr(gst, 2)]] }),
+    UI.kv({ cols: 2, items: [['Reference number', '<b>' + INV.issuedRef('RKE/26-27/021') + '</b>'], ['Status', INV.status('Submitted')], ['Rent voucher', vch.no], ['GST claimed', 'Rs ' + UI.inr(gst, 2)]] }),
     UI.p('You are notified at every status change.', { muted: true })],
     foot: [UI.button({ label: 'My leases & vouchers', go: 'inv-12' }), UI.button({ label: 'Track invoice', variant: 'primary', go: 'inv-09' })] });
 

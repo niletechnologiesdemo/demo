@@ -26,18 +26,25 @@
   var over = function (d) { return open.filter(function (p) { return p.age >= d; }).length; };
   var buckets = ['0-30 days', '31-60 days', '61-90 days', 'Over 90 days'].map(function (b) { return Math.round(open.filter(function (p) { return p.bucket === b; }).reduce(function (a, p) { return a + p.balance; }, 0) / 1e3) / 100; });
   var dn = PA.provisions.filter(function (p) { return p.dn; });
-  var jun = PA.find('131·410455·CCSVC002·JUN-26'), dec = PA.find('141·410387·AMCDG004·DEC-25'), err = PA.find('131·410455·CCSVC002·SEP-26'), dnRev = dn.filter(function (p) { return p.status === 'Reversed'; })[0];
+  var dec = PA.find('141·410387·AMCDG004·DEC-25'), err = PA.find('131·410455·CCSVC002·SEP-26'), dnRev = dn.filter(function (p) { return p.status === 'Reversed'; })[0];
   var W = { exact: [302, 288, 341, 353], force: [22, 19, 24, 18], unm: [9, 7, 11, 6] }, sum = function (a) { return a.reduce(function (x, y) { return x + y; }, 0); };
+  // the maker home is B0MKR412's own: the provisions this user raised (BUs 111, 131 and 165, set up on Users, roles & access)
+  var me = PA.provisions.filter(function (p) { return p.maker === 'B0MKR412'; }), meOpen = me.filter(function (p) { return p.open; }), meWait = me.filter(function (p) { return p.status === 'Submitted'; });
+  var meOld = meOpen.filter(function (p) { return p.age > 90; }), mePo = meOpen.filter(function (p) { return p.po && PA.poFor(p.key); });
+  var meBuckets = ['0-30 days', '31-60 days', '61-90 days', 'Over 90 days'].map(function (b) { return Math.round(meOpen.filter(function (p) { return p.bucket === b; }).reduce(function (a, p) { return a + p.balance; }, 0) / 1e3) / 100; });
+  var waitText = function (p) { var i = 0; while (p.apv[i] && p.apv[i][1]) i++; var w = p.apv[i] || []; return w[0] === 'CFR' ? 'With CFR first (new BU for this activity), then ' + p.apv.slice(1).map(function (x) { return x[0]; }).join(', ') : 'Approver ' + (i + 1) + ' of ' + p.apv.length + ': ' + w[0]; };
   var exactRate = UI.inr(100 * sum(W.exact) / (sum(W.exact) + sum(W.force) + sum(W.unm)), 1) + '%';
 
   var H = {
     maker: {
-      sub: 'Your provisions, returns and reminders.',
-      tiles: [['1', 'Draft', '', 'pa-03'], ['1', 'Returned to me', 'Correct and resubmit', 'pa-04?state=returned'], ['2', 'Awaiting approval', '', 'pa-03'], ['3', 'Due this month', 'From your provision calendar', 'pa-11'], ['2', 'Open over 90 days', 'Escalated to you', 'pa-03']],
-      tasks: [['alert', 'Provision returned: PRV-26-10398 (Legal retainer, BU 101)', 'Attach the retainer agreement; amount differs from the agreed monthly fee', '30-Sep 17:20', 'pa-04?state=returned', 1],
-        ['calendar', 'Security services - BU 131 not raised for Sep-26', 'Raised every month since Apr-26; suggested amount Rs 4,85,000.00', 'Due 05-Oct', 'pa-04', 1],
-        ['clock', jun.urn + ' open for ' + jun.age + ' days', 'Escalated to the business user at 90 days: ask the vendor for the invoice or request force closure', '28-Sep', det(jun.urn), 0]],
-      panel: ['My open provisions by age', UI.chart({ type: 'column', title: 'Open balance', unit: 'Rs lakh', categories: ['0-30 days', '31-60', '61-90', 'Over 90'], series: [{ name: 'Open', data: [9.6, 4.9, 0, 39.3] }], fmt: lakh })]
+      sub: 'The provisions you raised (B0MKR412, Admin & Facilities; BUs 111, 131 and 165), their approvals and your reminders.',
+      tiles: [[String(meWait.length), 'Awaiting approval', '', 'pa-03'], [String(meOpen.length), 'Open provisions', 'Rs ' + UI.inr(meOpen.reduce(function (a, p) { return a + p.balance; }, 0) / 1e5, 2) + ' L balance', 'pa-03?state=open'],
+        [String(mePo.length), 'PO found after provision', 'Being reviewed by GPA', mePo.length ? det(mePo[0].key) : 'pa-03'], ['1', 'Due this month', 'From your provision calendar', 'pa-11'], [String(meOld.length), 'Open over 90 days', 'Escalated', meOld.length ? det(meOld[0].key) : 'pa-03']],
+      tasks: meWait.map(function (p) { return ['check', 'Waiting for approval: ' + p.ref + ' (' + p.activity.name + ', BU ' + p.bu + ')', waitText(p), p.sub.slice(0, 6) + ' ' + p.sub.slice(12), det(p.ref), /CFR/.test(waitText(p)) ? 1 : 0]; })
+        .concat(mePo.map(function (p) { var o = PA.poFor(p.key); return ['link', 'PO ' + o.po + ' found for ' + p.urn, 'The GPA team is reviewing the link; once confirmed, the provision is settled against the PO', o.found.slice(0, 6) + ' ' + o.found.slice(12), det(p.urn), 1]; }))
+        .concat([['calendar', 'Security services - BU 131 not raised for Sep-26', 'Raised every month since Apr-26; suggested amount Rs 4,85,000.00', 'Due 05-Oct', 'pa-04', 1]])
+        .concat(meOld.map(function (p) { return ['clock', p.urn + ' open for ' + p.age + ' days', p.pbrRun === '05-Oct-2026' ? 'Beyond the 13-month window: reversed on 05-Oct unless an invoice is booked or the GPA team places a hold' : 'Escalated to ' + p.escalation, '', det(p.urn), 0]; })),
+      panel: ['My open provisions by age', UI.chart({ type: 'column', title: 'Open balance', unit: 'Rs lakh', categories: ['0-30 days', '31-60', '61-90', 'Over 90'], series: [{ name: 'Open', data: meBuckets }], fmt: function (v) { return UI.inr(v, 2); } })]
     },
     checker: {
       sub: 'Provisions waiting for your approval, and your team\'s open items.',

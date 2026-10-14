@@ -16,7 +16,7 @@
   var ed = [{ icon: 'edit', label: 'Edit user', modal: 'user' }];
   var users = UI.table({ dense: true, columns: [{ key: 'u', label: 'User (from SSO)' }, { key: 'r', label: 'Roles' }, { key: 'c', label: 'Circles (operating units)' }, { key: 'b', label: 'BUs' }, { key: 'src', label: 'Mapped from' }, { key: 'st', label: 'Status' }, { key: '_acts', label: '' }],
     rows: [
-      { u: 'B0MKR412<div class="k-muted k-small">Admin & Facilities</div>', r: 'Business user (maker)', c: 'Delhi, Karnataka', b: '111, 131', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
+      { u: 'B0MKR412<div class="k-muted k-small">Admin & Facilities</div>', r: 'Business user (maker)', c: 'Delhi, Karnataka, Telangana', b: '111, 131, 165', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
       { u: 'B0MKR519<div class="k-muted k-small">Network Operations</div>', r: 'Business user (maker)', c: 'UP East cluster (9)', b: '121 to 129', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
       { u: 'B0MKR611<div class="k-muted k-small">Admin & Facilities</div>', r: 'Business user (maker)', c: 'Andhra Pradesh', b: '151', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
       { u: 'B0CHK155<div class="k-muted k-small">Admin & Facilities</div>', r: 'Approver (DOA)', c: 'Delhi, Karnataka', b: '111, 131', src: 'Portal set-up', st: UI.status('Active', 'ok'), _acts: ed },
@@ -28,8 +28,8 @@
   var userModal = UI.modal({ id: 'user', title: 'Edit', accent: 'User', size: 'narrow', body: [UI.grid(1, [
       UI.field({ label: 'OLM ID', type: 'readonly', value: 'B0MKR412 &middot; Admin & Facilities' }),
       UI.field({ label: 'Roles', type: 'select', value: 'Business user (maker)', required: true }),
-      UI.field({ label: 'Circles (operating units)', type: 'select', value: 'Delhi, Karnataka', required: true }),
-      UI.field({ label: 'BUs', type: 'readonly', value: '111 Mobile - Delhi, 131 Mobile - Karnataka' })]),
+      UI.field({ label: 'Circles (operating units)', type: 'select', value: 'Delhi, Karnataka, Telangana', required: true }),
+      UI.field({ label: 'BUs', type: 'readonly', value: '111 Mobile - Delhi, 131 Mobile - Karnataka, 165 Mobile - Telangana' })]),
       UI.p('A user with one circle sees their BU read-only when raising a provision; a user with several picks from these BUs.', { muted: true, small: true }),
       UI.tbc('Circle mapping from HRMS is under discussion; until then it is set up here')],
     foot: [UI.button({ label: 'Cancel', variant: 'text', close: true }), UI.button({ label: 'Save', variant: 'primary', close: true, toast: 'User updated; change recorded in the audit trail' })] });

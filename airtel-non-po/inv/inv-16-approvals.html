@@ -18,7 +18,7 @@
   var doa = waiting.filter(function (r) { return /^DOA/.test(r.approval); });
   var force = waiting.filter(function (r) { return /^Force/.test(r.approval); });
   var exc = waiting.filter(function (r) { return /^Exception/.test(r.approval); });
-  var mine = [{ ref: 'NPO-2627-004811', inv: 'SFS/2026/0888', vshort: 'SecureOne Facility', circle: 'Delhi', c: INV.cat('others'), total: 572300, cur: 'INR', approval: 'DOA level 1 - approved', on: '29-Sep-2026', recv: '27-Sep 10:00' },
+  var mine = [{ ref: 'NPO-2627-004811', inv: 'SFS/2026/0888', vshort: 'SecureOne Facility', circle: 'Delhi', c: INV.cat('others'), total: 572300, cur: 'INR', approval: 'DOA level 1 - approved', on: '10-Sep-2026', recv: '08-Sep 10:00' },
     { ref: 'NPO-2627-004780', inv: 'BSNL/MEG/2026/07/88', vshort: 'BSNL', circle: 'Meghalaya', c: INV.cat('bsnl'), total: 4130, cur: 'INR', approval: 'DOA level 1 - returned', on: '26-Sep-2026', recv: '25-Sep 09:30' }];
 
   var cols = [{ key: 'ref', label: 'Reference / submitted' }, { key: 'inv', label: 'Invoice / vendor' }, { key: 'cat', label: 'Category' }, { key: 'amt', label: 'Amount (Rs)', num: true }, { key: 'ap', label: 'Approval' }, { key: 'sla', label: 'SLA' }, { key: '_acts', label: '' }];

@@ -30,7 +30,7 @@
   var buField = oneBu ? UI.field({ label: 'BU', type: 'readonly', value: bu + ' &middot; ' + buName, src: 'master' })
     : UI.field({ label: 'BU', type: 'select', value: bu + ' &middot; ' + buName, required: true, src: 'master' });
   var buNote = UI.note({ text: oneBu ? 'The user has one BU (OLM ID, operating unit, circle), so it is shown read-only.'
-    : 'Lists only the BUs in the user\'s access (111, 131), set up in Users and Roles or taken from HRMS if available. A user with one BU sees it read-only.' });
+    : 'Lists only the BUs in the user\'s access (111, 131, 165), set up in Users and Roles or taken from HRMS if available. A user with one BU sees it read-only.' });
 
   var details = UI.section({ title: 'Provision Details', collapsible: true, body: [UI.grid(3, [
     { span: 2, html: UI.field({ label: 'Activity', type: 'lookup', value: act.id + ' &middot; ' + UI.esc(act.name), required: true, src: 'user' }) + UI.p(actLine, { muted: true, small: true }) },
