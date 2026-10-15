@@ -48,7 +48,7 @@
     rows: lineRows, foot: pm ? { l: (r.lines || 2) + ' lines' + (r.lines > 2 ? ' (2 shown)' : ''), a: r.base } : null });
 
   var oracle = UI.kv({ cols: 3, items: pm ? [['Oracle PM invoice', r.oracle || 'Not yet booked'], ['Group ID (OWCC)', r.group || '-'], ['Attachments in OWCC', booked ? 'Uploaded; visible in Oracle after up to 1 hour' : '-'],
-      ['Airtel Send for Approval', reached('Under Approval') ? 'Run - invoice in the approver bin' : 'Waits until attachments are visible'], ['Validation bypass flag', r.v === '412885' ? 'N' : '-'], ['GL date', booked ? r.on : '-']]
+      ['Airtel Send for Approval', reached('Under Approval') ? 'Run - invoice in the approver bin' : 'Waits until attachments are visible'], ['Validation bypass flag', r.cat !== 'central-toco' ? '-' : r.bypass ? 'Y on the second attempt (line ' + r.bypass.line + ': ' + UI.esc(r.bypass.err) + ')' : 'N'], ['GL date', booked ? r.on : '-']]
     : [['Oracle AP voucher', r.oracle || 'Not yet booked'], ['Barcode', r.barcode || (booked ? 'BC2627' + r.ref.slice(-6) : '-')], ['Import', booked ? 'Airtel Payable Open Interface Import-GST' : 'After approval'],
       ['Invoice type / pay group', UI.esc(r.c.invType) + ' &middot; ' + UI.esc(r.c.payGroup)], ['Payment term', UI.esc(r.c.term)], ['Approvals attached', booked ? 'Yes (DMS)' : '-']] });
 

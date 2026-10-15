@@ -264,6 +264,7 @@
   }
   function onClick(e) {
     var t = e.target;
+    var op = t.closest('.k-tbc[data-op-href]'); if (op) { location.href = op.getAttribute('data-op-href'); return; }
     var tab = t.closest('[data-tab]'); if (tab) { activateTab(tab.getAttribute('data-tab')); return; }
     var sec = t.closest('[data-sec-toggle]');
     if (sec) { var s = sec.closest('.k-sec'); s.classList.toggle('is-collapsed'); sec.innerHTML = s.classList.contains('is-collapsed') ? '+' : '&minus;'; return; }
@@ -357,6 +358,32 @@
       '<a href="../open-points.html">Open points</a><a href="../index.html">All pages</a>' + (next ? '<a href="' + next.file + '">' + UI.esc(next.name) + ' &rsaquo;</a>' : '') + '</span></div>' + states;
   }
 
+  // Open points: each UI.tbc marker is a key in open-points-data.js (context, question, possible answers, who answers).
+  // The catalogue is loaded on demand; each marker then shows its number, the question on hover, and links to its entry.
+  function opFind(k, text) {
+    var L = G.OPEN_POINT_DETAILS || [];
+    for (var i = 0; i < L.length; i++) if (L[i].mod === k && L[i].keys.indexOf(text) >= 0) return L[i];
+    return null;
+  }
+  function annotateOpenPoints(k, base) {
+    var chips = document.querySelectorAll('.k-tbc[data-op]');
+    if (!chips.length) return;
+    var mark = function () {
+      Array.prototype.forEach.call(chips, function (c) {
+        var d = opFind(k, c.getAttribute('data-op'));
+        if (!d || c.hasAttribute('data-op-href')) return;
+        c.setAttribute('data-tip', d.id + ': ' + d.question + ' Select the marker to read the context.');
+        c.setAttribute('data-op-href', base + 'open-points.html#' + d.id);
+        var ic = c.firstElementChild;
+        if (ic) ic.insertAdjacentHTML('afterend', '<b class="k-tbc-id">' + UI.esc(d.id) + '</b>');
+      });
+    };
+    if (G.OPEN_POINT_DETAILS) { mark(); return; }
+    var sc = document.createElement('script');
+    sc.src = base + 'open-points-data.js'; sc.onload = mark;
+    document.body.appendChild(sc);
+  }
+
   G.Page = {
     MODULES: MODULES,
     state: function () { return param('state'); },
@@ -401,6 +428,7 @@
       }
       document.body.insertAdjacentHTML('beforeend', bar(o, mod, page, roleSelect(mod, chosen, defId)) + '<div class="app">' + shell + '</div>');
       wire();
+      annotateOpenPoints(String(o.id).split('-')[0], '../');
       var m = param('modal'); if (m) { var el = document.querySelector('[data-modal-id="' + m + '"]'); if (el) el.hidden = false; }
       var tb = param('tab'); if (tb) activateTab(tb);
       if (param('scrollto') === 'bottom') setTimeout(function () { window.scrollTo(0, document.documentElement.scrollHeight); }, 300);
@@ -456,7 +484,7 @@
       var RX = /UI\.tbc\(\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/g;
       var RXD = /\{\s*id:\s*'([^']+)'[^{}]*?\bname:\s*'([^']+)'[^{}]*?\bpage:\s*'([^']+)'[^{}]*?\btbc:\s*'((?:[^'\\]|\\.)*)'/g;
       var unesc = function (s) { return s.replace(/\\(.)/g, '$1'); };
-      var html = '<div class="sh-content">' + UI.page({ title: 'Open', accent: 'Points', sub: 'Everything marked to be confirmed by Airtel, collected from the wireframe pages when this page opens. Each link opens the page with Requirement tags on, so the marker shows in place.' }) +
+      var html = '<div class="sh-content">' + UI.page({ title: 'Open', accent: 'Points', sub: 'Questions for Airtel to answer before detailed design. Each open point gives the context, the question, the ways it could be resolved with what each would mean, the option the design team suggests, what the wireframe shows until it is answered, who should answer and where it appears. Page links open the page with Requirement tags on, so the marker shows in place.' }) +
         '<div id="op-body">' + UI.p('Collecting the open points...', { muted: true }) + '</div></div>';
       document.title = 'Open points - Non-PO Portal wireframes';
       document.body.insertAdjacentHTML('beforeend', '<div class="wn"><span class="wn-brand">Non-PO Portal<small>wireframes</small></span><span class="wn-page">Open points</span><span class="wn-sp"></span><span class="wn-links"><a href="index.html">All pages</a></span></div><div class="app">' + html + '</div>');
@@ -489,12 +517,39 @@
           });
           var acc = '<a class="k-link" href="' + k + '/' + k + '-access.html">Who sees which page</a>';
           if (mod.accessNote) add('Page access by role: ' + mod.accessNote, acc);
-          mod.pages.forEach(function (p) { var n = (mod.access[p.id] || [])[2]; if (n && /confirm/i.test(n)) add('Access to ' + p.name + ': ' + n, acc); });
-          total += items.length;
-          out += UI.section({ title: mod.title, sub: items.length + ' open points', body: [UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'n', label: '#' }, { key: 't', label: 'Open point' }, { key: 'w', label: 'Where' }],
-            rows: items.map(function (it, i) { return { n: String(i + 1), t: '<div class="op-t">' + UI.esc(it.text) + '</div>', w: '<div class="op-w">' + it.where.join('') + '</div>' }; }) })] });
+          mod.pages.forEach(function (p) { var n = (mod.access[p.id] || [])[2]; if (n && /to be confirmed/i.test(n)) add('Access to ' + p.name + ': ' + n, acc); });
+          // each marker's entry in open-points-data.js; markers without one are listed at the end of the module
+          var used = {}, list = [], loose = [];
+          items.forEach(function (it) {
+            var d = opFind(k, it.text);
+            if (!d) { loose.push(it); return; }
+            if (!used[d.id]) { used[d.id] = { d: d, where: [] }; }
+            it.where.forEach(function (w) { if (used[d.id].where.indexOf(w) < 0) used[d.id].where.push(w); });
+          });
+          (G.OPEN_POINT_DETAILS || []).forEach(function (d) { if (d.mod === k && used[d.id]) list.push(used[d.id]); });
+          total += list.length + loose.length;
+          var esc = UI.esc, areas = [];
+          list.forEach(function (x) { if (areas.indexOf(x.d.area) < 0) areas.push(x.d.area); });
+          var row = function (label, html, cls) { return '<div class="op-row' + (cls ? ' ' + cls : '') + '"><span class="op-l">' + label + '</span><div>' + html + '</div></div>'; };
+          var card = function (x) {
+            var d = x.d, opts = d.options || [];
+            return '<div class="op-card" id="' + esc(d.id) + '"><div class="op-head"><span class="op-id">' + esc(d.id) + '</span><h4 class="op-title">' + esc(d.title) + '</h4></div>' +
+              row('Context', esc(d.context)) + row('Question', '<b>' + esc(d.question) + '</b>', 'op-q') +
+              (opts.length ? row('Ways to resolve it', '<ol class="op-opts">' + opts.map(function (o) { return '<li><b>' + esc(o.option) + '</b>' + (o.effect ? '<div>' + esc(o.effect) + '</div>' : '') + '</li>'; }).join('') + '</ol>') : '') +
+              (d.suggested ? row('Suggested', esc(d.suggested), 'op-s') : '') +
+              row('Until it is answered', esc(d.wireframe)) + row('Who answers', esc(d.ask)) + (d.refs ? row('Sources', esc(d.refs)) : '') +
+              row('Where it appears', '<div class="op-w">' + x.where.join('') + '</div>') + '</div>';
+          };
+          var index = UI.table({ dense: true, pager: false, export: false, columns: [{ key: 'id', label: '#' }, { key: 't', label: 'Open point' }, { key: 'a', label: 'Area' }, { key: 'w', label: 'Who answers' }],
+            rows: list.map(function (x) { return { id: '<a class="k-link" href="#' + esc(x.d.id) + '">' + esc(x.d.id) + '</a>', t: '<a class="k-link" href="#' + esc(x.d.id) + '">' + esc(x.d.title) + '</a>', a: esc(x.d.area), w: esc(x.d.ask) }; }) });
+          var cards = areas.map(function (a) { return '<h3 class="op-area">' + esc(a) + '</h3>' + list.filter(function (x) { return x.d.area === a; }).map(card).join(''); }).join('');
+          var rest = loose.length ? '<h3 class="op-area">Not described yet</h3>' + UI.table({ dense: true, pager: false, export: false, columns: [{ key: 't', label: 'Open point' }, { key: 'w', label: 'Where' }],
+            rows: loose.map(function (it) { return { t: '<div class="op-t">' + esc(it.text) + '</div>', w: '<div class="op-w">' + it.where.join('') + '</div>' }; }) }) : '';
+          out += UI.section({ title: mod.title, sub: (list.length + loose.length) + ' open points', body: [index, cards, rest] });
         });
         body.innerHTML = UI.p(total + ' open points across ' + keys.length + ' modules' + (live ? '.' : ', from the snapshot built on ' + UI.esc(snap.built) + ' (opened from a folder; run build/open_points.py after changing markers).'), { muted: true }) + out;
+        var tgt = location.hash && document.getElementById(location.hash.slice(1));
+        if (tgt) { tgt.classList.add('is-target'); tgt.scrollIntoView(); }
       });
     }
   };

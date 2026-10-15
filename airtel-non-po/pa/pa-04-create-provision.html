@@ -20,7 +20,7 @@
   var vcode = scen === 1 ? '410022' : scen === 2 ? '410387' : scen === 4 ? '410387' : '410455';
   var vend = PA.vendors[vcode];
   var bu = cfr ? '165' : dup ? '111' : '131', buName = cfr ? 'Mobile - Telangana (new BU)' : dup ? 'Mobile - Delhi' : 'Mobile - Karnataka';
-  var amount = scen === 1 ? (dup ? 485000 : 492000) : scen === 2 ? 1500000 : scen === 4 ? 1008000 : 110;
+  var amount = scen === 1 ? (dup ? 485000 : 492000) : scen === 2 ? 1500000 : scen === 4 ? 3600000 : 110;
 
   // Activity master decides scenario, route and reversal mode: one summary line, not separate fields
   var actLine = 'S' + act.scenario + ' ' + UI.esc(PA.scenarios[act.scenario]) + ' &middot; ' +
@@ -53,8 +53,10 @@
     UI.field({ label: 'Entity', type: 'select', value: 'Mobile', required: true, src: 'user' }),
     UI.field({ label: 'Deferment category', type: 'select', value: 'DG promoter', required: true, src: 'user' }),
     UI.field({ label: 'Deferment % / life', type: 'readonly', value: '72% &middot; 35 months', src: 'master' }) + UI.tbc('Scenario 4: whether deferment % is a user input or a parameter'),
+    UI.field({ label: 'Expensed now (Rs)', type: 'readonly', value: '10,45,029.00', hint: '28% not deferred (10,08,000.00) and 15 days of the deferred 72% (37,029.00)', src: 'system' }),
     UI.field({ label: 'Current prepaid (next 12 months)', type: 'readonly', value: '8,88,686.00', src: 'system' }),
-    UI.field({ label: 'Non-current prepaid', type: 'readonly', value: '17,03,314.00', src: 'system' })])] });
+    UI.field({ label: 'Non-current prepaid', type: 'readonly', value: '16,66,285.00', src: 'system' })]),
+    UI.p('The provision is the full input; the deferred part, less 15 days, moves to prepaid and is released monthly (as schedule PPD-26-0201 for the Aug-26 provision).', { muted: true, small: true })] });
   if (scen === 10) calc = UI.section({ title: 'Scenario 10 - VTM', collapsible: true, body: [UI.grid(3, [
     UI.field({ label: 'Paper-based activation %', value: '62.00', required: true, src: 'user' }),
     UI.field({ label: 'Online activation %', value: '38.00', required: true, src: 'user' }),
@@ -63,7 +65,7 @@
 
   // Amount and period (BRD input template). Rule-based scenarios take the amount from the calculation above.
   var amtFields = rule ? [
-    UI.field({ label: scen === 4 ? 'Expensed now (15 days, Rs)' : 'Amount (Rs)', type: 'readonly', value: UI.inr(amount, 2), src: 'system' })
+    UI.field({ label: scen === 4 ? 'Provision amount (Rs)' : 'Amount (Rs)', type: 'readonly', value: UI.inr(amount, 2), src: 'system' })
   ] : [
     UI.field({ label: 'Quantity', value: '1', src: 'user' }),
     UI.field({ label: 'Rate', value: UI.inr(amount, 2), src: 'user' }),

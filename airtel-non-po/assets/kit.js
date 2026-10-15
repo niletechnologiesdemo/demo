@@ -269,7 +269,9 @@
   function status(text, tone, eid) { return '<span class="' + cls('k-status', TONES[tone]) + '"' + E(eid) + '>' + esc(text) + '</span>'; }
   function chip(text, tone, eid, o) { return '<span class="' + cls('k-chip', TONES[tone]) + '"' + E(eid) + B(o) + '>' + text + '</span>'; }
   function badge(n) { return '<span class="k-badge">' + esc(n) + '</span>'; }
-  function tbc(text, eid) { return '<span class="k-tbc"' + E(eid) + ' data-tip="Open point - to be confirmed with Airtel">' + icon('flag') + esc(text || 'To be confirmed') + '</span>'; }
+  // An open point for Airtel to confirm. The text is its key in open-points-data.js, which holds the context and the question;
+  // page.js adds the open point's number, shows the question on hover and links the marker to it on the open points page.
+  function tbc(text, eid) { return '<span class="k-tbc"' + E(eid) + ' data-op="' + esc(text || '') + '" data-tip="Open point - to be confirmed with Airtel">' + icon('flag') + esc(text || 'To be confirmed') + '</span>'; }
   function dot(tone) { return '<i class="' + cls('k-dot', TONES[tone]) + '"></i>'; }
 
   /* ------------------------------------------------------------ filters & tables */

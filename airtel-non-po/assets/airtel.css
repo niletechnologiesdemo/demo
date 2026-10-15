@@ -459,7 +459,7 @@ body.show-reqs .k-note, .k-note.is-shown { display: block; }
 .k-chart-title { font-size: 16px; color: var(--ink); }
 .k-legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--ink); margin-left: auto; }
 .k-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
-.k-tip { position: fixed; z-index: 900; background: #1F2329; color: #fff; font-size: 12px; padding: 7px 10px; border-radius: 3px; pointer-events: none; white-space: nowrap; }
+.k-tip { position: fixed; z-index: 900; background: #1F2329; color: #fff; font-size: 12px; line-height: 1.4; padding: 7px 10px; border-radius: 3px; pointer-events: none; max-width: 440px; width: max-content; white-space: normal; }
 .k-tip[hidden] { display: none; }
 .k-card-box { border: 1px solid var(--line-soft); padding: 20px 22px; margin-bottom: 28px; }
 .k-card-box.notice { border: 0; background: var(--notice); border-radius: 8px; }
@@ -606,6 +606,23 @@ body.has-states.has-variants { --nav-h: 106px; }
 /* requirement tags switch in the wireframe bar: shows 'to be confirmed' markers (wrapping, as some are long) and system-behaviour notes */
 .wn .wn-toggle { margin-left: 14px; }
 body.show-reqs .k-tbc { display: inline-flex; white-space: normal; }
-/* open points page */
+/* an open-point marker with an entry in open-points-data.js: its number, and a link to the entry */
+.k-tbc[data-op-href] { cursor: pointer; }
+.k-tbc-id { font-weight: 700; white-space: nowrap; }
+/* open points page: an index, then one card per open point grouped by area */
 .op-t { max-width: 720px; white-space: normal; }
-.op-w a { display: block; white-space: nowrap; }
+.op-area { font-size: 18px; font-weight: 400; margin: 30px 0 12px; }
+.op-card { border: 1px solid var(--line-soft); border-left: 3px solid #D9A857; padding: 14px 20px 8px; margin: 0 0 14px; background: #fff; scroll-margin-top: 60px; }
+.op-card:target, .op-card.is-target { box-shadow: 0 0 0 2px #D9A857; }
+.op-head { display: flex; gap: 12px; align-items: baseline; margin-bottom: 8px; }
+.op-id { font-size: 12px; font-weight: 700; color: var(--warn); background: var(--warn-tint); padding: 2px 8px; border-radius: 2px; white-space: nowrap; }
+.op-title { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.35; }
+.op-row { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-top: 1px solid var(--line-soft); line-height: 1.5; }
+.op-l { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .02em; padding-top: 2px; }
+.op-q > div { background: var(--warn-tint); padding: 6px 10px; }
+.op-s > div { color: #2A5FA8; }
+.op-opts { margin: 0; padding-left: 20px; }
+.op-opts li { margin-bottom: 6px; }
+.op-opts li div { color: var(--muted); }
+.op-w a { display: inline-block; margin-right: 18px; white-space: nowrap; }
+@media (max-width: 700px) { .op-row { grid-template-columns: 1fr; gap: 2px; } }
